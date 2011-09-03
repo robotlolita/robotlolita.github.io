@@ -4,13 +4,13 @@ layout: nil
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
  
- <title>Recursive</title>
+ <title>Sorella's Basement</title>
  <link href="http://killdream.github.com/feed/" rel="self"/>
  <link href="http://killdream.github.com/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
  <id>http://killdream.github.com/</id>
  <author>
-   <name>Sorella's Basement</name>
+   <name>Quildreen Motta</name>
    <email>quildreen@gmail.com</email>
  </author>
 
