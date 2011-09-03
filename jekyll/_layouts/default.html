@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html> 
+	<head>
+		<meta charset="utf-8">
+		<title>{{ page.title }} — Quildreen Motta</title>
+		<meta name="description" content="Quildreen Motta writing about
+		                                  programming, open source, caffeine
+										  and such stuff." > 
+		<meta name="keywords" content="programming, open source, javascript,
+	  	                               python, clean code junkie">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link href="http://feeds.feedburner.com/quildreen/en" rel="alternate"
+		title="Quildreen Motta // EN" type="application/atom+xml">
+
+		<link href="/media/css/screen.css" media="screen" rel="stylesheet">
+	</head>
+	<body class="engb main-page">
+
+		{% include header.html %}
+
+		<div id="wrapper">
+            {{ content }}
+		</div>
+
+		{% include footer.html %}
+
+	</body>
+</html>

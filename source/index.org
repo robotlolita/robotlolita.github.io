@@ -1,0 +1,17 @@
+#+STARTUP: showall hidestars indent
+#+BEGIN_HTML
+---
+layout: default
+title:  Main
+---
+#+END_HTML
+
+#+HTML: <div id="mydesc">
+I'm an open-minded freedon evangelist, only not as *HARDCORE* as Richard
+Stallman.
+
+Occasionally I dabble in computers, programming, fashion, design,
+drawing, trolling and other `ing's.
+#+HTML: <em class='small'><br>
+**shhh! I've also got [[/about][failed attempt nº 2]] at describing myself.**
+#+HTML: </em></div>

@@ -1,0 +1,209 @@
+/** [ Blog styling ] *********************************************************/
+#listing {
+	list-style:							none;
+
+	li {
+		margin-bottom:					1.5em;
+		padding-bottom:					10px;
+		text-align:						left }}
+
+.post-title {
+
+	font-family:						"Trebuchet MS", sans-serif;
+	font-weight:						bold;
+	font-size:							1.9em;
+	color:								#999;
+	border:								none !important;
+
+	a {
+		position:						relative;
+		top:							2px;
+		color:							#777 }
+	a:hover {
+		text-decoration:				none;
+		color:							#333 }}
+
+.list-item-meta {
+	list-style:							none;
+	clear:								both;
+	margin-left:						1.4em;
+	padding-top:						0.7em;
+	font-family:						"DejaVu serif", Constantia, serif;
+	li {
+		float:							left;
+		overflow:						hidden;
+		height:							32px;
+		line-height:					32px;
+		margin-left:					15px;
+		padding:						0px 0px 0px 40px !important;
+		font-size:						90%;
+
+		@include sprite-background("blog.png", auto, 32px);
+		@include opacity(0.5);
+		@include transition(all, .5s, ease-in);
+		a, &:hover {
+			@include transition(none, 0s) }
+		&:hover {
+			@include opacity(0.8) }
+		ul li {
+			font-size:					100%;
+			background:					none;
+			margin:						0px 15px 0px 0px;
+			padding:					0px !important }
+		&.comments { @include sprite-row(2, 32px) }
+		&.tags     { @include sprite-row(3, 32px) }
+		&.licence  { @include sprite-row(4, 32px) }
+		&.language { @include sprite-row(5, 32px) }}}
+
+.post-subtitle {
+	@extend .subtitle;
+
+	border:								none !important;
+	margin:								0px 0px 0px 2em !important;
+	float:								left;
+	font-size:							1.3em !important; }
+
+.post-excerpt {
+	color:								#555 }
+
+#post-header {
+	font-family:						"Trebuchet MS", serif;
+	font-size:							90%;
+	padding-bottom:						2em;
+	.list-item-meta {
+		margin-left:					-20px }}
+
+#static-content {
+	width:								700px;
+	margin:								0 auto;
+	color:								#555;
+	font-size:							115%;
+	font-family:						"DejaVu serif", Constantia, serif;
+
+
+	.post-subtitle {
+		margin-left:					0px !important }
+	.item-meta {
+		font-size:						90%;
+		margin:							2em 0 -2em 0;
+		color:							#999;
+		span {
+			margin-left:				0.3em;
+			font-style:					italic }}
+
+	/* headers */
+	h1, h2, h3, h4, h5, h6 {
+		margin:							1.5em 0 0 -100px;
+		border-bottom:					3px solid #ccc;
+		font-family:					"Trebuchet MS", sans-serif;
+		font-weight:					bold;
+		color:							#999; }
+	h1 {
+		color:							#777 }		
+	h2 {
+		font-size:						1.8em }
+	h3 {
+		font-size:						1.6em }
+	h4 {
+		font-size:						1.4em }
+	h5 {
+		font-size:						1.3em }
+	h6 {
+		font-size:						1.2em }
+	
+
+	strong {
+		font-weight:					bold }
+	em {
+		font-style:						italic }
+
+    sup {
+        vertical-align:                 super }
+
+    .footnote {
+        color:                          #999;
+        font-size:                      smaller;
+        ol {
+            padding:                    0px 1em 0.5em 2em }}
+
+    .footnotes {
+        font-size:                      18px;
+        border-bottom:                  none;
+        border-top:                     1px dashed #ccc;
+        color:                          #bbb;
+        padding-top:                    10px }
+
+	/* code */
+	p code, pre {
+		background-color:				#f9f9f9;
+		border:							1px solid #ccc;
+		line-height:					1.4em;
+		padding:						2px 4px;
+		white-space:					nowrap }
+
+	p {
+		line-height:					1.4em;
+		text-align:						left;
+		margin:							1.5em 0 }
+
+	/* images */
+	.picframe, img {
+		display:						block;
+		background:						white;
+		margin:							0 auto;
+		padding:						10px;
+		border:							1px solid #ccc;
+		@include box-shadow(#CCC, 0px, 0px, 5px, 0px) }
+
+    dt {
+        font-variant:               small-caps;
+        font-weight:                bold }
+    dt:before {
+        content:                    "- " }
+    dd {
+        margin-top:                 -1em;
+        border-left:                4px solid #ddd;
+        padding-left:               0.7em;
+        color:                      #888 }
+    
+    blockquote {
+        border-left:                    4px solid #ddd;
+        padding-left:                   0.7em;
+        margin-left:                    0.7em;
+        color:                          #888;
+        blockquote {
+            border-left-color:          #ccc;
+            blockquote {
+                border-left-color:      #bbb;
+                blockquote {
+                    border-left-color:  #aaa }}}}
+
+
+	.picframe {
+		text-align:						center;
+		padding:						16px;
+		color:							#999;
+		font-size:						80%;
+
+		img {
+			border:						none;
+			margin:						0 auto 10px auto  }}
+
+    ul {
+        list-style-type:                square;
+        margin-left:                    2em }
+
+	/* lists */
+	.toc {
+		margin:							4em 0 2em 0;
+		font-size:						1.2em;
+
+		ul {
+			list-style:					none;
+			ul {
+				margin:					0.2em 0 0.5em 2em;
+				font-size:				0.9em }}}
+}
+
+#disqus_thread {
+	padding-top:						2em }

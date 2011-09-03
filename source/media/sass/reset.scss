@@ -1,0 +1,71 @@
+/**
+ * Base CSS for getting rid of all the browser discrepancies.
+ * 
+ * Some parts taken from Elastic's reset.css
+ * (c) 2008, Yahoo! Inc. All rights reserved.
+ * Licenced under BSD | http://developer.yahoo.net/yui/license.txt
+ */
+
+/* margins and padding */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* fonts of some semantic elements */
+address, caption, code, em, strong, var {
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* borders */
+fieldset, img {
+	border: none;
+}
+
+/* headers */
+h1, h2, h3, h4, h5, h6 {
+	font-size: 100%;
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* table */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* text alignment */
+caption, th {
+	text-align: left;
+}
+
+/* quote */
+q:before, q:after {
+	content: '';
+}
+
+/* acronyms and abbreviations */
+abbr, acronym {
+	border: 0;
+	font-variant: normal;
+}
+
+/* to preserve line-height and selector appearance */
+sup {
+	vertical-align: text-top;
+}
+sub {
+	vertical-align: text-bottom;
+}
+
+/*to enable resizing for IE*/
+input, textarea, select {
+	*font-size: 100%;
+}
+
+/*because legend doesn't inherit in IE */
+legend {
+	color: #000;
+}

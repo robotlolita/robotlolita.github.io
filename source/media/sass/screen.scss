@@ -1,0 +1,365 @@
+// Override default values
+$sprite-default-size: 64px;
+
+// Import Compass utilities
+@import "compass/css3/box-shadow";
+@import "compass/css3/border-radius";
+@import "compass/css3/opacity";
+@import "compass/css3/text-shadow";
+@import "compass/css3/gradient";
+@import "compass/css3/transform";
+@import "compass/css3/transition";
+@import "compass/utilities/sprites";
+
+// Import local utilities
+@import "reset";
+@import "typography";
+@import "blog";
+@import "code";
+
+/** [ helpers ] **************************************************************/
+.clearfix {
+	clear:								both; }
+
+
+/** [ html elements ] ********************************************************/
+a {
+	color:								#369;
+	text-decoration:					none;
+	
+	@include transition(all, .3s, ease-out);
+	&:hover {
+		color:							#1C97D9;
+		text-decoration:				underline; }}
+
+body {
+	background:							white image-url("bg.gif")
+										repeat-x top left;
+	text-align:							center; }
+
+p {
+	text-align:							justify; }
+
+strong {
+    font-weight:                        bolder }
+
+
+/** [ Top ] ******************************************************************/
+@mixin banner {
+	&.engb #banner a {
+		width:							200px;
+		right:							-110px;
+		top:							-70px }	
+	#banner {
+		position:						fixed;
+		top:							0px;
+		display:						block;
+		width:							100%;
+		z-index:						1000;
+		border-top:						10px solid #000;
+		strong {
+			font-weight:				bold }
+		a {
+			position:					absolute;
+			right:						-110px;
+			top:						-65px;
+			width:						170px;
+			padding:					10px 80px;
+			display:					block;
+			color:						#ccc;
+			background:					#333;
+			text-align:					center;
+			text-decoration:			none;
+
+			@include transform-origin(0, 0);
+			@include rotate(26.565deg);
+			@include box-shadow(#000, 0px, 0px, 10px, 0px);
+			@include serif-font(90%);
+			&:hover {
+				color:					#fff;
+				background:				#000; }}}}
+
+@mixin logo {
+	#logo {
+		float:							left;
+		a {
+			text-decoration:			none;
+			h1 {
+				@extend .title;
+				font-size:				60px;
+				color:					#555;
+
+			    @include text-shadow(#fff, 0px, 0px, 2px); }
+			&:hover h1 {
+				color:					#333; }}
+		em {
+			@extend .small-caps;
+			display:					block;
+			margin:						-10px -50px 0 0;
+			color:						#999;
+			font-weight:				bold;
+			text-align:					right; }}}
+
+@mixin navigation {
+	#nav {
+		padding-top:					20px;
+		position:						relative;
+		top:							1px;
+		clear:							both;
+		@include navigation-item; }
+}
+
+@mixin navigation-item {
+	li {
+		display:						inline;
+		a, em {
+			display:					block; }
+		a {
+			float:						left;
+			color:						#555;
+			margin-right:				50px;
+			border-bottom:				4px solid transparent;
+			text-decoration:			none; }
+		em {
+			color:						#999;
+			@include serif-font(80%) }
+		strong {
+			@extend .spaced-title; }
+		&.selected a, a:hover {
+			color:						#000;
+			border-bottom-color:		#777; }}}
+
+
+/** [ Footer ] ***************************************************************/
+@mixin footer {
+	#footer {
+		width:							900px;
+		margin:							5em auto 2em auto;
+		text-align:						left;
+		color:							#555;
+		@include serif-font(90%); }
+
+	@include metainfo;
+	@include contact;
+	@include social; }
+
+@mixin metainfo {
+	#metainfo {
+		padding-right:					30px;
+		width:							250px;
+		float:							left;
+		text-align:						center;
+		font-size:						80%;
+		color:							#888;
+		border-right:					3px solid #999;
+		strong {
+			display:					block;
+			font-weight:				bold;
+			font-size:					125%;
+			letter-spacing:				3px; }
+		h2 {
+			@extend .spaced-title;
+			padding:					5px 10px;
+			margin-left:				-23px;
+			color:						#999;
+			border-left:				3px solid #999 }}}
+
+@mixin csprite($image) {
+	background:							image-url($image) no-repeat
+										left center; }
+
+@mixin contact {
+	#contact {
+		padding-left:					20px;
+		margin-bottom:					20px;
+		border-left:					3px solid #ccc;
+		font-size:						110%;
+		text-align:						left;
+		li {
+			display:					block;
+			padding:					14px 0 0 42px;
+			height:						30px;
+			line-height:				24px; }
+		li.email {
+			@include csprite("email.png"); }
+		li.skype {
+			@include csprite("skype.png"); }}}
+
+@mixin social {
+	#social {
+		float:							right;
+		width:							550px;
+		.quote {
+			position:					relative;
+			top:						20px;
+			b {
+				position:				relative;
+				display:				block;
+				float:					left;
+				width:					12px;
+				height:					12px;
+				background:				#999;
+				margin-right:			3px; }
+			b i {
+				display:				block;
+				position:				absolute;
+				top:					-10px;
+				left:					0px;
+				width:					7px;
+				height:					10px;
+				background:				#999;
+
+				@include skew(-25.656deg);
+				@include transform-origin(0, 100%); }}}
+	@include tweet;
+	@include social-list; }
+
+@mixin tweet {
+	#tweet {
+		padding:						15px 50px 10px 50px;
+		color:							#777;
+		font-family:					Georgia;
+		font-style:						italic;
+		font-size:						18px; }
+	#tweet-info {
+		position:						relative;
+		top:							-5px;
+		color:							#999;
+		font-size:						80%;
+		text-align:						right; }}
+
+@mixin social-list {
+	#social-list {
+		list-style:						none;
+		padding-top:					10px; 
+		@include social-item; }}
+
+@mixin social-item {
+	li {
+		display:						block;
+		margin-left:					20px;
+		float:							left;
+		a {
+			position:					relative;
+			display:					block;
+			border:						none;
+			text-decoration:			none;
+			overflow:					visible !important;
+
+			@include sprite-background("social.png");
+			@include opacity(0.5);
+			@include transition(all, .5s, ease-in) }
+		a:hover {
+			@include opacity(1);
+			@include transition(none, 0s) }
+		a:hover i {
+			visibility:					visible;
+			margin-bottom:				20px;
+			z-index:					100;
+			@include opacity(0.9); }
+		&.delicious a { @include sprite-column(2) }
+		&.devart    a { @include sprite-column(3) }
+		&.bitbucket a { @include sprite-column(4) }
+		&.facebook  a { @include sprite-column(5) }
+		&.lastfm    a { @include sprite-column(6) }
+		@include social-tip; }}
+
+@mixin social-tip {
+	i {
+		position:						absolute;
+		left:							-50%;
+		bottom:							100%;
+		padding:						15px;
+		background:						#000;
+		color:							#fff;
+		font-style:						italic;
+		white-space:					pre;
+		visibility:						hidden;
+		
+		@include opacity(0);
+		@include transition(all, .2s, ease-in);
+		@include border-radius(5px); }
+	b {
+		display:						block;
+		width:							0px;
+		height:							0px;
+		position:						absolute;
+		top:							100%;
+		left:							50px;
+		border:							15px solid #000;
+		border-width:					15px 10px;
+		border-color:					#000 transparent
+										transparent transparent; }}
+
+
+/** [ About page ] ***********************************************************/
+#about-header {
+	margin:								1.5em 0 2em 0;
+	img {
+		display:						none }}
+
+#static-content {
+	#about-boxes {
+		font-size:						90%;
+		position:						relative;
+		left:							-100px;
+		width:							900px;
+		list-style:						none;
+		li {
+			background:					image-url('separator.png')
+										no-repeat left center;
+			width:						277px;
+            min-height:                 400px;
+			padding:					0 5px 0 15px;
+            display:                    inline-block;
+            vertical-align:             top;
+			h2 {
+				@extend .title;
+				letter-spacing:			5px;
+				margin:					0px;
+				text-align:				center }
+			h2 span {
+				@extend .subtitle;
+				text-align:				center;
+				display:				block;
+				font-size:				70%;
+				letter-spacing:			5px }
+			&.first {
+				background:				none }}}}
+				
+
+
+/** [ page layout ] **********************************************************/
+@mixin header {
+	#header {
+		margin:							30px auto;
+		width:							900px;
+		border-bottom:					1px solid #bbb;
+		text-align:						left; }
+
+	@include banner;
+	@include logo;
+	@include navigation;
+}
+
+.page {
+	#wrapper {
+		text-align:						left;
+		width:							900px;
+		margin:							0 auto; }
+
+	@include header;
+	@include footer; }
+
+.main-page {
+	#mydesc {
+		font-family:					Georgia;
+		font-size:						1.8em;
+		color:							#777;
+		@include text-shadow(#fff, 0px, 0px, 3px);
+		
+		p {
+			text-align:					center;
+			margin:						2em 3em }}
+	@extend .page }
+

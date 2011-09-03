@@ -1,0 +1,31 @@
+/* Typography rules */
+@mixin serif-font($size:100%) {
+	font-family:						"Trebuchet MS", sans-serif;
+	font-size:							$size; }
+
+/* Base classes */
+.title {
+	font-family:						Impact, Charcoal, sans-serif;
+	font-weight:						normal;
+	text-transform:						uppercase }
+
+.spaced-title {
+	@extend .title;
+	font-size:							20px;
+	letter-spacing:						2px }
+
+.small-caps {
+	font-variant:						small-caps;
+	letter-spacing:						5px;
+	font-size:							90% }
+
+.subtitle {
+	color:								#AAA;
+	font-family:						'Segoe UI', Verdana, Helvetica, Arial;
+	font-size:							1.2em;
+	font-variant:						small-caps;
+	text-align:							right;
+	text-transform:						lowercase }
+
+.small {
+    font-size:                          70% }

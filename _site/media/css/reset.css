@@ -1,0 +1,83 @@
+/**
+ * Base CSS for getting rid of all the browser discrepancies.
+ * 
+ * Some parts taken from Elastic's reset.css
+ * (c) 2008, Yahoo! Inc. All rights reserved.
+ * Licenced under BSD | http://developer.yahoo.net/yui/license.txt
+ */
+/* margins and padding */
+/* line 10, ../sass/reset.scss */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* fonts of some semantic elements */
+/* line 16, ../sass/reset.scss */
+address, caption, code, em, strong, var {
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* borders */
+/* line 22, ../sass/reset.scss */
+fieldset, img {
+  border: none;
+}
+
+/* headers */
+/* line 27, ../sass/reset.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%;
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* table */
+/* line 34, ../sass/reset.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* text alignment */
+/* line 40, ../sass/reset.scss */
+caption, th {
+  text-align: left;
+}
+
+/* quote */
+/* line 45, ../sass/reset.scss */
+q:before, q:after {
+  content: '';
+}
+
+/* acronyms and abbreviations */
+/* line 50, ../sass/reset.scss */
+abbr, acronym {
+  border: 0;
+  font-variant: normal;
+}
+
+/* to preserve line-height and selector appearance */
+/* line 56, ../sass/reset.scss */
+sup {
+  vertical-align: text-top;
+}
+
+/* line 59, ../sass/reset.scss */
+sub {
+  vertical-align: text-bottom;
+}
+
+/*to enable resizing for IE*/
+/* line 64, ../sass/reset.scss */
+input, textarea, select {
+  *font-size: 100%;
+}
+
+/*because legend doesn't inherit in IE */
+/* line 69, ../sass/reset.scss */
+legend {
+  color: #000;
+}

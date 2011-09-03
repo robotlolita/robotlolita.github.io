@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html> 
+	<head>
+		<meta charset="utf-8">
+		<title>Microframeworks and the state of the web — Quildreen Motta</title>
+		<meta name="description" content="Quildreen Motta writing about
+		                                  programming, open source, caffeine
+										  and such stuff." > 
+		<meta name="keywords" content="programming, open source, javascript,
+	  	                               python, clean code junkie">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link href="http://feeds.feedburner.com/quildreen/en" rel="alternate"
+		title="Quildreen Motta // EN" type="application/atom+xml">
+
+		<link href="/media/css/screen.css" media="screen" rel="stylesheet">
+	</head>
+	<body class="engb main-page">
+
+		<div id="header">
+    <div id="logo">
+        <a href="/"><h1>Sorella's Basement</h1></a>
+        <em>Madness!? This is [Computer] SCIENCE!</em>
+    </div>
+
+    <div id="nav">
+        <ul>
+            <li>
+                <a href="/">
+                    <em>Start here</em>
+                    <strong>Home</strong>
+                </a>
+            </li>
+            <li>
+                <a href="/blog">
+                    <em>/prog/ stuff</em>
+                    <strong>Blog</strong>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <em>Who's this guy?</em>
+                    <strong>About</strong>
+                </a>
+            </li>
+            <li>
+                <a href="http://feeds.feedburner.com/quildreen/en">
+                    <em>Keep updated!</em>
+                    <strong>Feed</strong>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <br class="clearfix">
+</div>
+
+
+		<div id="wrapper">
+            <div id="static-content">
+    <div id="post-header">
+        <h1 class="post-title">Microframeworks and the state of the web</h1>
+        <h2 class="post-subtitle">—An in-depth look at both sides of the same coin.</h2>
+        <br class="clearfix">
+        <div class="item-meta">
+            Posted on <time class="timeago" datetime="Sun, 22 May 2011 00:00:00 GMT-0300">22 May 2011</time>
+        </div>
+    </div>
+    
+    <p>
+Micro-"<i>frameworks</i>"<sup><a class="footref" name="fnr.1" href="#fn.1">1</a></sup> have been quite a hot topic lately on the
+JavaScript community. And by <i>hot</i>, I mean that it has lead to some
+pretty "heated" discussion (either good ones and "bad" ones), and some
+<a href="http://allyoucanleet.com/2011/05/09/microlibs-the-fud-challenge/">pretty interesting</a> <a href="http://tomdale.net/2011/05/an-uphill-battle/">replies</a>.
+</p>
+<p>
+But what's all this fuzz about? Well, the <i>microlibs</i> introduce a shift
+from the monolithic libraries (think <a href="http://jquery.com/">jQuery</a>, <a href="http://www.prototypejs.org/">Prototype</a>, etc), to
+self-contained and "modular" ones.
+</p>
+<p>
+In this post I'll try to explain what's good and bad about either approaches,
+delve a little on modular design and sum up what I think that's wrong with most
+JS libs, and where we should go from here.
+</p>
+
+<p>
+<b>Note:</b>
+</p><blockquote>
+
+<p>I'm going to use <b>microlibs</b> thorough this article to refer to what
+people call micro-"frameworks"<sup><a class="footref" name="fnr.1.2" href="#fn.1">1</a></sup> as I think the name fits better
+what they actually are.
+</p>
+</blockquote>
+
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">What's wrong with JS frameworks </h2>
+<div class="outline-text-2" id="text-1">
+
+
+<p>
+So you have a new web app to develop, and you're looking for some
+building blocks because you don't want to write everything from the
+scratch?
+</p>
+<p>
+Toughest luck, my dear.
+</p>
+<p>
+Welcome to the "Reproducing desktop's UI toolkit mess in the JavaScript
+world" show, only worse. A thousand times worse!
+</p>
+
+
+</div>
+
+<div id="outline-container-1_1" class="outline-3">
+<h3 id="sec-1_1">1. Feature bloat </h3>
+<div class="outline-text-3" id="text-1_1">
+
+
+<p>
+If you take <a href="http://jquery.com/">jQuery</a>, which weights around 230kb (31kb minified AND
+gzipped), you will get all the following goodies out of the box:
+</p>
+<ul>
+<li>
+CSS Selector engine
+</li>
+<li>
+DOM abstraction API
+</li>
+<li>
+Deferreds
+</li>
+<li>
+Ajax/XMLHttpRequest abstractions
+</li>
+<li>
+JSONP
+</li>
+<li>
+CSS helpers
+</li>
+<li>
+Animation/Effects
+</li>
+<li>
+Event abstraction
+</li>
+<li>
+Some other small utilities to fill in some standard lib "gaps"
+</li>
+<li>
+Lots of cross-browser hacks
+</li>
+</ul>
+
+
+<p>
+That is, obviously, overwhelming. People usually don't use all of the
+features the library provide, and the overhead of this "dead code" feels
+even larger because you have tons of them.
+</p>
+<p>
+The problems are also solved at a reduced scope, as you'd otherwise have
+an unwielding codebase/filesize. For example, the effects included in
+jQuery only cover the most basic use-cases, whereas other features have
+a lot more of coverage — DOM abstraction.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-1_2" class="outline-3">
+<h3 id="sec-1_2">2. Large filesize </h3>
+<div class="outline-text-3" id="text-1_2">
+
+
+<p>
+Having more code equals having a larger filesize, which is a
+problem in web apps because you'll be sending a lot of dead code over
+the wire.
+</p>
+<p>
+This is bad from both the end-user's perspective: pages will take more
+time to load, and this hurts a good user experience. No one likes
+waiting 2 minutes to see a web site.
+</p>
+<p>
+And from an efficiency's perspective. You should be very worried about
+sending lots of code that will never be used, sir. Seriously.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-1_3" class="outline-3">
+<h3 id="sec-1_3">3. Higher learning curve </h3>
+<div class="outline-text-3" id="text-1_3">
+
+
+<p>
+As you have more features, you'll take longer to master them. This is
+not really that much of a problem on the end-user dev, because you would
+probably have to learn the same amount of things by stacking lots of
+small libraries together.
+</p>
+<p>
+However, the thing is that it'll take far more time to understand all
+the implications of the source code to extend it. Whereas with a simpler
+and focused library, it would be quite straight forward.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-1_4" class="outline-3">
+<h3 id="sec-1_4">4. Framework-centric code </h3>
+<div class="outline-text-3" id="text-1_4">
+
+
+<p>
+But all these minor annoyances aside, there's one big issue with the way
+most JavaScript frameworks are designed: they encourage you to write
+Framework-centric code.
+</p>
+<p>
+Want to write a date handling library? You should tie the core workings
+to the jQuery's DOM manipulation functions. What about a library that
+abstracts browser storage? TIE IT TO THE FRAMEWORK'S DOM HANDLING LIKE A
+BOSS!
+</p>
+<p>
+Mind you, the browser is not just about the DOM, or a framework. Writing
+framework-centric code when your library does NOT extend on the problem
+the framework is trying to solve is a silly thing.
+</p>
+<p>
+The community can't benefit from your contribution as a whole because
+they can't include the DOM framework you're using in their
+projects. Either because doubling the overhead with code that solves the
+same problem should warrant you a death sentence, and because mixing DOM
+libraries may break everything in some cases (Prototype + jQuery, for
+example).
+</p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">Microlibs to the rescue! </h2>
+<div class="outline-text-2" id="text-2">
+
+
+<p>
+As a response to that, wild microlibs appeared. The main design goal of
+these libraries is to focus on doing just a single thing — and doing
+that well, while also "doing the simplest thing that could possibly
+work".
+</p>
+<p>
+As such, there's little to no overlap on the features offered from one
+microlib to another (given they don't try to solve the same problem, of
+course) and you get only what you really need. No more, no less.
+</p>
+<p>
+In fact, microlibs would fit the <a href="http://en.wikipedia.org/wiki/Unix_philosophy">Unix philosophy</a> quite well (the
+text streams aside, usually):
+</p>
+<blockquote>
+
+<p>Write programs that do one thing and do it well. Write programs to
+work together. Write programs to handle text streams, because that is
+a universal interface.
+</p>
+</blockquote>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3">&hellip;but microlibs are broken too </h2>
+<div class="outline-text-2" id="text-3">
+
+
+<p>
+Reality is a bit harsh, though. There are a few problems with the
+<b>current state</b> of microlibs, both because they're pretty new and
+because somehow this whole size-limit thing has gotten quite messed up.
+</p>
+<p>
+Some of these problems are quite a show stopper. 
+</p>
+
+
+</div>
+
+<div id="outline-container-3_1" class="outline-3">
+<h3 id="sec-3_1">1. Lack of documentation </h3>
+<div class="outline-text-3" id="text-3_1">
+
+
+<p>
+Documentation is good and shouldn't be overlooked. If you want people to
+use your code, you should tell them how they should use it. No, dumping
+a weird API reference on a <code>README</code> file won't cut it. Random words
+scrawled over the source won't either.
+</p>
+<p>
+I'm talking about good documentation on the library btw, not just some
+API reference. And most microlibs I know (including my <a href="http://github.com/killdream/ekho">Ekho</a> lib)
+have no examples, no use cases, no how to get started, no anything!
+</p>
+<p>
+But there are worse cases (imo). All <a href="http://twitter.com/ded">@ded</a>'s libraries have almost
+no comments on the source code, and rely rather on dumping a little of
+introductory text on an obscure <code>README.md</code> file.
+</p>
+<p>
+Mind you, I want to know what are the purposes and implications of using
+some function if I'm going to extend the library. I don't want to shoot
+myself on the foot by accidentally calling a function that happens to
+have side-effects which are not apparent from reading the function
+alone.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3_2" class="outline-3">
+<h3 id="sec-3_2">2. Lack of tests </h3>
+<div class="outline-text-3" id="text-3_2">
+
+
+<p>
+Some libraries do have a small amount of test cases, but as
+<a href="http://twitter.com/jDalton">@jDalton</a> showed on his <a href="http://allyoucanleet.com/2011/05/09/microlibs-the-fud-challenge/">screen cast</a>, some don't really
+have that good of a coverage.
+</p>
+<p>
+Some libraries (<a href="http://github.com/killdream/ekho">Ekho</a>) have absolutely NO unit tests, which is something you
+should find outrageous<sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup> (and, maybe, help fixing).
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3_3" class="outline-3">
+<h3 id="sec-3_3">3. Small community </h3>
+<div class="outline-text-3" id="text-3_3">
+
+
+<p>
+This is more related to how recent all these libraries are. They don't
+have a large user base like the monolithic frameworks. So it may be
+quite more difficult to find an answer to problems you're facing.
+</p>
+<p>
+It's also likely that the library will have problems that people using
+more mature and larger frameworks have already reported. And these would
+take a bit to fix as well.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3_4" class="outline-3">
+<h3 id="sec-3_4">4. Trying to solve problems they're not meant to </h3>
+<div class="outline-text-3" id="text-3_4">
+
+
+<p>
+According to the buzz on the internets, microlibs are supposed to do
+<i>only one thing and do it well™</i>, but in practice, that's not
+true. Almost all of these libraries will provide fallbacks for
+features that are not related to the design goals of the library,
+and worse, for features that are described in the <a href="http://es5.github.com">ECMAScript 5</a>
+specs.
+</p>
+<p>
+Yes, I'm looking at all of the libraries that implement
+<a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf">Array#indexOf</a>, <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/filter">Array#filter</a>, <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind">Function#bind</a> and such
+fallbacks, when the library tries to solve an entire different problem.
+</p>
+<p>
+This creates two problems. The first is that now instead of having dead
+code, you have <b>duplicated code</b>. It's even worse if you're only
+targeting platforms which are ES5-compliant, because now you have
+<b>duplicated dead code</b>.
+</p>
+<p>
+The second problem is that some of these libraries implement things that
+don't conform with the specs. And I'm not too keen on having 20
+different implementations of <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf">Array#indexOf</a> which don't work for
+sparse arrays, thank you.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3_5" class="outline-3">
+<h3 id="sec-3_5">5. API inconsistencies </h3>
+<div class="outline-text-3" id="text-3_5">
+
+
+<p>
+You can't expect to get API consistencies when using libraries from 10
+different authors if they're not designed to work together, which you'd
+get for free on JavaScript frameworks (or would you?<sup><a class="footref" name="fnr.3" href="#fn.3">3</a></sup>). 
+</p>
+<p>
+This can be really bad when you need to have two libraries to work
+together, say a CSS selector engine and a DOM manipulation library. Of
+course you can abstract all of them and create a DSL on top of them,
+just as you could read a minified source rather than a properly
+commented one&hellip;
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3_6" class="outline-3">
+<h3 id="sec-3_6">6. Dependency hell </h3>
+<div class="outline-text-3" id="text-3_6">
+
+
+<p>
+Browsers still don't offer native support for modules, although it's
+<a href="http://wiki.ecmascript.org/doku.php?id=harmony:modules">being discussed for ES.Next</a>, nor can you use <code>jspm install microlib</code> and
+have all the dependencies sorted out nicely for you.
+</p>
+<p>
+The thing is that using lots of small libraries will make your building
+and testing process quite more complex. Where you had to include a
+simple script tag to load everything you need, you'll need to include
+loads of them (in the right order too), or have something that
+automagically concatenates those files in the right order.
+</p>
+<p>
+Either way, it's quite some hassle.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3_7" class="outline-3">
+<h3 id="sec-3_7">7. Focus on arbitrary filesize </h3>
+<div class="outline-text-3" id="text-3_7">
+
+
+<p>
+Having a soft-limit for filesize isn't necessarily a bad thing. It helps
+you to know when you're over-engineering things. However, 
+not all the problems are the same that you can happily have a
+<a href="http://tomdale.net/2011/05/an-uphill-battle/">5kb limit for everynyan</a>.
+</p>
+<p>
+With the microlibs, things have somehow gotten screwed up and the focus
+that should be into "<b>reducing the scope of the library for modularity</b>"
+(think minimalism), turned into a battle for who could fit an entire DOM
+library in a tweet.
+</p>
+<p>
+I find this whole premature and reckless optimisation for filesize
+pretty stupid, of course. <a href="http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-7.html">As Sussman says</a>:
+</p>
+<blockquote>
+
+<p>Programs must be written for people to read, and only incidentally for
+machines to execute.
+</p>
+</blockquote>
+
+
+<p>
+Programs should also be written for correctness and to effectively solve
+the problems they propose to solve, but I guess everyone knows that
+already&hellip;
+</p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4">What can we do? </h2>
+<div class="outline-text-2" id="text-4">
+
+
+<p>
+So, large and bloated frameworks are a bad idea for web apps, but the
+current state of microlibs is also pretty bad. That's no fun, and
+definitely not good for the community, right?
+</p>
+<p>
+The obvious answer to these problems is to focus on writing modular
+libraries. And when I say <i>modular</i>, I'm referring to libraries that fit
+the Unix philosophy.
+</p>
+<p>
+They should be designed to solve just one problem, and solve it well, so
+people can decide exactly which problems they want to solve instead of
+getting a large black box that tries to solve everything.
+</p>
+<p>
+They should also be designed to work nicely with other libraries,
+otherwise what's the point in having modular stuff anyways? You'll most
+likely never have to solve just a single problem when writing a web
+app.
+</p>
+
+
+</div>
+
+<div id="outline-container-4_1" class="outline-3">
+<h3 id="sec-4_1">A new design philosophy </h3>
+<div class="outline-text-3" id="text-4_1">
+
+
+<p>
+In fact, we can summarise it nicely in a list of few points to keep in
+mind when designing a library. Mostly stolen from Eric Raymond's The Art
+of Unix Programming book:
+</p>
+<dl>
+<dt>Modularity   </dt><dd>
+
+<p>
+Write simple parts connected by clean interfaces.
+</p>
+</dd>
+<dt>Composition  </dt><dd>
+
+<p>
+Design libraries to be connected to other libraries.
+</p>
+</dd>
+<dt>Simplicity   </dt><dd>
+
+<p>
+Design for simplicity; add complexity only where you must.
+</p>
+</dd>
+<dt>Correctness  </dt><dd>
+
+<p>
+If it doesn't <b>fully</b> solves the problem it's designed to solve, it's
+broken.
+</p>
+</dd>
+<dt>Lazyness     </dt><dd>
+
+<p>
+Don't try to solve what's already solved; stop writing broken ES5
+fallbacks.
+</p>
+</dd>
+<dt>Parsimony    </dt><dd>
+
+<p>
+Write big libraries only when it's clear by demonstration that nothing
+else will do.
+</p>
+</dd>
+<dt>Optimisation </dt><dd>
+
+<p>
+Prototype before polishing. Get it working before you optimise it (be
+it for size, speed or anything else).
+</p>
+</dd>
+<dt>Extensibility</dt><dd>
+
+<p>
+Design for the future, because it will be here sooner than you think
+(modules are a good thing, and they'll be added to the language!)
+</p>
+</dd>
+</dl>
+
+</div>
+
+</div>
+
+<div id="outline-container-4_2" class="outline-3">
+<h3 id="sec-4_2">Problems with this philosophy </h3>
+<div class="outline-text-3" id="text-4_2">
+
+
+<p>
+Obviously, these points are not anything near perfect. And it gets worse
+if you take the current state of browser platforms into account. The web
+is quite heterogeneous. Even on browsers who do conform with the
+standards, you still have some quite funny discrepancies on
+the inner workings — and that affects your code.
+</p>
+<p>
+To make things yet worse, you don't have much things to solve the
+dependency hell, aside from writing a custom build tool. And even so,
+you'll likely need to download and build a set of different libraries to
+get everything working.
+</p>
+<p>
+This is not exactly my definition of fun.
+</p>
+<p>
+For this to really work, we'd need a good package manager; like what <a href="http://github.com/isaacs/npm">npm</a>
+is to <a href="http://nodejs.org">Node.js</a>. And we would also need either some support for loading
+these external modules in a sane way (you do <a href="http://github.com/killdream/jello">have</a> <a href="http://requirejs.org">some</a> <a href="http://labjs.com">libraries</a> <a href="http://news.ycombinator.com/item?id=2300423">for that</a>), rather than having to do with build scripts.
+</p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5">Wrapping it up </h2>
+<div class="outline-text-2" id="text-5">
+
+
+<p>
+There's no such thing as <b>one true way</b>. I don't think modular
+libraries/frameworks solve all the problems, but they do address quite
+some of the problems we have with the current models of libraries.
+</p>
+<p>
+And it would be nice having a healthier environment for developing new
+awesome apps on the Browser, without having to write everything from
+scrath again because the thing you need is only included in another
+library, and it uses a framework-centric approach.
+</p>
+<p>
+All in all, it's something I think would benefit the JavaScript
+community as a whole :3
+</p>
+
+
+
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+<p class="footnote"><sup><a class="footnum" name="fn.1" href="#fnr.1">1</a></sup> I hate using the term "framework" to refer to libraries with all
+my guts. Seriously, people, is `library` **that** hard to spell?
+</p>
+<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> I'll work on tests and documentation for <a href="http://github.com/killdream/ekho">Ekho</a> and friends when I
+have time to do so. Probably after I finish some of the core
+concepts/early prototypes for <a href="http://killdream.github.com/orpheos">OrpheOS</a>. Until then, considering
+the library a beta release may be a good thing.
+</p>
+<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> I don't think PrototypeJS has a consistent API, for
+example. Though Ruby people might say otherwise, it just strikes
+me as odd if you use <code>bindAsEventListener</code> and <code>gsub</code> randomly on
+your API (I would never take a Ruby programmer's word on good API
+design anyways ;P). jQuery's API on the other hand (although I've
+only used a small subset of it for a short time) is just a mess
+of counter-intuitive and poorly-named methods. People should stop
+getting inspired by PHP when designing an API&hellip;
+</p>
+</div>
+</div>
+
+
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+		var disqus_identifier = 'Microframeworks and the state of the web_'
+		                      + ''
+		  , disqus_url        = '';
+
+		(function() {
+			var dsq = document.createElement('script')
+			dsq.type  = 'text/javascript'
+			dsq.async = true
+			dsq.src	  = 'http://quildreen.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0]
+			 || document.getElementsByTagName('body')[0]).appendChild(dsq)
+		})()
+	</script>
+
+	<noscript>Please enable JavaScript to view the <a
+	href="http://disqus.com/?ref_noscript">comments powered by
+	Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">blog comments powered by
+	<span class="logo-disqus">Disqus</span></a>  
+</div>
+
+		</div>
+
+		<div id="footer">
+	<div id="social">
+		<div class="twitter-container">
+			<div class="quote">
+				<b><i></i></b><b><i></i></b>
+			</div>
+			<div id="tweet"></div>
+			<div id="tweet-info"></div>
+		</div>
+		
+		<ul id="social-list">
+			<li class="twitter">
+				<a href="http://twitter.com/notsorella"><i><b></b>Keep up with the things I do</i></a>
+			</li>
+			<li class="delicious">
+				<a href="http://delicious.com/killdream"><i><b></b>Stuff I like on the interwebz</i></a>
+			</li>
+			<li class="devart">
+				<a href="http://killdream.deviantart.com/"><i><b></b>Stalk a bit of my attempts at drawing</i></a>
+			</li>
+			<li class="bitbucket">
+				<a href="http://bitbucket.org/killdream"><i><b></b>Clone my experiments and stuff on BitBucket</i></a>
+			</li>
+			<li class="facebook">
+				<a href="http://facebook.com/quildreen"><i><b></b>My profile on Facebook</i></a>
+			</li>
+			<li class="lastfm">
+				<a href="http://www.lastfm.com.br/user/killdream"><i><b></b>The musics I listen to everyday, everytime</i></a>
+			</li>
+		</ul>
+	</div>
+	<div id="metainfo">
+		<div id="contact">
+			<h2>Wanna talk?</h2>
+		  
+			<ul class="contact-info"> 
+				<li class="email">
+					E-Mail: <a href="mailto:quildreen@gmail.com" title="Send-me an e-mail">quildreen@gmail.com</a>
+				</li> 
+				<li class="skype">
+					Skype: <a href="skype:quildreen?call" title="Call me on Skype!">quildreen</a>
+				</li> 
+			</ul> 
+		</div>
+		<strong>&copy; 2010 Quildreen Motta</strong>
+		minimalist designer | web developer
+	</div>
+	<br class="clearfix">
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"></script>
+<script src="/media/lib/main.js"></script>
+
+<script src="http://api.twitter.com/1/statuses/user_timeline/notSorella.json?callback=Twitter.renderTweets" async></script>
+<script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-15025032-4']);_gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+	</body>
+</html>

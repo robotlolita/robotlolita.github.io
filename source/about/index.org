@@ -1,0 +1,53 @@
+#+STARTUP: showall hidestars indent
+#+BEGIN_HTML
+---
+layout: static
+---
+
+<ul id="about-boxes">
+    <li class="first">
+        <h2>Who <span>is this guy?</span></h2>
+        <p>My name is <strong>Quildreen Motta</strong>. I'm
+            a <strong>minimalist designer</strong> and
+            <strong>front-end developer</strong> based in Belo
+            Horizonte, Brazil. I
+            love <em>technology</em>, <em>inovation</em>
+            and <em>web-standards</em>.</p>
+        
+        <p>I also can't live without the open source community, my daily
+            caffeinne, neo-victorian fashion (and lolita, mori kei, decora...), art
+            and good music.</p>
+    </li>
+    <li>
+        <h2>What <span>does he do?</span></h2>
+        <p>I project web sites and web apps. I really like
+            developing web apps better, since they're so fun to work
+            with!</p> 
+        
+        <p>Currently I'm writing an <a href="/orpheos">OS in JavaScript</a>,
+            to run on top of Node.js and Webkit-based
+            browsers :3</p>
+    <li>
+        <h2>How <span>does he do that?</span></h2>
+        <p>I start with gathering the requirements for the problem in hands,
+            brainstorming possible abstract solutions and tools I might use. Then I
+            move on to work out those bullet points focusing on the design goals
+            and the user experience.</p>
+        
+        <p>For my development I use tools like
+            <a href="http://www.gnu.org/software/emacs/">Emacs</a>,
+            <a href="http://mercurial.selenic.com/">Mercurial</a>,
+            <a href="http://www.ubuntu.com/">Ubuntu</a>
+            with <a href="http://www.enlightenment.org/">Enlightenment (e17)</a>
+            and such.</p>
+    </li>
+    <br class="clearfix">
+</ul>
+
+#+END_HTML
+
+** Wanna know more?
+
+I love to talk about programming, music, fashion, books (specially Alice in
+Wonderland and anything by Jostein Gaarder) and video games. Why don't you
+[[mailto:quildreen@gmail.com][drop me a line]]? You can also reach me on [[skype:quildreen?call][Skype]].
