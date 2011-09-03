@@ -2,7 +2,7 @@ base-url:    /
 auto:        false
 lsi:         false
 source:      .
-destination: ../_site
+destination: _site
 permalink:   /blog/:year/:month/:title/index.html
 pygments:    false
 exclude:     - source
