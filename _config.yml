@@ -5,4 +5,4 @@ source:      .
 destination: ../_site
 permalink:   /blog/:year/:month/:title/index.html
 pygments:    false
-exclude:     - ./source
+exclude:     - source
