@@ -1,0 +1,414 @@
+#+STARTUP: showall hidestars indent
+#+OPTIONS: ^:{}
+#+BEGIN_HTML
+---
+layout: post
+title:  Understanding JavaScript OOP
+snip:   Prototypical inheritance on awesomeness!
+---
+#+END_HTML
+
+JavaScript is an object oriented language, with its roots in the [[http://selflanguage.org/][Self]]
+programming language, however (sadly) designed to look like Java. This
+makes the language's really powerful and sweet features stay covered by
+some pretty ugly and counter-intuitive /work-arounds/.
+
+One of such affected features is the implementation of prototypical
+inheritance. The concepts are simple yet flexible and powerful. It makes
+inheritance and behaviourism first-class citizens, just like functions
+are first-class in functional languages (JavaScript included).
+
+Fortunately, [[http://www.ecma-international.org/publications/standards/Ecma-262.htm][ECMAScript 5]] has gotten plenty of things to move the
+language in the right way, and it's on those sweetness that this article
+will expand on. Though I'll also cover the drawbacks of JavaScript's
+design, and do a little comparison with the classical model here and
+there, where those would highlight the advantages or disadvantages of
+the language's implementation of prototypical OO.
+
+It's important to note, though, that this article assumes you have
+knowledge over other basic JavaScript functionality, like functions
+(including the concepts of closures and first-class functions),
+primitive values and such.
+
+
+
+* 1. Objects
+
+Everything you can manipulate in JavaScript is an object. This includes
+~Strings~, ~Arrays~, ~Numbers~, ~Functions~, and, obviously, the
+so-called ~Object~. An object in the language is simply a collection of
+key/value pairs (and a few internal magic sometimes).
+
+There are no concepts of classes anywhere, though. That is, an object
+with properties ~name = Linda~ is not an instance of the ~Object~
+class. They are entirely separate *instances* that /fully/ define
+their own behaviour. That is, objects are instances of themselves in
+JavaScript, there are no layers of meta-data (i.e.: classes) to provide
+how an object of a certain type must look like.
+
+You might ask: "how?". More so if you come from a highly classical
+Object Orientation background (like Java or C#). Wouldn't having each
+object define their own behaviour, instead of a common /class/ mean that
+if I have 100 objects, I will have 100 different methods? Also, isn't it
+dangerous? How would one know if an object is really an Array, for
+example?
+
+Well, to answer all those questions, we'll first need to unlearn
+everything about the classical OO approach and start from the ground
+up. But, trust me, it's worth it. The prototypical OO model brings in
+some new ways of solving old problems, in an easier and more dynamic
+way. It also presents new and more powerful models for extensibility and
+code-reuse, which is what most people are interested about when they
+talk about Object Orientation.
+
+
+** 1.1. What are objects?
+
+As mentioned previously, objects are simple pairs of unique keys that
+correspond to a value — we'll call this pair a ~property~. So, suppose
+you'd want to describe a few aspects of an old friend — let's call it
+~Mikhail~, like age, name and gender:
+
+#+begin_src plantuml :file ../media/assets/oop-obj-mikhail.png :exports none
+skinparam defaultFontName DejaVu Sans Mono
+skinparam defaultFontSize 16
+
+object Mikhail {
+  <b>name:</b>   "Mikhail"
+  <b>age:</b>    19
+  <b>gender:</b> "Male"
+}
+#+end_src
+
+#+results:
+[[file:../media/assets/oop-obj-mikhail.png]]
+
+[[blog:oop-obj-mikhail.png]]
+
+Objects are created in JavaScript using the ~Object.create~ function. It
+takes a parent and an optional list of property descriptors and makes a
+brand new instance. Though, we'll not worry much about the parameters
+now.
+
+An empty object is an object with no parent, and no properties. The
+syntax to create such object in JavaScript is the following:
+
+#+begin_src js
+var mikhail = Object.create(null)
+#+end_src
+
+
+** 1.2. Creating properties
+
+So, now we have an object, but no properties — we've got to fix that if
+we want to describe ~Mikhail~.
+
+Properties in JavaScript are dynamic. That means that they can be
+created or removed at any time. Properties are also unique, in the sense
+that a property name inside an object correspond to exactly one value.
+
+Creating new properties is done through the =Object.defineProperty=
+function, which takes a reference to an object, the name of the property
+to create and a descriptor that defines the semantics of the property.
+
+#+begin_src js
+Object.defineProperty(mikhail, 'name', { value:        'Mikhail'
+                                       , writable:     true
+                                       , configurable: true
+                                       , enumerable:   true })
+
+Object.defineProperty(mikhail, 'age', { value:        19
+                                      , writable:     true
+                                      , configurable: true
+                                      , enumerable:   true })
+
+Object.defineProperty(mikhail, 'gender', { value:        'Male'
+                                         , writable:     true
+                                         , configurable: true
+                                         , enumerable:   true })
+#+end_src
+
+=Object.defineProperty= will create a new property if a property with
+the given name does not exist in the object, otherwise it'll update the
+semantics and value of the existing property.
+
+
+** 1.3. Descriptors
+
+Descriptors are the little object that carry the semantics of a property
+(we used them in the previous =Object.defineProperty= calls).
+
+A descriptor may be a data descriptor — it holds a concrete value — or
+an accessor descriptor — it proxies the access to the concrete value
+through getters and setter functions.
+
+All the descriptors share the following attributes. Whenever these are
+not given, they default to =false=.
+
+- writable ::
+  Whether the concrete value of the property may be changed.
+
+- configurable ::
+  Whether the type of descriptor may be changed, or if the property can
+  be removed.
+
+- enumerable ::
+  Whether the property is listed in a loop through the properties of the
+  object.
+
+Data descriptors can have the following attribute. Defaults to
+=undefined= when not given.
+
+- value ::
+  The value of a property.
+
+Accessor descriptors can have the following attributes. Defaults to
+=undefined= when not given.
+
+- get () ::
+  A function called with no arguments when the property value is
+  requested.
+
+- set (new_value) ::
+  A function called with the new value for the property when the user
+  tries to modify the value of the property.
+
+
+** 1.4. Ditching the verbosity
+
+Luckily, property descriptors are not the only way of working with
+properties in JavaScript, they can also be handled in a sane and concise
+way.
+
+JavaScript also understands references to a property using what we call
+/bracket notation/. The general rule is:
+
+#+begin_src bnf
+<bracket-access> ::= <identifier> "[" <expression> "]"
+#+end_src
+
+Where =identifier= is the variable that holds the object containing the
+properties we want to access, and =expression= is any valid JavaScript
+expression that defines the name of the property. There are no
+constraints in which name a property can have[fn:1], everything is fair
+game.
+
+Thus, we could just as well rewrite our previous example as:
+
+#+begin_src js
+mikhail['name']   = 'Mikhail'
+mikhail['age']    = 19
+mikhail['gender'] = 'Male'
+#+end_src
+
+- Note ::
+
+  All property names are ultimately converted to a String, such that
+  =object[1]=, =object[⁣[1]⁣]=, =object['1']= and =object[variable]= (when
+  the variable resolves to =1=) are all equivalent.
+
+There is another way of referring to a property called /dot
+notation/, which usually looks better (and presents less syntactical
+noises) than the bracket alternative, however it only works when the
+property name is a [[http://es5.github.com/#x7.6][valid JavaScript identifier]], and don't allow
+for arbitrary expressions (so, variables here are a no-go).
+
+The rule for /dot notation/ is:
+
+#+begin_src bnf
+<dot-access> ::= <identifier> "." <identifier>
+#+end_src
+
+This would give us an even sweeter way of defining properties:
+
+#+begin_src js
+mikhail.name   = 'Mikhail'
+mikhail.age    = 19
+mikhail.gender = 'Male'
+#+end_src
+
+Both of these syntaxes are equivalent to creating a data property, with
+all semantic flags set to =true=.
+
+
+[fn:1]: Some implementations have magical names, like =__proto__=, which
+        may yield undesired and unwanted results when set. For example,
+        =__proto__= property is used to define the parent of an object
+        in some implementations. As such, you wouldn't be able to set a
+        string or number to that.
+
+
+** 1.5. Accessing properties
+
+Retrieving the values stored in a given property is as easy as creating
+new ones, and the syntax is mostly similar as well — the only difference
+being there isn't an assignment.
+
+So, if we want to check on Mikhail's age:
+
+#+begin_src js
+mikhail['age']
+// => 19
+#+end_src
+
+Trying to access a property that does not exist in the object simply
+returns =undefined=:
+
+#+begin_src js
+mikhail['address']
+// => undefined
+#+end_src
+
+
+** Removing properties
+
+To remove entire properties from an object, JavaScript provides the
+=delete= operator. So, if you wanted to remove the ~gender~ property
+from the ~mikhail~ object:
+
+#+begin_src js
+delete mikhail['gender']
+// => true
+
+mikhail['gender']
+// => undefined
+#+end_src
+
+The =delete= operator returns =true= if the property was removed,
+=false= otherwise. I won't delve into details of the workings of this
+operator, since [[http://twitter.com/kangax][@kangax]] has already written a
+[[http://perfectionkills.com/understanding-delete/][most awesome article on how delete works]].
+
+
+** 1.6. Getters and setters
+
+Getters and setters are usually used in classical object oriented
+languages to provide encapsulation. They are not much needed (or wanted)
+in JavaScript, though, given how dynamic the language is — +and my bias
+against the feature+.
+
+At any rate, they allow you to proxy the requests for reading a property
+value or setting it, and decide how to handle each situation. So,
+suppose we had separate slots for our object's first and last name, but
+wanted a simple interface for reading and setting it.
+
+First, let's set the first and last names of our friend, as concrete
+data properties:
+
+#+begin_src js
+Object.defineProperty(mikhail, 'first_name', { value:    'Mikhail'
+                                             , writable: true })
+
+Object.defineProperty(mikhail, 'last_name', { value:    'Weiß'
+                                            , writable: true })
+#+end_src
+
+Then we can define a common way of accessing and setting both of those
+values at the same time — let's call it ~name~:
+
+#+begin_src js
+// () -> String
+// Returns the full name of object.
+function get_full_name() {
+    return this.first_name + ' ' + this.last_name
+}
+
+// (new_name:String) -> undefined
+// Sets the name components of the object, from a full name.
+function set_full_name(new_name) {
+    names = new_name.trim().split(/\s+/)
+    this.first_name = names[0] || ''
+    this.last_name  = names[1] || ''
+}
+
+Object.defineProperty(mikahil, 'name', { get: get_full_name
+                                       , set: set_full_name
+                                       , writable:     true
+                                       , configurable: true
+                                       , enumerable:   true })
+#+end_src
+
+Now, every-time we try to access the value of Mikhail's =name= property,
+it'll execute the =get_full_name= getter:
+
+#+begin_src js
+mikhail.name
+// => 'Mikhail Weiß'
+
+mikhail.first_name
+// => 'Mikhail'
+
+mikhail.last_name
+// => 'Weiß'
+
+mikhail.last_name = 'White'
+mikhail.name
+// => 'Mikhail White'
+#+end_src
+
+We can also set the name of the object, by assigning a value to the
+property:
+
+#+begin_src js
+mikhail.name = 'Michael White'
+
+mikhail.name
+// => 'Michael White'
+
+mikhail.first_name
+// => 'Michael'
+
+mikhail.last_name
+// => 'White'
+#+end_src
+
+
+** 1.7. Listing properties
+
+Since properties are dynamic, JavaScript provides a way of checking out
+which properties an object define. There are two ways of listing the
+properties of an object, depending on what kind of properties one is
+interested into.
+
+The first one is done through a call to =Object.getOwnPropertyNames=,
+which returns an =Array= containing the names of *all* properties set in
+the object.
+
+If we check now what we know about Mikhail:
+
+#+begin_src js
+Object.getOwnPropertyNames(mikhail)
+// => [ 'name', 'age', 'gender', 'first_name', 'last_name' ]
+#+end_src
+
+The second way is using =Object.keys=, which returns all properties that
+have been marked as *enumerable* when they were defined:
+
+#+begin_src js
+Object.keys(mikhail)
+// => [ 'name', 'age', 'gender' ]
+#+end_src
+
+
+* 2. Methods
+** 2.1. Dynamic =this=
+** 2.2. Bound methods
+
+* 3. Inheritance
+** 3.1. How =[⁣[Prototype]⁣]= works
+** 3.2. Delegated property access
+** 3.3. Type checking
+** 3.4. Super methods
+** 3.5. Mixins
+
+
+* 4. Constructors
+** 4.1. The =new= magic
+
+* 5. Considerations and compatibility
+** 5.1. Creating objects
+** 5.2. Defining properties
+** 5.3. Listing properties
+
+* 6. Wrapping it up
+* 7. Things worth reading up next
