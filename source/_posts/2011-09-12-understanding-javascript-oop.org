@@ -71,7 +71,6 @@ you'd want to describe a few aspects of an old friend — let's call it
 
 #+begin_src plantuml :file ../media/assets/oop-obj-mikhail.png :exports none
 skinparam defaultFontName DejaVu Sans Mono
-skinparam defaultFontSize 16
 
 object Mikhail {
   <b>name:</b>   "Mikhail"
@@ -517,7 +516,7 @@ mikhail.greet('you')
 // => 'Michael White: Why, hello there, you.'
 
 mikhail.greet('Kristin')
-// => 'Michael White: Why, hello there, Kristin'
+// => 'Michael White: Why, hello there, Kristin.'
 #+end_src
 
 
@@ -681,8 +680,159 @@ one_add.call(two) // this === one
 
 
 * 3. Inheritance
-** 3.1. How =[⁣[Prototype]⁣]= works
-** 3.2. Delegated property access
+
+Up to this point we have seen how objects can define their own
+behaviours, and how we can reuse (by explicit application) actions in
+other objects, however, this still doesn't give us a nice way for
+code reuse and extensibility.
+
+That's where inheritance comes in. Inheritance allows for a greater
+separation of concerns, where objects define specialised behaviours by
+building upon the already defined behaviours of other objects.
+
+The prototypical model goes further than that, though, and allows for
+selective extensibility, behaviour sharing and other interesting
+patterns we'll explore in a bit. Sad thing is: the specific model of
+prototypical OO implemented by JavaScript is a bit limited, so
+circumventing these limitations to accommodate these patterns will bring
+in a bit of overhead sometimes.
+
+
+** 3.1. Prototypes
+
+Inheritance in JavaScript revolves around cloning the behaviours of an
+object and extending it with specialised behaviours. The object that has
+it's behaviours cloned is called *Prototype* (not to be confounded with
+the =prototype= property of functions).
+
+A prototype is just a plain object, that happens to share it's
+behaviours with another object — it acts as the object's parent. It's
+important to note here that the concepts of this /behaviour cloning/
+does not imply that you'll have two different copies of the same
+function, or data. In fact, JavaScript implements inheritance by
+delegation, such that the properties in a prototype are effectively
+shared with any object that inherits from it.
+
+As mentioned previously, the parent (or Prototype) of an object is
+defined by making a call to =Object.create=, and passing a reference of
+the object to use as parent in the first parameter.
+
+This would come well in our example up until now. For example, the
+greeting and name actions can be well defined in a separate object and
+shared with other objects that need them.
+
+This would give us the following model:
+
+#+begin_src plantuml :file ../media/assets/oop-proto-person.png :exports none
+skinparam defaultFontName DejaVu Sans Mono
+
+object Person {
+    get name() → String
+    set name() → undefined
+    greet() → String
+}
+
+object Mikhail {
+    <b>first_name:</b> 'Mikhail'
+    <b>last_name:</b>  'Weiß'
+    <b>age:</b>        19
+    <b>gender:</b>     'Male'
+}
+
+Person <|-- Mikhail : Prototype
+#+end_src
+
+#+results:
+[[file:../media/assets/oop-proto-person.png]]
+
+[[blog:oop-proto-person.png]]
+
+Which could be implemented in JavaScript with the following definitions:
+
+#+begin_src js
+var person = Object.create(null)
+
+// Here we are reusing the previous getter/setter functions
+Object.defineProperty(person, 'name', { get: get_full_name
+                                      , set: set_full_name
+                                      , writable:     true
+                                      , configurable: true
+                                      , enumerable:   true })
+
+// And adding the `greet' function
+person.greet = function (person) {
+    return this.name + ': Why, hello there, ' + person + '.'
+}
+
+// Then we can share those behaviours with Mikhail
+var mikhail = Object.create(person)
+mikhail.first_name = 'Mikhail'
+mikhail.last_name  = 'Weiß'
+mikhail.age        = 19
+mikhail.gender     = 'Male'
+
+// And we can test whether things are actually working
+mikhail.name
+// => 'Mikhail Weiß'
+
+mikhail.name = 'Michael White'
+
+mikhail.first_name
+// => 'Michael'
+
+mikhail.last_name
+// => 'White'
+
+mikhail.greet('you')
+// => 'Michael White: Why, hello there, you.'
+
+// And just to be sure, we can check which properties actually
+// belong to `mikhail'
+Object.keys(mikhail)
+// => [ 'first_name', 'last_name', 'age', 'gender' ]
+#+end_src
+
+
+** 3.2. How =[⁣[Prototype]⁣]= works
+
+As you could see from the previous example, none of the properties
+defined in =Person= have flown to the =Mikhail= object, and yet we could
+access them just fine. This happens because JavaScript implements
+delegated property access, that is, a property is searched through all
+parents of an object.
+
+This parent chain is defined by a hidden slot in every object, called
+=[⁣[Prototype]⁣]=. You can't change this slot directly[fn:2], so the only
+way of setting it is when you're creating a fresh object.
+
+When a property is requested from the object, the engine first tries to
+retrieve the property from the target object. If the property isn't
+found, the search continue through the immediate parent of that object,
+and the parent of that parent, and so on.
+
+This means that we can change the behaviours of a prototype at run time,
+and have it reflected in all objects that inherit from it. For example,
+let's suppose we wanted a different default greeting:
+
+#+begin_src js
+// (person:String) → String
+// Greets the given person
+person.greet = function(person) {
+    return this.name + ': Harro, ' + person + '.'
+}
+
+mikhail.greet('you')
+// => 'Michael White: Harro, you.'
+#+end_src
+
+[fn:2] Some engines *do* expose the =[⁣[Prototype]⁣]= slot, usually
+       through a property like =__proto__=, however no such thing is
+       described in the specifications for the language, so it's
+       recommended that you avoid using it, unless you're well aware
+       that all platforms you code must run on will have such means of
+       setting the =[⁣[Prototype]⁣]= object directly.
+
+
 ** 3.3. Type checking
 ** 3.4. Super methods
 ** 3.5. Mixins
