@@ -1,3 +1,12 @@
-all:
+make-css:
 	cd source/media && compass compile
-	emacsclient --eval "(org-publish-project \"blog\" t)"
+
+regen:
+	emacsclient --eval "(let ((org-confirm-babel-evaluate nil)) (org-publish-project \"blog\" t))"
+	jekyll
+
+gen:
+	emacsclient --eval "(let ((org-confirm-babel-evaluate nil)) (org-publish-project \"blog\"))"
+	jekyll
+
+all: make-css gen
