@@ -8,6 +8,8 @@ snip:   Prototypical inheritance on awesomeness!
 ---
 #+END_HTML
 
+
+
 JavaScript is an object oriented language, with its roots in the [[http://selflanguage.org/][Self]]
 programming language, however (sadly) designed to look like Java. This
 makes the language's really powerful and sweet features stay covered by
@@ -28,8 +30,7 @@ the language's implementation of prototypical OO.
 It's important to note, though, that this article assumes you have
 knowledge over other basic JavaScript functionality, like functions
 (including the concepts of closures and first-class functions),
-primitive values and such.
-
+primitive values, operators and such.
 
 
 * 1. Objects
@@ -40,11 +41,12 @@ so-called ~Object~. An object in the language is simply a collection of
 key/value pairs (and a few internal magic sometimes).
 
 There are no concepts of classes anywhere, though. That is, an object
-with properties ~name = Linda~ is not an instance of the ~Object~
-class. They are entirely separate *instances* that /fully/ define
-their own behaviour. That is, objects are instances of themselves in
-JavaScript, there are no layers of meta-data (i.e.: classes) to provide
-how an object of a certain type must look like.
+with properties ~name: Linda, age: 21~ is not an instance of the
+~Object~ class. Both ~Object~ and ~Linda~ are entirely separate
+*instances* that /fully/ define their own behaviour. In JavaScript,
+objects are instances of themselves, there are no layers of meta-data
+(i.e.: classes) to provide how an object of a certain type must look
+like.
 
 You might ask: "how?". More so if you come from a highly classical
 Object Orientation background (like Java or C#). Wouldn't having each
@@ -69,18 +71,22 @@ correspond to a value — we'll call this pair a ~property~. So, suppose
 you'd want to describe a few aspects of an old friend — let's call it
 ~Mikhail~, like age, name and gender:
 
-#+begin_src plantuml :file ../media/assets/oop-obj-mikhail.png :exports none
-skinparam defaultFontName DejaVu Sans Mono
-
-object Mikhail {
-  <b>name:</b>   "Mikhail"
-  <b>age:</b>    19
-  <b>gender:</b> "Male"
-}
+#+begin_src ditaa :file ../media/assets/oop-obj-mikhail.png :cmdline -E :exports none
+   ( mikhail )
+  /---------------+------------\
+  | Property cBLU | Value cBLU |
+  +---------------+------------+
+  | name          |'Mikhail'   |
+  +---------------+------------+
+  | age           | 19         |
+  +---------------+------------+
+  | gender        | 'Male'     |
+  \---------------+------------/
 #+end_src
 
 #+results:
 [[file:../media/assets/oop-obj-mikhail.png]]
+
 
 [[blog:oop-obj-mikhail.png]]
 
@@ -723,23 +729,32 @@ shared with other objects that need them.
 
 This would give us the following model:
 
-#+begin_src plantuml :file ../media/assets/oop-proto-person.png :exports none
-skinparam defaultFontName DejaVu Sans Mono
-
-object Person {
-    get name() → String
-    set name() → undefined
-    greet() → String
-}
-
-object Mikhail {
-    <b>first_name:</b> 'Mikhail'
-    <b>last_name:</b>  'Weiß'
-    <b>age:</b>        19
-    <b>gender:</b>     'Male'
-}
-
-Person <|-- Mikhail : Prototype
+#+begin_src ditaa :file ../media/assets/oop-proto-person.png :cmdline -E :exports none
+ ( person )
+/-----------------+-----------------\
+| Property cBLU   | Value cBLU      |
++-----------------+-----------------+
+| [[Prototype]]   |                 +-=-> nil
++-----------------+-----------------+
+| name            | [Getter/Setter] |
++-----------------+-----------------+
+| greet           | [Function]      |
+\-----------------+-----------------/
+                                 ^
+ ( mikhail )                     |
+/---------------+------------\   :
+| Property cBLU | Value cBLU |   |
++---------------+------------+   |
+| [[Prototype]] |            +---+
++---------------+------------+
+| first_name    |'Mikhail'   |
++---------------+------------+
+| last_name     | 'Weiß'     |
++---------------+------------+
+| age           | 19         |
++---------------+------------+
+| gender        | 'Male'     |
+\---------------+------------/
 #+end_src
 
 #+results:
@@ -833,9 +848,249 @@ mikhail.greet('you')
        setting the =[⁣[Prototype]⁣]= object directly.
 
 
-** 3.3. Type checking
-** 3.4. Super methods
-** 3.5. Mixins
+** 3.3. Overriding properties
+So, prototypes (that is, inheritance) are used for sharing data with
+other objects, and it does such in a pretty fast and memory-effective
+manner too, since you'll always have only one instance of a given piece
+of data laying around.
+
+Now what if we want to add specialised behaviours, that build upon the
+data that was shared with the object? Well, we have seen before that
+objects define their own behaviours by defining properties, so
+specialised behaviours follow the same principle — you just define the
+new behaviour.
+
+To better demonstrate it, suppose ~Person~ implements only a general
+greeting, and everyone inheriting from ~Person~ (by which I mean,
+sharing its behaviours). Also, let's add a new person to our case
+scenario, so to outline better how objects are extended:
+
+#+begin_src ditaa :file ../media/assets/oop-extend.png :cmdline -Es 0.9 :exports none
+                 ( person )
+                /-----------------+-----------------\
+                | Property cBLU   | Value cBLU      |
+                +-----------------+-----------------+
+                | [[Prototype]]   |                 +-=-> nil
+                +-----------------+-----------------+
+                | name            |[Getter/Setter]  |
+                +-----------------+-----------------+
+                | greet           | [Function]      | <---------------+
+                \-----------------+-----------------/                 :
+                                 ^                                    |
+ ( mikhail )                     |     ( kristin )                    |
+/---------------+------------\   :    /---------------+------------\  |
+| Property cBLU | Value cBLU |   |    | Property cBLU | Value cBLU |  |
++---------------+------------+   |    +---------------+------------+  |
+| [[Prototype]] |            +---+    | [[Prototype]] |            +--+
++---------------+------------+        +---------------+------------+
+| first_name    |'Mikhail'   |        | first_name    |'Kristin'   |
++---------------+------------+        +---------------+------------+
+| last_name     | 'Weiß'     |        | last_name     | 'Weiß'     |
++---------------+------------+        +---------------+------------+
+| age           | 19         |        | age           | 21         |
++---------------+------------+        +---------------+------------+
+| gender        | 'Male'     |        | gender        | 'Female'   |
++---------------+------------+        +---------------+------------+
+| greet         | [Function] |        | greet         | [Function] |
+\---------------+------------/        \---------------+------------/
+#+end_src
+
+#+results:
+[[file:../media/assets/oop-extend.png]]
+
+[[blog:oop-extend.png]]
+
+Note that both ~mikhail~ and ~kristin~ define their own version of
+~greet~. In this case, whenever we call the ~greet~ method on them
+they'll use their own version of that behaviour, instead of the one that
+was shared from ~person~.
+
+#+begin_src js
+// Here we set up the greeting for a generic person
+
+// (person:String) → String
+// Greets the given person, formally
+person.greet = function(person) {
+    return this.name + ': Hello, ' + (person || 'you')
+}
+
+// And a greeting for our protagonist, Mikhail
+
+// (person:String) → String
+// Greets the given person, like a bro
+mikhail.greet = function(person) {
+    return this.name + ': \'sup, ' + (person || 'dude')
+}
+
+// And finally we define our new protagonist, Kristin
+var kristin = Object.create(person)
+kristin.first_name = 'Kristin'
+kristin.last_name  = 'Weiß'
+kristin.age        = 19
+kristin.gender     = 'Female'
+
+// Alongside with her specific greeting manners
+
+// (person:String) → String
+// Greets the given person, sweetly
+kristin.greet = function(person) {
+    return this.name + ': \'ello, ' + (person || 'sweetie')
+}
+
+// Finally, we test if everything works according to the expected
+
+mikhail.greet(kristin.name)
+// => 'Mikhail Weiß: \'sup, Kristin Weiß'
+
+mikhail.greet()
+// => 'Mikhail Weiß: \'sup, dude'
+
+kristin.greet(mikhail.name)
+// => 'Kristin Weiß: \'ello, Mikhail Weiß'
+
+// And just so we check how cool this [[Prototype]] thing is,
+// let's get Kristin back to the generic behaviour
+
+delete kristin.greet
+// => true
+
+kristin.greet(mikhail.name)
+// => 'Kristin Weiß: Hello, Mikhail Weiß'
+#+end_src
+
+
+** 3.4. Mixins
+Prototypes allow for behaviour sharing in JavaScript, and although they
+are undeniably powerful, they aren't quite as powerful as they could
+be. For one, prototypes only allow that one object inherit from another
+single object, while extending those behaviours as they see fit.
+
+However, this approach quickly kills interesting things like behaviour
+composition, where we could mix-and-match several objects into one, with
+all the advantages highlighted in the prototypical inheritance.
+
+Multiple inheritance would also allow the usage of /data-parents/ —
+objects that provide an example state that fulfils the requirements for
+a given behaviour. Default properties, if you will.
+
+Luckily, since we can define behaviours directly on an object in
+JavaScript, we can work-around these issues by using mixins — and adding
+a little overhead at object's creation time.
+
+So, what are mixins anyways? Well, they are parent-less objects. That
+is, they fully define their own behaviour, and are mostly designed to be
+incorporated in other objects (although you could use their methods
+directly).
+
+Continuing with our little protagonists' scenario, let's extend it to
+add some capabilities to them. Let's say that every person can also be a
+~pianist~ or a ~singer~. A given person can have no such abilities, be
+just a pianist, just a singer or both. This is the kind of case where
+JavaScript's model of prototypical inheritance falls short, so we're
+going to cheat a little bit.
+
+#+begin_src ditaa :file ../media/assets/oop-mixins.png :cmdline -Es 0.9 :exports none
+                               nil
+                                ^
+  ( pianist )                   :    ( singer )                 
+/---------------+------------\  |   /---------------+------------\
+| Property cBLU | Value cBLU |  |   | Property cBLU | Value cBLU |
++---------------+------------+  |   +---------------+------------+
+|[[Prototype]]  |            +--+   |[[Prototype]]  |            +--=-> nil
++---------------+------------+      +---------------+------------+
+| play          | [Function] |      | sing          | [Function] |
+\---------------+------------/      \---------------+------------/
+#+end_src
+
+#+results:
+[[file:../media/assets/oop-mixins.png]]
+
+[[blog:oop-mixins.png]]
+
+For mixins to work, we first need to have a way of combining different
+objects into a single one. JavaScript doesn't provide this out-of-the
+box, but we can easily make one by copying all *own* (the ones defined
+directly in the object, rather than inherited) property descriptors of
+an object over to another.
+
+#+begin_src js
+// Aliases for the rather verbose methods on ES5
+var descriptor  = Object.getOwnPropertyDescriptor
+  , properties  = Object.getOwnPropertyNames
+  , define_prop = Object.defineProperty
+
+// (target:Object, source:Object) → Object
+// Copies properties from `source' to `target'
+function extend(target, source) {
+    properties(source).forEach(function(key) {
+        define_prop(target, key, descriptor(source, key)) })
+
+    return target
+}
+#+end_src
+
+Basically, what ~extend~ does here is taking two objects — a source and
+a target, — iterating over all properties present on the ~source~
+object, and copying the property descriptors over to ~target~. Note that
+this is a destructive method, meaning that ~target~ will be modified
+in-place. It's the cheapest way, though, and usually not a problem.
+
+Now that we have a method for copying properties over, we can start
+assigning multiple abilities to our objects (~mikhail~ e
+~kristin~):
+
+#+begin_src js
+// A pianist is someone who can `play' the piano
+var pianist = Object.create(null)
+pianist.play = function() {
+    return this.name ' starts playing the piano.'
+}
+
+// A singer is someone who can `sing'
+var singer = Object.create(null)
+singer.sing = function() {
+    return this.name + ' starts singing.'
+}
+
+// Then we can move on to adding those abilities to
+// our main objects:
+extend(mikhail, pianist)
+mikhail.play()
+// => 'Mikhail Weiß starts playing the piano.'
+
+// We can see that all that ends up as an own property of
+// mikhail. It is not shared.
+Object.keys(mikhail)
+['first_name', 'last_name', 'age', 'gender', greet', 'play']
+
+// Then we can define kristin as a singer
+extend(kristin, singer)
+kristin.sing()
+// => 'Kristin Weiß starts singing.'
+
+// Mikhail can't sing yet though
+mikhail.sing()
+// => TypeError: Object #<Object> has no method 'sing'
+
+// But mikhail will inherit the `sing' method if we
+// extend the Person prototype with it:
+extend(person, singer)
+
+mikhail.sing()
+// => 'Mikhail Weiß starts singing'
+#+end_src
+
+
+** 3.5. Data-parents
+Data-parents are a step-further from the mixin approach, but instead of
+providing new actions to an object, they provide data initialisation, in
+the same manner a constructor function would do.
+
+
+
+
+** 3.6. Resending messages
+
 
 
 * 4. Constructors
