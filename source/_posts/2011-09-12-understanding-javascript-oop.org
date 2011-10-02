@@ -992,7 +992,7 @@ going to cheat a little bit.
 #+begin_src ditaa :file ../media/assets/oop-mixins.png :cmdline -Es 0.9 :exports none
                                nil
                                 ^
-  ( pianist )                   :    ( singer )                 
+  ( pianist )                   :    ( singer )
 /---------------+------------\  |   /---------------+------------\
 | Property cBLU | Value cBLU |  |   | Property cBLU | Value cBLU |
 +---------------+------------+  |   +---------------+------------+
@@ -1061,7 +1061,7 @@ mikhail.play()
 // We can see that all that ends up as an own property of
 // mikhail. It is not shared.
 Object.keys(mikhail)
-['first_name', 'last_name', 'age', 'gender', greet', 'play']
+['first_name', 'last_name', 'age', 'gender', 'greet', 'play']
 
 // Then we can define kristin as a singer
 extend(kristin, singer)
@@ -1081,20 +1081,451 @@ mikhail.sing()
 #+end_src
 
 
-** 3.5. Data-parents
-Data-parents are a step-further from the mixin approach, but instead of
-providing new actions to an object, they provide data initialisation, in
-the same manner a constructor function would do.
 
 
+** 3.5. Resending messages
+Now that we're able to inherit properties from other objects and extend
+the specialised objects to define their own behaviours, we have a little
+problem: what if we actually wanted to access the parent behaviours that
+we just overwrote?
+
+A naïve solution would be to just access the parent's property, or apply
+the parent's method to the specialised object:
+
+#+begin_src js
+// (name:String) → String
+// Greets someone intimately if we know them, otherwise use
+// the generic greeting
+mikhail.greet = function(name) {
+    return name == 'Kristin Weiß'?  this.name + ': Heya, Kristty'
+         : /* we dunno this guy */  person.greet.call(this, name)
+}
+
+mikhail.greet(kristin.name)
+// => 'Mikhail Weiß: Heya, Kristty'
+
+mikhail.greet('Margareth')
+// => 'Mikhail Weiß: Hello, Margareth'
+#+end_src
+
+It apparently works, but this has many short-comings. The most
+outstanding of them being that functions don't belong to objects in
+JavaScript, so we could assign ~greet~ to any object, that provides the
+interface the function expects — in this case, an object with a ~name~
+property.
+
+This other object does not necessarily need to inherit directly from
+~Person~. It might be just about *any* object, and in this case it would
+make more sense that the message were sent to that object's parent,
+instead of ~Person~ directly. In fact, ~Person~ might not be present in
+the prototype of this object at all!
+
+So, a better description of this issue would be that, when an object
+receive a message (property access or method invokation), we might want
+to preserve the parent's behaviour under some conditions. Thus, we need:
+
+ 1.) A way of getting the closest parent of an object that implements
+     the message we're interested in.
+
+ 2.) In the case of methods, a way of applying such behaviour to the
+     current object.
+
+The first one is pretty easy to solve, since JavaScript offers the
+~Object.getPrototypeOf~ function for returning the immediate parent of
+an object (that is, its ~[⁣[Prototype]⁣]~).
+
+#+begin_src js
+var slice = [].slice
+  , proto = Object.getPrototypeOf
 
 
-** 3.6. Resending messages
+// (object:Object) → Boolean
+// Tests if an object can be called (has [[Call]])
+function callablep(object) {
+    return typeof object == 'function'
+}
 
+
+// (object:Object, message:String, args...) → *mixed*
+// Resends the given message to the closest parent of `object'
+// that implements it.
+function resend(object, message) { var args, property
+    args     = slice.call(arguments, 2)
+    property = proto(object)[message]
+
+    return callablep(property)?  property.apply(object, args)
+         : /* data property */   property
+}
+#+end_src
+
+Now, let's move our greeting function over to a mixin, and make it all a
+little more generic. We'll have a ~greeter~ mixin, that either calls a
+~friendly_greet~ in the object, if the person is known, or a fallback
+~greet~ method in the parent.
+
+#+begin_src js
+// (array:Array, value) → Boolean
+// Test if the array includes the value
+function hasp(array, value) {
+    return array.indexOf(value) != -1
+}
+
+
+// A greeter is an object that has a list of known people, and
+// it might greet those people in a friendly manner, but only
+// if a specialised behaviour is defined for this (friendly_greet).
+// Otherwise it just goes back to formal greeting.
+var greeter = {
+    // A list of objects we know about
+    known: [ ]
+
+    // (person:+Person) → String
+    // Greets the person intimately, if known, otherwise formally.
+    function greet(person) {
+        // If we know the person and wish to greet known people
+        // in a friendly and informal manner
+        if ( hasp(this.known, person)
+          && callablep(this.friendly_greet))
+            return this.friendly_greet(person)
+
+        // Otherwise we just fallback to formal greeting (probably
+        // defined in the object's parent)
+        return resend(this, 'greet', person)
+    }
+}
+#+end_src
+
+We have to update the ~Person~'s greet to accept an object implimenting
+the person interface, rather than just a String. And finally, we need to
+extend both Mikhail and Kristin with the ~greeter~ mixin.
+
+Note that we need to redefine the ~known~ array here, since otherwise
+we'd use the ~greeter~'s array (objects are always copied by reference
+rather than by value).
+
+#+begin_src js
+// We have to update the Person's greet to accept an object
+// implementing the person interface, rather than just a String
+
+// (person:+Person) → String
+// Greets the person formally.
+person.greet = function(person) {
+    return this.name + ': Hello, ' + person.name
+}
+
+// And finally, we make both Mikhail and Kristin greeter-fags
+extend(mikhail, greeter)
+mikhail.known = [kristin]
+
+// (person:+Person) → String
+// Greets the person informally.
+mikhail.friendly_greet = function(person) {
+    return this.name + ': Heya, ' + person.first_name
+}
+
+extend(kristin, greeter)
+
+// (person:+Person) → String
+// Greets the person informally.
+kristin.friendly_greet = function(person) {
+    return this.name + ': Harro, ' + person.first_name
+}
+
+// And we can see that mikhail gets informal greeting right, whereas
+// kristing fallbacks.
+mikhail.greet(kristin)
+// => 'Mikhail Weiß: Heya, Kristin'
+
+mikhail.greet({name: 'Margareth'})
+// => 'Mikhail Weiß: Hello, Margareth'
+
+kristin.greet(mikhail)
+// => 'Kristin Weiß: Hello, Mikhail Weiß'
+
+kristin.greet({name: 'Margareth'})
+// => 'Kristin Weiß: Hello, Margareth'
+
+// Though, if we include `mikhail' in the list of known people, we
+// get friendly greetings as well for Kristin:
+kristin.known = [mikhail]
+kristin.greet(mikhail)
+// => 'Kristin Weiß: Harro, Mikhail'
+#+end_src
+
+This looks all good and well, but there's a little catch in the current
+implementation of message resending: it will enter in endless recursion if you
+try to apply it to more than one parent. This happens because the methods are
+always applied in the context of the message's first target, making the
+~[⁣[Prototype]⁣]~ lookup resolve always to the same object:
+
+#+begin_src ditaa :file ../media/assets/oop-super.png :cmdline -Es 0.9 :exports none
+( All methods have `this' as `mikhail' )
+
+    +-----------------+     +------------------+    +------------------+
+    | mikhail.greet() |     | greeter.greet()  |<-+ | person.greet()   |
+    +------+----------+     +----------+-------+  | +------------------+
+           |                        ^  |          +-------------+
+           |      +----------+      |  |      +----------+      |
+           +------+ resend() +------+  +------+ resend() +------+
+                  +----------+                +----------+
+               proto(this) → greeter      proto(this) → greeter
+
+#+end_src
+
+#+results:
+[[file:../media/assets/oop-super.png]]
+
+[[blog:oop-super.png]]
+
+For the ~resend~ function to work correctly, it has to know what the
+next object in the prototype chain is, thus, we can't blindly use the
+~this~ value for the look-up. Instead, we have to pass this information
+somehow over to the ~resend~ function.
+
+Given the only pieces of information we can pass to a function are the
+~thisObject~ and ~arguments~, we'll going to abuse the former here, as
+the latter would involve changing the signature of all functions.
+
+The idea is that, when we call a method in the parent, we store the
+reference to that parent in the current ~thisObject~ so we know where to
+start looking for next:
+
+#+begin_src js
+// (object:Object, message:String, args...) → *mixed*
+// Resends the given message to the closest parent of `object'
+// that implements it.
+function resend(object, message) { var args, property, result
+    args = slice.call(arguments, 2)
+
+    // Store the next parent on the prototype chain. Try to
+    // look for the one stored in object.$parent, falling
+    // back to the object itself.
+    object.$parent = proto(object.$parent || object)
+
+    // Get the property from the next prototype
+    property = object.$parent[message]
+
+    // Calculates the result that should be returned, if it's a
+    // function, apply the function to the object and return
+    // its value. Otherwise return the property.
+    //
+    // Since JavaScript is synchronous and single-threaded
+    // we usually don't have to worry about the value of
+    // `$parent' being changed in-between¹.
+    result = callbalep(property)?  property.apply(object, args)
+           : /* data property */   property
+
+    // Then we remove the `$parent' property we've previously
+    // stored, so a subsequent resend performed for this
+    // object won't start at the end of the prototype chain.
+    delete object.$parent
+
+    // Finally return whatever result we've got.
+    return result
+}
+#+end_src
+
+ As you see, this method expects that all the functions called in this
+ manner to call ~resend~ *synchronously*. This is because we need to
+ clean the tracking property we've added right after the initial
+ function returns, and we can only be sure that the other functions in
+ the chain will have access to that property by requiring that they call
+ ~resend~ synchronously:
+
+#+begin_src js
+// Given a prototype chain A <- B <- C, where the object
+// in the left inherits from the one at right, the
+// following would work nicely:
+C.log = function(message) {
+    console.log('C:', message)
+}
+
+B.log = function(message) {
+    resend(this, 'log', message)
+    console.log('B:', message)
+}
+
+A.log = function(message) {
+    resend(this, 'log', message)
+    console.log('A:', message)
+}
+
+A.log('foo')
+// => C: foo
+// => B: foo
+// => A: foo
+
+
+// But if we made `B.log' asynchronous, then it
+// would not work anymore. Instead, it would have the
+// same problem we've covered earlier, since the tracking
+// property is gone.
+B.log = function(message) {
+    setTimeout(function() {
+        // `this' has no `$parent' property here anymore
+        // so the look-up starts at `A', and will always
+        // resolve to `B'.
+        resend(this, 'log', message)
+        console.log('B:', message)
+    }.bind(this), 1000)
+}
+
+A.log('foo')
+// => A: foo
+// => B: foo
+// => B: foo
+// => B: foo
+// ( ... )
+
+
+// The ugly solution is setting the `$parent' directly
+// before the call:
+B.log = function(message) {
+    var parent = this.$parent
+    setTimeout(function() {
+        this.$parent = parent
+        resend(this, 'log', message)
+        console.log('B:', message)
+    }.bind(this), 1000)
+}
+
+A.log('foo')
+// => A: foo
+// => C: foo
+// => B: foo
+#+end_src
 
 
 * 4. Constructors
+Constructor functions are the old pattern for creating objects in
+JavaScript, which couple inheritance with initialisation in an
+imperative manner.
+
+Constructor functions *are not*, however, a special construct in the
+language. Any simple function can be used as a constructor function;
+just like ~this~, it all depends on how the function is called.
+
+So, what's it about constructor functions, really? Well, every function
+object in JavaScript automatically gets a ~prototype~ property, that is
+a simple object with a ~constructor~ property pointing back to the
+constructor function. And this object is used to determine the
+~[⁣[Prototype]⁣]~ of instances created with that constructor function.
+
+The following diagram shows the objects for the constructor function
+=function Person(first_name, last_name)=:
+
+#+begin_src ditaa :file ../media/assets/oop-ctor.png :cmdline -Es 0.9 :exports none
+ ( Function.prototype )                     ( Object.prototype )
+/---------------+------------\             /---------------+------------\
+| Property cBLU | Value cBLU |             | Property cBLU | Value cBLU |
++---------------+------------+             +---------------+------------+
+| [[Prototype]] |            +-=-> nil     | [[Prototype]] |            +-=-> nil
++---------------+------------+             +---------------+------------+
+|          ( ... )           |             |           ( ... )          |
+\----------------------------/             \----------------------------/
+                        ^                                         ^
+                        |                                         |
+                        +--------+                                +-------+
+    ( Person )                   :          ( Person.prototype )          :
+/---------------+------------\   |         /---------------+------------\ |
+| Property cBLU | Value cBLU |   |         | Property cBLU | Value cBLU | |
++---------------+------------+   |         +---------------+------------+ |
+| [[Prototype]] |            +---+   +---> | [[Prototype]] |            +-+
++---------------+------------+       |     +---------------+------------+
+| prototype     |            +-------+     | constructor   |            +-+
++---------------+------------+             \---------------+------------/ |
+| length        | 2          |                                            |
++---------------+------------+                                            |
+|           ( ... )          |<-------------------------------------------+
+\---------------+------------/
+#+end_src
+
+#+results:
+[[file:../media/assets/oop-ctor.png]]
+
+
 ** 4.1. The =new= magic
+The ~prototype~ /per se/ is not a special property, however it gains
+special meaning when a constructor function is used in conjunction with
+the ~new~ statement. As I said before, in this case the ~prototype~
+property of the constructor function is used to provide the
+~[⁣[Prototype]⁣]~ of the instance.
+
+#+begin_src js
+// Constructs a new Person
+function Person(first_name, last_name) {
+    this.first_name = first_name
+    this.last_name  = last_name
+}
+
+// (person:String) → String
+// Greets the given person
+Person.prototype.greet = function(person) {
+    return this.name + ': Harro, ' + person + '.' 
+}
+
+var person = new Person('Mikhail', 'Weiß')
+
+
+// We could de-sugar the constructor pattern in the following
+// Taking into account that `Person' here means the `prototype'
+// property of the `Person' constructor.
+var Person = Object.create(Object.prototype)
+
+// (person:String) → String
+// Greets the given person
+Person.greet = function(person) {
+    return this.name + ': Harro, ' + person + '.' 
+}
+
+// Here's what the constructor does when called with `new'
+var person = Object.create(Person)
+person.first_name = 'Mikhail'
+person.last_name  = 'Weiß'
+#+end_src
+
+When a function is called with the ~new~ statement, the following magic
+happens:
+
+ 1. Create a fresh ~Object~, inheriting from ~Object.prototype~, say ~{ }~
+
+ 2. Set the ~[⁣[Prototype]⁣]~ internal property of the new object to point
+    to the constructor's ~prototype~ property, so it inherits those
+    behaviours.
+
+ 3. Call the constructor in the context of this fresh object, such that
+    ~this~ inside the constructor will be the fresh object, and pass any
+    parameters given to the function.
+
+ 4. If the function returns an ~Object~, make that be the return value of
+    the function.
+
+ 5. Otherwise, return the fresh object.
+
+This means that the resulting value of calling a ~function~ with the
+~new~ operator is not necessarily the object that was created. A
+function is free to return any other ~Object~ value as it sees fit. This
+is an interesting and — to a certain extent — powerful behaviour, but
+also a confusing one for many newcomers:
+
+#+begin_src js
+function Foo() {
+    this.foo = 'bar'
+}
+
+new Foo()
+// => { foo: 'bar' }
+
+
+function Foo() {
+    this.foo = 'bar'
+    return Foo
+}
+
+new Foo()
+// => [Function: Foo]
+#+end_src
+
 
 * 5. Considerations and compatibility
 ** 5.1. Creating objects
