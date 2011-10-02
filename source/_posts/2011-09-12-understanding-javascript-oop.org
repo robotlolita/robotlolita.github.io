@@ -1454,6 +1454,13 @@ property of the constructor function is used to provide the
 #+begin_src js
 // Constructs a new Person
 function Person(first_name, last_name) {
+    // If the function is called with `new', as we expect
+    // `this' here will be the freshly created object
+    // with the [[Prototype]] set to Person.prototype
+    //
+    // Of course, if someone omits new when calling the
+    // function, the usual resolution of `this' — as
+    // explained before — will take place.
     this.first_name = first_name
     this.last_name  = last_name
 }
@@ -1527,12 +1534,70 @@ new Foo()
 #+end_src
 
 
-* 5. Considerations and compatibility
-** 5.1. Creating objects
-** 5.2. Defining properties
-** 5.3. Listing properties
-** 5.4. Bound methods
-** 5.5. Libraries that provide fallbacks
+** Inheritance with constructors
+We've covered inheritance with plain objects through ~Object.create~,
+inheritance with constructors follow quite naturally from there, the
+difference being that instead of the main actor being the target of the
+inheritance (the constructor function, in this case), the ~prototype~
+property is:
 
-* 6. Wrapping it up
-* 7. Things worth reading up next
+#+begin_src js
+// new Person (first_name:String, last_name:String)
+// Initialises a Person object
+function Person(first_name, last_name) {
+    this.first_name = first_name
+    this.last_name  = last_name
+}
+
+// Defines the `name' getter/setter
+Object.defineProperty(Person.prototype, 'name', { get: get_full_name
+                                                , set: set_full_name
+                                                , writable:     true
+                                                , configurable: true
+                                                , enumerable:   true })
+
+// (person:String) → String
+// Greets the given person
+Person.prototype.greet = function(person) {
+    return this.name + ': Hello, ' + (person || 'you')
+}
+
+
+// new Mikhail (age:Number, gender:String)
+function Mikhail(age, gender) {
+    resend(this, 'constructor', 'Mikhail', 'Weiß')
+}
+
+// Inherits the properties from Person.prototype
+Mikhail.prototype = Object.create(Person.prototype)
+
+// Resets the `constructor' property of the prototype object
+Mikhail.prototype.constructor = Mikhail
+
+// (person:String) → String
+Mikhail.prototype.greet = function(person) {
+    return this.name + ': \'sup, ' + (person || 'dude')
+}
+
+
+// Instances are created with the `new' operator, as previously
+// discussed:
+var mikhail = new Mikhail(19, 'Male')
+mikhail.greet('Kristin')
+// => 'Mikhail Weiß: \'sup, Kristin'
+#+end_src
+
+
+* 5. Type checking
+** The =instanceof= operator
+
+
+* 6. Considerations and compatibility
+** 6.1. Creating objects
+** 6.2. Defining properties
+** 6.3. Listing properties
+** 6.4. Bound methods
+** 6.5. Libraries that provide fallbacks
+
+* 7. Wrapping it up
+* 8. Things worth reading up next
