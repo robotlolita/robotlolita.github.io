@@ -1797,14 +1797,15 @@ imperative manner.
 </p>
 <p>
 Constructor functions <b>are not</b>, however, a special construct in the
-language. Any simple function can be used as a constructor function, as
-with <code>this</code>, it all depends on how the function is called.
+language. Any simple function can be used as a constructor function;
+just like <code>this</code>, it all depends on how the function is called.
 </p>
 <p>
 So, what's it about constructor functions, really? Well, every function
 object in JavaScript automatically gets a <code>prototype</code> property, that is
 a simple object with a <code>constructor</code> property pointing back to the
-constructor function.
+constructor function. And this object is used to determine the
+<code>[⁣[Prototype]⁣]</code> of instances created with that constructor function.
 </p>
 <p>
 The following diagram shows the objects for the constructor function
@@ -1820,6 +1821,182 @@ The following diagram shows the objects for the constructor function
 <h3 id="sec-4_1">4.1. The <code>new</code> magic </h3>
 <div class="outline-text-3" id="text-4_1">
 
+<p>The <code>prototype</code> <i>per se</i> is not a special property, however it gains
+special meaning when a constructor function is used in conjunction with
+the <code>new</code> statement. As I said before, in this case the <code>prototype</code>
+property of the constructor function is used to provide the
+<code>[⁣[Prototype]⁣]</code> of the instance.
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">Constructs a new Person
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Person</span>(<span style="color: #729FCF;">first_name</span>, <span style="color: #729FCF;">last_name</span>) {
+    <span style="color: #75766A;">// </span><span style="color: #75766A;">If the function is called with `new', as we expect
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">`this' here will be the freshly created object
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">with the [[Prototype]] set to Person.prototype
+</span>    <span style="color: #75766A;">//</span><span style="color: #75766A;">
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">Of course, if someone omits new when calling the
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">function, the usual resolution of `this' &#8212; as
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">explained before &#8212; will take place.
+</span>    <span style="color: #FA2573;">this</span>.first_name = first_name
+    <span style="color: #FA2573;">this</span>.last_name  = last_name
+}
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
+</span>Person.<span style="color: #FA2573;">prototype</span>.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
+    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Harro, '</span> + person + <span style="color: #A6E32D;">'.'</span> 
+}
+
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">person</span> = <span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Person</span>(<span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
+
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">We could de-sugar the constructor pattern in the following
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Taking into account that `Person' here means the `prototype'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">property of the `Person' constructor.
+</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Person</span> = Object.create(Object.<span style="color: #FA2573;">prototype</span>)
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
+</span>Person.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
+    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Harro, '</span> + person + <span style="color: #A6E32D;">'.'</span> 
+}
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Here's what the constructor does when called with `new'
+</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">person</span> = Object.create(Person)
+person.first_name = <span style="color: #A6E32D;">'Mikhail'</span>
+person.last_name  = <span style="color: #A6E32D;">'Wei&#223;'</span>
+</pre>
+
+
+
+<p>
+When a function is called with the <code>new</code> statement, the following magic
+happens:
+</p>
+<ol>
+<li>
+Create a fresh <code>Object</code>, inheriting from <code>Object.prototype</code>, say <code>{ }</code>
+
+</li>
+<li>
+Set the <code>[⁣[Prototype]⁣]</code> internal property of the new object to point
+to the constructor's <code>prototype</code> property, so it inherits those
+behaviours.
+
+</li>
+<li>
+Call the constructor in the context of this fresh object, such that
+<code>this</code> inside the constructor will be the fresh object, and pass any
+parameters given to the function.
+
+</li>
+<li>
+If the function returns an <code>Object</code>, make that be the return value of
+the function.
+
+</li>
+<li>
+Otherwise, return the fresh object.
+</li>
+</ol>
+
+
+<p>
+This means that the resulting value of calling a <code>function</code> with the
+<code>new</code> operator is not necessarily the object that was created. A
+function is free to return any other <code>Object</code> value as it sees fit. This
+is an interesting and — to a certain extent — powerful behaviour, but
+also a confusing one for many newcomers:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Foo</span>() {
+    <span style="color: #FA2573;">this</span>.foo = <span style="color: #A6E32D;">'bar'</span>
+}
+
+<span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Foo</span>()
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; { foo: 'bar' }
+</span>
+
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Foo</span>() {
+    <span style="color: #FA2573;">this</span>.foo = <span style="color: #A6E32D;">'bar'</span>
+    <span style="color: #C48DFF;">return</span> Foo
+}
+
+<span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Foo</span>()
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [Function: Foo]
+</span></pre>
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4_2" class="outline-3">
+<h3 id="sec-4_2">Inheritance with constructors </h3>
+<div class="outline-text-3" id="text-4_2">
+
+<p>We've covered inheritance with plain objects through <code>Object.create</code>,
+inheritance with constructors follow quite naturally from there, the
+difference being that instead of the main actor being the target of the
+inheritance (the constructor function, in this case), the <code>prototype</code>
+property is:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">new Person (first_name:String, last_name:String)
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Initialises a Person object
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Person</span>(<span style="color: #729FCF;">first_name</span>, <span style="color: #729FCF;">last_name</span>) {
+    <span style="color: #FA2573;">this</span>.first_name = first_name
+    <span style="color: #FA2573;">this</span>.last_name  = last_name
+}
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Defines the `name' getter/setter
+</span>Object.defineProperty(Person.<span style="color: #FA2573;">prototype</span>, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
+                                                , set: set_full_name
+                                                , writable:     <span style="color: #FA2573;">true</span>
+                                                , configurable: <span style="color: #FA2573;">true</span>
+                                                , enumerable:   <span style="color: #FA2573;">true</span> })
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
+</span>Person.<span style="color: #FA2573;">prototype</span>.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
+    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Hello, '</span> + (person || <span style="color: #A6E32D;">'you'</span>)
+}
+
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">new Mikhail (age:Number, gender:String)
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Mikhail</span>(<span style="color: #729FCF;">age</span>, <span style="color: #729FCF;">gender</span>) {
+    resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'constructor'</span>, <span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
+}
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Inherits the properties from Person.prototype
+</span>Mikhail.<span style="color: #FA2573;">prototype</span> = Object.create(Person.<span style="color: #FA2573;">prototype</span>)
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Resets the `constructor' property of the prototype object
+</span>Mikhail.<span style="color: #FA2573;">prototype</span>.constructor = Mikhail
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
+</span>Mikhail.<span style="color: #FA2573;">prototype</span>.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
+    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': \'sup, '</span> + (person || <span style="color: #A6E32D;">'dude'</span>)
+}
+
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Instances are created with the `new' operator, as previously
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">discussed:
+</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = <span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Mikhail</span>(19, <span style="color: #A6E32D;">'Male'</span>)
+mikhail.greet(<span style="color: #A6E32D;">'Kristin'</span>)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: \'sup, Kristin'
+</span></pre>
+
+
+
 
 </div>
 </div>
@@ -1830,12 +2007,61 @@ The following diagram shows the objects for the constructor function
 <h2 id="sec-5">5. Considerations and compatibility </h2>
 <div class="outline-text-2" id="text-5">
 
+<p>The functions and concepts presented up until now assumed that the code
+would be running in an ECMAScript 5 environment, since the new additions
+make prototypical inheritance more natural, without the initialisation
+and inheritance coupling provided by constructor functions.
+</p>
+<p>
+However, obviously this means that code using these functions will not
+work everywhere. <a href="http://twitter.com/kangax">@kangax</a> has a most awesome <a href="http://kangax.github.com/es5-compat-table/">compatibility table</a> for the
+implementations that follow ECMAScript 5.
+</p>
+<p>
+This section provides fallbacks to some of the functionality, and point to
+libraries that implement these fallbacks so you don't get to reinvent
+the wheel. Note that this section only exists to highlight how the
+functionality works, and how those behaviours could be reproduced in
+legacy code, it's not meant to provide ready-to-use fallbacks. Use
+libraries for that :3
+</p>
+
 
 </div>
 
 <div id="outline-container-5_1" class="outline-3">
 <h3 id="sec-5_1">5.1. Creating objects </h3>
 <div class="outline-text-3" id="text-5_1">
+
+<p>In ECMAScript 5 we have got <code>Object.create</code> to handle inheritance, but
+there's also constructor functions, which can be used to set the
+<code>[⁣[Prototype]⁣]</code> link for the constructed object — which is what we're
+interested about.
+</p>
+<p>
+A <code>clone</code> function could be defined such that it would create a new
+object based on the given prototype:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(proto:Object) &#8594; Object
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Constructs an object and sets the [[Prototype]] to `proto'.
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">clone</span>(<span style="color: #729FCF;">proto</span>) {
+    <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Dummy</span>() { }
+
+    Dummy.<span style="color: #FA2573;">prototype</span>             = proto
+    Dummy.<span style="color: #FA2573;">prototype</span>.constructor = Dummy
+
+    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Dummy</span>()
+}
+
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = clone(person)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Equivalent to `var mikhail = Object.create(person)'
+</span></pre>
+
+
+
 
 </div>
 
@@ -1845,6 +2071,65 @@ The following diagram shows the objects for the constructor function
 <h3 id="sec-5_2">5.2. Defining properties </h3>
 <div class="outline-text-3" id="text-5_2">
 
+<p><code>Object.defineProperty</code> and it's batch cousin <code>Object.defineProperties</code>
+are also new additions, and they allow properties to be defined with
+internal tags, like <code>writable</code>, <code>configurable</code> and <code>enumerable</code>. It's
+not possible to get this behaviour in the older versions of the
+language.
+</p>
+<p>
+All properties defined will inevitable have <code>writable</code>, <code>configurable</code>
+and <code>enumerable</code> set to true, which is usually not really that much of a
+problem — still, not really compatible with full ES5 code.
+</p>
+<p>
+In regards of getters and setters, they are supported to a certain
+extent with non-standard syntax — the <code>__defineGetter__</code> and
+<code>__defineSetter__</code> methods, — but are also not available
+everywhere. Most notably, such methods have never been present in IE.
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(target:Object, key:String, descriptor:Object) &#8594; Object
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Defines a property in the target object.
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Getters and Setters are handled through the fallback
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">calls, whereas values are set directly. Tags are
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">ignored.
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">defineProperty</span>(<span style="color: #729FCF;">target</span>, <span style="color: #729FCF;">key</span>, <span style="color: #729FCF;">descriptor</span>) {
+    <span style="color: #C48DFF;">if</span> (descriptor.value)
+        target[key] = descriptor.value
+    <span style="color: #C48DFF;">else</span> {
+        descriptor.get &amp;&amp; target.__defineGetter__(key, descriptor.get)
+        descriptor.set &amp;&amp; target.__defineSetter__(key, descriptor.set) }
+
+    <span style="color: #C48DFF;">return</span> target
+}
+
+
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">x</span> = { }
+defineProperty(x, <span style="color: #A6E32D;">'foo'</span>, { value: <span style="color: #A6E32D;">'bar'</span> })
+defineProperty(x, <span style="color: #A6E32D;">'bar'</span>, { get: <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.foo }
+                         , set: <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">v</span>){ <span style="color: #FA2573;">this</span>.foo = v    }})
+
+x.foo
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'bar'
+</span>
+x.bar
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'bar'
+</span>
+x.bar = <span style="color: #A6E32D;">'foo'</span>
+x.foo
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'foo'
+</span>
+x.bar
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'foo' 
+</span></pre>
+
+
+
+
+
 </div>
 
 </div>
@@ -1852,6 +2137,42 @@ The following diagram shows the objects for the constructor function
 <div id="outline-container-5_3" class="outline-3">
 <h3 id="sec-5_3">5.3. Listing properties </h3>
 <div class="outline-text-3" id="text-5_3">
+
+<p>We have seen how it's possible to list the properties of an object with
+<code>Object.getOwnPropertyNames</code>, and list only the enumerable properties
+through <code>Object.keys</code>. Well, prior to ECMAScript 5, listing the
+enumerable properties is the only thing one can do.
+</p>
+<p>
+This is achieved through the <code>for..in</code> statement, which iterates through
+all the enumerable properties of an object, either directly set in the
+object, or in the prototype chain. <code>Object.prototype.hasOwnProperty</code> may
+be used to filter the properties to include only the ones set directly
+in the object.
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object) &#8594; Array
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Lists all the own enumerable properties of an object
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">keys</span>(<span style="color: #729FCF;">object</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">result</span>, <span style="color: #729FCF;">key</span>
+    result = []
+    <span style="color: #C48DFF;">for</span> (key <span style="color: #C48DFF;">in</span> object)
+        <span style="color: #C48DFF;">if</span> (object.hasOwnProperty(key))  result.push(key)
+
+    <span style="color: #C48DFF;">return</span> result
+}
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Taking the mikhail object whose [[Prototype]] is person...
+</span>keys(mikhail)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'first_name', 'last_name', 'age', 'gender' ]
+</span>
+keys(person)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'greet', 'name' ]
+</span></pre>
+
+
+
 
 </div>
 
@@ -1861,6 +2182,10 @@ The following diagram shows the objects for the constructor function
 <h3 id="sec-5_4">5.4. Bound methods </h3>
 <div class="outline-text-3" id="text-5_4">
 
+<p>Bound methods in JavaScript do much more than just assert the value of
+<code>this</code> inside a function.
+</p>
+
 </div>
 
 </div>
@@ -1868,6 +2193,8 @@ The following diagram shows the objects for the constructor function
 <div id="outline-container-5_5" class="outline-3">
 <h3 id="sec-5_5">5.5. Libraries that provide fallbacks </h3>
 <div class="outline-text-3" id="text-5_5">
+
+
 
 
 </div>
