@@ -1588,16 +1588,144 @@ mikhail.greet('Kristin')
 #+end_src
 
 
-* 5. Type checking
-** The =instanceof= operator
+* 5. Considerations and compatibility
+The functions and concepts presented up until now assumed that the code
+would be running in an ECMAScript 5 environment, since the new additions
+make prototypical inheritance more natural, without the initialisation
+and inheritance coupling provided by constructor functions.
+
+However, obviously this means that code using these functions will not
+work everywhere. [[http://twitter.com/kangax][@kangax]] has a most awesome [[http://kangax.github.com/es5-compat-table/][compatibility table]] for the
+implementations that follow ECMAScript 5.
+
+This section provides fallbacks to some of the functionality, and point to
+libraries that implement these fallbacks so you don't get to reinvent
+the wheel. Note that this section only exists to highlight how the
+functionality works, and how those behaviours could be reproduced in
+legacy code, it's not meant to provide ready-to-use fallbacks. Use
+libraries for that :3
 
 
-* 6. Considerations and compatibility
-** 6.1. Creating objects
-** 6.2. Defining properties
-** 6.3. Listing properties
-** 6.4. Bound methods
-** 6.5. Libraries that provide fallbacks
+** 5.1. Creating objects
+In ECMAScript 5 we have got ~Object.create~ to handle inheritance, but
+there's also constructor functions, which can be used to set the
+~[⁣[Prototype]⁣]~ link for the constructed object — which is what we're
+interested about.
 
-* 7. Wrapping it up
-* 8. Things worth reading up next
+A ~clone~ function could be defined such that it would create a new
+object based on the given prototype:
+
+#+begin_src js
+// (proto:Object) → Object
+// Constructs an object and sets the [[Prototype]] to `proto'.
+function clone(proto) {
+    function Dummy() { }
+
+    Dummy.prototype             = proto
+    Dummy.prototype.constructor = Dummy
+
+    return new Dummy()
+}
+
+var mikhail = clone(person)
+// Equivalent to `var mikhail = Object.create(person)'
+#+end_src
+
+
+** 5.2. Defining properties
+~Object.defineProperty~ and it's batch cousin ~Object.defineProperties~
+are also new additions, and they allow properties to be defined with
+internal tags, like ~writable~, ~configurable~ and ~enumerable~. It's
+not possible to get this behaviour in the older versions of the
+language.
+
+All properties defined will inevitable have ~writable~, ~configurable~
+and ~enumerable~ set to true, which is usually not really that much of a
+problem — still, not really compatible with full ES5 code.
+
+In regards of getters and setters, they are supported to a certain
+extent with non-standard syntax — the ~__defineGetter__~ and
+~__defineSetter__~ methods, — but are also not available
+everywhere. Most notably, such methods have never been present in IE.
+
+#+begin_src js
+// (target:Object, key:String, descriptor:Object) → Object
+// Defines a property in the target object.
+// Getters and Setters are handled through the fallback
+// calls, whereas values are set directly. Tags are
+// ignored.
+function defineProperty(target, key, descriptor) {
+    if (descriptor.value)
+        target[key] = descriptor.value
+    else {
+        descriptor.get && target.__defineGetter__(key, descriptor.get)
+        descriptor.set && target.__defineSetter__(key, descriptor.set) }
+
+    return target
+}
+
+
+var x = { }
+defineProperty(x, 'foo', { value: 'bar' })
+defineProperty(x, 'bar', { get: function() { return this.foo }
+                         , set: function(v){ this.foo = v    }})
+
+x.foo
+// => 'bar'
+
+x.bar
+// => 'bar'
+
+x.bar = 'foo'
+x.foo
+// => 'foo'
+
+x.bar
+// => 'foo' 
+#+end_src
+
+
+
+** 5.3. Listing properties
+We have seen how it's possible to list the properties of an object with
+~Object.getOwnPropertyNames~, and list only the enumerable properties
+through ~Object.keys~. Well, prior to ECMAScript 5, listing the
+enumerable properties is the only thing one can do.
+
+This is achieved through the ~for..in~ statement, which iterates through
+all the enumerable properties of an object, either directly set in the
+object, or in the prototype chain. ~Object.prototype.hasOwnProperty~ may
+be used to filter the properties to include only the ones set directly
+in the object.
+
+#+begin_src js
+// (object:Object) → Array
+// Lists all the own enumerable properties of an object
+function keys(object) { var result, key
+    result = []
+    for (key in object)
+        if (object.hasOwnProperty(key))  result.push(key)
+
+    return result
+}
+
+// Taking the mikhail object whose [[Prototype]] is person...
+keys(mikhail)
+// => [ 'first_name', 'last_name', 'age', 'gender' ]
+
+keys(person)
+// => [ 'greet', 'name' ]
+#+end_src
+
+
+** 5.4. Bound methods
+Bound methods in JavaScript do much more than just assert the value of
+~this~ inside a function.
+
+
+** 5.5. Libraries that provide fallbacks
+
+
+
+* 6. Wrapping it up
+* 7. Things worth reading up next
