@@ -1,69 +1,13 @@
-<!DOCTYPE html>
-<html> 
-    <head>
-        <meta charset="utf-8">
-        <title>Understanding JavaScript OOP — Sorella's Basement</title>
-        <meta name="description"
-              content="Rants about programming, open source, caffeine, unfunny jokes and such stuff." > 
-        <meta name="keywords"
-              content="programming, open source, javascript, python, clean code junkie">
 
-        <link href="http://feeds.feedburner.com/quildreen/en" rel="alternate"
-              title="Sorella's Basement" type="application/atom+xml">
-        <link href="/media/css/screen.css" media="screen" rel="stylesheet">
-    </head>
-    <body class="engb main-page">
-        <div id="header">
-    <div id="logo">
-        <a href="/"><h1>Sorella's Basement</h1></a>
-        <em>Madness!? This is [Computer] SCIENCE!</em>
-    </div>
-
-    <div id="nav">
-        <ul>
-            <li>
-                <a href="/">
-                    <em>Start here</em>
-                    <strong>Home</strong>
-                </a>
-            </li>
-            <li>
-                <a href="/blog">
-                    <em>/prog/ stuff</em>
-                    <strong>Blog</strong>
-                </a>
-            </li>
-            <li>
-                <a href="/about">
-                    <em>Who's this guy?</em>
-                    <strong>About</strong>
-                </a>
-            </li>
-            <li>
-                <a href="http://feeds.feedburner.com/quildreen/en">
-                    <em>Keep updated!</em>
-                    <strong>Feed</strong>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <br class="clearfix">
-</div>
+<p>[TABLE-OF-CONTENTS]
+---
+layout: post
+title:  Understanding JavaScript OOP
+snip:   Prototypical inheritance on awesomeness!
+---
 
 
-        <div id="wrapper">
-            <div id="static-content">
-    <div id="post-header">
-        <h1 class="post-title">Understanding JavaScript OOP</h1>
-        <h2 class="post-subtitle">—Prototypical inheritance on awesomeness!</h2>
-        <br class="clearfix">
-        <div class="item-meta">
-            Posted on <time class="timeago" datetime="Mon, 12 Sep 2011 00:00:00 GMT-0300">12 September 2011</time>
-        </div>
-    </div>
-    
-    <p>
+
 JavaScript is an object oriented language, with its roots in the <a href="http://selflanguage.org/">Self</a>
 programming language, however (sadly) designed to look like Java. This
 makes the language's really powerful and sweet features stay covered by
@@ -89,6 +33,7 @@ knowledge over other basic JavaScript functionality, like functions
 (including the concepts of closures and first-class functions),
 primitive values, operators and such.
 </p>
+
 
 
 <div id="outline-container-1" class="outline-2">
@@ -1813,6 +1758,9 @@ The following diagram shows the objects for the constructor function
 </p>
 
 
+<p>
+<img src="http://dl.dropbox.com/u/4429200/blog/oop-ctor.png"  alt="http://dl.dropbox.com/u/4429200/blog/oop-ctor.png" />
+</p>
 
 
 </div>
@@ -2183,8 +2131,35 @@ keys(person)
 <div class="outline-text-3" id="text-5_4">
 
 <p>Bound methods in JavaScript do much more than just assert the value of
-<code>this</code> inside a function.
+<code>this</code> inside a function, they can also be used for partial function
+applications and behave slightly different when called as a
+constructor. For this, we'll just focus on the first two.
 </p>
+<p>
+Basically, when calling the <code>bind</code> method of a function, we're creating
+a new function object that has a defined <code>thisObject</code> and perhaps a
+defined initial list of arguments. This can be just as well achieved
+with a closure to store the given state, and a explicit function
+application, through the <code>apply</code> method.
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">slice</span> = [].slice
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(fn:Function, bound_this:Object, args...) &#8594; Function
+</span><span style="color: #75766A;">//  </span><span style="color: #75766A;">--&gt; (args...) &#8594; *mixed*
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Creates a bound method from the function `fn'
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">bind</span>(<span style="color: #729FCF;">fn</span>, <span style="color: #729FCF;">bound_this</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">bound_args</span>
+    bound_args = slice.call(<span style="color: #FA2573;">arguments</span>, 2)
+    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>
+        args = bound_args.concat(slice.call(<span style="color: #FA2573;">arguments</span>))
+        <span style="color: #C48DFF;">return</span> fn.apply(bound_this, args) }
+}
+</pre>
+
+
+
 
 </div>
 
@@ -2194,6 +2169,27 @@ keys(person)
 <h3 id="sec-5_5">5.5. Libraries that provide fallbacks </h3>
 <div class="outline-text-3" id="text-5_5">
 
+
+<p>
+<a href="https://github.com/kriskowal/es5-shim">ES5-shim</a> attempts to implement fallbacks for ECMAScript 5 functionality
+that can be done in pure JavaScript, whilst adding minimal support
+for the other ones. It's important to note, however, that the
+fallbacks are intended to provide equivalent functionality that is
+close to the ones defined in the specs, it's not guaranteed that they
+will work exactly the same.
+</p>
+<p>
+To quote the <code>README</code>:
+</p>
+<blockquote>
+
+<p>"As closely as possible to ES5" is not very close. Many of these shims
+are intended only to all ow code to be written to ES5 without causing
+run-time errors in older engines. In many cases, this means that
+these shims cause many ES5 methods to silently fail. Decide carefully
+whether this is what you want. 
+</p>
+</blockquote>
 
 
 
@@ -2206,6 +2202,34 @@ keys(person)
 <h2 id="sec-6">6. Wrapping it up </h2>
 <div class="outline-text-2" id="text-6">
 
+<p>The object orientation model chosen for JavaScript is definitely one of
+the things that makes the language expressive and powerful, however the
+really poor semantics from the before-ES5 age quite killed all the fun
+about it.
+</p>
+<p>
+With ECMAScript 5, we have got better ways to deal with objects and
+inheritance, but most of the API is pretty verbose and awkward to use
+out of the box, so abstracting them is the only sane way of exploring
+all the power of the first-class inheritance model provided by the
+language.
+</p>
+<p>
+Once you dwell on the depths of JavaScript's prototypical object
+orientation, however, you will find it lacking on aspects that would
+otherwise seem like the obvious thing to do — like multiple inheritance
+and message resending, but also basic features like an easier object
+extension functionality.
+</p>
+<p>
+Luckily most of these issues manage to have a solution, albeit not
+necessarily a satisfactory one in some cases — i.e.: manual
+mixins. Being able to reproduce semantics that are not provided straight
+away on the language by patterns leveraging the built-in constructs is
+an important part of the language, and this all is made easier because
+of the way functions are treated in JavaScript.
+</p>
+
 </div>
 
 </div>
@@ -2213,6 +2237,36 @@ keys(person)
 <div id="outline-container-7" class="outline-2">
 <h2 id="sec-7">7. Things worth reading up next </h2>
 <div class="outline-text-2" id="text-7">
+
+
+<br>
+
+<dl>
+<dt><a href="http://www.aminutewithbrendan.com/pages/20110216">Brendan Eich's "Prototypical vs Closure" rant</a></dt><dd>
+
+<p>
+Although not really a reading, this particular podcast from Brendan
+Eich is a must listen for anyone working with object oriented
+JavaScript. it delves on the performance of engines in regards of
+object construction, highlighting how the prototypical pattern stands
+against the <a href="http://yuiblog.com/blog/2007/06/12/module-pattern/">Closure pattern</a>, and discussing the specifics of how
+browsers handle prototypical code so they run <b>fast</b>.
+</p>
+</dd>
+</dl>
+
+<dl>
+<dt><a href="http://labs.oracle.com/self/papers/organizing-programs.html">Organizing Programs Without Classes</a> <i>(paper)</i></dt><dd>
+
+<p>
+Albeit not specific to JavaScript, this white-paper dwells on how the
+structuring of programs differ from the classical object orientation
+approach to the prototypical take on the subject. It provides lots of
+<a href="http://selflanguage.org/">Self</a> code to go with it, but they are more or less easily translated
+to JavaScript code.
+</p></dd>
+</dl>
+
 
 
 
@@ -2237,96 +2291,3 @@ setting the <code>[⁣[Prototype]⁣]</code> object directly.
 </p>
 </div>
 </div>
-
-
-	<div id="disqus_thread"></div>
-	<script type="text/javascript">
-		var disqus_identifier = 'Understanding JavaScript OOP_'
-		                      + ''
-		  , disqus_url        = '';
-
-		(function() {
-			var dsq = document.createElement('script')
-			dsq.type  = 'text/javascript'
-			dsq.async = true
-			dsq.src	  = 'http://quildreen.disqus.com/embed.js';
-			(document.getElementsByTagName('head')[0]
-			 || document.getElementsByTagName('body')[0]).appendChild(dsq)
-		})()
-	</script>
-
-	<noscript>Please enable JavaScript to view the <a
-	href="http://disqus.com/?ref_noscript">comments powered by
-	Disqus.</a></noscript>
-	<a href="http://disqus.com" class="dsq-brlink">blog comments powered by
-	<span class="logo-disqus">Disqus</span></a>  
-</div>
-
-        </div>
-
-        <div id="footer">
-	<div id="social">
-		<div class="twitter-container">
-			<div class="quote">
-				<b><i></i></b><b><i></i></b>
-			</div>
-			<div id="tweet"></div>
-			<div id="tweet-info"></div>
-		</div>
-		
-		<ul id="social-list">
-			<li class="twitter">
-				<a href="http://twitter.com/notsorella"><i><b></b>Keep up with the things I do</i></a>
-			</li>
-			<li class="delicious">
-				<a href="http://delicious.com/killdream"><i><b></b>Stuff I like on the interwebz</i></a>
-			</li>
-			<li class="devart">
-				<a href="http://killdream.deviantart.com/"><i><b></b>Stalk a bit of my attempts at drawing</i></a>
-			</li>
-			<li class="bitbucket">
-				<a href="http://bitbucket.org/killdream"><i><b></b>Clone my experiments and stuff on BitBucket</i></a>
-			</li>
-			<li class="facebook">
-				<a href="http://facebook.com/quildreen"><i><b></b>My profile on Facebook</i></a>
-			</li>
-			<li class="lastfm">
-				<a href="http://www.lastfm.com.br/user/killdream"><i><b></b>The musics I listen to everyday, everytime</i></a>
-			</li>
-		</ul>
-	</div>
-	<div id="metainfo">
-		<div id="contact">
-			<h2>Wanna talk?</h2>
-		  
-			<ul class="contact-info"> 
-				<li class="email">
-					E-Mail: <a href="mailto:quildreen@gmail.com" title="Send-me an e-mail">quildreen@gmail.com</a>
-				</li> 
-				<li class="skype">
-					Skype: <a href="skype:quildreen?call" title="Call me on Skype!">quildreen</a>
-				</li> 
-			</ul> 
-		</div>
-		<strong>&copy; 2010 Quildreen Motta</strong>
-		minimalist designer | web developer
-	</div>
-	<br class="clearfix">
-</div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"></script>
-<script src="/media/lib/main.js"></script>
-
-<script src="http://api.twitter.com/1/statuses/user_timeline/notSorella.json?callback=Twitter.renderTweets" async></script>
-<script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-15025032-4']);_gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-
-
-    </body>
-</html>
