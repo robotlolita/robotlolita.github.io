@@ -1443,6 +1443,8 @@ The following diagram shows the objects for the constructor function
 #+results:
 [[file:../media/assets/oop-ctor.png]]
 
+[[blog:oop-ctor.png]]
+
 
 ** 4.1. The =new= magic
 The ~prototype~ /per se/ is not a special property, however it gains
@@ -1720,12 +1722,93 @@ keys(person)
 
 ** 5.4. Bound methods
 Bound methods in JavaScript do much more than just assert the value of
-~this~ inside a function.
+~this~ inside a function, they can also be used for partial function
+applications and behave slightly different when called as a
+constructor. For this, we'll just focus on the first two.
+
+Basically, when calling the ~bind~ method of a function, we're creating
+a new function object that has a defined ~thisObject~ and perhaps a
+defined initial list of arguments. This can be just as well achieved
+with a closure to store the given state, and a explicit function
+application, through the ~apply~ method.
+
+#+begin_src js
+var slice = [].slice
+
+// (fn:Function, bound_this:Object, args...) → Function
+//  --> (args...) → *mixed*
+// Creates a bound method from the function `fn'
+function bind(fn, bound_this) { var bound_args
+    bound_args = slice.call(arguments, 2)
+    return function() { var args
+        args = bound_args.concat(slice.call(arguments))
+        return fn.apply(bound_this, args) }
+}
+#+end_src
 
 
 ** 5.5. Libraries that provide fallbacks
 
+[[https://github.com/kriskowal/es5-shim][ES5-shim]] attempts to implement fallbacks for ECMAScript 5 functionality
+that can be done in pure JavaScript, whilst adding minimal support
+for the other ones. It's important to note, however, that the
+fallbacks are intended to provide equivalent functionality that is
+close to the ones defined in the specs, it's not guaranteed that they
+will work exactly the same.
+
+To quote the ~README~:
+
+#+begin_quote
+"As closely as possible to ES5" is not very close. Many of these shims
+are intended only to all ow code to be written to ES5 without causing
+run-time errors in older engines. In many cases, this means that
+these shims cause many ES5 methods to silently fail. Decide carefully
+whether this is what you want. 
+#+end_quote
 
 
 * 6. Wrapping it up
+The object orientation model chosen for JavaScript is definitely one of
+the things that makes the language expressive and powerful, however the
+really poor semantics from the before-ES5 age quite killed all the fun
+about it.
+
+With ECMAScript 5, we have got better ways to deal with objects and
+inheritance, but most of the API is pretty verbose and awkward to use
+out of the box, so abstracting them is the only sane way of exploring
+all the power of the first-class inheritance model provided by the
+language.
+
+Once you dwell on the depths of JavaScript's prototypical object
+orientation, however, you will find it lacking on aspects that would
+otherwise seem like the obvious thing to do — like multiple inheritance
+and message resending, but also basic features like an easier object
+extension functionality.
+
+Luckily most of these issues manage to have a solution, albeit not
+necessarily a satisfactory one in some cases — i.e.: manual
+mixins. Being able to reproduce semantics that are not provided straight
+away on the language by patterns leveraging the built-in constructs is
+an important part of the language, and this all is made easier because
+of the way functions are treated in JavaScript.
+
+
 * 7. Things worth reading up next
+#+HTML: <br>
+
+- [[http://www.aminutewithbrendan.com/pages/20110216][Brendan Eich's "Prototypical vs Closure" rant]] ::
+  Although not really a reading, this particular podcast from Brendan
+  Eich is a must listen for anyone working with object oriented
+  JavaScript. it delves on the performance of engines in regards of
+  object construction, highlighting how the prototypical pattern stands
+  against the [[http://yuiblog.com/blog/2007/06/12/module-pattern/][Closure pattern]], and discussing the specifics of how
+  browsers handle prototypical code so they run *fast*.
+
+
+- [[http://labs.oracle.com/self/papers/organizing-programs.html][Organizing Programs Without Classes]] /(paper)/ ::
+  Albeit not specific to JavaScript, this white-paper dwells on how the
+  structuring of programs differ from the classical object orientation
+  approach to the prototypical take on the subject. It provides lots of
+  [[http://selflanguage.org/][Self]] code to go with it, but they are more or less easily translated
+  to JavaScript code.
+
