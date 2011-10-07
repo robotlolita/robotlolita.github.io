@@ -37,16 +37,17 @@ primitive values, operators and such.
 
 Everything you can manipulate in JavaScript is an object. This includes
 ~Strings~, ~Arrays~, ~Numbers~, ~Functions~, and, obviously, the
-so-called ~Object~. An object in the language is simply a collection of
-key/value pairs (and a few internal magic sometimes).
+so-called ~Object~ — there are primitives, but they're converted to an
+object when you need to operate upon them. An object in the language is
+simply a collection of key/value pairs (and a few internal magic
+sometimes).
 
 There are no concepts of classes anywhere, though. That is, an object
 with properties ~name: Linda, age: 21~ is not an instance of the
-~Object~ class. Both ~Object~ and ~Linda~ are entirely separate
-*instances* that /fully/ define their own behaviour. In JavaScript,
-objects are instances of themselves, there are no layers of meta-data
-(i.e.: classes) to provide how an object of a certain type must look
-like.
+~Object~ class. Both ~Object~ and ~Linda~ are instances of
+themselves. They define their own behaviour, directly. There are no
+layers of meta-data (i.e.: classes) to provide how a given object must
+look like.
 
 You might ask: "how?". More so if you come from a highly classical
 Object Orientation background (like Java or C#). Wouldn't having each
@@ -57,19 +58,24 @@ example?
 
 Well, to answer all those questions, we'll first need to unlearn
 everything about the classical OO approach and start from the ground
-up. But, trust me, it's worth it. The prototypical OO model brings in
-some new ways of solving old problems, in an easier and more dynamic
-way. It also presents new and more powerful models for extensibility and
-code-reuse, which is what most people are interested about when they
-talk about Object Orientation.
+up. But, trust me, it's worth it.
+
+The prototypical OO model brings in some new ways of solving old
+problems, in an dynamic and more expressive way. It also presents new
+and more powerful models for extensibility and code-reuse, which is what
+most people are interested about when they talk about Object
+Orientation. It does not, however, give you contracts. Thus, there are
+no static guarantees that an object ~X~ will always have a given set of
+properties, but to understand the trade-offs here, we'll need to know
+what we're talking about first.
 
 
 ** 1.1. What are objects?
 
 As mentioned previously, objects are simple pairs of unique keys that
 correspond to a value — we'll call this pair a ~property~. So, suppose
-you'd want to describe a few aspects of an old friend — let's call it
-~Mikhail~, like age, name and gender:
+you'd want to describe a few aspects of an old friend (say ~Mikhail~),
+like age, name and gender:
 
 #+begin_src ditaa :file ../media/assets/oop-obj-mikhail.png :cmdline -E :exports none
    ( mikhail )
@@ -91,7 +97,7 @@ you'd want to describe a few aspects of an old friend — let's call it
 [[blog:oop-obj-mikhail.png]]
 
 Objects are created in JavaScript using the ~Object.create~ function. It
-takes a parent and an optional list of property descriptors and makes a
+takes a parent and an optional set of property descriptors and makes a
 brand new instance. Though, we'll not worry much about the parameters
 now.
 
@@ -137,18 +143,41 @@ Object.defineProperty(mikhail, 'gender', { value:        'Male'
 the given name does not exist in the object, otherwise it'll update the
 semantics and value of the existing property.
 
+- By the way ::
+  You can also use the =Object.defineProperties= when you need to add
+  more than one property to an object:
+
+  #+begin_src js
+  Object.defineProperties(mikhail, { name:   { value:        'Mikhail'
+                                             , writable:     true
+                                             , configurable: true
+                                             , enumerable:   true }
+                                             
+                                   , age:    { value:        19
+                                             , writable:     true
+                                             , configurable: true
+                                             , enumerable:   true }
+
+                                   , gender: { value:        'Male'
+                                             , writable:     true
+                                             , configurable: true
+                                             , enumerable:   true }})
+  #+end_src
+
+  Obviously, both calls are overtly verbose — albeit also quite
+  configurable —, thus not really meant for end-user code. It's better
+  to create an abstraction layer on top of them.
+
 
 ** 1.3. Descriptors
 
 Descriptors are the little object that carry the semantics of a property
 (we used them in the previous =Object.defineProperty= calls).
 
-A descriptor may be a data descriptor — it holds a concrete value — or
-an accessor descriptor — it proxies the access to the concrete value
-through getters and setter functions.
-
-All the descriptors share the following attributes. Whenever these are
-not given, they default to =false=.
+Flags define how a property is treated in the language, and they apply
+to all descriptors. If a flag is not set, it's assumed to be =false= —
+unfortunately this is usually not a good default value for them, which
+adds to the verbosity of these descriptors.
 
 - writable ::
   Whether the concrete value of the property may be changed.
@@ -161,14 +190,19 @@ not given, they default to =false=.
   Whether the property is listed in a loop through the properties of the
   object.
 
-Data descriptors can have the following attribute. Defaults to
-=undefined= when not given.
+A descriptor may be a data descriptor — it holds a concrete value — or
+an accessor descriptor — it proxies the access to the concrete value
+through getters and setter functions. When not set, they'll default to
+=undefined=.
+
+A data descriptor accepts only a =value= parameter, describing the
+concrete data bound to the property:
 
 - value ::
   The value of a property.
 
-Accessor descriptors can have the following attributes. Defaults to
-=undefined= when not given.
+Accessor descriptors, on the other hand, specify the proxy functions
+that will be used to handle the access to the property:
 
 - get () ::
   A function called with no arguments when the property value is
@@ -209,7 +243,6 @@ mikhail['gender'] = 'Male'
 ⁣
 
 - Note ::
-
   All property names are ultimately converted to a String, such that
   =object[1]=, =object[⁣[1]⁣]=, =object['1']= and =object[variable]= (when
   the variable resolves to =1=) are all equivalent.
@@ -259,12 +292,19 @@ mikhail['age']
 #+end_src
 
 Trying to access a property that does not exist in the object simply
-returns =undefined=:
+returns =undefined= [fn:2]:
 
 #+begin_src js
 mikhail['address']
 // => undefined
 #+end_src
+
+
+[fn:2]: It should be noted that, while ECMAScript-defined native objects
+        don't throw an error when you try to access a non-existing
+        property, it's not guaranteed that the same will hold true for a
+        host object. After all, host object semantics are not defined,
+        they are dependant on the particular run-time implementation.
 
 
 ** 1.6. Removing properties
@@ -290,8 +330,8 @@ operator, since [[http://twitter.com/kangax][@kangax]] has already written a
 ** 1.7. Getters and setters
 
 Getters and setters are usually used in classical object oriented
-languages to provide encapsulation. They are not much needed (or wanted)
-in JavaScript, though, given how dynamic the language is — +and my bias
+languages to provide encapsulation. They are not much needed in
+JavaScript, though, given how dynamic the language is — +and my bias
 against the feature+.
 
 At any rate, they allow you to proxy the requests for reading a property
@@ -336,7 +376,7 @@ Object.defineProperty(mikahil, 'name', { get: get_full_name
 #+end_src
 
 Now, every-time we try to access the value of Mikhail's =name= property,
-it'll execute the =get_full_name= getter:
+it'll execute the =get_full_name= getter.
 
 #+begin_src js
 mikhail.name
@@ -354,7 +394,7 @@ mikhail.name
 #+end_src
 
 We can also set the name of the object, by assigning a value to the
-property:
+property, this will then execute =set_full_name= to do the dirty work.
 
 #+begin_src js
 mikhail.name = 'Michael White'
@@ -369,6 +409,15 @@ mikhail.last_name
 // => 'White'
 #+end_src
 
+Of course, getters and setters make property access and modification
+[[http://jsperf.com/getter-setter/8][fairly slower]]. They do have some use-cases, but while browsers don't
+optimise them better, methods seem to be the way to go.
+
+Also, it should be noted that while getters and setters are usually used
+for encapsulation in other languages, in ECMAScript 5 you still can't have
+such if you need the information to be stored in the object itself. All
+properties in an object are public.
+
 
 ** 1.8. Listing properties
 
@@ -378,8 +427,9 @@ properties of an object, depending on what kind of properties one is
 interested into.
 
 The first one is done through a call to =Object.getOwnPropertyNames=,
-which returns an =Array= containing the names of *all* properties set in
-the object.
+which returns an =Array= containing the names of *all* properties set
+directly in the object — we call these kind of property *own*, by the
+way.
 
 If we check now what we know about Mikhail:
 
@@ -388,8 +438,8 @@ Object.getOwnPropertyNames(mikhail)
 // => [ 'name', 'age', 'gender', 'first_name', 'last_name' ]
 #+end_src
 
-The second way is using =Object.keys=, which returns all properties that
-have been marked as *enumerable* when they were defined:
+The second way is using =Object.keys=, which returns all own properties
+that have been marked as *enumerable* when they were defined:
 
 #+begin_src js
 Object.keys(mikhail)
@@ -1536,7 +1586,7 @@ new Foo()
 #+end_src
 
 
-** Inheritance with constructors
+** 4.2. Inheritance with constructors
 We've covered inheritance with plain objects through ~Object.create~,
 inheritance with constructors follow quite naturally from there, the
 difference being that instead of the main actor being the target of the
