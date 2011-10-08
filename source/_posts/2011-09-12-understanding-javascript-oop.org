@@ -551,7 +551,7 @@ a ~Function~, a ~Number~ or an ~Object~. Everything is treated the same
 way (i.e.: functions in JavaScript are first-class).
 
 As such, to define an action for a given object, you just assign a
-function object reference to a property. Let's say we wanted a way of
+function object reference to a property. Let's say we wanted a way for
 Mikhail to greet someone:
 
 #+begin_src js
@@ -565,7 +565,7 @@ mikhail.greet = function(person) {
 After setting the property, we can use it the same way we used the
 concrete data that were assigned to the object. That is, accessing the
 property will return a reference to the function object stored there, so
-we can just call it:
+we can just call.
 
 #+begin_src js
 mikhail.greet('you')
@@ -578,30 +578,33 @@ mikhail.greet('Kristin')
 
 ** 2.1. Dynamic =this=
 
-One thing that you must have noticed both on the =greet= function, and
-on the functions we've used for the =name='s getter/setter, is that they
+One thing that you must have noticed both in the =greet= function, and
+the functions we've used for the =name='s getter/setter, is that they
 use a magical variable called =this=.
 
-This variable is accessible inside any function in JavaScript, and holds
-a reference to the object that the function is being applied to. Note
-that this does not necessarily means that =this= will equal the object
-where the function is *stored*.
+It holds a reference to the object that the function is being applied
+to. This doesn't necessarily means that =this= will equal the object
+where the function is *stored*. No, JavaScript is not so
+selfish. 
 
-That is, in JavaScript, what =this= refers to is resolved dynamically,
-at the time the function is called, and depending only on how such a
-function is called.
+Functions are generics. That is, in JavaScript, what =this= refers to is
+decided dynamically, at the time the function is called, and depending
+only on how such a function is called.
 
 Having =this= dynamically resolved is an incredible powerful mechanism
 for the dynamism of JavaScript's object orientation and lack of
 strictly enforced structures (i.e.: classes), this means one can apply a
 function to any object that meets the requirements of the actions it
-performs, regardless of how the object has been constructed.
+performs, regardless of how the object has been constructed — hack in
+some custom multiple dispatcher and you have [[http://en.wikipedia.org/wiki/Common_Lisp_Object_System][CLOS]].
 
 
 ** 2.2. How =this= is resolved
 
 There are four different ways of resolving the =this= variable in a
-function, depending on how a function is called.
+function, depending on how a function is called: directly; as a method;
+explicitly applied; as a constructor. We'll dive in the first three for
+now, and come back at constructors later on.
 
 For the following examples, we'll take these definitions into account:
 
@@ -625,7 +628,7 @@ that an object is carrying an action, then that object will be our
 =this= inside the function.
 
 This is what happened when we called =mikhail.greet()=. The property
-access at the time of the call, tells JavaScript that we want to apply
+access at the time of the call tells JavaScript that we want to apply
 whatever actions the =greet= function defines to the =mikhail= object.
 
 #+begin_src js
@@ -634,6 +637,9 @@ one.add(two.value) // this === one
 
 two.add(3)         // this === two
 // => 5
+
+one['add'](two.value) // brackets are cool too
+// => 3
 #+end_src
 
 
@@ -666,7 +672,7 @@ parameters that will be passed to the function, and the performance —
 =apply= being up to 55x slower than a direct call, whereas =call= is
 usually not as bad. This might vary greatly depending on the engine
 though, so it's always better to do a [[http://jsperf.com][Perf test]] rather than being scared
-of using this functionality.
+of using the functionality — don't optimise early!
 
 Anyways, =call= expects the object that the function will be applied to
 as the first parameter, and the parameters to apply to the function as
@@ -688,24 +694,36 @@ second parameter of the function. The array will be passed as positional
 arguments to the target function:
 
 #+begin_src js
-add.apply(two, [2, 2])
+add.apply(two, [2, 2])       // equivalent to two.add(2, 2)
 // => 6
 
-add.apply(window, [4])
+add.apply(window, [4])       // equivalent to add(4)
 // => 6
 
-add.apply(one, [one.value])
+add.apply(one, [one.value])  // equivalent to one.add(one.value)
 // => 2
 #+end_src
 
 - Note ::
-
   What =this= resolves to when applying a function to a non-object (like
   =null= or =undefined=) depends on the semantics used by the
-  engine. Usually, this would be the same as explicitly applying the
+  engine. Usually, it would be the same as explicitly applying the
   function to the global object. But if the engine is running on [[https://developer.mozilla.org/en/JavaScript/Strict_mode][strict
   mode]], then =this= will be resolved as expected — to the exact thing it
-  was applied to.
+  was applied to:
+
+  #+begin_src js
+  window.value = 2
+  add.apply(1, 1) // this === window
+  // => 3
+
+  void function() {
+    "use strict"
+    add.apply(1, 1) // this === 1
+    // => NaN
+    // Since primitives can't hold properties.
+  }()
+  #+end_src
 
 
 ** 2.3. Bound methods
