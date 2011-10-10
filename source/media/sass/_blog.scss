@@ -156,7 +156,6 @@
 		@include box-shadow(#CCC, 0px, 0px, 5px, 0px) }
 
     dt {
-        font-variant:               small-caps;
         font-weight:                bold }
     dt:before {
         content:                    "- " }
@@ -189,17 +188,22 @@
 			border:						none;
 			margin:						0 auto 10px auto  }}
 
-    ul {
-        list-style-type:                square;
+    ol, ul {
         margin-left:                    2em }
 
+
+    ul {
+        list-style-type:                square }
+
+
 	/* lists */
-	.toc {
+	#table-of-contents {
 		margin:							4em 0 2em 0;
 		font-size:						1.2em;
 
 		ul {
 			list-style:					none;
+            margin-top:                 2em;
 			ul {
 				margin:					0.2em 0 0.5em 2em;
 				font-size:				0.9em }}}

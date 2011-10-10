@@ -1,69 +1,13 @@
-<!DOCTYPE html>
-<html> 
-    <head>
-        <meta charset="utf-8">
-        <title>Understanding JavaScript OOP — Sorella's Basement</title>
-        <meta name="description"
-              content="Rants about programming, open source, caffeine, unfunny jokes and such stuff." > 
-        <meta name="keywords"
-              content="programming, open source, javascript, python, clean code junkie">
-
-        <link href="http://feeds.feedburner.com/quildreen/en" rel="alternate"
-              title="Sorella's Basement" type="application/atom+xml">
-        <link href="/media/css/screen.css" media="screen" rel="stylesheet">
-    </head>
-    <body class="engb main-page">
-        <div id="header">
-    <div id="logo">
-        <a href="/"><h1>Sorella's Basement</h1></a>
-        <em>Madness!? This is [Computer] SCIENCE!</em>
-    </div>
-
-    <div id="nav">
-        <ul>
-            <li>
-                <a href="/">
-                    <em>Start here</em>
-                    <strong>Home</strong>
-                </a>
-            </li>
-            <li>
-                <a href="/blog">
-                    <em>/prog/ stuff</em>
-                    <strong>Blog</strong>
-                </a>
-            </li>
-            <li>
-                <a href="/about">
-                    <em>Who's this guy?</em>
-                    <strong>About</strong>
-                </a>
-            </li>
-            <li>
-                <a href="http://feeds.feedburner.com/quildreen/en">
-                    <em>Keep updated!</em>
-                    <strong>Feed</strong>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <br class="clearfix">
-</div>
+---
+layout: post
+title:  Understanding JavaScript OOP
+snip:   Prototypical inheritance on awesomeness!
+---
 
 
-        <div id="wrapper">
-            <div id="static-content">
-    <div id="post-header">
-        <h1 class="post-title">Understanding JavaScript OOP</h1>
-        <h2 class="post-subtitle">—Prototypical inheritance on awesomeness!</h2>
-        <br class="clearfix">
-        <div class="item-meta">
-            Posted on <time class="timeago" datetime="Mon, 12 Sep 2011 00:00:00 GMT-0300">12 September 2011</time>
-        </div>
-    </div>
-    
-    JavaScript is an object oriented language, with its roots in the <a href="http://selflanguage.org/">Self</a>
+
+<p>
+JavaScript is an object oriented language, with its roots in the <a href="http://selflanguage.org/">Self</a>
 programming language, however (sadly) designed to look like Java. This
 makes the language's really powerful and sweet features stay covered by
 some pretty ugly and counter-intuitive <i>work-arounds</i>.
@@ -90,7 +34,6 @@ primitive values, operators and such.
 </p>
 
 
-
 <div id="outline-container-1" class="outline-2">
 <h2 id="sec-1">1. Objects </h2>
 <div class="outline-text-2" id="text-1">
@@ -99,17 +42,18 @@ primitive values, operators and such.
 <p>
 Everything you can manipulate in JavaScript is an object. This includes
 <code>Strings</code>, <code>Arrays</code>, <code>Numbers</code>, <code>Functions</code>, and, obviously, the
-so-called <code>Object</code>. An object in the language is simply a collection of
-key/value pairs (and a few internal magic sometimes).
+so-called <code>Object</code> — there are primitives, but they're converted to an
+object when you need to operate upon them. An object in the language is
+simply a collection of key/value pairs (and a few internal magic
+sometimes).
 </p>
 <p>
 There are no concepts of classes anywhere, though. That is, an object
 with properties <code>name: Linda, age: 21</code> is not an instance of the
-<code>Object</code> class. Both <code>Object</code> and <code>Linda</code> are entirely separate
-<b>instances</b> that <i>fully</i> define their own behaviour. In JavaScript,
-objects are instances of themselves, there are no layers of meta-data
-(i.e.: classes) to provide how an object of a certain type must look
-like.
+<code>Object</code> class. Both <code>Object</code> and <code>Linda</code> are instances of
+themselves. They define their own behaviour, directly. There are no
+layers of meta-data (i.e.: classes) to provide how a given object must
+look like.
 </p>
 <p>
 You might ask: "how?". More so if you come from a highly classical
@@ -122,11 +66,17 @@ example?
 <p>
 Well, to answer all those questions, we'll first need to unlearn
 everything about the classical OO approach and start from the ground
-up. But, trust me, it's worth it. The prototypical OO model brings in
-some new ways of solving old problems, in an easier and more dynamic
-way. It also presents new and more powerful models for extensibility and
-code-reuse, which is what most people are interested about when they
-talk about Object Orientation.
+up. But, trust me, it's worth it.
+</p>
+<p>
+The prototypical OO model brings in some new ways of solving old
+problems, in an dynamic and more expressive way. It also presents new
+and more powerful models for extensibility and code-reuse, which is what
+most people are interested about when they talk about Object
+Orientation. It does not, however, give you contracts. Thus, there are
+no static guarantees that an object <code>X</code> will always have a given set of
+properties, but to understand the trade-offs here, we'll need to know
+what we're talking about first.
 </p>
 
 
@@ -140,8 +90,8 @@ talk about Object Orientation.
 <p>
 As mentioned previously, objects are simple pairs of unique keys that
 correspond to a value — we'll call this pair a <code>property</code>. So, suppose
-you'd want to describe a few aspects of an old friend — let's call it
-<code>Mikhail</code>, like age, name and gender:
+you'd want to describe a few aspects of an old friend (say <code>Mikhail</code>),
+like age, name and gender:
 </p>
 
 
@@ -151,7 +101,7 @@ you'd want to describe a few aspects of an old friend — let's call it
 </p>
 <p>
 Objects are created in JavaScript using the <code>Object.create</code> function. It
-takes a parent and an optional list of property descriptors and makes a
+takes a parent and an optional set of property descriptors and makes a
 brand new instance. Though, we'll not worry much about the parameters
 now.
 </p>
@@ -217,6 +167,41 @@ Object.defineProperty(mikhail, <span style="color: #A6E32D;">'gender'</span>, { 
 the given name does not exist in the object, otherwise it'll update the
 semantics and value of the existing property.
 </p>
+<dl>
+<dt>By the way</dt><dd>
+
+<p>
+You can also use the <code>Object.defineProperties</code> when you need to add
+more than one property to an object:
+</p>
+
+
+
+<pre class="src src-js">Object.defineProperties(mikhail, { name:   { value:        <span style="color: #A6E32D;">'Mikhail'</span>
+                                           , writable:     <span style="color: #FA2573;">true</span>
+                                           , configurable: <span style="color: #FA2573;">true</span>
+                                           , enumerable:   <span style="color: #FA2573;">true</span> }
+
+                                 , age:    { value:        19
+                                           , writable:     <span style="color: #FA2573;">true</span>
+                                           , configurable: <span style="color: #FA2573;">true</span>
+                                           , enumerable:   <span style="color: #FA2573;">true</span> }
+
+                                 , gender: { value:        <span style="color: #A6E32D;">'Male'</span>
+                                           , writable:     <span style="color: #FA2573;">true</span>
+                                           , configurable: <span style="color: #FA2573;">true</span>
+                                           , enumerable:   <span style="color: #FA2573;">true</span> }})
+</pre>
+
+
+
+<p>
+Obviously, both calls are overtly verbose — albeit also quite
+configurable —, thus not really meant for end-user code. It's better
+to create an abstraction layer on top of them.
+</p>
+</dd>
+</dl>
 
 </div>
 
@@ -232,19 +217,17 @@ Descriptors are the little object that carry the semantics of a property
 (we used them in the previous <code>Object.defineProperty</code> calls).
 </p>
 <p>
-A descriptor may be a data descriptor — it holds a concrete value — or
-an accessor descriptor — it proxies the access to the concrete value
-through getters and setter functions.
-</p>
-<p>
-All the descriptors share the following attributes. Whenever these are
-not given, they default to <code>false</code>.
+Flags define how a property is treated in the language, and they apply
+to all descriptors. If a flag is not set, it's assumed to be <code>false</code> —
+unfortunately this is usually not a good default value for them, which
+adds to the verbosity of these descriptors.
 </p>
 <dl>
 <dt>writable</dt><dd>
 
 <p>
-Whether the concrete value of the property may be changed.
+Whether the concrete value of the property may be changed. Only
+applies to data descriptors.
 </p>
 </dd>
 <dt>configurable</dt><dd>
@@ -264,8 +247,14 @@ object.
 
 
 <p>
-Data descriptors can have the following attribute. Defaults to
-<code>undefined</code> when not given.
+A descriptor may be a data descriptor — it holds a concrete value — or
+an accessor descriptor — it proxies the access to the concrete value
+through getters and setter functions. When not set, they'll default to
+<code>undefined</code>.
+</p>
+<p>
+A data descriptor accepts only a <code>value</code> parameter, describing the
+concrete data bound to the property:
 </p>
 <dl>
 <dt>value</dt><dd>
@@ -277,8 +266,8 @@ The value of a property.
 
 
 <p>
-Accessor descriptors can have the following attributes. Defaults to
-<code>undefined</code> when not given.
+Accessor descriptors, on the other hand, specify the proxy functions
+that will be used to handle the access to the property:
 </p>
 <dl>
 <dt>get ()</dt><dd>
@@ -318,7 +307,7 @@ JavaScript also understands references to a property using what we call
 
 
 
-<pre class="src src-bnf">&lt;bracket-access&gt; ::= &lt;identifier&gt; <span style="color: #A6E32D;">"["</span> &lt;expression&gt; <span style="color: #A6E32D;">"]"</span>
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;bracket-access&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> <span style="color: #A6E32D;">"["</span> <span style="color: #729FCF;">&lt;expression&gt;</span> <span style="color: #A6E32D;">"]"</span>
 </pre>
 
 
@@ -349,7 +338,6 @@ mikhail[<span style="color: #A6E32D;">'gender'</span>] = <span style="color: #A6
 <dl>
 <dt>Note</dt><dd>
 
-
 <p>
 All property names are ultimately converted to a String, such that
 <code>object[1]</code>, <code>object[⁣[1]⁣]</code>, <code>object['1']</code> and <code>object[variable]</code> (when
@@ -370,7 +358,7 @@ The rule for <i>dot notation</i> is:
 
 
 
-<pre class="src src-bnf">&lt;dot-access&gt; ::= &lt;identifier&gt; <span style="color: #A6E32D;">"."</span> &lt;identifier&gt;
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;dot-access&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> <span style="color: #A6E32D;">"."</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
 </pre>
 
 
@@ -421,7 +409,7 @@ So, if we want to check on Mikhail's age:
 
 <p>
 Trying to access a property that does not exist in the object simply
-returns <code>undefined</code>:
+returns <code>undefined</code> <sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>:
 </p>
 
 
@@ -429,7 +417,6 @@ returns <code>undefined</code>:
 <pre class="src src-js">mikhail[<span style="color: #A6E32D;">'address'</span>]
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; undefined
 </span></pre>
-
 
 
 
@@ -477,8 +464,8 @@ operator, since <a href="http://twitter.com/kangax">@kangax</a> has already writ
 
 <p>
 Getters and setters are usually used in classical object oriented
-languages to provide encapsulation. They are not much needed (or wanted)
-in JavaScript, though, given how dynamic the language is — <del>and my bias against the feature</del>.
+languages to provide encapsulation. They are not much needed in
+JavaScript, though, given how dynamic the language is — <del>and my bias against the feature</del>.
 </p>
 <p>
 At any rate, they allow you to proxy the requests for reading a property
@@ -523,9 +510,8 @@ values at the same time — let's call it <code>name</code>:
     <span style="color: #FA2573;">this</span>.last_name  = names[1] || <span style="color: #A6E32D;">''</span>
 }
 
-Object.defineProperty(mikahil, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
+Object.defineProperty(mikhail, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
                                        , set: set_full_name
-                                       , writable:     <span style="color: #FA2573;">true</span>
                                        , configurable: <span style="color: #FA2573;">true</span>
                                        , enumerable:   <span style="color: #FA2573;">true</span> })
 </pre>
@@ -534,7 +520,7 @@ Object.defineProperty(mikahil, <span style="color: #A6E32D;">'name'</span>, { ge
 
 <p>
 Now, every-time we try to access the value of Mikhail's <code>name</code> property,
-it'll execute the <code>get_full_name</code> getter:
+it'll execute the <code>get_full_name</code> getter.
 </p>
 
 
@@ -557,7 +543,7 @@ mikhail.name
 
 <p>
 We can also set the name of the object, by assigning a value to the
-property:
+property, this will then execute <code>set_full_name</code> to do the dirty work.
 </p>
 
 
@@ -576,6 +562,17 @@ mikhail.last_name
 
 
 
+<p>
+Of course, getters and setters make property access and modification
+<a href="http://jsperf.com/getter-setter/8">fairly slower</a>. They do have some use-cases, but while browsers don't
+optimise them better, methods seem to be the way to go.
+</p>
+<p>
+Also, it should be noted that while getters and setters are usually used
+for encapsulation in other languages, in ECMAScript 5 you still can't have
+such if you need the information to be stored in the object itself. All
+properties in an object are public.
+</p>
 
 </div>
 
@@ -594,8 +591,9 @@ interested into.
 </p>
 <p>
 The first one is done through a call to <code>Object.getOwnPropertyNames</code>,
-which returns an <code>Array</code> containing the names of <b>all</b> properties set in
-the object.
+which returns an <code>Array</code> containing the names of <b>all</b> properties set
+directly in the object — we call these kind of property <b>own</b>, by the
+way.
 </p>
 <p>
 If we check now what we know about Mikhail:
@@ -610,8 +608,8 @@ If we check now what we know about Mikhail:
 
 
 <p>
-The second way is using <code>Object.keys</code>, which returns all properties that
-have been marked as <b>enumerable</b> when they were defined:
+The second way is using <code>Object.keys</code>, which returns all own properties
+that have been marked as <b>enumerable</b> when they were defined:
 </p>
 
 
@@ -682,26 +680,26 @@ The rules for object literal can be described as the following:
 
 
 
-<pre class="src src-bnf">&lt;object-literal&gt;  ::= <span style="color: #A6E32D;">"{"</span> &lt;property-list&gt; <span style="color: #A6E32D;">"}"</span>
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;object-literal&gt;</span>  <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"{"</span> <span style="color: #729FCF;">&lt;property-list&gt;</span> <span style="color: #A6E32D;">"}"</span>
                     ;
-&lt;property-list&gt;   ::= &lt;property&gt; [<span style="color: #A6E32D;">","</span> &lt;property&gt;]*
+<span style="color: #67D9F0;">&lt;property-list&gt;</span>   <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;property&gt;</span> [<span style="color: #A6E32D;">","</span> <span style="color: #729FCF;">&lt;property&gt;</span>]*
                     ;
-&lt;property&gt;        ::= &lt;data-property&gt;
-                    | &lt;getter-property&gt;
-                    | &lt;setter-property&gt;
+<span style="color: #67D9F0;">&lt;property&gt;</span>        <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;data-property&gt;</span>
+                    <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;getter-property&gt;</span>
+                    <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;setter-property&gt;</span>
                     ;
-&lt;data-property&gt;   ::= &lt;property-name&gt; <span style="color: #A6E32D;">":"</span> &lt;expression&gt;
+<span style="color: #67D9F0;">&lt;data-property&gt;</span>   <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;property-name&gt;</span> <span style="color: #A6E32D;">":"</span> <span style="color: #729FCF;">&lt;expression&gt;</span>
                     ;
-&lt;getter-property&gt; ::= <span style="color: #A6E32D;">"get"</span> &lt;identifier&gt;
-                    :       &lt;function-parameters&gt;
-                    :       &lt;function-block&gt;
+<span style="color: #67D9F0;">&lt;getter-property&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"get"</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-parameters&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-block&gt;</span>
                     ;
-&lt;setter-property&gt; ::= <span style="color: #A6E32D;">"set"</span> &lt;identifier&gt;
-                    :       &lt;function-parameters&gt;
-                    :       &lt;function-block&gt;
+<span style="color: #67D9F0;">&lt;setter-property&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"set"</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-parameters&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-block&gt;</span>
                     ;
-&lt;property-name&gt;   ::= &lt;identifier&gt;
-                    | &lt;quoted-identifier&gt;
+<span style="color: #67D9F0;">&lt;property-name&gt;</span>   <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+                    <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;quoted-identifier&gt;</span>
                     ;
 </pre>
 
@@ -762,7 +760,7 @@ way (i.e.: functions in JavaScript are first-class).
 </p>
 <p>
 As such, to define an action for a given object, you just assign a
-function object reference to a property. Let's say we wanted a way of
+function object reference to a property. Let's say we wanted a way for
 Mikhail to greet someone:
 </p>
 
@@ -781,7 +779,7 @@ Mikhail to greet someone:
 After setting the property, we can use it the same way we used the
 concrete data that were assigned to the object. That is, accessing the
 property will return a reference to the function object stored there, so
-we can just call it:
+we can just call.
 </p>
 
 
@@ -805,27 +803,28 @@ mikhail.greet(<span style="color: #A6E32D;">'Kristin'</span>)
 
 
 <p>
-One thing that you must have noticed both on the <code>greet</code> function, and
-on the functions we've used for the <code>name</code>'s getter/setter, is that they
+One thing that you must have noticed both in the <code>greet</code> function, and
+the functions we've used for the <code>name</code>'s getter/setter, is that they
 use a magical variable called <code>this</code>.
 </p>
 <p>
-This variable is accessible inside any function in JavaScript, and holds
-a reference to the object that the function is being applied to. Note
-that this does not necessarily means that <code>this</code> will equal the object
-where the function is <b>stored</b>.
+It holds a reference to the object that the function is being applied
+to. This doesn't necessarily means that <code>this</code> will equal the object
+where the function is <b>stored</b>. No, JavaScript is not so
+selfish. 
 </p>
 <p>
-That is, in JavaScript, what <code>this</code> refers to is resolved dynamically,
-at the time the function is called, and depending only on how such a
-function is called.
+Functions are generics. That is, in JavaScript, what <code>this</code> refers to is
+decided dynamically, at the time the function is called, and depending
+only on how such a function is called.
 </p>
 <p>
 Having <code>this</code> dynamically resolved is an incredible powerful mechanism
 for the dynamism of JavaScript's object orientation and lack of
 strictly enforced structures (i.e.: classes), this means one can apply a
 function to any object that meets the requirements of the actions it
-performs, regardless of how the object has been constructed.
+performs, regardless of how the object has been constructed — hack in
+some custom multiple dispatcher and you have <a href="http://en.wikipedia.org/wiki/Common_Lisp_Object_System">CLOS</a>.
 </p>
 
 </div>
@@ -839,7 +838,9 @@ performs, regardless of how the object has been constructed.
 
 <p>
 There are four different ways of resolving the <code>this</code> variable in a
-function, depending on how a function is called.
+function, depending on how a function is called: directly; as a method;
+explicitly applied; as a constructor. We'll dive in the first three for
+now, and come back at constructors later on.
 </p>
 <p>
 For the following examples, we'll take these definitions into account:
@@ -876,7 +877,7 @@ that an object is carrying an action, then that object will be our
 </p>
 <p>
 This is what happened when we called <code>mikhail.greet()</code>. The property
-access at the time of the call, tells JavaScript that we want to apply
+access at the time of the call tells JavaScript that we want to apply
 whatever actions the <code>greet</code> function defines to the <code>mikhail</code> object.
 </p>
 
@@ -887,6 +888,9 @@ whatever actions the <code>greet</code> function defines to the <code>mikhail</c
 </span>
 two.add(3)         <span style="color: #75766A;">// </span><span style="color: #75766A;">this === two
 </span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 5
+</span>
+one[<span style="color: #A6E32D;">'add'</span>](two.value) <span style="color: #75766A;">// </span><span style="color: #75766A;">brackets are cool too
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
 </span></pre>
 
 
@@ -942,7 +946,7 @@ parameters that will be passed to the function, and the performance —
 <code>apply</code> being up to 55x slower than a direct call, whereas <code>call</code> is
 usually not as bad. This might vary greatly depending on the engine
 though, so it's always better to do a <a href="http://jsperf.com">Perf test</a> rather than being scared
-of using this functionality.
+of using the functionality — don't optimise early!
 </p>
 <p>
 Anyways, <code>call</code> expects the object that the function will be applied to
@@ -972,14 +976,14 @@ arguments to the target function:
 
 
 
-<pre class="src src-js">add.apply(two, [2, 2])
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
+<pre class="src src-js">add.apply(two, [2, 2])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to two.add(2, 2)
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
 </span>
-add.apply(window, [4])
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
+add.apply(window, [4])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to add(4)
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
 </span>
-add.apply(one, [one.value])
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 2
+add.apply(one, [one.value])  <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to one.add(one.value)
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 2
 </span></pre>
 
 
@@ -987,14 +991,30 @@ add.apply(one, [one.value])
 <dl>
 <dt>Note</dt><dd>
 
-
 <p>
-What <code>this</code> resolves to when applying a function to a non-object (like
-<code>null</code> or <code>undefined</code>) depends on the semantics used by the
-engine. Usually, this would be the same as explicitly applying the
-function to the global object. But if the engine is running on <a href="https://developer.mozilla.org/en/JavaScript/Strict_mode">strict mode</a>, then <code>this</code> will be resolved as expected — to the exact thing it
-was applied to.
+What <code>this</code> resolves to when applying a function to <code>null</code> or
+<code>undefined</code> depends on the semantics used by the engine. Usually, it
+would be the same as explicitly applying the function to the global
+object. But if the engine is running on <a href="https://developer.mozilla.org/en/JavaScript/Strict_mode">strict mode</a>, then <code>this</code> will
+be resolved as expected — to the exact thing it was applied to:
 </p>
+
+
+
+<pre class="src src-js">window.value = 2
+add.call(<span style="color: #FA2573;">undefined</span>, 1) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === window
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+</span>
+<span style="color: #C48DFF;">void</span> <span style="color: #C48DFF;">function</span>() {
+  <span style="color: #A6E32D;">"use strict"</span>
+  add.call(<span style="color: #FA2573;">undefined</span>, 1) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === undefined
+</span>  <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; NaN
+</span>  <span style="color: #75766A;">// </span><span style="color: #75766A;">Since primitives can't hold properties.
+</span>}()
+</pre>
+
+
+
 </dd>
 </dl>
 
@@ -1056,9 +1076,9 @@ other objects, however, this still doesn't give us a nice way for
 code reuse and extensibility.
 </p>
 <p>
-That's where inheritance comes in. Inheritance allows for a greater
-separation of concerns, where objects define specialised behaviours by
-building upon the already defined behaviours of other objects.
+That's where inheritance comes into play. Inheritance allows for a
+greater separation of concerns, where objects define specialised
+behaviours by building upon the behaviours of other objects.
 </p>
 <p>
 The prototypical model goes further than that, though, and allows for
@@ -1085,15 +1105,16 @@ the <code>prototype</code> property of functions).
 </p>
 <p>
 A prototype is just a plain object, that happens to share it's
-behaviours with another object — it acts as the object's parent. It's
-important to note here that the concepts of this <i>behaviour cloning</i>
-does not imply that you'll have two different copies of the same
-function, or data. In fact, JavaScript implements inheritance by
-delegation, such that the properties in a prototype are effectively
-shared with any object that inherits from it.
+behaviours with another object — it acts as the object's parent.
 </p>
 <p>
-As mentioned previously, the parent (or Prototype) of an object is
+Now, the concepts of this <i>behaviour cloning</i> does not imply that you'll
+have two different copies of the same function, or data. In fact,
+JavaScript implements inheritance by delegation, all properties are kept
+in the parent, and access to them is just extended for the child.
+</p>
+<p>
+As mentioned previously, the parent (or <code>[⁣[Prototype]⁣]</code>) of an object is
 defined by making a call to <code>Object.create</code>, and passing a reference of
 the object to use as parent in the first parameter.
 </p>
@@ -1103,7 +1124,7 @@ greeting and name actions can be well defined in a separate object and
 shared with other objects that need them.
 </p>
 <p>
-This would give us the following model:
+Which takes us to the following model:
 </p>
 
 
@@ -1111,7 +1132,7 @@ This would give us the following model:
 <img src="http://dl.dropbox.com/u/4429200/blog/oop-proto-person.png"  alt="http://dl.dropbox.com/u/4429200/blog/oop-proto-person.png" />
 </p>
 <p>
-Which could be implemented in JavaScript with the following definitions:
+We can implement this in JavaScript with the following definitions:
 </p>
 
 
@@ -1121,7 +1142,6 @@ Which could be implemented in JavaScript with the following definitions:
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Here we are reusing the previous getter/setter functions
 </span>Object.defineProperty(person, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
                                       , set: set_full_name
-                                      , writable:     <span style="color: #FA2573;">true</span>
                                       , configurable: <span style="color: #FA2573;">true</span>
                                       , enumerable:   <span style="color: #FA2573;">true</span> })
 
@@ -1131,25 +1151,31 @@ Which could be implemented in JavaScript with the following definitions:
 }
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Then we can share those behaviours with Mikhail
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">By creating a new object that has it's [[Prototype]] property
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">pointing to `person'.
 </span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = Object.create(person)
 mikhail.first_name = <span style="color: #A6E32D;">'Mikhail'</span>
 mikhail.last_name  = <span style="color: #A6E32D;">'Wei&#223;'</span>
 mikhail.age        = 19
 mikhail.gender     = <span style="color: #A6E32D;">'Male'</span>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And we can test whether things are actually working
+<span style="color: #75766A;">// </span><span style="color: #75766A;">And we can test whether things are actually working.
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">First, `name' should be looked on `person'
 </span>mikhail.name
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;'
 </span>
-mikhail.name = <span style="color: #A6E32D;">'Michael White'</span>
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Setting `name' should trigger the setter
+</span>mikhail.name = <span style="color: #A6E32D;">'Michael White'</span>
 
-mikhail.first_name
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Such that `first_name' and `last_name' now reflect the
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">previously name setting.
+</span>mikhail.first_name
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael'
-</span>
-mikhail.last_name
+</span>mikhail.last_name
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'White'
 </span>
-mikhail.greet(<span style="color: #A6E32D;">'you'</span>)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">`greet' is also inherited from `person'.
+</span>mikhail.greet(<span style="color: #A6E32D;">'you'</span>)
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Why, hello there, you.'
 </span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">And just to be sure, we can check which properties actually
@@ -1179,13 +1205,13 @@ parents of an object.
 </p>
 <p>
 This parent chain is defined by a hidden slot in every object, called
-<code>[⁣[Prototype]⁣]</code>. You can't change this slot directly<sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>, so the only
+<code>[⁣[Prototype]⁣]</code>. You can't change this slot directly<sup><a class="footref" name="fnr.2.2" href="#fn.2">2</a></sup>, so the only
 way of setting it is when you're creating a fresh object.
 </p>
 <p>
 When a property is requested from the object, the engine first tries to
 retrieve the property from the target object. If the property isn't
-found, the search continue through the immediate parent of that object,
+there, the search continue through the immediate parent of that object,
 and the parent of that parent, and so on.
 </p>
 <p>
@@ -1219,20 +1245,20 @@ mikhail.greet(<span style="color: #A6E32D;">'you'</span>)
 <p>So, prototypes (that is, inheritance) are used for sharing data with
 other objects, and it does such in a pretty fast and memory-effective
 manner too, since you'll always have only one instance of a given piece
-of data laying around.
+of data lying around.
 </p>
 <p>
 Now what if we want to add specialised behaviours, that build upon the
 data that was shared with the object? Well, we have seen before that
-objects define their own behaviours by defining properties, so
-specialised behaviours follow the same principle — you just define the
-new behaviour.
+objects define their own behaviours by means of properties, so
+specialised behaviours follow the same principle — you just assign a
+value to the relevant property.
 </p>
 <p>
 To better demonstrate it, suppose <code>Person</code> implements only a general
-greeting, and everyone inheriting from <code>Person</code> (by which I mean,
-sharing its behaviours). Also, let's add a new person to our case
-scenario, so to outline better how objects are extended:
+greeting, and everyone inheriting from <code>Person</code> define their own
+specialised and unique greetings. Also, let's add a new person to our
+case scenario, so to outline better how objects are extended:
 </p>
 
 
@@ -1264,7 +1290,7 @@ was shared from <code>person</code>.
     <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': \'sup, '</span> + (person || <span style="color: #A6E32D;">'dude'</span>)
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And finally we define our new protagonist, Kristin
+<span style="color: #75766A;">// </span><span style="color: #75766A;">And define our new protagonist, Kristin
 </span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">kristin</span> = Object.create(person)
 kristin.first_name = <span style="color: #A6E32D;">'Kristin'</span>
 kristin.last_name  = <span style="color: #A6E32D;">'Wei&#223;'</span>
@@ -1281,14 +1307,14 @@ kristin.gender     = <span style="color: #A6E32D;">'Female'</span>
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Finally, we test if everything works according to the expected
 </span>
-mikhail.greet(kristin.name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: \'sup, Kristin Wei&#223;'
+mikhail.greet(kristin.first_name)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: \'sup, Kristin'
 </span>
 mikhail.greet()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: \'sup, dude'
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: \'sup, dude'
 </span>
-kristin.greet(mikhail.name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: \'ello, Mikhail Wei&#223;'
+kristin.greet(mikhail.first_name)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: \'ello, Michael'
 </span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">And just so we check how cool this [[Prototype]] thing is,
 </span><span style="color: #75766A;">// </span><span style="color: #75766A;">let's get Kristin back to the generic behaviour
@@ -1296,8 +1322,8 @@ kristin.greet(mikhail.name)
 <span style="color: #C48DFF;">delete</span> kristin.greet
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; true
 </span>
-kristin.greet(mikhail.name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: Hello, Mikhail Wei&#223;'
+kristin.greet(mikhail.first_name)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: Hello, Michael'
 </span></pre>
 
 
@@ -1353,9 +1379,9 @@ going to cheat a little bit.
 <p>
 For mixins to work, we first need to have a way of combining different
 objects into a single one. JavaScript doesn't provide this out-of-the
-box, but we can easily make one by copying all <b>own</b> (the ones defined
-directly in the object, rather than inherited) property descriptors of
-an object over to another.
+box, but we can easily make one by copying all <b>own</b> property
+descriptors, the ones defined directly in the object, rather than
+inherited, from one object to another.
 </p>
 
 
@@ -1395,7 +1421,7 @@ assigning multiple abilities to our objects (<code>mikhail</code> e
 <pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">A pianist is someone who can `play' the piano
 </span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">pianist</span> = Object.create(<span style="color: #FA2573;">null</span>)
 pianist.play = <span style="color: #C48DFF;">function</span>() {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name <span style="color: #A6E32D;">' starts playing the piano.'</span>
+    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">' starts playing the piano.'</span>
 }
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">A singer is someone who can `sing'
@@ -1408,7 +1434,7 @@ singer.sing = <span style="color: #C48DFF;">function</span>() {
 </span><span style="color: #75766A;">// </span><span style="color: #75766A;">our main objects:
 </span>extend(mikhail, pianist)
 mikhail.play()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223; starts playing the piano.'
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White starts playing the piano.'
 </span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">We can see that all that ends up as an own property of
 </span><span style="color: #75766A;">// </span><span style="color: #75766A;">mikhail. It is not shared.
@@ -1429,10 +1455,8 @@ kristin.sing()
 </span>extend(person, singer)
 
 mikhail.sing()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223; starts singing'
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White starts singing.'
 </span></pre>
-
-
 
 
 
@@ -1442,7 +1466,7 @@ mikhail.sing()
 </div>
 
 <div id="outline-container-3_5" class="outline-3">
-<h3 id="sec-3_5">3.5. Resending messages </h3>
+<h3 id="sec-3_5">3.5. Accessing overwritten properties </h3>
 <div class="outline-text-3" id="text-3_5">
 
 <p>Now that we're able to inherit properties from other objects and extend
@@ -1451,200 +1475,60 @@ problem: what if we actually wanted to access the parent behaviours that
 we just overwrote?
 </p>
 <p>
-A naïve solution would be to just access the parent's property, or apply
-the parent's method to the specialised object:
+JavaScript provides the <code>Object.getPrototypeOf</code> function, that returns
+the <code>[⁣[Prototype]⁣]</code> of an object. This way, we have access to all
+properties defined within the prototype chain of an object. So,
+accessing a property in the parent of an object is quite simple:
 </p>
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(name:String) &#8594; String
+<pre class="src src-js">Object.getPrototypeOf(mikhail).name    <span style="color: #75766A;">// </span><span style="color: #75766A;">same as `person.name'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'undefined undefined'
+</span>
+<span style="color: #75766A;">// </span><span style="color: #75766A;">We can assert it's really being called on `person' by
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">giving `person' a `first_name' and `last_name'
+</span>person.first_name = <span style="color: #A6E32D;">'Random'</span>
+person.last_name  = <span style="color: #A6E32D;">'Person'</span>
+Object.getPrototypeOf(mikhail).name
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Random Person'
+</span></pre>
+
+
+
+<p>
+So, a naïve solution for applying a method stored in the <code>[⁣[Prototype]⁣]</code>
+of an object to the current one, would then follow, quite naturally, by
+looking the property on the <code>[⁣[Prototype]⁣]</code> of <code>this</code>:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">proto</span> = Object.getPrototypeOf
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(name:String) &#8594; String
 </span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets someone intimately if we know them, otherwise use
 </span><span style="color: #75766A;">// </span><span style="color: #75766A;">the generic greeting
 </span>mikhail.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">name</span>) {
     <span style="color: #C48DFF;">return</span> name == <span style="color: #A6E32D;">'Kristin Wei&#223;'</span>?  <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Heya, Kristty'</span>
-         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">we dunno this guy */</span>  person.greet.call(<span style="color: #FA2573;">this</span>, name)
+         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">we dunno this guy */</span>  proto(<span style="color: #FA2573;">this</span>).greet.call(<span style="color: #FA2573;">this</span>, name)
 }
 
 mikhail.greet(kristin.name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: Heya, Kristty'
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Heya, Kristty'
 </span>
 mikhail.greet(<span style="color: #A6E32D;">'Margareth'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: Hello, Margareth'
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Hello, Margareth'
 </span></pre>
 
 
 
 <p>
-It apparently works, but this has many short-comings. The most
-outstanding of them being that functions don't belong to objects in
-JavaScript, so we could assign <code>greet</code> to any object, that provides the
-interface the function expects — in this case, an object with a <code>name</code>
-property.
-</p>
-<p>
-This other object does not necessarily need to inherit directly from
-<code>Person</code>. It might be just about <b>any</b> object, and in this case it would
-make more sense that the message were sent to that object's parent,
-instead of <code>Person</code> directly. In fact, <code>Person</code> might not be present in
-the prototype of this object at all!
-</p>
-<p>
-So, a better description of this issue would be that, when an object
-receive a message (property access or method invokation), we might want
-to preserve the parent's behaviour under some conditions. Thus, we need:
-</p>
-<p>
-1.) A way of getting the closest parent of an object that implements
-the message we're interested in.
-</p>
-<p>
-2.) In the case of methods, a way of applying such behaviour to the
-current object.
-</p>
-<p>
-The first one is pretty easy to solve, since JavaScript offers the
-<code>Object.getPrototypeOf</code> function for returning the immediate parent of
-an object (that is, its <code>[⁣[Prototype]⁣]</code>).
-</p>
-
-
-
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">slice</span> = [].slice
-  , proto = Object.getPrototypeOf
-
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object) &#8594; Boolean
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Tests if an object can be called (has [[Call]])
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">callablep</span>(<span style="color: #729FCF;">object</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">typeof</span> object == <span style="color: #A6E32D;">'function'</span>
-}
-
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object, message:String, args...) &#8594; *mixed*
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Resends the given message to the closest parent of `object'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">that implements it.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">resend</span>(<span style="color: #729FCF;">object</span>, <span style="color: #729FCF;">message</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>, <span style="color: #729FCF;">property</span>
-    args     = slice.call(<span style="color: #FA2573;">arguments</span>, 2)
-    property = proto(object)[message]
-
-    <span style="color: #C48DFF;">return</span> callablep(property)?  property.apply(object, args)
-         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">data property */</span>   property
-}
-</pre>
-
-
-
-<p>
-Now, let's move our greeting function over to a mixin, and make it all a
-little more generic. We'll have a <code>greeter</code> mixin, that either calls a
-<code>friendly_greet</code> in the object, if the person is known, or a fallback
-<code>greet</code> method in the parent.
-</p>
-
-
-
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(array:Array, value) &#8594; Boolean
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Test if the array includes the value
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">hasp</span>(<span style="color: #729FCF;">array</span>, <span style="color: #729FCF;">value</span>) {
-    <span style="color: #C48DFF;">return</span> array.indexOf(value) != -1
-}
-
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">A greeter is an object that has a list of known people, and
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">it might greet those people in a friendly manner, but only
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">if a specialised behaviour is defined for this (friendly_greet).
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Otherwise it just goes back to formal greeting.
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">greeter</span> = {
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">A list of objects we know about
-</span>    known: [ ]
-
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">(person:+Person) &#8594; String
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the person intimately, if known, otherwise formally.
-</span>    <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">greet</span>(<span style="color: #729FCF;">person</span>) {
-        <span style="color: #75766A;">// </span><span style="color: #75766A;">If we know the person and wish to greet known people
-</span>        <span style="color: #75766A;">// </span><span style="color: #75766A;">in a friendly and informal manner
-</span>        <span style="color: #C48DFF;">if</span> ( hasp(<span style="color: #FA2573;">this</span>.known, person)
-          &amp;&amp; callablep(<span style="color: #FA2573;">this</span>.friendly_greet))
-            <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.friendly_greet(person)
-
-        <span style="color: #75766A;">// </span><span style="color: #75766A;">Otherwise we just fallback to formal greeting (probably
-</span>        <span style="color: #75766A;">// </span><span style="color: #75766A;">defined in the object's parent)
-</span>        <span style="color: #C48DFF;">return</span> resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'greet'</span>, person)
-    }
-}
-</pre>
-
-
-
-<p>
-We have to update the <code>Person</code>'s greet to accept an object implimenting
-the person interface, rather than just a String. And finally, we need to
-extend both Mikhail and Kristin with the <code>greeter</code> mixin.
-</p>
-<p>
-Note that we need to redefine the <code>known</code> array here, since otherwise
-we'd use the <code>greeter</code>'s array (objects are always copied by reference
-rather than by value).
-</p>
-
-
-
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">We have to update the Person's greet to accept an object
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">implementing the person interface, rather than just a String
-</span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:+Person) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the person formally.
-</span>person.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Hello, '</span> + person.name
-}
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And finally, we make both Mikhail and Kristin greeter-fags
-</span>extend(mikhail, greeter)
-mikhail.known = [kristin]
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:+Person) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the person informally.
-</span>mikhail.friendly_greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Heya, '</span> + person.first_name
-}
-
-extend(kristin, greeter)
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:+Person) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the person informally.
-</span>kristin.friendly_greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Harro, '</span> + person.first_name
-}
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And we can see that mikhail gets informal greeting right, whereas
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">kristing fallbacks.
-</span>mikhail.greet(kristin)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: Heya, Kristin'
-</span>
-mikhail.greet({name: <span style="color: #A6E32D;">'Margareth'</span>})
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: Hello, Margareth'
-</span>
-kristin.greet(mikhail)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: Hello, Mikhail Wei&#223;'
-</span>
-kristin.greet({name: <span style="color: #A6E32D;">'Margareth'</span>})
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: Hello, Margareth'
-</span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Though, if we include `mikhail' in the list of known people, we
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">get friendly greetings as well for Kristin:
-</span>kristin.known = [mikhail]
-kristin.greet(mikhail)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: Harro, Mikhail'
-</span></pre>
-
-
-
-<p>
-This looks all good and well, but there's a little catch in the current
-implementation of message resending: it will enter in endless recursion if you
-try to apply it to more than one parent. This happens because the methods are
-always applied in the context of the message's first target, making the
-<code>[⁣[Prototype]⁣]</code> lookup resolve always to the same object:
+This looks all good and well, but there's a little catch: it will enter
+in endless recursion if you try to apply this approach to more than one
+parent. This happens because the methods are always applied in the
+context of the message's first target, making the <code>[⁣[Prototype]⁣]</code> lookup
+resolve always to the same object:
 </p>
 
 
@@ -1652,131 +1536,129 @@ always applied in the context of the message's first target, making the
 <img src="http://dl.dropbox.com/u/4429200/blog/oop-super.png"  alt="http://dl.dropbox.com/u/4429200/blog/oop-super.png" />
 </p>
 <p>
-For the <code>resend</code> function to work correctly, it has to know what the
-next object in the prototype chain is, thus, we can't blindly use the
-<code>this</code> value for the look-up. Instead, we have to pass this information
-somehow over to the <code>resend</code> function.
+The simple solution to this, then, is to make all parent look-ups
+static, by passing the object where the current function is stored,
+rather than the object that the function was applied to.
 </p>
 <p>
-Given the only pieces of information we can pass to a function are the
-<code>thisObject</code> and <code>arguments</code>, we'll going to abuse the former here, as
-the latter would involve changing the signature of all functions.
-</p>
-<p>
-The idea is that, when we call a method in the parent, we store the
-reference to that parent in the current <code>thisObject</code> so we know where to
-start looking for next:
+So, the last example becomes:
 </p>
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object, message:String, args...) &#8594; *mixed*
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Resends the given message to the closest parent of `object'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">that implements it.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">resend</span>(<span style="color: #729FCF;">object</span>, <span style="color: #729FCF;">message</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>, <span style="color: #729FCF;">property</span>, <span style="color: #729FCF;">result</span>
-    args = slice.call(<span style="color: #FA2573;">arguments</span>, 2)
+<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">proto</span> = Object.getPrototypeOf
 
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">Store the next parent on the prototype chain. Try to
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">look for the one stored in object.$parent, falling
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">back to the object itself.
-</span>    object.$parent = proto(object.$parent || object)
-
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">Get the property from the next prototype
-</span>    property = object.$parent[message]
-
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">Calculates the result that should be returned, if it's a
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">function, apply the function to the object and return
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">its value. Otherwise return the property.
-</span>    <span style="color: #75766A;">//</span><span style="color: #75766A;">
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">Since JavaScript is synchronous and single-threaded
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">we usually don't have to worry about the value of
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">`$parent' being changed in-between&#185;.
-</span>    result = callbalep(property)?  property.apply(object, args)
-           : <span style="color: #75766A;">/* </span><span style="color: #75766A;">data property */</span>   property
-
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">Then we remove the `$parent' property we've previously
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">stored, so a subsequent resend performed for this
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">object won't start at the end of the prototype chain.
-</span>    <span style="color: #C48DFF;">delete</span> object.$parent
-
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">Finally return whatever result we've got.
-</span>    <span style="color: #C48DFF;">return</span> result
-}
-</pre>
-
-
-
-<p>
-As you see, this method expects that all the functions called in this
-manner to call <code>resend</code> <b>synchronously</b>. This is because we need to
-clean the tracking property we've added right after the initial
-function returns, and we can only be sure that the other functions in
-the chain will have access to that property by requiring that they call
-<code>resend</code> synchronously:
-</p>
-
-
-
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">Given a prototype chain A &lt;- B &lt;- C, where the object
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">in the left inherits from the one at right, the
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">following would work nicely:
-</span>C.log = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">message</span>) {
-    console.log(<span style="color: #A6E32D;">'C:'</span>, message)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(name:String) &#8594; String
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets someone intimately if we know them, otherwise use
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">the generic greeting.
+</span><span style="color: #75766A;">//</span><span style="color: #75766A;">
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Note that now we explicitly state that the lookup should take
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">the parent of `mikhail', so we can be assured the cyclic parent
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">resolution above won't happen.
+</span>mikhail.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">name</span>) {
+    <span style="color: #C48DFF;">return</span> name == <span style="color: #A6E32D;">'Kristin Wei&#223;'</span>?  <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Heya, Kristty'</span>
+         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">we dunno this guy */</span>  proto(mikhail).greet.call(<span style="color: #FA2573;">this</span>, name)
 }
 
-B.log = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">message</span>) {
-    resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'log'</span>, message)
-    console.log(<span style="color: #A6E32D;">'B:'</span>, message)
-}
-
-A.log = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">message</span>) {
-    resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'log'</span>, message)
-    console.log(<span style="color: #A6E32D;">'A:'</span>, message)
-}
-
-A.log(<span style="color: #A6E32D;">'foo'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; C: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; B: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; A: foo
+mikhail.greet(kristin.name)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Heya, Kristty'
 </span>
+mikhail.greet(<span style="color: #A6E32D;">'Margareth'</span>)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Hello, Margareth'
+</span></pre>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">But if we made `B.log' asynchronous, then it
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">would not work anymore. Instead, it would have the
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">same problem we've covered earlier, since the tracking
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">property is gone.
-</span>B.log = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">message</span>) {
-    setTimeout(<span style="color: #C48DFF;">function</span>() {
-        <span style="color: #75766A;">// </span><span style="color: #75766A;">`this' has no `$parent' property here anymore
-</span>        <span style="color: #75766A;">// </span><span style="color: #75766A;">so the look-up starts at `A', and will always
-</span>        <span style="color: #75766A;">// </span><span style="color: #75766A;">resolve to `B'.
-</span>        resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'log'</span>, message)
-        console.log(<span style="color: #A6E32D;">'B:'</span>, message)
-    }.bind(<span style="color: #FA2573;">this</span>), 1000)
+
+
+<p>
+Still, this has quite some short-commings. First, since the object is
+hard-coded in the function, we can't just assign the function to any
+object and have it just work, as we did up 'till now. The function would
+always resolve to the parent of <code>mikhail</code>, not of the object where it's
+stored.
+</p>
+<p>
+Likewise, we can't just apply the function to any object. The function
+is not generic anymore. Unfortunately, though, making the parent
+resolution dynamic would require us to pass an additional parameter to
+every function call, which is something that can't be achieved short of
+ugly hacks.
+</p>
+<p>
+The approach proposed for the next version of JavaScript only solves the
+first problem, which is the easiest. Here, we'll do the same, by
+introducing a new way of defining methods. Yes, methods, not generic
+functions.
+</p>
+<p>
+Functions that need to access the properties in the <code>[⁣[Prototype]⁣]</code> will
+require an additional information: the object where they are
+stored. This makes the lookup static, but solves our cyclic lookup
+problem.
+</p>
+<p>
+We do this by introducing a new function — <code>make_method</code> — which creates
+a function that passes this information to the target function.
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object, fn:Function) &#8594; Function
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Creates a method
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">make_method</span>(<span style="color: #729FCF;">object</span>, <span style="color: #729FCF;">fn</span>) {
+    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>
+        args = slice.call(<span style="color: #FA2573;">arguments</span>)
+        args.unshift(object)        <span style="color: #75766A;">// </span><span style="color: #75766A;">insert `object' as first parameter
+</span>        fn.apply(<span style="color: #FA2573;">this</span>, args) }
 }
 
-A.log(<span style="color: #A6E32D;">'foo'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; A: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; B: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; B: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; B: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">( ... )
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Now, all functions that are expected to be used as a method
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">should remember to reserve the first parameter to the object
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">where they're stored.
+</span><span style="color: #75766A;">//</span><span style="color: #75766A;">
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Note that, however, this is a magical parameter introduced
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">by the method function, so any function calling the method
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">should pass only the usual arguments.
+</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">message</span>(<span style="color: #729FCF;">self</span>, <span style="color: #729FCF;">message</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">parent</span>
+    parent = Object.getPrototypeOf(self)
+    <span style="color: #C48DFF;">if</span> (parent &amp;&amp; parent.log)
+        parent.log.call(<span style="color: #FA2573;">this</span>, message)
+
+    console.log(<span style="color: #A6E32D;">'-- At '</span> + self.name)
+    console.log(<span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': '</span> + message)
+}
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Here we define a prototype chain C -&gt; B -&gt; A
+</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">A</span>  = Object.create(<span style="color: #FA2573;">null</span>)
+A.name = <span style="color: #A6E32D;">'A'</span>
+A.log  = make_method(A, message)
+
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">B</span>  = Object.create(A)
+B.name = <span style="color: #A6E32D;">'B'</span>
+B.log  = make_method(B, message)
+
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">C</span>  = Object.create(B)
+C.name = <span style="color: #A6E32D;">'C'</span>
+C.log  = make_method(C, message)
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">And we can test if it works by calling the methods:
+</span>A.log(<span style="color: #A6E32D;">'foo'</span>)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At A'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'A: foo'
 </span>
-
-<span style="color: #75766A;">// </span><span style="color: #75766A;">The ugly solution is setting the `$parent' directly
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">before the call:
-</span>B.log = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">message</span>) {
-    <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">parent</span> = <span style="color: #FA2573;">this</span>.$parent
-    setTimeout(<span style="color: #C48DFF;">function</span>() {
-        <span style="color: #FA2573;">this</span>.$parent = parent
-        resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'log'</span>, message)
-        console.log(<span style="color: #A6E32D;">'B:'</span>, message)
-    }.bind(<span style="color: #FA2573;">this</span>), 1000)
-}
-
-A.log(<span style="color: #A6E32D;">'foo'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; A: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; C: foo
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; B: foo
+B.log(<span style="color: #A6E32D;">'foo'</span>)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At A'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'B: foo'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At B'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'B: foo'
+</span>
+C.log(<span style="color: #A6E32D;">'foo'</span>)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At A'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'C: foo'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At B'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'C: foo'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At C'
+</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'C: foo'
 </span></pre>
 
 
@@ -1941,7 +1823,7 @@ also a confusing one for many newcomers:
 </div>
 
 <div id="outline-container-4_2" class="outline-3">
-<h3 id="sec-4_2">Inheritance with constructors </h3>
+<h3 id="sec-4_2">4.2. Inheritance with constructors </h3>
 <div class="outline-text-3" id="text-4_2">
 
 <p>We've covered inheritance with plain objects through <code>Object.create</code>,
@@ -1963,7 +1845,6 @@ property is:
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Defines the `name' getter/setter
 </span>Object.defineProperty(Person.<span style="color: #FA2573;">prototype</span>, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
                                                 , set: set_full_name
-                                                , writable:     <span style="color: #FA2573;">true</span>
                                                 , configurable: <span style="color: #FA2573;">true</span>
                                                 , enumerable:   <span style="color: #FA2573;">true</span> })
 
@@ -1974,9 +1855,15 @@ property is:
 }
 
 
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">proto</span> = Object.getPrototypeOf
+
 <span style="color: #75766A;">// </span><span style="color: #75766A;">new Mikhail (age:Number, gender:String)
 </span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Mikhail</span>(<span style="color: #729FCF;">age</span>, <span style="color: #729FCF;">gender</span>) {
-    resend(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'constructor'</span>, <span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
+    <span style="color: #75766A;">// </span><span style="color: #75766A;">Find the parent of this object and invoke its constructor
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">with the current this. We could have used:
+</span>    <span style="color: #75766A;">//   </span><span style="color: #75766A;">Person.call(this, 'Mikhail', 'Wei&#223;')
+</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">But we'd loose some flexibility with that.
+</span>    proto(Mikhail.<span style="color: #FA2573;">prototype</span>).constructor.call(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
 }
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Inherits the properties from Person.prototype
@@ -2021,12 +1908,12 @@ work everywhere. <a href="http://twitter.com/kangax">@kangax</a> has a most awes
 implementations that follow ECMAScript 5.
 </p>
 <p>
-This section provides fallbacks to some of the functionality, and point to
-libraries that implement these fallbacks so you don't get to reinvent
+This section provides fallbacks to some of the functionality, and point
+to libraries that implement these fallbacks so you don't get to reinvent
 the wheel. Note that this section only exists to highlight how the
-functionality works, and how those behaviours could be reproduced in
-legacy code, it's not meant to provide ready-to-use fallbacks. Use
-libraries for that :3
+functionality works, and how the core part of those behaviours could be
+reproduced in legacy code, it's not meant to provide ready-to-use
+fallbacks. Use libraries for that :3
 </p>
 
 
@@ -2037,9 +1924,8 @@ libraries for that :3
 <div class="outline-text-3" id="text-5_1">
 
 <p>In ECMAScript 5 we have got <code>Object.create</code> to handle inheritance, but
-there's also constructor functions, which can be used to set the
-<code>[⁣[Prototype]⁣]</code> link for the constructed object — which is what we're
-interested about.
+constructor functions can also be used to set the <code>[⁣[Prototype]⁣]</code> link
+for the constructed object — which is what we're interested about.
 </p>
 <p>
 A <code>clone</code> function could be defined such that it would create a new
@@ -2081,9 +1967,9 @@ not possible to get this behaviour in the older versions of the
 language.
 </p>
 <p>
-All properties defined will inevitable have <code>writable</code>, <code>configurable</code>
-and <code>enumerable</code> set to true, which is usually not really that much of a
-problem — still, not really compatible with full ES5 code.
+All properties defined otherwise will inevitable have <code>writable</code>,
+<code>configurable</code> and <code>enumerable</code> set to true, which is usually not really
+that much of a problem — still, not compatible with full ES5 code.
 </p>
 <p>
 In regards of getters and setters, they are supported to a certain
@@ -2221,8 +2107,58 @@ application, through the <code>apply</code> method.
 </div>
 
 <div id="outline-container-5_5" class="outline-3">
-<h3 id="sec-5_5">5.5. Libraries that provide fallbacks </h3>
+<h3 id="sec-5_5">5.5. Getting the <code>[⁣[Prototype]⁣]</code> </h3>
 <div class="outline-text-3" id="text-5_5">
+
+<p>For accessing overriden properties, we need to get the a reference to
+the <code>[⁣[Prototype]⁣]</code>. In environments that expose such link (like
+Firefox's <i>SpiderMonkey</i> or Chrome's <i>V8</i>), it's easy and reliable:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">proto</span>(<span style="color: #729FCF;">object</span>) {
+    <span style="color: #C48DFF;">return</span> object?            object.__proto__
+         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">not object? */</span>  <span style="color: #FA2573;">null</span>
+}
+</pre>
+
+
+
+<p>
+However, in environments that don't expose the <code>[⁣[Prototype]⁣]</code> link,
+things aren't quite as reliable. The only way of getting the prototype
+of an object, in this case, would be by the constructor's <code>prototype</code>
+property, but we can only access that from the object given the
+<code>constructor</code> property is kept intact.
+</p>
+<p>
+A fallback covering most cases would look like this:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">proto</span>(<span style="color: #729FCF;">object</span>) {
+    <span style="color: #C48DFF;">return</span> !object?                <span style="color: #FA2573;">null</span>
+         : <span style="color: #A6E32D;">'__proto__'</span> <span style="color: #C48DFF;">in</span> object?  object.__proto__
+         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">not exposed? */</span>      object.constructor.<span style="color: #FA2573;">prototype</span>
+}
+</pre>
+
+
+
+<p>
+Note that the actual <code>Object.getPrototypeOf</code> throws a <code>TypeError</code> when
+you pass something that is not an object to it.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-5_6" class="outline-3">
+<h3 id="sec-5_6">5.6. Libraries that provide fallbacks </h3>
+<div class="outline-text-3" id="text-5_6">
 
 
 <p>
@@ -2231,7 +2167,7 @@ that can be done in pure JavaScript, whilst adding minimal support
 for the other ones. It's important to note, however, that the
 fallbacks are intended to provide equivalent functionality that is
 close to the ones defined in the specs, it's not guaranteed that they
-will work exactly the same.
+will work exactly the same way.
 </p>
 <p>
 To quote the <code>README</code>:
@@ -2239,7 +2175,7 @@ To quote the <code>README</code>:
 <blockquote>
 
 <p>"As closely as possible to ES5" is not very close. Many of these shims
-are intended only to all ow code to be written to ES5 without causing
+are intended only to allow code to be written to ES5 without causing
 run-time errors in older engines. In many cases, this means that
 these shims cause many ES5 methods to silently fail. Decide carefully
 whether this is what you want. 
@@ -2337,105 +2273,11 @@ may yield undesired and unwanted results when set. For example,
 in some implementations. As such, you wouldn't be able to set a
 string or number to that.
 </p>
-<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> Some engines <b>do</b> expose the <code>[⁣[Prototype]⁣]</code> slot, usually
-through a property like <code>__proto__</code>, however no such thing is
-described in the specifications for the language, so it's
-recommended that you avoid using it, unless you're well aware
-that all platforms you code must run on will have such means of
-setting the <code>[⁣[Prototype]⁣]</code> object directly.
+<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : It should be noted that, while ECMAScript-defined native objects
+don't throw an error when you try to access a non-existing
+property, it's not guaranteed that the same will hold true for a
+host object. After all, host object semantics are not defined,
+they are dependant on the particular run-time implementation.
 </p>
 </div>
 </div>
-
-
-	<div id="disqus_thread"></div>
-	<script type="text/javascript">
-		var disqus_identifier = 'Understanding JavaScript OOP_'
-		                      + ''
-		  , disqus_url        = '';
-
-		(function() {
-			var dsq = document.createElement('script')
-			dsq.type  = 'text/javascript'
-			dsq.async = true
-			dsq.src	  = 'http://quildreen.disqus.com/embed.js';
-			(document.getElementsByTagName('head')[0]
-			 || document.getElementsByTagName('body')[0]).appendChild(dsq)
-		})()
-	</script>
-
-	<noscript>Please enable JavaScript to view the <a
-	href="http://disqus.com/?ref_noscript">comments powered by
-	Disqus.</a></noscript>
-	<a href="http://disqus.com" class="dsq-brlink">blog comments powered by
-	<span class="logo-disqus">Disqus</span></a>  
-</div>
-
-        </div>
-
-        <div id="footer">
-	<div id="social">
-		<div class="twitter-container">
-			<div class="quote">
-				<b><i></i></b><b><i></i></b>
-			</div>
-			<div id="tweet"></div>
-			<div id="tweet-info"></div>
-		</div>
-		
-		<ul id="social-list">
-			<li class="twitter">
-				<a href="http://twitter.com/notsorella"><i><b></b>Keep up with the things I do</i></a>
-			</li>
-			<li class="delicious">
-				<a href="http://delicious.com/killdream"><i><b></b>Stuff I like on the interwebz</i></a>
-			</li>
-			<li class="devart">
-				<a href="http://killdream.deviantart.com/"><i><b></b>Stalk a bit of my attempts at drawing</i></a>
-			</li>
-			<li class="bitbucket">
-				<a href="http://bitbucket.org/killdream"><i><b></b>Clone my experiments and stuff on BitBucket</i></a>
-			</li>
-			<li class="facebook">
-				<a href="http://facebook.com/quildreen"><i><b></b>My profile on Facebook</i></a>
-			</li>
-			<li class="lastfm">
-				<a href="http://www.lastfm.com.br/user/killdream"><i><b></b>The musics I listen to everyday, everytime</i></a>
-			</li>
-		</ul>
-	</div>
-	<div id="metainfo">
-		<div id="contact">
-			<h2>Wanna talk?</h2>
-		  
-			<ul class="contact-info"> 
-				<li class="email">
-					E-Mail: <a href="mailto:quildreen@gmail.com" title="Send-me an e-mail">quildreen@gmail.com</a>
-				</li> 
-				<li class="skype">
-					Skype: <a href="skype:quildreen?call" title="Call me on Skype!">quildreen</a>
-				</li> 
-			</ul> 
-		</div>
-		<strong>&copy; 2010 Quildreen Motta</strong>
-		minimalist designer | web developer
-	</div>
-	<br class="clearfix">
-</div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"></script>
-<script src="/media/lib/main.js"></script>
-
-<script src="http://api.twitter.com/1/statuses/user_timeline/notSorella.json?callback=Twitter.renderTweets" async></script>
-<script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-15025032-4']);_gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-
-
-    </body>
-</html>

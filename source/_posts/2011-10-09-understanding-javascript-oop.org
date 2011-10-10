@@ -180,7 +180,8 @@ unfortunately this is usually not a good default value for them, which
 adds to the verbosity of these descriptors.
 
 - writable ::
-  Whether the concrete value of the property may be changed.
+  Whether the concrete value of the property may be changed. Only
+  applies to data descriptors.
 
 - configurable ::
   Whether the type of descriptor may be changed, or if the property can
@@ -368,9 +369,8 @@ function set_full_name(new_name) { var names
     this.last_name  = names[1] || ''
 }
 
-Object.defineProperty(mikahil, 'name', { get: get_full_name
+Object.defineProperty(mikhail, 'name', { get: get_full_name
                                        , set: set_full_name
-                                       , writable:     true
                                        , configurable: true
                                        , enumerable:   true })
 #+end_src
@@ -705,21 +705,20 @@ add.apply(one, [one.value])  // equivalent to one.add(one.value)
 #+end_src
 
 - Note ::
-  What =this= resolves to when applying a function to a non-object (like
-  =null= or =undefined=) depends on the semantics used by the
-  engine. Usually, it would be the same as explicitly applying the
-  function to the global object. But if the engine is running on [[https://developer.mozilla.org/en/JavaScript/Strict_mode][strict
-  mode]], then =this= will be resolved as expected — to the exact thing it
-  was applied to:
+  What =this= resolves to when applying a function to =null= or
+  =undefined= depends on the semantics used by the engine. Usually, it
+  would be the same as explicitly applying the function to the global
+  object. But if the engine is running on [[https://developer.mozilla.org/en/JavaScript/Strict_mode][strict mode]], then =this= will
+  be resolved as expected — to the exact thing it was applied to:
 
   #+begin_src js
   window.value = 2
-  add.apply(1, 1) // this === window
+  add.call(undefined, 1) // this === window
   // => 3
 
   void function() {
     "use strict"
-    add.apply(1, 1) // this === 1
+    add.call(undefined, 1) // this === undefined
     // => NaN
     // Since primitives can't hold properties.
   }()
@@ -760,9 +759,9 @@ behaviours, and how we can reuse (by explicit application) actions in
 other objects, however, this still doesn't give us a nice way for
 code reuse and extensibility.
 
-That's where inheritance comes in. Inheritance allows for a greater
-separation of concerns, where objects define specialised behaviours by
-building upon the already defined behaviours of other objects.
+That's where inheritance comes into play. Inheritance allows for a
+greater separation of concerns, where objects define specialised
+behaviours by building upon the behaviours of other objects.
 
 The prototypical model goes further than that, though, and allows for
 selective extensibility, behaviour sharing and other interesting
@@ -780,14 +779,14 @@ it's behaviours cloned is called *Prototype* (not to be confounded with
 the =prototype= property of functions).
 
 A prototype is just a plain object, that happens to share it's
-behaviours with another object — it acts as the object's parent. It's
-important to note here that the concepts of this /behaviour cloning/
-does not imply that you'll have two different copies of the same
-function, or data. In fact, JavaScript implements inheritance by
-delegation, such that the properties in a prototype are effectively
-shared with any object that inherits from it.
+behaviours with another object — it acts as the object's parent.
 
-As mentioned previously, the parent (or Prototype) of an object is
+Now, the concepts of this /behaviour cloning/ does not imply that you'll
+have two different copies of the same function, or data. In fact,
+JavaScript implements inheritance by delegation, all properties are kept
+in the parent, and access to them is just extended for the child.
+
+As mentioned previously, the parent (or =[⁣[Prototype]⁣]=) of an object is
 defined by making a call to =Object.create=, and passing a reference of
 the object to use as parent in the first parameter.
 
@@ -795,7 +794,7 @@ This would come well in our example up until now. For example, the
 greeting and name actions can be well defined in a separate object and
 shared with other objects that need them.
 
-This would give us the following model:
+Which takes us to the following model:
 
 #+begin_src ditaa :file ../media/assets/oop-proto-person.png :cmdline -E :exports none
  ( person )
@@ -830,7 +829,7 @@ This would give us the following model:
 
 [[blog:oop-proto-person.png]]
 
-Which could be implemented in JavaScript with the following definitions:
+We can implement this in JavaScript with the following definitions:
 
 #+begin_src js
 var person = Object.create(null)
@@ -838,7 +837,6 @@ var person = Object.create(null)
 // Here we are reusing the previous getter/setter functions
 Object.defineProperty(person, 'name', { get: get_full_name
                                       , set: set_full_name
-                                      , writable:     true
                                       , configurable: true
                                       , enumerable:   true })
 
@@ -848,24 +846,30 @@ person.greet = function (person) {
 }
 
 // Then we can share those behaviours with Mikhail
+// By creating a new object that has it's [[Prototype]] property
+// pointing to `person'.
 var mikhail = Object.create(person)
 mikhail.first_name = 'Mikhail'
 mikhail.last_name  = 'Weiß'
 mikhail.age        = 19
 mikhail.gender     = 'Male'
 
-// And we can test whether things are actually working
+// And we can test whether things are actually working.
+// First, `name' should be looked on `person'
 mikhail.name
 // => 'Mikhail Weiß'
 
+// Setting `name' should trigger the setter
 mikhail.name = 'Michael White'
 
+// Such that `first_name' and `last_name' now reflect the
+// previously name setting.
 mikhail.first_name
 // => 'Michael'
-
 mikhail.last_name
 // => 'White'
 
+// `greet' is also inherited from `person'.
 mikhail.greet('you')
 // => 'Michael White: Why, hello there, you.'
 
@@ -890,7 +894,7 @@ way of setting it is when you're creating a fresh object.
 
 When a property is requested from the object, the engine first tries to
 retrieve the property from the target object. If the property isn't
-found, the search continue through the immediate parent of that object,
+there, the search continue through the immediate parent of that object,
 and the parent of that parent, and so on.
 
 This means that we can change the behaviours of a prototype at run time,
@@ -913,25 +917,27 @@ mikhail.greet('you')
        described in the specifications for the language, so it's
        recommended that you avoid using it, unless you're well aware
        that all platforms you code must run on will have such means of
-       setting the =[⁣[Prototype]⁣]= object directly.
+       setting the =[⁣[Prototype]⁣]= object directly. It should also be
+       noted that messing with the prototype chain might defeat all
+       look-up optimisations in the JS engine.
 
 
 ** 3.3. Overriding properties
 So, prototypes (that is, inheritance) are used for sharing data with
 other objects, and it does such in a pretty fast and memory-effective
 manner too, since you'll always have only one instance of a given piece
-of data laying around.
+of data lying around.
 
 Now what if we want to add specialised behaviours, that build upon the
 data that was shared with the object? Well, we have seen before that
-objects define their own behaviours by defining properties, so
-specialised behaviours follow the same principle — you just define the
-new behaviour.
+objects define their own behaviours by means of properties, so
+specialised behaviours follow the same principle — you just assign a
+value to the relevant property.
 
 To better demonstrate it, suppose ~Person~ implements only a general
-greeting, and everyone inheriting from ~Person~ (by which I mean,
-sharing its behaviours). Also, let's add a new person to our case
-scenario, so to outline better how objects are extended:
+greeting, and everyone inheriting from ~Person~ define their own
+specialised and unique greetings. Also, let's add a new person to our
+case scenario, so to outline better how objects are extended:
 
 #+begin_src ditaa :file ../media/assets/oop-extend.png :cmdline -Es 0.9 :exports none
                  ( person )
@@ -990,7 +996,7 @@ mikhail.greet = function(person) {
     return this.name + ': \'sup, ' + (person || 'dude')
 }
 
-// And finally we define our new protagonist, Kristin
+// And define our new protagonist, Kristin
 var kristin = Object.create(person)
 kristin.first_name = 'Kristin'
 kristin.last_name  = 'Weiß'
@@ -1007,14 +1013,14 @@ kristin.greet = function(person) {
 
 // Finally, we test if everything works according to the expected
 
-mikhail.greet(kristin.name)
-// => 'Mikhail Weiß: \'sup, Kristin Weiß'
+mikhail.greet(kristin.first_name)
+// => 'Michael White: \'sup, Kristin'
 
 mikhail.greet()
-// => 'Mikhail Weiß: \'sup, dude'
+// => 'Michael White: \'sup, dude'
 
-kristin.greet(mikhail.name)
-// => 'Kristin Weiß: \'ello, Mikhail Weiß'
+kristin.greet(mikhail.first_name)
+// => 'Kristin Weiß: \'ello, Michael'
 
 // And just so we check how cool this [[Prototype]] thing is,
 // let's get Kristin back to the generic behaviour
@@ -1022,8 +1028,8 @@ kristin.greet(mikhail.name)
 delete kristin.greet
 // => true
 
-kristin.greet(mikhail.name)
-// => 'Kristin Weiß: Hello, Mikhail Weiß'
+kristin.greet(mikhail.first_name)
+// => 'Kristin Weiß: Hello, Michael'
 #+end_src
 
 
@@ -1077,9 +1083,9 @@ going to cheat a little bit.
 
 For mixins to work, we first need to have a way of combining different
 objects into a single one. JavaScript doesn't provide this out-of-the
-box, but we can easily make one by copying all *own* (the ones defined
-directly in the object, rather than inherited) property descriptors of
-an object over to another.
+box, but we can easily make one by copying all *own* property
+descriptors, the ones defined directly in the object, rather than
+inherited, from one object to another.
 
 #+begin_src js
 // Aliases for the rather verbose methods on ES5
@@ -1111,7 +1117,7 @@ assigning multiple abilities to our objects (~mikhail~ e
 // A pianist is someone who can `play' the piano
 var pianist = Object.create(null)
 pianist.play = function() {
-    return this.name ' starts playing the piano.'
+    return this.name + ' starts playing the piano.'
 }
 
 // A singer is someone who can `sing'
@@ -1124,7 +1130,7 @@ singer.sing = function() {
 // our main objects:
 extend(mikhail, pianist)
 mikhail.play()
-// => 'Mikhail Weiß starts playing the piano.'
+// => 'Michael White starts playing the piano.'
 
 // We can see that all that ends up as an own property of
 // mikhail. It is not shared.
@@ -1145,186 +1151,60 @@ mikhail.sing()
 extend(person, singer)
 
 mikhail.sing()
-// => 'Mikhail Weiß starts singing'
+// => 'Michael White starts singing.'
 #+end_src
 
 
-
-
-** 3.5. Resending messages
+** 3.5. Accessing overwritten properties
 Now that we're able to inherit properties from other objects and extend
 the specialised objects to define their own behaviours, we have a little
 problem: what if we actually wanted to access the parent behaviours that
 we just overwrote?
 
-A naïve solution would be to just access the parent's property, or apply
-the parent's method to the specialised object:
+JavaScript provides the =Object.getPrototypeOf= function, that returns
+the =[⁣[Prototype]⁣]= of an object. This way, we have access to all
+properties defined within the prototype chain of an object. So,
+accessing a property in the parent of an object is quite simple:
 
 #+begin_src js
+Object.getPrototypeOf(mikhail).name    // same as `person.name'
+// => 'undefined undefined'
+
+// We can assert it's really being called on `person' by
+// giving `person' a `first_name' and `last_name'
+person.first_name = 'Random'
+person.last_name  = 'Person'
+Object.getPrototypeOf(mikhail).name
+// => 'Random Person'
+#+end_src
+
+So, a naïve solution for applying a method stored in the =[⁣[Prototype]⁣]=
+of an object to the current one, would then follow, quite naturally, by
+looking the property on the =[⁣[Prototype]⁣]= of =this=:
+
+#+begin_src js
+var proto = Object.getPrototypeOf
+
 // (name:String) → String
 // Greets someone intimately if we know them, otherwise use
 // the generic greeting
 mikhail.greet = function(name) {
     return name == 'Kristin Weiß'?  this.name + ': Heya, Kristty'
-         : /* we dunno this guy */  person.greet.call(this, name)
+         : /* we dunno this guy */  proto(this).greet.call(this, name)
 }
 
 mikhail.greet(kristin.name)
-// => 'Mikhail Weiß: Heya, Kristty'
+// => 'Michael White: Heya, Kristty'
 
 mikhail.greet('Margareth')
-// => 'Mikhail Weiß: Hello, Margareth'
+// => 'Michael White: Hello, Margareth'
 #+end_src
 
-It apparently works, but this has many short-comings. The most
-outstanding of them being that functions don't belong to objects in
-JavaScript, so we could assign ~greet~ to any object, that provides the
-interface the function expects — in this case, an object with a ~name~
-property.
-
-This other object does not necessarily need to inherit directly from
-~Person~. It might be just about *any* object, and in this case it would
-make more sense that the message were sent to that object's parent,
-instead of ~Person~ directly. In fact, ~Person~ might not be present in
-the prototype of this object at all!
-
-So, a better description of this issue would be that, when an object
-receive a message (property access or method invokation), we might want
-to preserve the parent's behaviour under some conditions. Thus, we need:
-
- 1.) A way of getting the closest parent of an object that implements
-     the message we're interested in.
-
- 2.) In the case of methods, a way of applying such behaviour to the
-     current object.
-
-The first one is pretty easy to solve, since JavaScript offers the
-~Object.getPrototypeOf~ function for returning the immediate parent of
-an object (that is, its ~[⁣[Prototype]⁣]~).
-
-#+begin_src js
-var slice = [].slice
-  , proto = Object.getPrototypeOf
-
-
-// (object:Object) → Boolean
-// Tests if an object can be called (has [[Call]])
-function callablep(object) {
-    return typeof object == 'function'
-}
-
-
-// (object:Object, message:String, args...) → *mixed*
-// Resends the given message to the closest parent of `object'
-// that implements it.
-function resend(object, message) { var args, property
-    args     = slice.call(arguments, 2)
-    property = proto(object)[message]
-
-    return callablep(property)?  property.apply(object, args)
-         : /* data property */   property
-}
-#+end_src
-
-Now, let's move our greeting function over to a mixin, and make it all a
-little more generic. We'll have a ~greeter~ mixin, that either calls a
-~friendly_greet~ in the object, if the person is known, or a fallback
-~greet~ method in the parent.
-
-#+begin_src js
-// (array:Array, value) → Boolean
-// Test if the array includes the value
-function hasp(array, value) {
-    return array.indexOf(value) != -1
-}
-
-
-// A greeter is an object that has a list of known people, and
-// it might greet those people in a friendly manner, but only
-// if a specialised behaviour is defined for this (friendly_greet).
-// Otherwise it just goes back to formal greeting.
-var greeter = {
-    // A list of objects we know about
-    known: [ ]
-
-    // (person:+Person) → String
-    // Greets the person intimately, if known, otherwise formally.
-    function greet(person) {
-        // If we know the person and wish to greet known people
-        // in a friendly and informal manner
-        if ( hasp(this.known, person)
-          && callablep(this.friendly_greet))
-            return this.friendly_greet(person)
-
-        // Otherwise we just fallback to formal greeting (probably
-        // defined in the object's parent)
-        return resend(this, 'greet', person)
-    }
-}
-#+end_src
-
-We have to update the ~Person~'s greet to accept an object implimenting
-the person interface, rather than just a String. And finally, we need to
-extend both Mikhail and Kristin with the ~greeter~ mixin.
-
-Note that we need to redefine the ~known~ array here, since otherwise
-we'd use the ~greeter~'s array (objects are always copied by reference
-rather than by value).
-
-#+begin_src js
-// We have to update the Person's greet to accept an object
-// implementing the person interface, rather than just a String
-
-// (person:+Person) → String
-// Greets the person formally.
-person.greet = function(person) {
-    return this.name + ': Hello, ' + person.name
-}
-
-// And finally, we make both Mikhail and Kristin greeter-fags
-extend(mikhail, greeter)
-mikhail.known = [kristin]
-
-// (person:+Person) → String
-// Greets the person informally.
-mikhail.friendly_greet = function(person) {
-    return this.name + ': Heya, ' + person.first_name
-}
-
-extend(kristin, greeter)
-
-// (person:+Person) → String
-// Greets the person informally.
-kristin.friendly_greet = function(person) {
-    return this.name + ': Harro, ' + person.first_name
-}
-
-// And we can see that mikhail gets informal greeting right, whereas
-// kristing fallbacks.
-mikhail.greet(kristin)
-// => 'Mikhail Weiß: Heya, Kristin'
-
-mikhail.greet({name: 'Margareth'})
-// => 'Mikhail Weiß: Hello, Margareth'
-
-kristin.greet(mikhail)
-// => 'Kristin Weiß: Hello, Mikhail Weiß'
-
-kristin.greet({name: 'Margareth'})
-// => 'Kristin Weiß: Hello, Margareth'
-
-// Though, if we include `mikhail' in the list of known people, we
-// get friendly greetings as well for Kristin:
-kristin.known = [mikhail]
-kristin.greet(mikhail)
-// => 'Kristin Weiß: Harro, Mikhail'
-#+end_src
-
-This looks all good and well, but there's a little catch in the current
-implementation of message resending: it will enter in endless recursion if you
-try to apply it to more than one parent. This happens because the methods are
-always applied in the context of the message's first target, making the
-~[⁣[Prototype]⁣]~ lookup resolve always to the same object:
+This looks all good and well, but there's a little catch: it will enter
+in endless recursion if you try to apply this approach to more than one
+parent. This happens because the methods are always applied in the
+context of the message's first target, making the ~[⁣[Prototype]⁣]~ lookup
+resolve always to the same object:
 
 #+begin_src ditaa :file ../media/assets/oop-super.png :cmdline -Es 0.9 :exports none
 ( All methods have `this' as `mikhail' )
@@ -1345,122 +1225,117 @@ always applied in the context of the message's first target, making the
 
 [[blog:oop-super.png]]
 
-For the ~resend~ function to work correctly, it has to know what the
-next object in the prototype chain is, thus, we can't blindly use the
-~this~ value for the look-up. Instead, we have to pass this information
-somehow over to the ~resend~ function.
+The simple solution to this, then, is to make all parent look-ups
+static, by passing the object where the current function is stored,
+rather than the object that the function was applied to.
 
-Given the only pieces of information we can pass to a function are the
-~thisObject~ and ~arguments~, we'll going to abuse the former here, as
-the latter would involve changing the signature of all functions.
-
-The idea is that, when we call a method in the parent, we store the
-reference to that parent in the current ~thisObject~ so we know where to
-start looking for next:
+So, the last example becomes:
 
 #+begin_src js
-// (object:Object, message:String, args...) → *mixed*
-// Resends the given message to the closest parent of `object'
-// that implements it.
-function resend(object, message) { var args, property, result
-    args = slice.call(arguments, 2)
+var proto = Object.getPrototypeOf
 
-    // Store the next parent on the prototype chain. Try to
-    // look for the one stored in object.$parent, falling
-    // back to the object itself.
-    object.$parent = proto(object.$parent || object)
-
-    // Get the property from the next prototype
-    property = object.$parent[message]
-
-    // Calculates the result that should be returned, if it's a
-    // function, apply the function to the object and return
-    // its value. Otherwise return the property.
-    //
-    // Since JavaScript is synchronous and single-threaded
-    // we usually don't have to worry about the value of
-    // `$parent' being changed in-between¹.
-    result = callbalep(property)?  property.apply(object, args)
-           : /* data property */   property
-
-    // Then we remove the `$parent' property we've previously
-    // stored, so a subsequent resend performed for this
-    // object won't start at the end of the prototype chain.
-    delete object.$parent
-
-    // Finally return whatever result we've got.
-    return result
+// (name:String) → String
+// Greets someone intimately if we know them, otherwise use
+// the generic greeting.
+//
+// Note that now we explicitly state that the lookup should take
+// the parent of `mikhail', so we can be assured the cyclic parent
+// resolution above won't happen.
+mikhail.greet = function(name) {
+    return name == 'Kristin Weiß'?  this.name + ': Heya, Kristty'
+         : /* we dunno this guy */  proto(mikhail).greet.call(this, name)
 }
+
+mikhail.greet(kristin.name)
+// => 'Michael White: Heya, Kristty'
+
+mikhail.greet('Margareth')
+// => 'Michael White: Hello, Margareth'
 #+end_src
 
- As you see, this method expects that all the functions called in this
- manner to call ~resend~ *synchronously*. This is because we need to
- clean the tracking property we've added right after the initial
- function returns, and we can only be sure that the other functions in
- the chain will have access to that property by requiring that they call
- ~resend~ synchronously:
+Still, this has quite some short-commings. First, since the object is
+hard-coded in the function, we can't just assign the function to any
+object and have it just work, as we did up 'till now. The function would
+always resolve to the parent of =mikhail=, not of the object where it's
+stored.
+
+Likewise, we can't just apply the function to any object. The function
+is not generic anymore. Unfortunately, though, making the parent
+resolution dynamic would require us to pass an additional parameter to
+every function call, which is something that can't be achieved short of
+ugly hacks.
+
+The approach proposed for the next version of JavaScript only solves the
+first problem, which is the easiest. Here, we'll do the same, by
+introducing a new way of defining methods. Yes, methods, not generic
+functions.
+
+Functions that need to access the properties in the =[⁣[Prototype]⁣]= will
+require an additional information: the object where they are
+stored. This makes the lookup static, but solves our cyclic lookup
+problem.
+
+We do this by introducing a new function — =make_method= — which creates
+a function that passes this information to the target function.
 
 #+begin_src js
-// Given a prototype chain A <- B <- C, where the object
-// in the left inherits from the one at right, the
-// following would work nicely:
-C.log = function(message) {
-    console.log('C:', message)
+// (object:Object, fn:Function) → Function
+// Creates a method
+function make_method(object, fn) {
+    return function() { var args
+        args = slice.call(arguments)
+        args.unshift(object)        // insert `object' as first parameter
+        fn.apply(this, args) }
 }
 
-B.log = function(message) {
-    resend(this, 'log', message)
-    console.log('B:', message)
+
+// Now, all functions that are expected to be used as a method
+// should remember to reserve the first parameter to the object
+// where they're stored.
+//
+// Note that, however, this is a magical parameter introduced
+// by the method function, so any function calling the method
+// should pass only the usual arguments.
+function message(self, message) { var parent
+    parent = Object.getPrototypeOf(self)
+    if (parent && parent.log)
+        parent.log.call(this, message)
+
+    console.log('-- At ' + self.name)
+    console.log(this.name + ': ' + message)
 }
 
-A.log = function(message) {
-    resend(this, 'log', message)
-    console.log('A:', message)
-}
+// Here we define a prototype chain C -> B -> A
+var A  = Object.create(null)
+A.name = 'A'
+A.log  = make_method(A, message)
 
+var B  = Object.create(A)
+B.name = 'B'
+B.log  = make_method(B, message)
+
+var C  = Object.create(B)
+C.name = 'C'
+C.log  = make_method(C, message)
+
+// And we can test if it works by calling the methods:
 A.log('foo')
-// => C: foo
-// => B: foo
-// => A: foo
+// => '-- At A'
+// => 'A: foo'
 
+B.log('foo')
+// => '-- At A'
+// => 'B: foo'
+// => '-- At B'
+// => 'B: foo'
 
-// But if we made `B.log' asynchronous, then it
-// would not work anymore. Instead, it would have the
-// same problem we've covered earlier, since the tracking
-// property is gone.
-B.log = function(message) {
-    setTimeout(function() {
-        // `this' has no `$parent' property here anymore
-        // so the look-up starts at `A', and will always
-        // resolve to `B'.
-        resend(this, 'log', message)
-        console.log('B:', message)
-    }.bind(this), 1000)
-}
-
-A.log('foo')
-// => A: foo
-// => B: foo
-// => B: foo
-// => B: foo
-// ( ... )
-
-
-// The ugly solution is setting the `$parent' directly
-// before the call:
-B.log = function(message) {
-    var parent = this.$parent
-    setTimeout(function() {
-        this.$parent = parent
-        resend(this, 'log', message)
-        console.log('B:', message)
-    }.bind(this), 1000)
-}
-
-A.log('foo')
-// => A: foo
-// => C: foo
-// => B: foo
+C.log('foo')
+// => '-- At A'
+// => 'C: foo'
+// => '-- At B'
+// => 'C: foo'
+// => '-- At C'
+// => 'C: foo'
 #+end_src
 
 
@@ -1622,7 +1497,6 @@ function Person(first_name, last_name) {
 // Defines the `name' getter/setter
 Object.defineProperty(Person.prototype, 'name', { get: get_full_name
                                                 , set: set_full_name
-                                                , writable:     true
                                                 , configurable: true
                                                 , enumerable:   true })
 
@@ -1633,9 +1507,15 @@ Person.prototype.greet = function(person) {
 }
 
 
+var proto = Object.getPrototypeOf
+
 // new Mikhail (age:Number, gender:String)
 function Mikhail(age, gender) {
-    resend(this, 'constructor', 'Mikhail', 'Weiß')
+    // Find the parent of this object and invoke its constructor
+    // with the current this. We could have used:
+    //   Person.call(this, 'Mikhail', 'Weiß')
+    // But we'd loose some flexibility with that.
+    proto(Mikhail.prototype).constructor.call(this, 'Mikhail', 'Weiß')
 }
 
 // Inherits the properties from Person.prototype
@@ -1668,19 +1548,18 @@ However, obviously this means that code using these functions will not
 work everywhere. [[http://twitter.com/kangax][@kangax]] has a most awesome [[http://kangax.github.com/es5-compat-table/][compatibility table]] for the
 implementations that follow ECMAScript 5.
 
-This section provides fallbacks to some of the functionality, and point to
-libraries that implement these fallbacks so you don't get to reinvent
+This section provides fallbacks to some of the functionality, and point
+to libraries that implement these fallbacks so you don't get to reinvent
 the wheel. Note that this section only exists to highlight how the
-functionality works, and how those behaviours could be reproduced in
-legacy code, it's not meant to provide ready-to-use fallbacks. Use
-libraries for that :3
+functionality works, and how the core part of those behaviours could be
+reproduced in legacy code, it's not meant to provide ready-to-use
+fallbacks. Use libraries for that :3
 
 
 ** 5.1. Creating objects
 In ECMAScript 5 we have got ~Object.create~ to handle inheritance, but
-there's also constructor functions, which can be used to set the
-~[⁣[Prototype]⁣]~ link for the constructed object — which is what we're
-interested about.
+constructor functions can also be used to set the ~[⁣[Prototype]⁣]~ link
+for the constructed object — which is what we're interested about.
 
 A ~clone~ function could be defined such that it would create a new
 object based on the given prototype:
@@ -1709,9 +1588,9 @@ internal tags, like ~writable~, ~configurable~ and ~enumerable~. It's
 not possible to get this behaviour in the older versions of the
 language.
 
-All properties defined will inevitable have ~writable~, ~configurable~
-and ~enumerable~ set to true, which is usually not really that much of a
-problem — still, not really compatible with full ES5 code.
+All properties defined otherwise will inevitable have ~writable~,
+~configurable~ and ~enumerable~ set to true, which is usually not really
+that much of a problem — still, not compatible with full ES5 code.
 
 In regards of getters and setters, they are supported to a certain
 extent with non-standard syntax — the ~__defineGetter__~ and
@@ -1815,20 +1694,52 @@ function bind(fn, bound_this) { var bound_args
 #+end_src
 
 
-** 5.5. Libraries that provide fallbacks
+** 5.5. Getting the =[⁣[Prototype]⁣]=
+For accessing overriden properties, we need to get the a reference to
+the =[⁣[Prototype]⁣]=. In environments that expose such link (like
+Firefox's /SpiderMonkey/ or Chrome's /V8/), it's easy and reliable:
+
+#+begin_src js
+function proto(object) {
+    return object?            object.__proto__
+         : /* not object? */  null
+}
+#+end_src
+
+However, in environments that don't expose the =[⁣[Prototype]⁣]= link,
+things aren't quite as reliable. The only way of getting the prototype
+of an object, in this case, would be by the constructor's =prototype=
+property, but we can only access that from the object given the
+=constructor= property is kept intact.
+
+A fallback covering most cases would look like this:
+
+#+begin_src js
+function proto(object) {
+    return !object?                null
+         : '__proto__' in object?  object.__proto__
+         : /* not exposed? */      object.constructor.prototype
+}
+#+end_src
+
+Note that the actual =Object.getPrototypeOf= throws a =TypeError= when
+you pass something that is not an object to it.
+
+
+** 5.6. Libraries that provide fallbacks
 
 [[https://github.com/kriskowal/es5-shim][ES5-shim]] attempts to implement fallbacks for ECMAScript 5 functionality
 that can be done in pure JavaScript, whilst adding minimal support
 for the other ones. It's important to note, however, that the
 fallbacks are intended to provide equivalent functionality that is
 close to the ones defined in the specs, it's not guaranteed that they
-will work exactly the same.
+will work exactly the same way.
 
 To quote the ~README~:
 
 #+begin_quote
 "As closely as possible to ES5" is not very close. Many of these shims
-are intended only to all ow code to be written to ES5 without causing
+are intended only to allow code to be written to ES5 without causing
 run-time errors in older engines. In many cases, this means that
 these shims cause many ES5 methods to silently fail. Decide carefully
 whether this is what you want. 
