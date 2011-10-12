@@ -61,7 +61,7 @@ everything about the classical OO approach and start from the ground
 up. But, trust me, it's worth it.
 
 The prototypical OO model brings in some new ways of solving old
-problems, in an dynamic and more expressive way. It also presents new
+problems, in an more dynamic and expressive way. It also presents new
 and more powerful models for extensibility and code-reuse, which is what
 most people are interested about when they talk about Object
 Orientation. It does not, however, give you contracts. Thus, there are
