@@ -49,8 +49,8 @@ themselves. They define their own behaviour, directly. There are no
 layers of meta-data (i.e.: classes) to dictate what given object must
 look like.
 
-You might ask: "how?"; more so if you come from a highly classical
-Object Orientation background (like Java or C#). Wouldn't having each
+You might ask: "how?"; more so if you come from a highly classically
+Object Orientated language (like Java or C#). Wouldn't having each
 object define their own behaviour, instead of a common /class/ mean that
 if I have 100 objects, I will have 100 different methods? Also, isn't it
 dangerous? How would one know if an object is really an Array, for
