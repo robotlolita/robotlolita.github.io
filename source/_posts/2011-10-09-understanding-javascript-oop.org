@@ -250,9 +250,9 @@ mikhail['gender'] = 'Male'
   the variable resolves to =1=) are all equivalent.
 
 There is another way of referring to a property called /dot
-notation/, which usually looks better (and presents less syntactical
-noises) than the bracket alternative, however it only works when the
-property name is a [[http://es5.github.com/#x7.6][valid JavaScript identifier]], and don't allow
+notation/, which usually looks less cluttered and is easier to read
+than the bracket alternative. However, it only works when the
+property name is a [[http://es5.github.com/#x7.6][valid JavaScript identifier]], and doesn't allow
 for arbitrary expressions (so, variables here are a no-go).
 
 The rule for /dot notation/ is:
@@ -275,7 +275,7 @@ all semantic flags set to =true=.
 
 [fn:1]: Some implementations have magical names, like =__proto__=, which
         may yield undesired and unwanted results when set. For example,
-        =__proto__= property is used to define the parent of an object
+        the =__proto__= property is used to define the parent of an object
         in some implementations. As such, you wouldn't be able to set a
         string or number to that.
 
@@ -305,8 +305,9 @@ mikhail['address']
 [fn:2]: It should be noted that, while ECMAScript-defined native objects
         don't throw an error when you try to access a non-existing
         property, it's not guaranteed that the same will hold true for a
-        host object. After all, host object semantics are not defined,
-        they are dependant on the particular run-time implementation.
+        host object (i.e. an object defined by the engine implementor). After all, 
+		host object semantics are not defined, they are dependent on the 
+		particular run-time implementation.
 
 
 ** 1.6. Removing properties
