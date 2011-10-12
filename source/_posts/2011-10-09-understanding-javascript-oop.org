@@ -21,8 +21,8 @@ inheritance and behaviourism first-class citizens, just like functions
 are first-class in functional-ish languages (JavaScript included).
 
 Fortunately, [[http://www.ecma-international.org/publications/standards/Ecma-262.htm][ECMAScript 5]] has gotten plenty of things to move the
-language in the right way, and it's on those sweetness that this article
-will expand on. Though I'll also cover the drawbacks of JavaScript's
+language in the right way, and it's on those sweet features that this article
+will expand. I'll also cover the drawbacks of JavaScript's
 design, and do a little comparison with the classical model here and
 there, where those would highlight the advantages or disadvantages of
 the language's implementation of prototypical OO.
@@ -39,17 +39,17 @@ Everything you can manipulate in JavaScript is an object. This includes
 ~Strings~, ~Arrays~, ~Numbers~, ~Functions~, and, obviously, the
 so-called ~Object~ — there are primitives, but they're converted to an
 object when you need to operate upon them. An object in the language is
-simply a collection of key/value pairs (and a few internal magic
+simply a collection of key/value pairs (and some internal magic
 sometimes).
 
 There are no concepts of classes anywhere, though. That is, an object
 with properties ~name: Linda, age: 21~ is not an instance of the
 ~Object~ class. Both ~Object~ and ~Linda~ are instances of
 themselves. They define their own behaviour, directly. There are no
-layers of meta-data (i.e.: classes) to provide how a given object must
+layers of meta-data (i.e.: classes) to dictate what given object must
 look like.
 
-You might ask: "how?". More so if you come from a highly classical
+You might ask: "how?"; more so if you come from a highly classical
 Object Orientation background (like Java or C#). Wouldn't having each
 object define their own behaviour, instead of a common /class/ mean that
 if I have 100 objects, I will have 100 different methods? Also, isn't it
