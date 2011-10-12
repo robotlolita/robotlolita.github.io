@@ -10,7 +10,7 @@ snip:   Prototypical inheritance on awesomeness!
 
 
 
-JavaScript is an object oriented language, with its roots in the [[http://selflanguage.org/][Self]]
+JavaScript is an object oriented (OO) language, with its roots in the [[http://selflanguage.org/][Self]]
 programming language, although it's (sadly) designed to look like Java. This
 makes the language's really powerful and sweet features stay covered by
 some pretty ugly and counter-intuitive /work-arounds/.
