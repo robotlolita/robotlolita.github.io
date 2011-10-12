@@ -10,19 +10,19 @@ snip:   Prototypical inheritance on awesomeness!
 
 
 
-JavaScript is an object oriented language, with its roots in the [[http://selflanguage.org/][Self]]
-programming language, however (sadly) designed to look like Java. This
+JavaScript is an object oriented (OO) language, with its roots in the [[http://selflanguage.org/][Self]]
+programming language, although it's (sadly) designed to look like Java. This
 makes the language's really powerful and sweet features stay covered by
 some pretty ugly and counter-intuitive /work-arounds/.
 
-One of such affected features is the implementation of prototypical
+One such affected feature is the implementation of prototypical
 inheritance. The concepts are simple yet flexible and powerful. It makes
 inheritance and behaviourism first-class citizens, just like functions
 are first-class in functional-ish languages (JavaScript included).
 
 Fortunately, [[http://www.ecma-international.org/publications/standards/Ecma-262.htm][ECMAScript 5]] has gotten plenty of things to move the
-language in the right way, and it's on those sweetness that this article
-will expand on. Though I'll also cover the drawbacks of JavaScript's
+language in the right way, and it's on those sweet features that this article
+will expand. I'll also cover the drawbacks of JavaScript's
 design, and do a little comparison with the classical model here and
 there, where those would highlight the advantages or disadvantages of
 the language's implementation of prototypical OO.
@@ -39,29 +39,29 @@ Everything you can manipulate in JavaScript is an object. This includes
 ~Strings~, ~Arrays~, ~Numbers~, ~Functions~, and, obviously, the
 so-called ~Object~ — there are primitives, but they're converted to an
 object when you need to operate upon them. An object in the language is
-simply a collection of key/value pairs (and a few internal magic
+simply a collection of key/value pairs (and some internal magic
 sometimes).
 
 There are no concepts of classes anywhere, though. That is, an object
 with properties ~name: Linda, age: 21~ is not an instance of the
 ~Object~ class. Both ~Object~ and ~Linda~ are instances of
 themselves. They define their own behaviour, directly. There are no
-layers of meta-data (i.e.: classes) to provide how a given object must
+layers of meta-data (i.e.: classes) to dictate what given object must
 look like.
 
-You might ask: "how?". More so if you come from a highly classical
-Object Orientation background (like Java or C#). Wouldn't having each
+You might ask: "how?"; more so if you come from a highly classically
+Object Orientated language (like Java or C#). "Wouldn't having each
 object define their own behaviour, instead of a common /class/ mean that
 if I have 100 objects, I will have 100 different methods? Also, isn't it
 dangerous? How would one know if an object is really an Array, for
-example?
+example?"
 
 Well, to answer all those questions, we'll first need to unlearn
 everything about the classical OO approach and start from the ground
 up. But, trust me, it's worth it.
 
 The prototypical OO model brings in some new ways of solving old
-problems, in an dynamic and more expressive way. It also presents new
+problems, in an more dynamic and expressive way. It also presents new
 and more powerful models for extensibility and code-reuse, which is what
 most people are interested about when they talk about Object
 Orientation. It does not, however, give you contracts. Thus, there are
@@ -98,7 +98,7 @@ like age, name and gender:
 
 Objects are created in JavaScript using the ~Object.create~ function. It
 takes a parent and an optional set of property descriptors and makes a
-brand new instance. Though, we'll not worry much about the parameters
+brand new instance. We'll not worry much about the parameters
 now.
 
 An empty object is an object with no parent, and no properties. The
@@ -116,7 +116,7 @@ we want to describe ~Mikhail~.
 
 Properties in JavaScript are dynamic. That means that they can be
 created or removed at any time. Properties are also unique, in the sense
-that a property name inside an object correspond to exactly one value.
+that a property key inside an object correspond to exactly one value.
 
 Creating new properties is done through the =Object.defineProperty=
 function, which takes a reference to an object, the name of the property
@@ -140,7 +140,7 @@ Object.defineProperty(mikhail, 'gender', { value:        'Male'
 #+end_src
 
 =Object.defineProperty= will create a new property if a property with
-the given name does not exist in the object, otherwise it'll update the
+the given key does not exist in the object, otherwise it'll update the
 semantics and value of the existing property.
 
 - By the way ::
@@ -171,7 +171,7 @@ semantics and value of the existing property.
 
 ** 1.3. Descriptors
 
-Descriptors are the little object that carry the semantics of a property
+The little objects that carry the semantics of a property are called descriptors
 (we used them in the previous =Object.defineProperty= calls).
 
 Flags define how a property is treated in the language, and they apply
