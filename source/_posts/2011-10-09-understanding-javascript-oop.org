@@ -140,7 +140,7 @@ Object.defineProperty(mikhail, 'gender', { value:        'Male'
 #+end_src
 
 =Object.defineProperty= will create a new property if a property with
-the given name does not exist in the object, otherwise it'll update the
+the given key does not exist in the object, otherwise it'll update the
 semantics and value of the existing property.
 
 - By the way ::
@@ -171,7 +171,7 @@ semantics and value of the existing property.
 
 ** 1.3. Descriptors
 
-Descriptors are the little object that carry the semantics of a property
+The little objects that carry the semantics of a property are called Descriptors
 (we used them in the previous =Object.defineProperty= calls).
 
 Flags define how a property is treated in the language, and they apply
