@@ -891,7 +891,7 @@ delegated property access, that is, a property is searched through all
 parents of an object.
 
 This parent chain is defined by a hidden slot in every object, called
-=[⁣[Prototype]⁣]=. You can't change this slot directly[fn:2], so the only
+=[⁣[Prototype]⁣]=. You can't change this slot directly[fn:3], so the only
 way of setting it is when you're creating a fresh object.
 
 When a property is requested from the object, the engine first tries to
@@ -914,7 +914,7 @@ mikhail.greet('you')
 // => 'Michael White: Harro, you.'
 #+end_src
 
-[fn:2] Some engines *do* expose the =[⁣[Prototype]⁣]= slot, usually
+[fn:3] Some engines *do* expose the =[⁣[Prototype]⁣]= slot, usually
        through a property like =__proto__=, however no such thing is
        described in the specifications for the language, so it's
        recommended that you avoid using it, unless you're well aware
