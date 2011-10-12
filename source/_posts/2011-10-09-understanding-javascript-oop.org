@@ -98,7 +98,7 @@ like age, name and gender:
 
 Objects are created in JavaScript using the ~Object.create~ function. It
 takes a parent and an optional set of property descriptors and makes a
-brand new instance. Though, we'll not worry much about the parameters
+brand new instance. We'll not worry much about the parameters
 now.
 
 An empty object is an object with no parent, and no properties. The
@@ -116,7 +116,7 @@ we want to describe ~Mikhail~.
 
 Properties in JavaScript are dynamic. That means that they can be
 created or removed at any time. Properties are also unique, in the sense
-that a property name inside an object correspond to exactly one value.
+that a property key inside an object correspond to exactly one value.
 
 Creating new properties is done through the =Object.defineProperty=
 function, which takes a reference to an object, the name of the property
