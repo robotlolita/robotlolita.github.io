@@ -171,7 +171,7 @@ semantics and value of the existing property.
 
 ** 1.3. Descriptors
 
-The little objects that carry the semantics of a property are called Descriptors
+The little objects that carry the semantics of a property are called descriptors
 (we used them in the previous =Object.defineProperty= calls).
 
 Flags define how a property is treated in the language, and they apply
