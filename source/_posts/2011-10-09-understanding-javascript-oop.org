@@ -1791,3 +1791,7 @@ of the way functions are treated in JavaScript.
   [[http://selflanguage.org/][Self]] code to go with it, but they are more or less easily translated
   to JavaScript code.
 
+
+* 8. Acknowledgements
+
+Thanks to [[https://github.com/hughfdjackson][@hughfdjackson]] for the additional revision of the article.
