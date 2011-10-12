@@ -174,7 +174,7 @@ syntax to create such object in JavaScript is the following:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = Object.create(<span style="color: #FA2573;">null</span>)
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">mikhail</span> = Object.create(<span style="color: #259185;">null</span>)
 </pre>
 
 
@@ -206,20 +206,20 @@ to create and a descriptor that defines the semantics of the property.
 
 
 
-<pre class="src src-js">Object.defineProperty(mikhail, <span style="color: #A6E32D;">'name'</span>, { value:        <span style="color: #A6E32D;">'Mikhail'</span>
-                                       , writable:     <span style="color: #FA2573;">true</span>
-                                       , configurable: <span style="color: #FA2573;">true</span>
-                                       , enumerable:   <span style="color: #FA2573;">true</span> })
+<pre class="src src-js">Object.defineProperty(mikhail, <span style="color: #259185;">'name'</span>, { value:        <span style="color: #259185;">'Mikhail'</span>
+                                       , writable:     <span style="color: #259185;">true</span>
+                                       , configurable: <span style="color: #259185;">true</span>
+                                       , enumerable:   <span style="color: #259185;">true</span> })
 
-Object.defineProperty(mikhail, <span style="color: #A6E32D;">'age'</span>, { value:        19
-                                      , writable:     <span style="color: #FA2573;">true</span>
-                                      , configurable: <span style="color: #FA2573;">true</span>
-                                      , enumerable:   <span style="color: #FA2573;">true</span> })
+Object.defineProperty(mikhail, <span style="color: #259185;">'age'</span>, { value:        19
+                                      , writable:     <span style="color: #259185;">true</span>
+                                      , configurable: <span style="color: #259185;">true</span>
+                                      , enumerable:   <span style="color: #259185;">true</span> })
 
-Object.defineProperty(mikhail, <span style="color: #A6E32D;">'gender'</span>, { value:        <span style="color: #A6E32D;">'Male'</span>
-                                         , writable:     <span style="color: #FA2573;">true</span>
-                                         , configurable: <span style="color: #FA2573;">true</span>
-                                         , enumerable:   <span style="color: #FA2573;">true</span> })
+Object.defineProperty(mikhail, <span style="color: #259185;">'gender'</span>, { value:        <span style="color: #259185;">'Male'</span>
+                                         , writable:     <span style="color: #259185;">true</span>
+                                         , configurable: <span style="color: #259185;">true</span>
+                                         , enumerable:   <span style="color: #259185;">true</span> })
 </pre>
 
 
@@ -239,20 +239,20 @@ more than one property to an object:
 
 
 
-<pre class="src src-js">Object.defineProperties(mikhail, { name:   { value:        <span style="color: #A6E32D;">'Mikhail'</span>
-                                           , writable:     <span style="color: #FA2573;">true</span>
-                                           , configurable: <span style="color: #FA2573;">true</span>
-                                           , enumerable:   <span style="color: #FA2573;">true</span> }
+<pre class="src src-js">Object.defineProperties(mikhail, { name:   { value:        <span style="color: #259185;">'Mikhail'</span>
+                                           , writable:     <span style="color: #259185;">true</span>
+                                           , configurable: <span style="color: #259185;">true</span>
+                                           , enumerable:   <span style="color: #259185;">true</span> }
 
                                  , age:    { value:        19
-                                           , writable:     <span style="color: #FA2573;">true</span>
-                                           , configurable: <span style="color: #FA2573;">true</span>
-                                           , enumerable:   <span style="color: #FA2573;">true</span> }
+                                           , writable:     <span style="color: #259185;">true</span>
+                                           , configurable: <span style="color: #259185;">true</span>
+                                           , enumerable:   <span style="color: #259185;">true</span> }
 
-                                 , gender: { value:        <span style="color: #A6E32D;">'Male'</span>
-                                           , writable:     <span style="color: #FA2573;">true</span>
-                                           , configurable: <span style="color: #FA2573;">true</span>
-                                           , enumerable:   <span style="color: #FA2573;">true</span> }})
+                                 , gender: { value:        <span style="color: #259185;">'Male'</span>
+                                           , writable:     <span style="color: #259185;">true</span>
+                                           , configurable: <span style="color: #259185;">true</span>
+                                           , enumerable:   <span style="color: #259185;">true</span> }})
 </pre>
 
 
@@ -276,11 +276,12 @@ to create an abstraction layer on top of them.
 
 <p>
 The little objects that carry the semantics of a property are called descriptors
-(we used them in the previous <code>Object.defineProperty</code> calls).
+(we used them in the previous <code>Object.defineProperty</code> calls). Descriptors can be
+one of two types - data descriptors or accessor descriptors.
 </p>
 <p>
-Flags define how a property is treated in the language, and they apply
-to all descriptors. If a flag is not set, it's assumed to be <code>false</code> —
+Both types of descriptor contain flags, which define how a property is 
+treated in the language. If a flag is not set, it's assumed to be <code>false</code> —
 unfortunately this is usually not a good default value for them, which
 adds to the verbosity of these descriptors.
 </p>
@@ -304,32 +305,27 @@ be removed.
 <p>
 Whether the property is listed in a loop through the properties of the
 object.
-</p></dd>
+</p>
+</dd>
 </dl>
 
+<p>Data descriptors are those that hold concrete values, and therefore have 
+an additional <code>value</code> parameter, describing the concrete data bound to 
+the property:
+</p>
 
-<p>
-A descriptor may be a data descriptor — it holds a concrete value — or
-an accessor descriptor — it proxies the access to the concrete value
-through getters and setter functions. When not set, they'll default to
-<code>undefined</code>.
-</p>
-<p>
-A data descriptor accepts only a <code>value</code> parameter, describing the
-concrete data bound to the property:
-</p>
 <dl>
 <dt>value</dt><dd>
 
 <p>
 The value of a property.
-</p></dd>
+</p>
+</dd>
 </dl>
 
-
-<p>
-Accessor descriptors, on the other hand, specify the proxy functions
-that will be used to handle the access to the property:
+<p>Accessor descriptors, on the other hand, proxy access to the concrete value
+through getter and setter functions. When not set, they'll default to 
+<code>undefined</code>. 
 </p>
 <dl>
 <dt>get ()</dt><dd>
@@ -369,7 +365,7 @@ JavaScript also understands references to a property using what we call
 
 
 
-<pre class="src src-bnf">&lt;bracket-access&gt; ::= &lt;identifier&gt; <span style="color: #A6E32D;">"["</span> &lt;expression&gt; <span style="color: #A6E32D;">"]"</span>
+<pre class="src src-bnf">&lt;bracket-access&gt; ::= &lt;identifier&gt; <span style="color: #259185;">"["</span> &lt;expression&gt; <span style="color: #259185;">"]"</span>
 </pre>
 
 
@@ -387,9 +383,9 @@ Thus, we could just as well rewrite our previous example as:
 
 
 
-<pre class="src src-js">mikhail[<span style="color: #A6E32D;">'name'</span>]   = <span style="color: #A6E32D;">'Mikhail'</span>
-mikhail[<span style="color: #A6E32D;">'age'</span>]    = 19
-mikhail[<span style="color: #A6E32D;">'gender'</span>] = <span style="color: #A6E32D;">'Male'</span>
+<pre class="src src-js">mikhail[<span style="color: #259185;">'name'</span>]   = <span style="color: #259185;">'Mikhail'</span>
+mikhail[<span style="color: #259185;">'age'</span>]    = 19
+mikhail[<span style="color: #259185;">'gender'</span>] = <span style="color: #259185;">'Male'</span>
 </pre>
 
 
@@ -409,9 +405,9 @@ the variable resolves to <code>1</code>) are all equivalent.
 
 
 <p>
-There is another way of referring to a property called <i>dot notation</i>, which usually looks better (and presents less syntactical
-noises) than the bracket alternative, however it only works when the
-property name is a <a href="http://es5.github.com/#x7.6">valid JavaScript identifier</a>, and don't allow
+There is another way of referring to a property called <i>dot notation</i>, which usually looks less cluttered and is easier to read
+than the bracket alternative. However, it only works when the
+property name is a <a href="http://es5.github.com/#x7.6">valid JavaScript identifier</a>, and doesn't allow
 for arbitrary expressions (so, variables here are a no-go).
 </p>
 <p>
@@ -420,7 +416,7 @@ The rule for <i>dot notation</i> is:
 
 
 
-<pre class="src src-bnf">&lt;dot-access&gt; ::= &lt;identifier&gt; <span style="color: #A6E32D;">"."</span> &lt;identifier&gt;
+<pre class="src src-bnf">&lt;dot-access&gt; ::= &lt;identifier&gt; <span style="color: #259185;">"."</span> &lt;identifier&gt;
 </pre>
 
 
@@ -431,9 +427,9 @@ This would give us an even sweeter way of defining properties:
 
 
 
-<pre class="src src-js">mikhail.name   = <span style="color: #A6E32D;">'Mikhail'</span>
+<pre class="src src-js">mikhail.name   = <span style="color: #259185;">'Mikhail'</span>
 mikhail.age    = 19
-mikhail.gender = <span style="color: #A6E32D;">'Male'</span>
+mikhail.gender = <span style="color: #259185;">'Male'</span>
 </pre>
 
 
@@ -463,8 +459,8 @@ So, if we want to check on Mikhail's age:
 
 
 
-<pre class="src src-js">mikhail[<span style="color: #A6E32D;">'age'</span>]
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 19
+<pre class="src src-js">mikhail[<span style="color: #259185;">'age'</span>]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 19
 </span></pre>
 
 
@@ -476,8 +472,8 @@ returns <code>undefined</code> <sup><a class="footref" name="fnr.2" href="#fn.2"
 
 
 
-<pre class="src src-js">mikhail[<span style="color: #A6E32D;">'address'</span>]
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; undefined
+<pre class="src src-js">mikhail[<span style="color: #259185;">'address'</span>]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; undefined
 </span></pre>
 
 
@@ -499,11 +495,11 @@ from the <code>mikhail</code> object:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">delete</span> mikhail[<span style="color: #A6E32D;">'gender'</span>]
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; true
+<pre class="src src-js"><span style="color: #728a05;">delete</span> mikhail[<span style="color: #259185;">'gender'</span>]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; true
 </span>
-mikhail[<span style="color: #A6E32D;">'gender'</span>]
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; undefined
+mikhail[<span style="color: #259185;">'gender'</span>]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; undefined
 </span></pre>
 
 
@@ -542,11 +538,11 @@ data properties:
 
 
 
-<pre class="src src-js">Object.defineProperty(mikhail, <span style="color: #A6E32D;">'first_name'</span>, { value:    <span style="color: #A6E32D;">'Mikhail'</span>
-                                             , writable: <span style="color: #FA2573;">true</span> })
+<pre class="src src-js">Object.defineProperty(mikhail, <span style="color: #259185;">'first_name'</span>, { value:    <span style="color: #259185;">'Mikhail'</span>
+                                             , writable: <span style="color: #259185;">true</span> })
 
-Object.defineProperty(mikhail, <span style="color: #A6E32D;">'last_name'</span>, { value:    <span style="color: #A6E32D;">'Wei&#223;'</span>
-                                            , writable: <span style="color: #FA2573;">true</span> })
+Object.defineProperty(mikhail, <span style="color: #259185;">'last_name'</span>, { value:    <span style="color: #259185;">'Wei&#223;'</span>
+                                            , writable: <span style="color: #259185;">true</span> })
 </pre>
 
 
@@ -558,24 +554,24 @@ values at the same time — let's call it <code>name</code>:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">() &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Returns the full name of object.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">get_full_name</span>() {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.first_name + <span style="color: #A6E32D;">' '</span> + <span style="color: #FA2573;">this</span>.last_name
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">() &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Returns the full name of object.
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">get_full_name</span>() {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.first_name + <span style="color: #259185;">' '</span> + <span style="color: #259185;">this</span>.last_name
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(new_name:String) &#8594; undefined
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Sets the name components of the object, from a full name.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">set_full_name</span>(<span style="color: #729FCF;">new_name</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">names</span>
-    names = new_name.trim().split(<span style="color: #A6E32D;">/\s+/</span>)
-    <span style="color: #FA2573;">this</span>.first_name = names[0] || <span style="color: #A6E32D;">''</span>
-    <span style="color: #FA2573;">this</span>.last_name  = names[1] || <span style="color: #A6E32D;">''</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(new_name:String) &#8594; undefined
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Sets the name components of the object, from a full name.
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">set_full_name</span>(<span style="color: #2075c7;">new_name</span>) { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">names</span>
+    names = new_name.trim().split(<span style="color: #259185;">/\s+/</span>)
+    <span style="color: #259185;">this</span>.first_name = names[0] || <span style="color: #259185;">''</span>
+    <span style="color: #259185;">this</span>.last_name  = names[1] || <span style="color: #259185;">''</span>
 }
 
-Object.defineProperty(mikhail, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
+Object.defineProperty(mikhail, <span style="color: #259185;">'name'</span>, { get: get_full_name
                                        , set: set_full_name
-                                       , configurable: <span style="color: #FA2573;">true</span>
-                                       , enumerable:   <span style="color: #FA2573;">true</span> })
+                                       , configurable: <span style="color: #259185;">true</span>
+                                       , enumerable:   <span style="color: #259185;">true</span> })
 </pre>
 
 
@@ -588,17 +584,17 @@ it'll execute the <code>get_full_name</code> getter.
 
 
 <pre class="src src-js">mikhail.name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Mikhail Wei&#223;'
 </span>
 mikhail.first_name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Mikhail'
 </span>
 mikhail.last_name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Wei&#223;'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Wei&#223;'
 </span>
-mikhail.last_name = <span style="color: #A6E32D;">'White'</span>
+mikhail.last_name = <span style="color: #259185;">'White'</span>
 mikhail.name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail White'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Mikhail White'
 </span></pre>
 
 
@@ -610,16 +606,16 @@ property, this will then execute <code>set_full_name</code> to do the dirty work
 
 
 
-<pre class="src src-js">mikhail.name = <span style="color: #A6E32D;">'Michael White'</span>
+<pre class="src src-js">mikhail.name = <span style="color: #259185;">'Michael White'</span>
 
 mikhail.name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White'
 </span>
 mikhail.first_name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael'
 </span>
 mikhail.last_name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'White'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'White'
 </span></pre>
 
 
@@ -664,7 +660,7 @@ If we check now what we know about Mikhail:
 
 
 <pre class="src src-js">Object.getOwnPropertyNames(mikhail)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'name', 'age', 'gender', 'first_name', 'last_name' ]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [ 'name', 'age', 'gender', 'first_name', 'last_name' ]
 </span></pre>
 
 
@@ -677,7 +673,7 @@ that have been marked as <b>enumerable</b> when they were defined:
 
 
 <pre class="src src-js">Object.keys(mikhail)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'name', 'age', 'gender' ]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [ 'name', 'age', 'gender' ]
 </span></pre>
 
 
@@ -707,23 +703,23 @@ rewrite our Mikhail object to the following:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = { first_name: <span style="color: #A6E32D;">'Mikhail'</span>
-              , last_name:  <span style="color: #A6E32D;">'Wei&#223;'</span>
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">mikhail</span> = { first_name: <span style="color: #259185;">'Mikhail'</span>
+              , last_name:  <span style="color: #259185;">'Wei&#223;'</span>
               , age:        19
-              , gender:     <span style="color: #A6E32D;">'Male'</span>
+              , gender:     <span style="color: #259185;">'Male'</span>
 
-              <span style="color: #75766A;">// </span><span style="color: #75766A;">() &#8594; String
-</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">Returns the full name of object.
+              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">() &#8594; String
+</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Returns the full name of object.
 </span>              , get name() {
-                    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.first_name + <span style="color: #A6E32D;">' '</span> + <span style="color: #FA2573;">this</span>.last_name }
+                    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.first_name + <span style="color: #259185;">' '</span> + <span style="color: #259185;">this</span>.last_name }
 
-              <span style="color: #75766A;">// </span><span style="color: #75766A;">(new_name:String) &#8594; undefined
-</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">Sets the name components of the object,
-</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">from a full name.
-</span>              , set name(new_name) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">names</span>
-                    names = new_name.trim().split(<span style="color: #A6E32D;">/\s+/</span>)
-                    <span style="color: #FA2573;">this</span>.first_name = names[0] || <span style="color: #A6E32D;">''</span>
-                    <span style="color: #FA2573;">this</span>.last_name  = names[1] || <span style="color: #A6E32D;">''</span> }
+              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(new_name:String) &#8594; undefined
+</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Sets the name components of the object,
+</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">from a full name.
+</span>              , set name(new_name) { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">names</span>
+                    names = new_name.trim().split(<span style="color: #259185;">/\s+/</span>)
+                    <span style="color: #259185;">this</span>.first_name = names[0] || <span style="color: #259185;">''</span>
+                    <span style="color: #259185;">this</span>.last_name  = names[1] || <span style="color: #259185;">''</span> }
               }
 </pre>
 
@@ -742,21 +738,21 @@ The rules for object literal can be described as the following:
 
 
 
-<pre class="src src-bnf">&lt;object-literal&gt;  ::= <span style="color: #A6E32D;">"{"</span> &lt;property-list&gt; <span style="color: #A6E32D;">"}"</span>
+<pre class="src src-bnf">&lt;object-literal&gt;  ::= <span style="color: #259185;">"{"</span> &lt;property-list&gt; <span style="color: #259185;">"}"</span>
                     ;
-&lt;property-list&gt;   ::= &lt;property&gt; [<span style="color: #A6E32D;">","</span> &lt;property&gt;]*
+&lt;property-list&gt;   ::= &lt;property&gt; [<span style="color: #259185;">","</span> &lt;property&gt;]*
                     ;
 &lt;property&gt;        ::= &lt;data-property&gt;
                     | &lt;getter-property&gt;
                     | &lt;setter-property&gt;
                     ;
-&lt;data-property&gt;   ::= &lt;property-name&gt; <span style="color: #A6E32D;">":"</span> &lt;expression&gt;
+&lt;data-property&gt;   ::= &lt;property-name&gt; <span style="color: #259185;">":"</span> &lt;expression&gt;
                     ;
-&lt;getter-property&gt; ::= <span style="color: #A6E32D;">"get"</span> &lt;identifier&gt;
+&lt;getter-property&gt; ::= <span style="color: #259185;">"get"</span> &lt;identifier&gt;
                     :       &lt;function-parameters&gt;
                     :       &lt;function-block&gt;
                     ;
-&lt;setter-property&gt; ::= <span style="color: #A6E32D;">"set"</span> &lt;identifier&gt;
+&lt;setter-property&gt; ::= <span style="color: #259185;">"set"</span> &lt;identifier&gt;
                     :       &lt;function-parameters&gt;
                     :       &lt;function-block&gt;
                     ;
@@ -775,25 +771,25 @@ language, new-comers usually confound the two:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">This is a block statement, with a label:
-</span>{ foo: <span style="color: #A6E32D;">'bar'</span> }
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'bar'
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">This is a block statement, with a label:
+</span>{ foo: <span style="color: #259185;">'bar'</span> }
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'bar'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">This is a syntax error (labels can't be quoted):
-</span>{ <span style="color: #A6E32D;">"foo"</span>: <span style="color: #A6E32D;">'bar'</span> }
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; SyntaxError: Invalid label
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">This is a syntax error (labels can't be quoted):
+</span>{ <span style="color: #259185;">"foo"</span>: <span style="color: #259185;">'bar'</span> }
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; SyntaxError: Invalid label
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">This is an object literal (note the parenthesis to force
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">parsing the contents as an expression):
-</span>({ <span style="color: #A6E32D;">"foo"</span>: <span style="color: #A6E32D;">'bar'</span> })
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; { foo: 'bar' }
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">This is an object literal (note the parenthesis to force
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">parsing the contents as an expression):
+</span>({ <span style="color: #259185;">"foo"</span>: <span style="color: #259185;">'bar'</span> })
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; { foo: 'bar' }
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Where the parser is already expecting expressions,
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">object literals don't need to be forced. E.g.:
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">x</span> = { foo: <span style="color: #A6E32D;">'bar'</span> }
-fn({foo: <span style="color: #A6E32D;">'bar'</span>})
-<span style="color: #C48DFF;">return</span> { foo: <span style="color: #A6E32D;">'bar'</span> }
-1, { foo: <span style="color: #A6E32D;">'bar'</span> }
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Where the parser is already expecting expressions,
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">object literals don't need to be forced. E.g.:
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">x</span> = { foo: <span style="color: #259185;">'bar'</span> }
+fn({foo: <span style="color: #259185;">'bar'</span>})
+<span style="color: #728a05;">return</span> { foo: <span style="color: #259185;">'bar'</span> }
+1, { foo: <span style="color: #259185;">'bar'</span> }
 ( ... )
 </pre>
 
@@ -828,10 +824,10 @@ Mikhail to greet someone:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets a random person
-</span>mikhail.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Why, hello there, '</span> + person + <span style="color: #A6E32D;">'.'</span>
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets a random person
+</span>mikhail.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Why, hello there, '</span> + person + <span style="color: #259185;">'.'</span>
 }
 </pre>
 
@@ -846,11 +842,11 @@ we can just call.
 
 
 
-<pre class="src src-js">mikhail.greet(<span style="color: #A6E32D;">'you'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Why, hello there, you.'
+<pre class="src src-js">mikhail.greet(<span style="color: #259185;">'you'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Why, hello there, you.'
 </span>
-mikhail.greet(<span style="color: #A6E32D;">'Kristin'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Why, hello there, Kristin.'
+mikhail.greet(<span style="color: #259185;">'Kristin'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Why, hello there, Kristin.'
 </span></pre>
 
 
@@ -910,14 +906,14 @@ For the following examples, we'll take these definitions into account:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(other:Number[, yet_another:Number]) &#8594; Number
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Returns the sum of the object's value with the given Number
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">add</span>(<span style="color: #729FCF;">other</span>, <span style="color: #729FCF;">yet_another</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.value + other + (yet_another || 0)
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(other:Number[, yet_another:Number]) &#8594; Number
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Returns the sum of the object's value with the given Number
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">add</span>(<span style="color: #2075c7;">other</span>, <span style="color: #2075c7;">yet_another</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.value + other + (yet_another || 0)
 }
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">one</span> = { value: 1, add: add }
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">two</span> = { value: 2, add: add }
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">one</span> = { value: 1, add: add }
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">two</span> = { value: 2, add: add }
 </pre>
 
 
@@ -945,14 +941,14 @@ whatever actions the <code>greet</code> function defines to the <code>mikhail</c
 
 
 
-<pre class="src src-js">one.add(two.value) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === one
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+<pre class="src src-js">one.add(two.value) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === one
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 3
 </span>
-two.add(3)         <span style="color: #75766A;">// </span><span style="color: #75766A;">this === two
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 5
+two.add(3)         <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === two
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 5
 </span>
-one[<span style="color: #A6E32D;">'add'</span>](two.value) <span style="color: #75766A;">// </span><span style="color: #75766A;">brackets are cool too
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+one[<span style="color: #259185;">'add'</span>](two.value) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">brackets are cool too
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 3
 </span></pre>
 
 
@@ -975,13 +971,13 @@ Node.js)
 
 
 
-<pre class="src src-js">add(two.value)  <span style="color: #75766A;">// </span><span style="color: #75766A;">this === global
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; NaN
+<pre class="src src-js">add(two.value)  <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === global
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; NaN
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">The global object still has no `value' property, let's fix that.
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">The global object still has no `value' property, let's fix that.
 </span>value = 2
-add(two.value)  <span style="color: #75766A;">// </span><span style="color: #75766A;">this === global
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4
+add(two.value)  <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === global
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 4
 </span></pre>
 
 
@@ -1018,14 +1014,14 @@ positional arguments:
 
 
 
-<pre class="src src-js">add.call(two, 2, 2)      <span style="color: #75766A;">// </span><span style="color: #75766A;">this === two
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
+<pre class="src src-js">add.call(two, 2, 2)      <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === two
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 6
 </span>
-add.call(window, 4)      <span style="color: #75766A;">// </span><span style="color: #75766A;">this === global
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
+add.call(window, 4)      <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === global
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 6
 </span>
-add.call(one, one.value) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === one
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 2
+add.call(one, one.value) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === one
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 2
 </span></pre>
 
 
@@ -1038,14 +1034,14 @@ arguments to the target function:
 
 
 
-<pre class="src src-js">add.apply(two, [2, 2])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to two.add(2, 2)
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
+<pre class="src src-js">add.apply(two, [2, 2])       <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">equivalent to two.add(2, 2)
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 6
 </span>
-add.apply(window, [4])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to add(4)
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6
+add.apply(window, [4])       <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">equivalent to add(4)
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 6
 </span>
-add.apply(one, [one.value])  <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to one.add(one.value)
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 2
+add.apply(one, [one.value])  <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">equivalent to one.add(one.value)
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 2
 </span></pre>
 
 
@@ -1064,14 +1060,14 @@ be resolved as expected — to the exact thing it was applied to:
 
 
 <pre class="src src-js">window.value = 2
-add.call(<span style="color: #FA2573;">undefined</span>, 1) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === window
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+add.call(<span style="color: #259185;">undefined</span>, 1) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === window
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 3
 </span>
-<span style="color: #C48DFF;">void</span> <span style="color: #C48DFF;">function</span>() {
-  <span style="color: #A6E32D;">"use strict"</span>
-  add.call(<span style="color: #FA2573;">undefined</span>, 1) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === undefined
-</span>  <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; NaN
-</span>  <span style="color: #75766A;">// </span><span style="color: #75766A;">Since primitives can't hold properties.
+<span style="color: #728a05;">void</span> <span style="color: #728a05;">function</span>() {
+  <span style="color: #259185;">"use strict"</span>
+  add.call(<span style="color: #259185;">undefined</span>, 1) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === undefined
+</span>  <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; NaN
+</span>  <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Since primitives can't hold properties.
 </span>}()
 </pre>
 
@@ -1105,17 +1101,17 @@ function when called:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">one_add</span> = add.bind(one)
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">one_add</span> = add.bind(one)
 
-one_add(2) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === one
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+one_add(2) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === one
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 3
 </span>
 two.one_adder = one_add
-two.one_adder(2) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === one
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+two.one_adder(2) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === one
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 3
 </span>
-one_add.call(two) <span style="color: #75766A;">// </span><span style="color: #75766A;">this === one
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3
+one_add.call(two) <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">this === one
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 3
 </span></pre>
 
 
@@ -1199,51 +1195,51 @@ We can implement this in JavaScript with the following definitions:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">person</span> = Object.create(<span style="color: #FA2573;">null</span>)
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">person</span> = Object.create(<span style="color: #259185;">null</span>)
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Here we are reusing the previous getter/setter functions
-</span>Object.defineProperty(person, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Here we are reusing the previous getter/setter functions
+</span>Object.defineProperty(person, <span style="color: #259185;">'name'</span>, { get: get_full_name
                                       , set: set_full_name
-                                      , configurable: <span style="color: #FA2573;">true</span>
-                                      , enumerable:   <span style="color: #FA2573;">true</span> })
+                                      , configurable: <span style="color: #259185;">true</span>
+                                      , enumerable:   <span style="color: #259185;">true</span> })
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And adding the `greet' function
-</span>person.greet = <span style="color: #C48DFF;">function</span> (<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Why, hello there, '</span> + person + <span style="color: #A6E32D;">'.'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And adding the `greet' function
+</span>person.greet = <span style="color: #728a05;">function</span> (<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Why, hello there, '</span> + person + <span style="color: #259185;">'.'</span>
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Then we can share those behaviours with Mikhail
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">By creating a new object that has it's [[Prototype]] property
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">pointing to `person'.
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = Object.create(person)
-mikhail.first_name = <span style="color: #A6E32D;">'Mikhail'</span>
-mikhail.last_name  = <span style="color: #A6E32D;">'Wei&#223;'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Then we can share those behaviours with Mikhail
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">By creating a new object that has it's [[Prototype]] property
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">pointing to `person'.
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">mikhail</span> = Object.create(person)
+mikhail.first_name = <span style="color: #259185;">'Mikhail'</span>
+mikhail.last_name  = <span style="color: #259185;">'Wei&#223;'</span>
 mikhail.age        = 19
-mikhail.gender     = <span style="color: #A6E32D;">'Male'</span>
+mikhail.gender     = <span style="color: #259185;">'Male'</span>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And we can test whether things are actually working.
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">First, `name' should be looked on `person'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And we can test whether things are actually working.
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">First, `name' should be looked on `person'
 </span>mikhail.name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Mikhail Wei&#223;'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Setting `name' should trigger the setter
-</span>mikhail.name = <span style="color: #A6E32D;">'Michael White'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Setting `name' should trigger the setter
+</span>mikhail.name = <span style="color: #259185;">'Michael White'</span>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Such that `first_name' and `last_name' now reflect the
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">previously name setting.
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Such that `first_name' and `last_name' now reflect the
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">previously name setting.
 </span>mikhail.first_name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael'
 </span>mikhail.last_name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'White'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'White'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">`greet' is also inherited from `person'.
-</span>mikhail.greet(<span style="color: #A6E32D;">'you'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Why, hello there, you.'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">`greet' is also inherited from `person'.
+</span>mikhail.greet(<span style="color: #259185;">'you'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Why, hello there, you.'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And just to be sure, we can check which properties actually
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">belong to `mikhail'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And just to be sure, we can check which properties actually
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">belong to `mikhail'
 </span>Object.keys(mikhail)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'first_name', 'last_name', 'age', 'gender' ]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [ 'first_name', 'last_name', 'age', 'gender' ]
 </span></pre>
 
 
@@ -1267,7 +1263,7 @@ parents of an object.
 </p>
 <p>
 This parent chain is defined by a hidden slot in every object, called
-<code>[⁣[Prototype]⁣]</code>. You can't change this slot directly<sup><a class="footref" name="fnr.2.2" href="#fn.2">2</a></sup>, so the only
+<code>[⁣[Prototype]⁣]</code>. You can't change this slot directly<sup><a class="footref" name="fnr.3" href="#fn.3">3</a></sup>, so the only
 way of setting it is when you're creating a fresh object.
 </p>
 <p>
@@ -1284,14 +1280,14 @@ let's suppose we wanted a different default greeting:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
-</span>person.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Harro, '</span> + person + <span style="color: #A6E32D;">'.'</span>
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person
+</span>person.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Harro, '</span> + person + <span style="color: #259185;">'.'</span>
 }
 
-mikhail.greet(<span style="color: #A6E32D;">'you'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Harro, you.'
+mikhail.greet(<span style="color: #259185;">'you'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Harro, you.'
 </span></pre>
 
 
@@ -1336,56 +1332,56 @@ was shared from <code>person</code>.
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">Here we set up the greeting for a generic person
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Here we set up the greeting for a generic person
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person, formally
-</span>person.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Hello, '</span> + (person || <span style="color: #A6E32D;">'you'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person, formally
+</span>person.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Hello, '</span> + (person || <span style="color: #259185;">'you'</span>)
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And a greeting for our protagonist, Mikhail
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And a greeting for our protagonist, Mikhail
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person, like a bro
-</span>mikhail.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': \'sup, '</span> + (person || <span style="color: #A6E32D;">'dude'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person, like a bro
+</span>mikhail.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': \'sup, '</span> + (person || <span style="color: #259185;">'dude'</span>)
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And define our new protagonist, Kristin
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">kristin</span> = Object.create(person)
-kristin.first_name = <span style="color: #A6E32D;">'Kristin'</span>
-kristin.last_name  = <span style="color: #A6E32D;">'Wei&#223;'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And define our new protagonist, Kristin
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">kristin</span> = Object.create(person)
+kristin.first_name = <span style="color: #259185;">'Kristin'</span>
+kristin.last_name  = <span style="color: #259185;">'Wei&#223;'</span>
 kristin.age        = 19
-kristin.gender     = <span style="color: #A6E32D;">'Female'</span>
+kristin.gender     = <span style="color: #259185;">'Female'</span>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Alongside with her specific greeting manners
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Alongside with her specific greeting manners
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person, sweetly
-</span>kristin.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': \'ello, '</span> + (person || <span style="color: #A6E32D;">'sweetie'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person, sweetly
+</span>kristin.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': \'ello, '</span> + (person || <span style="color: #259185;">'sweetie'</span>)
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Finally, we test if everything works according to the expected
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Finally, we test if everything works according to the expected
 </span>
 mikhail.greet(kristin.first_name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: \'sup, Kristin'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: \'sup, Kristin'
 </span>
 mikhail.greet()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: \'sup, dude'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: \'sup, dude'
 </span>
 kristin.greet(mikhail.first_name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: \'ello, Michael'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Kristin Wei&#223;: \'ello, Michael'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And just so we check how cool this [[Prototype]] thing is,
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">let's get Kristin back to the generic behaviour
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And just so we check how cool this [[Prototype]] thing is,
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">let's get Kristin back to the generic behaviour
 </span>
-<span style="color: #C48DFF;">delete</span> kristin.greet
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; true
+<span style="color: #728a05;">delete</span> kristin.greet
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; true
 </span>
 kristin.greet(mikhail.first_name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223;: Hello, Michael'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Kristin Wei&#223;: Hello, Michael'
 </span></pre>
 
 
@@ -1448,18 +1444,18 @@ inherited, from one object to another.
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">Aliases for the rather verbose methods on ES5
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">descriptor</span>  = Object.getOwnPropertyDescriptor
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Aliases for the rather verbose methods on ES5
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">descriptor</span>  = Object.getOwnPropertyDescriptor
   , properties  = Object.getOwnPropertyNames
   , define_prop = Object.defineProperty
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(target:Object, source:Object) &#8594; Object
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Copies properties from `source' to `target'
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">extend</span>(<span style="color: #729FCF;">target</span>, <span style="color: #729FCF;">source</span>) {
-    properties(source).forEach(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">key</span>) {
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(target:Object, source:Object) &#8594; Object
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Copies properties from `source' to `target'
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">extend</span>(<span style="color: #2075c7;">target</span>, <span style="color: #2075c7;">source</span>) {
+    properties(source).forEach(<span style="color: #728a05;">function</span>(<span style="color: #2075c7;">key</span>) {
         define_prop(target, key, descriptor(source, key)) })
 
-    <span style="color: #C48DFF;">return</span> target
+    <span style="color: #728a05;">return</span> target
 }
 </pre>
 
@@ -1480,44 +1476,44 @@ assigning multiple abilities to our objects (<code>mikhail</code> e
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">A pianist is someone who can `play' the piano
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">pianist</span> = Object.create(<span style="color: #FA2573;">null</span>)
-pianist.play = <span style="color: #C48DFF;">function</span>() {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">' starts playing the piano.'</span>
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">A pianist is someone who can `play' the piano
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">pianist</span> = Object.create(<span style="color: #259185;">null</span>)
+pianist.play = <span style="color: #728a05;">function</span>() {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">' starts playing the piano.'</span>
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">A singer is someone who can `sing'
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">singer</span> = Object.create(<span style="color: #FA2573;">null</span>)
-singer.sing = <span style="color: #C48DFF;">function</span>() {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">' starts singing.'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">A singer is someone who can `sing'
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">singer</span> = Object.create(<span style="color: #259185;">null</span>)
+singer.sing = <span style="color: #728a05;">function</span>() {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">' starts singing.'</span>
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Then we can move on to adding those abilities to
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">our main objects:
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Then we can move on to adding those abilities to
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">our main objects:
 </span>extend(mikhail, pianist)
 mikhail.play()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White starts playing the piano.'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White starts playing the piano.'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">We can see that all that ends up as an own property of
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">mikhail. It is not shared.
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">We can see that all that ends up as an own property of
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">mikhail. It is not shared.
 </span>Object.keys(mikhail)
-[<span style="color: #A6E32D;">'first_name'</span>, <span style="color: #A6E32D;">'last_name'</span>, <span style="color: #A6E32D;">'age'</span>, <span style="color: #A6E32D;">'gender'</span>, <span style="color: #A6E32D;">'greet'</span>, <span style="color: #A6E32D;">'play'</span>]
+[<span style="color: #259185;">'first_name'</span>, <span style="color: #259185;">'last_name'</span>, <span style="color: #259185;">'age'</span>, <span style="color: #259185;">'gender'</span>, <span style="color: #259185;">'greet'</span>, <span style="color: #259185;">'play'</span>]
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Then we can define kristin as a singer
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Then we can define kristin as a singer
 </span>extend(kristin, singer)
 kristin.sing()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Kristin Wei&#223; starts singing.'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Kristin Wei&#223; starts singing.'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Mikhail can't sing yet though
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Mikhail can't sing yet though
 </span>mikhail.sing()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; TypeError: Object #&lt;Object&gt; has no method 'sing'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; TypeError: Object #&lt;Object&gt; has no method 'sing'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">But mikhail will inherit the `sing' method if we
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">extend the Person prototype with it:
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">But mikhail will inherit the `sing' method if we
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">extend the Person prototype with it:
 </span>extend(person, singer)
 
 mikhail.sing()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White starts singing.'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White starts singing.'
 </span></pre>
 
 
@@ -1545,15 +1541,15 @@ accessing a property in the parent of an object is quite simple:
 
 
 
-<pre class="src src-js">Object.getPrototypeOf(mikhail).name    <span style="color: #75766A;">// </span><span style="color: #75766A;">same as `person.name'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'undefined undefined'
+<pre class="src src-js">Object.getPrototypeOf(mikhail).name    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">same as `person.name'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'undefined undefined'
 </span>
-<span style="color: #75766A;">// </span><span style="color: #75766A;">We can assert it's really being called on `person' by
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">giving `person' a `first_name' and `last_name'
-</span>person.first_name = <span style="color: #A6E32D;">'Random'</span>
-person.last_name  = <span style="color: #A6E32D;">'Person'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">We can assert it's really being called on `person' by
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">giving `person' a `first_name' and `last_name'
+</span>person.first_name = <span style="color: #259185;">'Random'</span>
+person.last_name  = <span style="color: #259185;">'Person'</span>
 Object.getPrototypeOf(mikhail).name
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Random Person'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Random Person'
 </span></pre>
 
 
@@ -1566,21 +1562,21 @@ looking the property on the <code>[⁣[Prototype]⁣]</code> of <code>this</code
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">proto</span> = Object.getPrototypeOf
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">proto</span> = Object.getPrototypeOf
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(name:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets someone intimately if we know them, otherwise use
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">the generic greeting
-</span>mikhail.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">name</span>) {
-    <span style="color: #C48DFF;">return</span> name == <span style="color: #A6E32D;">'Kristin Wei&#223;'</span>?  <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Heya, Kristty'</span>
-         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">we dunno this guy */</span>  proto(<span style="color: #FA2573;">this</span>).greet.call(<span style="color: #FA2573;">this</span>, name)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(name:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets someone intimately if we know them, otherwise use
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">the generic greeting
+</span>mikhail.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">name</span>) {
+    <span style="color: #728a05;">return</span> name == <span style="color: #259185;">'Kristin Wei&#223;'</span>?  <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Heya, Kristty'</span>
+         : <span style="color: #81908f; font-weight: bold;">/* </span><span style="color: #81908f; font-style: italic;">we dunno this guy */</span>  proto(<span style="color: #259185;">this</span>).greet.call(<span style="color: #259185;">this</span>, name)
 }
 
 mikhail.greet(kristin.name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Heya, Kristty'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Heya, Kristty'
 </span>
-mikhail.greet(<span style="color: #A6E32D;">'Margareth'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Hello, Margareth'
+mikhail.greet(<span style="color: #259185;">'Margareth'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Hello, Margareth'
 </span></pre>
 
 
@@ -1608,25 +1604,25 @@ So, the last example becomes:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">proto</span> = Object.getPrototypeOf
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">proto</span> = Object.getPrototypeOf
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(name:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets someone intimately if we know them, otherwise use
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">the generic greeting.
-</span><span style="color: #75766A;">//</span><span style="color: #75766A;">
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Note that now we explicitly state that the lookup should take
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">the parent of `mikhail', so we can be assured the cyclic parent
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">resolution above won't happen.
-</span>mikhail.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">name</span>) {
-    <span style="color: #C48DFF;">return</span> name == <span style="color: #A6E32D;">'Kristin Wei&#223;'</span>?  <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Heya, Kristty'</span>
-         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">we dunno this guy */</span>  proto(mikhail).greet.call(<span style="color: #FA2573;">this</span>, name)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(name:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets someone intimately if we know them, otherwise use
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">the generic greeting.
+</span><span style="color: #81908f; font-weight: bold;">//</span><span style="color: #81908f; font-style: italic;">
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Note that now we explicitly state that the lookup should take
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">the parent of `mikhail', so we can be assured the cyclic parent
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">resolution above won't happen.
+</span>mikhail.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">name</span>) {
+    <span style="color: #728a05;">return</span> name == <span style="color: #259185;">'Kristin Wei&#223;'</span>?  <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Heya, Kristty'</span>
+         : <span style="color: #81908f; font-weight: bold;">/* </span><span style="color: #81908f; font-style: italic;">we dunno this guy */</span>  proto(mikhail).greet.call(<span style="color: #259185;">this</span>, name)
 }
 
 mikhail.greet(kristin.name)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Heya, Kristty'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Heya, Kristty'
 </span>
-mikhail.greet(<span style="color: #A6E32D;">'Margareth'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Michael White: Hello, Margareth'
+mikhail.greet(<span style="color: #259185;">'Margareth'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Michael White: Hello, Margareth'
 </span></pre>
 
 
@@ -1664,63 +1660,63 @@ a function that passes this information to the target function.
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object, fn:Function) &#8594; Function
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Creates a method
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">make_method</span>(<span style="color: #729FCF;">object</span>, <span style="color: #729FCF;">fn</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>
-        args = slice.call(<span style="color: #FA2573;">arguments</span>)
-        args.unshift(object)        <span style="color: #75766A;">// </span><span style="color: #75766A;">insert `object' as first parameter
-</span>        fn.apply(<span style="color: #FA2573;">this</span>, args) }
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(object:Object, fn:Function) &#8594; Function
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Creates a method
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">make_method</span>(<span style="color: #2075c7;">object</span>, <span style="color: #2075c7;">fn</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #728a05;">function</span>() { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">args</span>
+        args = slice.call(<span style="color: #259185;">arguments</span>)
+        args.unshift(object)        <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">insert `object' as first parameter
+</span>        fn.apply(<span style="color: #259185;">this</span>, args) }
 }
 
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Now, all functions that are expected to be used as a method
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">should remember to reserve the first parameter to the object
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">where they're stored.
-</span><span style="color: #75766A;">//</span><span style="color: #75766A;">
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Note that, however, this is a magical parameter introduced
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">by the method function, so any function calling the method
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">should pass only the usual arguments.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">message</span>(<span style="color: #729FCF;">self</span>, <span style="color: #729FCF;">message</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">parent</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Now, all functions that are expected to be used as a method
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">should remember to reserve the first parameter to the object
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">where they're stored.
+</span><span style="color: #81908f; font-weight: bold;">//</span><span style="color: #81908f; font-style: italic;">
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Note that, however, this is a magical parameter introduced
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">by the method function, so any function calling the method
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">should pass only the usual arguments.
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">message</span>(<span style="color: #2075c7;">self</span>, <span style="color: #2075c7;">message</span>) { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">parent</span>
     parent = Object.getPrototypeOf(self)
-    <span style="color: #C48DFF;">if</span> (parent &amp;&amp; parent.log)
-        parent.log.call(<span style="color: #FA2573;">this</span>, message)
+    <span style="color: #728a05;">if</span> (parent &amp;&amp; parent.log)
+        parent.log.call(<span style="color: #259185;">this</span>, message)
 
-    console.log(<span style="color: #A6E32D;">'-- At '</span> + self.name)
-    console.log(<span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': '</span> + message)
+    console.log(<span style="color: #259185;">'-- At '</span> + self.name)
+    console.log(<span style="color: #259185;">this</span>.name + <span style="color: #259185;">': '</span> + message)
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Here we define a prototype chain C -&gt; B -&gt; A
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">A</span>  = Object.create(<span style="color: #FA2573;">null</span>)
-A.name = <span style="color: #A6E32D;">'A'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Here we define a prototype chain C -&gt; B -&gt; A
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">A</span>  = Object.create(<span style="color: #259185;">null</span>)
+A.name = <span style="color: #259185;">'A'</span>
 A.log  = make_method(A, message)
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">B</span>  = Object.create(A)
-B.name = <span style="color: #A6E32D;">'B'</span>
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">B</span>  = Object.create(A)
+B.name = <span style="color: #259185;">'B'</span>
 B.log  = make_method(B, message)
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">C</span>  = Object.create(B)
-C.name = <span style="color: #A6E32D;">'C'</span>
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">C</span>  = Object.create(B)
+C.name = <span style="color: #259185;">'C'</span>
 C.log  = make_method(C, message)
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">And we can test if it works by calling the methods:
-</span>A.log(<span style="color: #A6E32D;">'foo'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At A'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'A: foo'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">And we can test if it works by calling the methods:
+</span>A.log(<span style="color: #259185;">'foo'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; '-- At A'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'A: foo'
 </span>
-B.log(<span style="color: #A6E32D;">'foo'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At A'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'B: foo'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At B'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'B: foo'
+B.log(<span style="color: #259185;">'foo'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; '-- At A'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'B: foo'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; '-- At B'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'B: foo'
 </span>
-C.log(<span style="color: #A6E32D;">'foo'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At A'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'C: foo'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At B'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'C: foo'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; '-- At C'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'C: foo'
+C.log(<span style="color: #259185;">'foo'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; '-- At A'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'C: foo'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; '-- At B'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'C: foo'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; '-- At C'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'C: foo'
 </span></pre>
 
 
@@ -1777,43 +1773,43 @@ property of the constructor function is used to provide the
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">Constructs a new Person
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Person</span>(<span style="color: #729FCF;">first_name</span>, <span style="color: #729FCF;">last_name</span>) {
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">If the function is called with `new', as we expect
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">`this' here will be the freshly created object
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">with the [[Prototype]] set to Person.prototype
-</span>    <span style="color: #75766A;">//</span><span style="color: #75766A;">
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">Of course, if someone omits new when calling the
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">function, the usual resolution of `this' &#8212; as
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">explained before &#8212; will take place.
-</span>    <span style="color: #FA2573;">this</span>.first_name = first_name
-    <span style="color: #FA2573;">this</span>.last_name  = last_name
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Constructs a new Person
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">Person</span>(<span style="color: #2075c7;">first_name</span>, <span style="color: #2075c7;">last_name</span>) {
+    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">If the function is called with `new', as we expect
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">`this' here will be the freshly created object
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">with the [[Prototype]] set to Person.prototype
+</span>    <span style="color: #81908f; font-weight: bold;">//</span><span style="color: #81908f; font-style: italic;">
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Of course, if someone omits new when calling the
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">function, the usual resolution of `this' &#8212; as
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">explained before &#8212; will take place.
+</span>    <span style="color: #259185;">this</span>.first_name = first_name
+    <span style="color: #259185;">this</span>.last_name  = last_name
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
-</span>Person.<span style="color: #FA2573;">prototype</span>.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Harro, '</span> + person + <span style="color: #A6E32D;">'.'</span> 
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person
+</span>Person.<span style="color: #259185;">prototype</span>.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Harro, '</span> + person + <span style="color: #259185;">'.'</span> 
 }
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">person</span> = <span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Person</span>(<span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">person</span> = <span style="color: #728a05;">new</span> <span style="color: #a57705;">Person</span>(<span style="color: #259185;">'Mikhail'</span>, <span style="color: #259185;">'Wei&#223;'</span>)
 
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">We could de-sugar the constructor pattern in the following
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Taking into account that `Person' here means the `prototype'
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">property of the `Person' constructor.
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Person</span> = Object.create(Object.<span style="color: #FA2573;">prototype</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">We could de-sugar the constructor pattern in the following
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Taking into account that `Person' here means the `prototype'
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">property of the `Person' constructor.
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">Person</span> = Object.create(Object.<span style="color: #259185;">prototype</span>)
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
-</span>Person.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Harro, '</span> + person + <span style="color: #A6E32D;">'.'</span> 
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person
+</span>Person.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Harro, '</span> + person + <span style="color: #259185;">'.'</span> 
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Here's what the constructor does when called with `new'
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">person</span> = Object.create(Person)
-person.first_name = <span style="color: #A6E32D;">'Mikhail'</span>
-person.last_name  = <span style="color: #A6E32D;">'Wei&#223;'</span>
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Here's what the constructor does when called with `new'
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">person</span> = Object.create(Person)
+person.first_name = <span style="color: #259185;">'Mikhail'</span>
+person.last_name  = <span style="color: #259185;">'Wei&#223;'</span>
 </pre>
 
 
@@ -1860,21 +1856,21 @@ also a confusing one for many newcomers:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Foo</span>() {
-    <span style="color: #FA2573;">this</span>.foo = <span style="color: #A6E32D;">'bar'</span>
+<pre class="src src-js"><span style="color: #728a05;">function</span> <span style="color: #2075c7;">Foo</span>() {
+    <span style="color: #259185;">this</span>.foo = <span style="color: #259185;">'bar'</span>
 }
 
-<span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Foo</span>()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; { foo: 'bar' }
+<span style="color: #728a05;">new</span> <span style="color: #a57705;">Foo</span>()
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; { foo: 'bar' }
 </span>
 
-<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Foo</span>() {
-    <span style="color: #FA2573;">this</span>.foo = <span style="color: #A6E32D;">'bar'</span>
-    <span style="color: #C48DFF;">return</span> Foo
+<span style="color: #728a05;">function</span> <span style="color: #2075c7;">Foo</span>() {
+    <span style="color: #259185;">this</span>.foo = <span style="color: #259185;">'bar'</span>
+    <span style="color: #728a05;">return</span> Foo
 }
 
-<span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Foo</span>()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [Function: Foo]
+<span style="color: #728a05;">new</span> <span style="color: #a57705;">Foo</span>()
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [Function: Foo]
 </span></pre>
 
 
@@ -1897,54 +1893,54 @@ property is:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">new Person (first_name:String, last_name:String)
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Initialises a Person object
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Person</span>(<span style="color: #729FCF;">first_name</span>, <span style="color: #729FCF;">last_name</span>) {
-    <span style="color: #FA2573;">this</span>.first_name = first_name
-    <span style="color: #FA2573;">this</span>.last_name  = last_name
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">new Person (first_name:String, last_name:String)
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Initialises a Person object
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">Person</span>(<span style="color: #2075c7;">first_name</span>, <span style="color: #2075c7;">last_name</span>) {
+    <span style="color: #259185;">this</span>.first_name = first_name
+    <span style="color: #259185;">this</span>.last_name  = last_name
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Defines the `name' getter/setter
-</span>Object.defineProperty(Person.<span style="color: #FA2573;">prototype</span>, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Defines the `name' getter/setter
+</span>Object.defineProperty(Person.<span style="color: #259185;">prototype</span>, <span style="color: #259185;">'name'</span>, { get: get_full_name
                                                 , set: set_full_name
-                                                , configurable: <span style="color: #FA2573;">true</span>
-                                                , enumerable:   <span style="color: #FA2573;">true</span> })
+                                                , configurable: <span style="color: #259185;">true</span>
+                                                , enumerable:   <span style="color: #259185;">true</span> })
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person
-</span>Person.<span style="color: #FA2573;">prototype</span>.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': Hello, '</span> + (person || <span style="color: #A6E32D;">'you'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Greets the given person
+</span>Person.<span style="color: #259185;">prototype</span>.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': Hello, '</span> + (person || <span style="color: #259185;">'you'</span>)
 }
 
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">proto</span> = Object.getPrototypeOf
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">proto</span> = Object.getPrototypeOf
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">new Mikhail (age:Number, gender:String)
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Mikhail</span>(<span style="color: #729FCF;">age</span>, <span style="color: #729FCF;">gender</span>) {
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">Find the parent of this object and invoke its constructor
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">with the current this. We could have used:
-</span>    <span style="color: #75766A;">//   </span><span style="color: #75766A;">Person.call(this, 'Mikhail', 'Wei&#223;')
-</span>    <span style="color: #75766A;">// </span><span style="color: #75766A;">But we'd loose some flexibility with that.
-</span>    proto(Mikhail.<span style="color: #FA2573;">prototype</span>).constructor.call(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">new Mikhail (age:Number, gender:String)
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">Mikhail</span>(<span style="color: #2075c7;">age</span>, <span style="color: #2075c7;">gender</span>) {
+    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Find the parent of this object and invoke its constructor
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">with the current this. We could have used:
+</span>    <span style="color: #81908f; font-weight: bold;">//   </span><span style="color: #81908f; font-style: italic;">Person.call(this, 'Mikhail', 'Wei&#223;')
+</span>    <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">But we'd loose some flexibility with that.
+</span>    proto(Mikhail.<span style="color: #259185;">prototype</span>).constructor.call(<span style="color: #259185;">this</span>, <span style="color: #259185;">'Mikhail'</span>, <span style="color: #259185;">'Wei&#223;'</span>)
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Inherits the properties from Person.prototype
-</span>Mikhail.<span style="color: #FA2573;">prototype</span> = Object.create(Person.<span style="color: #FA2573;">prototype</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Inherits the properties from Person.prototype
+</span>Mikhail.<span style="color: #259185;">prototype</span> = Object.create(Person.<span style="color: #259185;">prototype</span>)
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Resets the `constructor' property of the prototype object
-</span>Mikhail.<span style="color: #FA2573;">prototype</span>.constructor = Mikhail
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Resets the `constructor' property of the prototype object
+</span>Mikhail.<span style="color: #259185;">prototype</span>.constructor = Mikhail
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String
-</span>Mikhail.<span style="color: #FA2573;">prototype</span>.greet = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">person</span>) {
-    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.name + <span style="color: #A6E32D;">': \'sup, '</span> + (person || <span style="color: #A6E32D;">'dude'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(person:String) &#8594; String
+</span>Mikhail.<span style="color: #259185;">prototype</span>.greet = <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">person</span>) {
+    <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.name + <span style="color: #259185;">': \'sup, '</span> + (person || <span style="color: #259185;">'dude'</span>)
 }
 
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Instances are created with the `new' operator, as previously
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">discussed:
-</span><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = <span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Mikhail</span>(19, <span style="color: #A6E32D;">'Male'</span>)
-mikhail.greet(<span style="color: #A6E32D;">'Kristin'</span>)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'Mikhail Wei&#223;: \'sup, Kristin'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Instances are created with the `new' operator, as previously
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">discussed:
+</span><span style="color: #728a05;">var</span> <span style="color: #2075c7;">mikhail</span> = <span style="color: #728a05;">new</span> <span style="color: #a57705;">Mikhail</span>(19, <span style="color: #259185;">'Male'</span>)
+mikhail.greet(<span style="color: #259185;">'Kristin'</span>)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'Mikhail Wei&#223;: \'sup, Kristin'
 </span></pre>
 
 
@@ -1996,19 +1992,19 @@ object based on the given prototype:
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(proto:Object) &#8594; Object
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Constructs an object and sets the [[Prototype]] to `proto'.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">clone</span>(<span style="color: #729FCF;">proto</span>) {
-    <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Dummy</span>() { }
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(proto:Object) &#8594; Object
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Constructs an object and sets the [[Prototype]] to `proto'.
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">clone</span>(<span style="color: #2075c7;">proto</span>) {
+    <span style="color: #728a05;">function</span> <span style="color: #2075c7;">Dummy</span>() { }
 
-    Dummy.<span style="color: #FA2573;">prototype</span>             = proto
-    Dummy.<span style="color: #FA2573;">prototype</span>.constructor = Dummy
+    Dummy.<span style="color: #259185;">prototype</span>             = proto
+    Dummy.<span style="color: #259185;">prototype</span>.constructor = Dummy
 
-    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">new</span> <span style="color: #FC951E;">Dummy</span>()
+    <span style="color: #728a05;">return</span> <span style="color: #728a05;">new</span> <span style="color: #a57705;">Dummy</span>()
 }
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = clone(person)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Equivalent to `var mikhail = Object.create(person)'
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">mikhail</span> = clone(person)
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Equivalent to `var mikhail = Object.create(person)'
 </span></pre>
 
 
@@ -2042,39 +2038,39 @@ everywhere. Most notably, such methods have never been present in IE.
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(target:Object, key:String, descriptor:Object) &#8594; Object
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Defines a property in the target object.
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Getters and Setters are handled through the fallback
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">calls, whereas values are set directly. Tags are
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">ignored.
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">defineProperty</span>(<span style="color: #729FCF;">target</span>, <span style="color: #729FCF;">key</span>, <span style="color: #729FCF;">descriptor</span>) {
-    <span style="color: #C48DFF;">if</span> (descriptor.value)
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(target:Object, key:String, descriptor:Object) &#8594; Object
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Defines a property in the target object.
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Getters and Setters are handled through the fallback
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">calls, whereas values are set directly. Tags are
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">ignored.
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">defineProperty</span>(<span style="color: #2075c7;">target</span>, <span style="color: #2075c7;">key</span>, <span style="color: #2075c7;">descriptor</span>) {
+    <span style="color: #728a05;">if</span> (descriptor.value)
         target[key] = descriptor.value
-    <span style="color: #C48DFF;">else</span> {
+    <span style="color: #728a05;">else</span> {
         descriptor.get &amp;&amp; target.__defineGetter__(key, descriptor.get)
         descriptor.set &amp;&amp; target.__defineSetter__(key, descriptor.set) }
 
-    <span style="color: #C48DFF;">return</span> target
+    <span style="color: #728a05;">return</span> target
 }
 
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">x</span> = { }
-defineProperty(x, <span style="color: #A6E32D;">'foo'</span>, { value: <span style="color: #A6E32D;">'bar'</span> })
-defineProperty(x, <span style="color: #A6E32D;">'bar'</span>, { get: <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.foo }
-                         , set: <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">v</span>){ <span style="color: #FA2573;">this</span>.foo = v    }})
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">x</span> = { }
+defineProperty(x, <span style="color: #259185;">'foo'</span>, { value: <span style="color: #259185;">'bar'</span> })
+defineProperty(x, <span style="color: #259185;">'bar'</span>, { get: <span style="color: #728a05;">function</span>() { <span style="color: #728a05;">return</span> <span style="color: #259185;">this</span>.foo }
+                         , set: <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">v</span>){ <span style="color: #259185;">this</span>.foo = v    }})
 
 x.foo
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'bar'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'bar'
 </span>
 x.bar
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'bar'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'bar'
 </span>
-x.bar = <span style="color: #A6E32D;">'foo'</span>
+x.bar = <span style="color: #259185;">'foo'</span>
 x.foo
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'foo'
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'foo'
 </span>
 x.bar
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'foo' 
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 'foo' 
 </span></pre>
 
 
@@ -2104,22 +2100,22 @@ in the object.
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object) &#8594; Array
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Lists all the own enumerable properties of an object
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">keys</span>(<span style="color: #729FCF;">object</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">result</span>, <span style="color: #729FCF;">key</span>
+<pre class="src src-js"><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(object:Object) &#8594; Array
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Lists all the own enumerable properties of an object
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">keys</span>(<span style="color: #2075c7;">object</span>) { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">result</span>, <span style="color: #2075c7;">key</span>
     result = []
-    <span style="color: #C48DFF;">for</span> (key <span style="color: #C48DFF;">in</span> object)
-        <span style="color: #C48DFF;">if</span> (object.hasOwnProperty(key))  result.push(key)
+    <span style="color: #728a05;">for</span> (key <span style="color: #728a05;">in</span> object)
+        <span style="color: #728a05;">if</span> (object.hasOwnProperty(key))  result.push(key)
 
-    <span style="color: #C48DFF;">return</span> result
+    <span style="color: #728a05;">return</span> result
 }
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">Taking the mikhail object whose [[Prototype]] is person...
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Taking the mikhail object whose [[Prototype]] is person...
 </span>keys(mikhail)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'first_name', 'last_name', 'age', 'gender' ]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [ 'first_name', 'last_name', 'age', 'gender' ]
 </span>
 keys(person)
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [ 'greet', 'name' ]
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [ 'greet', 'name' ]
 </span></pre>
 
 
@@ -2148,16 +2144,16 @@ application, through the <code>apply</code> method.
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">slice</span> = [].slice
+<pre class="src src-js"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">slice</span> = [].slice
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(fn:Function, bound_this:Object, args...) &#8594; Function
-</span><span style="color: #75766A;">//  </span><span style="color: #75766A;">--&gt; (args...) &#8594; *mixed*
-</span><span style="color: #75766A;">// </span><span style="color: #75766A;">Creates a bound method from the function `fn'
-</span><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">bind</span>(<span style="color: #729FCF;">fn</span>, <span style="color: #729FCF;">bound_this</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">bound_args</span>
-    bound_args = slice.call(<span style="color: #FA2573;">arguments</span>, 2)
-    <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>
-        args = bound_args.concat(slice.call(<span style="color: #FA2573;">arguments</span>))
-        <span style="color: #C48DFF;">return</span> fn.apply(bound_this, args) }
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">(fn:Function, bound_this:Object, args...) &#8594; Function
+</span><span style="color: #81908f; font-weight: bold;">//  </span><span style="color: #81908f; font-style: italic;">--&gt; (args...) &#8594; *mixed*
+</span><span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">Creates a bound method from the function `fn'
+</span><span style="color: #728a05;">function</span> <span style="color: #2075c7;">bind</span>(<span style="color: #2075c7;">fn</span>, <span style="color: #2075c7;">bound_this</span>) { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">bound_args</span>
+    bound_args = slice.call(<span style="color: #259185;">arguments</span>, 2)
+    <span style="color: #728a05;">return</span> <span style="color: #728a05;">function</span>() { <span style="color: #728a05;">var</span> <span style="color: #2075c7;">args</span>
+        args = bound_args.concat(slice.call(<span style="color: #259185;">arguments</span>))
+        <span style="color: #728a05;">return</span> fn.apply(bound_this, args) }
 }
 </pre>
 
@@ -2179,9 +2175,9 @@ Firefox's <i>SpiderMonkey</i> or Chrome's <i>V8</i>), it's easy and reliable:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">proto</span>(<span style="color: #729FCF;">object</span>) {
-    <span style="color: #C48DFF;">return</span> object?            object.__proto__
-         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">not object? */</span>  <span style="color: #FA2573;">null</span>
+<pre class="src src-js"><span style="color: #728a05;">function</span> <span style="color: #2075c7;">proto</span>(<span style="color: #2075c7;">object</span>) {
+    <span style="color: #728a05;">return</span> object?            object.__proto__
+         : <span style="color: #81908f; font-weight: bold;">/* </span><span style="color: #81908f; font-style: italic;">not object? */</span>  <span style="color: #259185;">null</span>
 }
 </pre>
 
@@ -2200,10 +2196,10 @@ A fallback covering most cases would look like this:
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">proto</span>(<span style="color: #729FCF;">object</span>) {
-    <span style="color: #C48DFF;">return</span> !object?                <span style="color: #FA2573;">null</span>
-         : <span style="color: #A6E32D;">'__proto__'</span> <span style="color: #C48DFF;">in</span> object?  object.__proto__
-         : <span style="color: #75766A;">/* </span><span style="color: #75766A;">not exposed? */</span>      object.constructor.<span style="color: #FA2573;">prototype</span>
+<pre class="src src-js"><span style="color: #728a05;">function</span> <span style="color: #2075c7;">proto</span>(<span style="color: #2075c7;">object</span>) {
+    <span style="color: #728a05;">return</span> !object?                <span style="color: #259185;">null</span>
+         : <span style="color: #259185;">'__proto__'</span> <span style="color: #728a05;">in</span> object?  object.__proto__
+         : <span style="color: #81908f; font-weight: bold;">/* </span><span style="color: #81908f; font-style: italic;">not exposed? */</span>      object.constructor.<span style="color: #259185;">prototype</span>
 }
 </pre>
 
@@ -2335,6 +2331,7 @@ Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> for the 
 </p>
 
 
+
 </div>
 </div>
 <div id="footnotes">
@@ -2342,15 +2339,25 @@ Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> for the 
 <div id="text-footnotes">
 <p class="footnote"><sup><a class="footnum" name="fn.1" href="#fnr.1">1</a></sup> : Some implementations have magical names, like <code>__proto__</code>, which
 may yield undesired and unwanted results when set. For example,
-<code>__proto__</code> property is used to define the parent of an object
+the <code>__proto__</code> property is used to define the parent of an object
 in some implementations. As such, you wouldn't be able to set a
 string or number to that.
 </p>
 <p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : It should be noted that, while ECMAScript-defined native objects
 don't throw an error when you try to access a non-existing
 property, it's not guaranteed that the same will hold true for a
-host object. After all, host object semantics are not defined,
-they are dependant on the particular run-time implementation.
+host object (i.e. an object defined by the engine implementor). After all, 
+host object semantics are not defined, they are dependent on the 
+particular run-time implementation.
+</p>
+<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> Some engines <b>do</b> expose the <code>[⁣[Prototype]⁣]</code> slot, usually
+through a property like <code>__proto__</code>, however no such thing is
+described in the specifications for the language, so it's
+recommended that you avoid using it, unless you're well aware
+that all platforms you code must run on will have such means of
+setting the <code>[⁣[Prototype]⁣]</code> object directly. It should also be
+noted that messing with the prototype chain might defeat all
+look-up optimisations in the JS engine.
 </p>
 </div>
 </div>

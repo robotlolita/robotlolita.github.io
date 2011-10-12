@@ -16,7 +16,7 @@ It supports both functional style:
 
 
 
-<pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'utils'</span>, <span style="color: #A6E32D;">'generic'</span>])
+<pre class="src src-javascript">black.unpack_all([<span style="color: #259185;">'utils'</span>, <span style="color: #259185;">'generic'</span>])
 each(map(filter(links, selectedp)
         ,text)
     ,display)
@@ -30,7 +30,7 @@ And Object Oriented style:
 
 
 
-<pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'own'</span>])
+<pre class="src src-javascript">black.unpack_all([<span style="color: #259185;">'own'</span>])
 black.list.to_array(links).filter(selectedp)
                           .map(text)
                           .each(display)
@@ -62,7 +62,7 @@ Otherwise, clone the github repository and follow the
 
 <pre class="src src-shell-script">$ git clone htp://github.com/killdream/black.git
 
-<span style="color: #75766A;"># </span><span style="color: #75766A;">Or if you use hg-git, like me:
+<span style="color: #81908f; font-weight: bold;"># </span><span style="color: #81908f; font-style: italic;">Or if you use hg-git, like me:
 </span>$ hg clone http://github.com/killdream/black.git
 </pre>
 
@@ -106,9 +106,9 @@ generic functions on non-arrays is usually a huge. pain. in. the. ass:
 
 
 
-<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">seq</span> = {0: 1, 1: 2, 2: 3, length: 3}
-Array.<span style="color: #FA2573;">prototype</span>.map.call(seq, <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>){ <span style="color: #C48DFF;">return</span> x + 1 })
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [2, 3, 4]
+<pre class="src src-javascript"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">seq</span> = {0: 1, 1: 2, 2: 3, length: 3}
+Array.<span style="color: #259185;">prototype</span>.map.call(seq, <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">x</span>){ <span style="color: #728a05;">return</span> x + 1 })
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [2, 3, 4]
 </span></pre>
 
 
@@ -159,7 +159,7 @@ starting with the following:
 
 
 
-<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">map</span>    = [].map
+<pre class="src src-javascript"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">map</span>    = [].map
   , each   = [].each
   , some   = [].some
   , every  = [].every
@@ -186,7 +186,7 @@ wouldn't be as bad:
 
 
 
-<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> {map, each, reduce, filter} = Array.<span style="color: #FA2573;">prototype</span>
+<pre class="src src-javascript"><span style="color: #728a05;">var</span> {map, each, reduce, filter} = Array.<span style="color: #259185;">prototype</span>
 </pre>
 
 
@@ -197,7 +197,7 @@ Which is not that much different from Python's:
 
 
 
-<pre class="src src-python"><span style="color: #C48DFF;">from</span> module <span style="color: #C48DFF;">import</span> x, y, z
+<pre class="src src-python"><span style="color: #728a05;">from</span> module <span style="color: #728a05;">import</span> x, y, z
 </pre>
 
 
@@ -328,11 +328,11 @@ one, <code>unpack_all</code>, which will follow the defaults the modules have pr
 
 
 
-<pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'utils'</span>, <span style="color: #A6E32D;">'generic'</span>, <span style="color: #A6E32D;">'own'</span>])
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">factor</span> = 2
-first(range(1, 10).filter(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>){
-    <span style="color: #C48DFF;">return</span> x &gt; 3 * factor }))
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 7
+<pre class="src src-javascript">black.unpack_all([<span style="color: #259185;">'utils'</span>, <span style="color: #259185;">'generic'</span>, <span style="color: #259185;">'own'</span>])
+<span style="color: #728a05;">var</span> <span style="color: #2075c7;">factor</span> = 2
+first(range(1, 10).filter(<span style="color: #728a05;">function</span>(<span style="color: #2075c7;">x</span>){
+    <span style="color: #728a05;">return</span> x &gt; 3 * factor }))
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 7
 </span></pre>
 
 
@@ -344,16 +344,16 @@ stuff, <code>unpack</code>:
 
 
 
-<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">numbers</span> = [1, 2, 3, 4, 5]
-black.unpack([<span style="color: #A6E32D;">'own'</span>], <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">global target
-</span>                    , <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">generic target
-</span>                    , Array.<span style="color: #FA2573;">prototype</span>   <span style="color: #75766A;">// </span><span style="color: #75766A;">own
-</span>                    , black.list )      <span style="color: #75766A;">// </span><span style="color: #75766A;">source
+<pre class="src src-javascript"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">numbers</span> = [1, 2, 3, 4, 5]
+black.unpack([<span style="color: #259185;">'own'</span>], <span style="color: #259185;">null</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">global target
+</span>                    , <span style="color: #259185;">null</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">generic target
+</span>                    , Array.<span style="color: #259185;">prototype</span>   <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">own
+</span>                    , black.list )      <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">source
 </span>
-<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">squared</span>(<span style="color: #729FCF;">x</span>){ <span style="color: #C48DFF;">return</span> x * x      }
-<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">evenp</span>(<span style="color: #729FCF;">x</span>)  { <span style="color: #C48DFF;">return</span> x % 2 == 0 }
+<span style="color: #728a05;">function</span> <span style="color: #2075c7;">squared</span>(<span style="color: #2075c7;">x</span>){ <span style="color: #728a05;">return</span> x * x      }
+<span style="color: #728a05;">function</span> <span style="color: #2075c7;">evenp</span>(<span style="color: #2075c7;">x</span>)  { <span style="color: #728a05;">return</span> x % 2 == 0 }
 numbers.map(squared).filter(evenp).first()
-<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4
+<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 4
 </span></pre>
 
 
