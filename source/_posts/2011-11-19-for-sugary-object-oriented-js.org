@@ -1,0 +1,216 @@
+#+STARTUP: showall indent
+#+OPTIONS: ^:{}
+#+BEGIN_HTML
+---
+layout: post
+title:  Yay for Sugary JavaScript OO
+snip:   Why classes when you can have expressive prototypes?
+---
+#+END_HTML
+
+
+So, [[http://killdream.github.com/blog/2011/10/understanding-javascript-oop/index.html][JavaScript is an object oriented language]] and all that, we have
+discussed it previously to length, and I have quite expressed how
+confusing and rough all the primitives the language provides are when it
+comes to dealing with object composition and behaviour sharing — which
+is just no good for a prototypical language.
+
+Well, the good thing is that we can provide our own abstractions for
+this overtly dynamic object orientation semantics through libraries,
+which is what I have been doing for a while. And now that [[https://github.com/killdream/boo][Boo]] has gained
+some shape and use, it's time to release it officially.
+
+
+* Why? Oh god WHY?
+
+So, what's this =Boo= thing I'm talking about?
+
+Well, my dearest friend, =Boo= is my attempt at bringing some sugar and
+sort-of declarative syntax for defining objects in JavaScript, which
+makes the structuring of programs easier to follow and reason about.
+
+So, instead of the ugly, factory-ish approach:
+
+#+begin_src js
+  function Animal() { /* ... */ }
+  function Cat()    { /* ... */ }
+  Cat.prototype = Object.create(Animal)
+  Cat.prototype.say = function() { /* ... */ }
+#+end_src
+
+You can have a sort-of declarative one that works entirely around
+objects:
+
+#+begin_src js
+  var Base   = boo.Base
+  var Animal = Base.clone({ /* Animal's properties here */ })
+  var Cat    = Animal.clone({ /* Cat's properties here */ })
+#+end_src
+
+
+* What Boo provides?
+
+Boo is structured in three layers: mixins, inheritance and
+syntactical-sugar. Each of these serve to a particular purpose, and build
+upon the previous one — although you could say that the concepts
+themselves are orthogonal, which makes them composable.
+
+
+** Mixins
+
+On the basic level, =Boo= provides the developer with mixins and
+data-objects — which are a specialised kind of mixins.
+
+Mixins are parent-less objects that can be included in any object, at
+any time. Data-objects do the same thing, but they're also a factory for
+yielding the objects that will be included, which makes them a neat
+thing for default objects and such.
+
+The primitives =extend= and =merge= account for all of these:
+
+#+begin_src js
+  var ring_data = {
+    items: [], max: 3,
+
+    toData: function() {
+      return { items: [], max: this.max }}
+  }
+
+  var ring = {
+    push: function(item) {
+      this.items.unshift(item)
+      if (this.items.length > this.max)
+        this.items.pop() }
+  }
+
+  var spells = boo.merge(ring, ring_data, {
+    max: 2
+  })
+
+  spells.push('Watera')
+  spells.push('Blizarra')
+  spells.push('Firaga')
+  spells.items
+  // => ['Firaga', 'Blizarra']
+  ring_data.items
+  // => []
+
+  boo.extend(spells, [ring_data])
+  spells.items
+  // => []
+  spells.max
+  // => 3
+#+end_src
+
+
+** Inheritance
+
+For inheritance, =Boo= just defines a thin layer over the standard
+=Object.create= method, such that it accepts mixins rather than property
+descriptors — which are way too verbose to be practical.
+
+The primitive =clone= is used for coupling inheritance and extension:
+
+#+begin_src js
+  var Collection = {
+    pop: function(){
+      return this.items.pop() },
+
+    push: function(item){
+      this.items.push(item) },
+
+    each: function(fn) {
+      this.items.forEach(fn) },
+
+    map: function(fn) {
+      return this.items = this.items.map(fn) }
+  }
+
+  // Clones the `collection' behaviours and extends the clone with the
+  // `ring' behaviours
+  var RingCollection = boo.clone(Collection, ring)
+  var spells         = boo.clone(RingCollection, ring_data)
+
+  RingCollection.isPrototypeOf(spells)
+  // => true
+
+  spells.push('Agi')
+  spells.push('Dia')
+  spells.push('Patra')
+  spells.push('Recarm')
+  spells.map(function(spell){ return spell.toUpperCase() })
+  // => ['RECARM', 'PATRA', 'DIA']
+#+end_src
+
+
+** Syntactical sugar
+
+Last but not least, =Boo= gives the developer nice object-oriented
+syntactical sugar to write all of this in a nice sort-of declarative
+syntax, which is easier to read and reason about.
+
+The base object is =Base=, which can be cloned through =clone= and
+instantiated with =make=, although both use cloning in the prototypical
+sense:
+
+#+begin_src js
+  var Enum = boo.Base.clone({
+    each: function(fn) {
+      this.items.forEach(fn) },
+
+    filter: function(fn) {
+      return this.items = this.items.filter(fn) },
+
+    map: function(fn) {
+      return this.items = this.items.map(fn) },
+
+    fold: function(fn, start) {
+      return this.items.reduce(fn, start) }
+  })
+
+  var Coll = Enum.clone({
+    push: function(item) {
+      this.items.push(item) },
+
+    pop: function(item) {
+      this.items.pop(item) },
+
+    has_p: function(item) {
+      return this.find(item) != -1 },
+
+    find: function(item) {
+      return this.items.indexOf(item) }
+  })
+
+  var my_coll = Coll.make()
+  my_coll.items = [1, 2, 3]
+  my_coll.map(function(n){ return n * n })
+  // => [1, 4, 9]
+  my_coll.find(4)
+  // => 1
+#+end_src
+
+
+* What's next?
+
+=Boo='s source code is all on [[http://github.com/killdream/boo][Github]]:
+
+#+begin_src shell-script
+  $ git clone http://github.com/killdream/boo.git
+#+end_src
+
+Though, if you want a quick'n'dirty install, just get it from NPM:
+
+#+begin_src shell-script
+  $ npm install boo
+  node> var boo = require('boo')
+  node> var Stuff = boo.Base.clone({ ... })
+#+end_src
+
+
+* Future developments?
+
+Next release of =Boo= will include traits, and should be up around
+December. Traits are more interesting for structuring larger programs
+than mixins are, but I have yet to experiment with them more until I can
+stick with a nice API :3
