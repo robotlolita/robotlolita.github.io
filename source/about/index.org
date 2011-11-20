@@ -11,11 +11,11 @@ layout: static
             a <strong>minimalist designer</strong> and
             <strong>front-end developer</strong> based in Belo
             Horizonte, Brazil. I
-            love <em>technology</em>, <em>inovation</em>
+            love <em>technology</em>, <em>innovation</em>
             and <em>web-standards</em>.</p>
         
         <p>I also can't live without the open source community, my daily
-            caffeinne, neo-victorian fashion (and lolita, mori kei, decora...), art
+            caffeine, neo-Victorian fashion (and lolita, mori kei, decora...), art
             and good music.</p>
     </li>
     <li>
