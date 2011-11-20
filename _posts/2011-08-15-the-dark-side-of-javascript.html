@@ -16,25 +16,29 @@ It supports both functional style:
 
 
 
-<pre class="src src-javascript">black.unpack_all([<span style="color: #259185;">'utils'</span>, <span style="color: #259185;">'generic'</span>])
+<pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'utils'</span>, <span style="color: #A6E32D;">'generic'</span>])
 each(map(filter(links, selectedp)
-        ,text)
-    ,display)
+        text)
+    display)
+
 </pre>
 
 
 
-<p>
+
+<p>        
 And Object Oriented style:
 </p>
 
 
 
-<pre class="src src-javascript">black.unpack_all([<span style="color: #259185;">'own'</span>])
+<pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'own'</span>])
 black.list.to_array(links).filter(selectedp)
                           .map(text)
                           .each(display)
+
 </pre>
+
 
 
 
@@ -49,11 +53,13 @@ If you're on Node.js, you can just install it from npm:
 
 
 <pre class="src src-shell-script">$ npm install black
+
 </pre>
 
 
 
-<p>
+
+<p>    
 Otherwise, clone the github repository and follow the
 <a href="http://killdream.github.com/black/docs/deploy/overview/installing.html">installation instructions</a>.
 </p>
@@ -62,9 +68,11 @@ Otherwise, clone the github repository and follow the
 
 <pre class="src src-shell-script">$ git clone htp://github.com/killdream/black.git
 
-<span style="color: #81908f; font-weight: bold;"># </span><span style="color: #81908f; font-style: italic;">Or if you use hg-git, like me:
-</span>$ hg clone http://github.com/killdream/black.git
+<span style="color: #75766A;"># </span><span style="color: #75766A;">Or if you use hg-git, like me:</span>
+$ hg clone http://github.com/killdream/black.git
+
 </pre>
+
 
 
 
@@ -83,9 +91,9 @@ several issues I've had while writing JavaScript code.
 
 </div>
 
-<div id="outline-container-1_1" class="outline-3">
-<h3 id="sec-1_1">Lack of functionality and generic sugar </h3>
-<div class="outline-text-3" id="text-1_1">
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1">Lack of functionality and generic sugar </h3>
+<div class="outline-text-3" id="text-1-1">
 
 
 <p>
@@ -106,14 +114,16 @@ generic functions on non-arrays is usually a huge. pain. in. the. ass:
 
 
 
-<pre class="src src-javascript"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">seq</span> = {0: 1, 1: 2, 2: 3, length: 3}
-Array.<span style="color: #259185;">prototype</span>.map.call(seq, <span style="color: #728a05;">function</span>(<span style="color: #2075c7;">x</span>){ <span style="color: #728a05;">return</span> x + 1 })
-<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; [2, 3, 4]
-</span></pre>
+<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">seq</span> = {0: 1, 1: 2, 2: 3, length: 3}
+Array.<span style="color: #FA2573;">prototype</span>.map.call(seq, <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>){ <span style="color: #C48DFF;">return</span> x + 1 })
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [2, 3, 4]</span>
+
+</pre>
 
 
 
-<p>
+
+<p>    
 That unnecessary verbosity really annoys me. Other thing that does so is the
 inconsistency in own and generic methods. You can't just have
 <code>Array.slice(sequence)</code>, even though the method is supposed to be generic, you
@@ -125,9 +135,9 @@ me, it just makes no sense.
 
 </div>
 
-<div id="outline-container-1_2" class="outline-3">
-<h3 id="sec-1_2">Verbosity and hatefulCamelCaseIsHateful </h3>
-<div class="outline-text-3" id="text-1_2">
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2">Verbosity and hatefulCamelCaseIsHateful </h3>
+<div class="outline-text-3" id="text-1-2">
 
 
 <p>
@@ -147,9 +157,9 @@ you actually want to read a piece of code.
 
 </div>
 
-<div id="outline-container-1_3" class="outline-3">
-<h3 id="sec-1_3">Aliasing hell </h3>
-<div class="outline-text-3" id="text-1_3">
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3">Aliasing hell </h3>
+<div class="outline-text-3" id="text-1-3">
 
 
 <p>
@@ -159,16 +169,18 @@ starting with the following:
 
 
 
-<pre class="src src-javascript"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">map</span>    = [].map
-  , each   = [].each
-  , some   = [].some
-  , every  = [].every
-  , reduce = [].reduce
-  , filter = [].filter
-  , slice  = [].slice
-  , hasp   = {}.hasOwnProperty
-  , ( ... )
+<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">map</span>    = [].map
+   each   = [].each
+   some   = [].some
+   every  = [].every
+   reduce = [].reduce
+   filter = [].filter
+   slice  = [].slice
+   hasp   = {}.hasOwnProperty
+   ( ... )
+
 </pre>
+
 
 
 
@@ -186,23 +198,27 @@ wouldn't be as bad:
 
 
 
-<pre class="src src-javascript"><span style="color: #728a05;">var</span> {map, each, reduce, filter} = Array.<span style="color: #259185;">prototype</span>
+<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> {map, each, reduce, filter} = Array.<span style="color: #FA2573;">prototype</span>
+
 </pre>
 
 
 
-<p>
+
+<p>    
 Which is not that much different from Python's:
 </p>
 
 
 
-<pre class="src src-python"><span style="color: #728a05;">from</span> module <span style="color: #728a05;">import</span> x, y, z
+<pre class="src src-python"><span style="color: #C48DFF;">from</span> module <span style="color: #C48DFF;">import</span> x, y, z
+
 </pre>
 
 
 
-<p>
+
+<p>    
 Except you can import anything you want from any object. Having written some
 code for SpiderMonkey-only projects before, I can say that JavaScript 1.7
 introduces quite a lot of awesomeness I missed in the language for a long time
@@ -222,9 +238,9 @@ introduces quite a lot of awesomeness I missed in the language for a long time
 
 </div>
 
-<div id="outline-container-2_1" class="outline-3">
-<h3 id="sec-2_1">Extensions </h3>
-<div class="outline-text-3" id="text-2_1">
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1">Extensions </h3>
+<div class="outline-text-3" id="text-2-1">
 
 
 <p>
@@ -235,54 +251,47 @@ used separately.
 </p>
 <dl>
 <dt>type</dt><dd>
-
 <p>
-Provides type, interface and functionality testing.
+  Provides type, interface and functionality testing.
 </p>
 </dd>
 <dt>obj</dt><dd>
-
 <p>
-Handles objects as sets of key/values. This includes extracting
-lists of keys and values, cherry-picking and transforming them.
+  Handles objects as sets of key/values. This includes extracting
+  lists of keys and values, cherry-picking and transforming them.
 </p>
 </dd>
 <dt>list</dt><dd>
-
 <p>
-Handles iteration and manipulation of sequence's structure and
-items.
+  Handles iteration and manipulation of sequence's structure and
+  items.
 </p>
 </dd>
 <dt>str</dt><dd>
-
 <p>
-Provides generic aliases for built-in utilities and sugar for
-JS/CSS interop.
+  Provides generic aliases for built-in utilities and sugar for
+  JS/CSS interop.
 </p>
 </dd>
 <dt>num</dt><dd>
-
 <p>
-Provides a few mathematical functions for boundary handling and
-padding.
+  Provides a few mathematical functions for boundary handling and
+  padding.
 </p>
 </dd>
 <dt>fn</dt><dd>
-
 <p>
-Provides a few functional utilities. Currently not much useful.
-</p>
-</dd>
+  Provides a few functional utilities. Currently not much useful.
+</p></dd>
 </dl>
 
 </div>
 
 </div>
 
-<div id="outline-container-2_2" class="outline-3">
-<h3 id="sec-2_2">Sane API naming </h3>
-<div class="outline-text-3" id="text-2_2">
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2">Sane API naming </h3>
+<div class="outline-text-3" id="text-2-2">
 
 
 <p>
@@ -303,9 +312,9 @@ For functions that construct objects, a <code>make_</code> prefix is used.
 
 </div>
 
-<div id="outline-container-2_3" class="outline-3">
-<h3 id="sec-2_3">Patching </h3>
-<div class="outline-text-3" id="text-2_3">
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3">Patching </h3>
+<div class="outline-text-3" id="text-2-3">
 
 
 <p>
@@ -328,33 +337,37 @@ one, <code>unpack_all</code>, which will follow the defaults the modules have pr
 
 
 
-<pre class="src src-javascript">black.unpack_all([<span style="color: #259185;">'utils'</span>, <span style="color: #259185;">'generic'</span>, <span style="color: #259185;">'own'</span>])
-<span style="color: #728a05;">var</span> <span style="color: #2075c7;">factor</span> = 2
-first(range(1, 10).filter(<span style="color: #728a05;">function</span>(<span style="color: #2075c7;">x</span>){
-    <span style="color: #728a05;">return</span> x &gt; 3 * factor }))
-<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 7
-</span></pre>
+<pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'utils'</span>, <span style="color: #A6E32D;">'generic'</span>, <span style="color: #A6E32D;">'own'</span>])
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">factor</span> = 2
+first(range(1, 10).filter(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>){
+    <span style="color: #C48DFF;">return</span> x &gt; 3 * factor }))
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 7</span>
+
+</pre>
 
 
 
-<p>
+
+<p>    
 And the fine-tuned one, if you want control over where you want your
 stuff, <code>unpack</code>:
 </p>
 
 
 
-<pre class="src src-javascript"><span style="color: #728a05;">var</span> <span style="color: #2075c7;">numbers</span> = [1, 2, 3, 4, 5]
-black.unpack([<span style="color: #259185;">'own'</span>], <span style="color: #259185;">null</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">global target
-</span>                    , <span style="color: #259185;">null</span>              <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">generic target
-</span>                    , Array.<span style="color: #259185;">prototype</span>   <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">own
-</span>                    , black.list )      <span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">source
-</span>
-<span style="color: #728a05;">function</span> <span style="color: #2075c7;">squared</span>(<span style="color: #2075c7;">x</span>){ <span style="color: #728a05;">return</span> x * x      }
-<span style="color: #728a05;">function</span> <span style="color: #2075c7;">evenp</span>(<span style="color: #2075c7;">x</span>)  { <span style="color: #728a05;">return</span> x % 2 == 0 }
+<pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">numbers</span> = [1, 2, 3, 4, 5]
+black.unpack([<span style="color: #A6E32D;">'own'</span>], <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">global target</span>
+                     <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">generic target</span>
+                     Array.<span style="color: #FA2573;">prototype</span>   <span style="color: #75766A;">// </span><span style="color: #75766A;">own</span>
+                     black.list )      <span style="color: #75766A;">// </span><span style="color: #75766A;">source</span>
+
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">squared</span>(<span style="color: #729FCF;">x</span>){ <span style="color: #C48DFF;">return</span> x * x      }
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">evenp</span>(<span style="color: #729FCF;">x</span>)  { <span style="color: #C48DFF;">return</span> x % 2 == 0 }
 numbers.map(squared).filter(evenp).first()
-<span style="color: #81908f; font-weight: bold;">// </span><span style="color: #81908f; font-style: italic;">=&gt; 4
-</span></pre>
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4</span>
+
+</pre>
+
 
 
 

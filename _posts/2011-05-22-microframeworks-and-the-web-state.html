@@ -34,41 +34,6 @@ what they actually are.
 
 
 
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#sec-1">What's wrong with JS frameworks </a>
-<ul>
-<li><a href="#sec-1_1">1. Feature bloat </a></li>
-<li><a href="#sec-1_2">2. Large filesize </a></li>
-<li><a href="#sec-1_3">3. Higher learning curve </a></li>
-<li><a href="#sec-1_4">4. Framework-centric code </a></li>
-</ul>
-</li>
-<li><a href="#sec-2">Microlibs to the rescue! </a></li>
-<li><a href="#sec-3">&hellip;but microlibs are broken too </a>
-<ul>
-<li><a href="#sec-3_1">1. Lack of documentation </a></li>
-<li><a href="#sec-3_2">2. Lack of tests </a></li>
-<li><a href="#sec-3_3">3. Small community </a></li>
-<li><a href="#sec-3_4">4. Trying to solve problems they're not meant to </a></li>
-<li><a href="#sec-3_5">5. API inconsistencies </a></li>
-<li><a href="#sec-3_6">6. Dependency hell </a></li>
-<li><a href="#sec-3_7">7. Focus on arbitrary filesize </a></li>
-</ul>
-</li>
-<li><a href="#sec-4">What can we do? </a>
-<ul>
-<li><a href="#sec-4_1">A new design philosophy </a></li>
-<li><a href="#sec-4_2">Problems with this philosophy </a></li>
-</ul>
-</li>
-<li><a href="#sec-5">Wrapping it up </a></li>
-</ul>
-</div>
-</div>
-
 <div id="outline-container-1" class="outline-2">
 <h2 id="sec-1">What's wrong with JS frameworks </h2>
 <div class="outline-text-2" id="text-1">
@@ -90,9 +55,9 @@ world" show, only worse. A thousand times worse!
 
 </div>
 
-<div id="outline-container-1_1" class="outline-3">
-<h3 id="sec-1_1">1. Feature bloat </h3>
-<div class="outline-text-3" id="text-1_1">
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1">1. Feature bloat </h3>
+<div class="outline-text-3" id="text-1-1">
 
 
 <p>
@@ -100,35 +65,25 @@ If you take <a href="http://jquery.com/">jQuery</a>, which weights around 230kb 
 gzipped), you will get all the following goodies out of the box:
 </p>
 <ul>
-<li>
-CSS Selector engine
+<li>CSS Selector engine
 </li>
-<li>
-DOM abstraction API
+<li>DOM abstraction API
 </li>
-<li>
-Deferreds
+<li>Deferreds
 </li>
-<li>
-Ajax/XMLHttpRequest abstractions
+<li>Ajax/XMLHttpRequest abstractions
 </li>
-<li>
-JSONP
+<li>JSONP
 </li>
-<li>
-CSS helpers
+<li>CSS helpers
 </li>
-<li>
-Animation/Effects
+<li>Animation/Effects
 </li>
-<li>
-Event abstraction
+<li>Event abstraction
 </li>
-<li>
-Some other small utilities to fill in some standard lib "gaps"
+<li>Some other small utilities to fill in some standard lib "gaps"
 </li>
-<li>
-Lots of cross-browser hacks
+<li>Lots of cross-browser hacks
 </li>
 </ul>
 
@@ -149,9 +104,9 @@ a lot more of coverage — DOM abstraction.
 
 </div>
 
-<div id="outline-container-1_2" class="outline-3">
-<h3 id="sec-1_2">2. Large filesize </h3>
-<div class="outline-text-3" id="text-1_2">
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2">2. Large filesize </h3>
+<div class="outline-text-3" id="text-1-2">
 
 
 <p>
@@ -173,9 +128,9 @@ sending lots of code that will never be used, sir. Seriously.
 
 </div>
 
-<div id="outline-container-1_3" class="outline-3">
-<h3 id="sec-1_3">3. Higher learning curve </h3>
-<div class="outline-text-3" id="text-1_3">
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3">3. Higher learning curve </h3>
+<div class="outline-text-3" id="text-1-3">
 
 
 <p>
@@ -194,9 +149,9 @@ and focused library, it would be quite straight forward.
 
 </div>
 
-<div id="outline-container-1_4" class="outline-3">
-<h3 id="sec-1_4">4. Framework-centric code </h3>
-<div class="outline-text-3" id="text-1_4">
+<div id="outline-container-1-4" class="outline-3">
+<h3 id="sec-1-4">4. Framework-centric code </h3>
+<div class="outline-text-3" id="text-1-4">
 
 
 <p>
@@ -279,9 +234,9 @@ Some of these problems are quite a show stopper.
 
 </div>
 
-<div id="outline-container-3_1" class="outline-3">
-<h3 id="sec-3_1">1. Lack of documentation </h3>
-<div class="outline-text-3" id="text-3_1">
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1">1. Lack of documentation </h3>
+<div class="outline-text-3" id="text-3-1">
 
 
 <p>
@@ -312,9 +267,9 @@ alone.
 
 </div>
 
-<div id="outline-container-3_2" class="outline-3">
-<h3 id="sec-3_2">2. Lack of tests </h3>
-<div class="outline-text-3" id="text-3_2">
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2">2. Lack of tests </h3>
+<div class="outline-text-3" id="text-3-2">
 
 
 <p>
@@ -331,9 +286,9 @@ should find outrageous<sup><a class="footref" name="fnr.2" href="#fn.2">2</a></s
 
 </div>
 
-<div id="outline-container-3_3" class="outline-3">
-<h3 id="sec-3_3">3. Small community </h3>
-<div class="outline-text-3" id="text-3_3">
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3">3. Small community </h3>
+<div class="outline-text-3" id="text-3-3">
 
 
 <p>
@@ -351,9 +306,9 @@ take a bit to fix as well.
 
 </div>
 
-<div id="outline-container-3_4" class="outline-3">
-<h3 id="sec-3_4">4. Trying to solve problems they're not meant to </h3>
-<div class="outline-text-3" id="text-3_4">
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4">4. Trying to solve problems they're not meant to </h3>
+<div class="outline-text-3" id="text-3-4">
 
 
 <p>
@@ -386,9 +341,9 @@ sparse arrays, thank you.
 
 </div>
 
-<div id="outline-container-3_5" class="outline-3">
-<h3 id="sec-3_5">5. API inconsistencies </h3>
-<div class="outline-text-3" id="text-3_5">
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5">5. API inconsistencies </h3>
+<div class="outline-text-3" id="text-3-5">
 
 
 <p>
@@ -408,9 +363,9 @@ commented one&hellip;
 
 </div>
 
-<div id="outline-container-3_6" class="outline-3">
-<h3 id="sec-3_6">6. Dependency hell </h3>
-<div class="outline-text-3" id="text-3_6">
+<div id="outline-container-3-6" class="outline-3">
+<h3 id="sec-3-6">6. Dependency hell </h3>
+<div class="outline-text-3" id="text-3-6">
 
 
 <p>
@@ -433,9 +388,9 @@ Either way, it's quite some hassle.
 
 </div>
 
-<div id="outline-container-3_7" class="outline-3">
-<h3 id="sec-3_7">7. Focus on arbitrary filesize </h3>
-<div class="outline-text-3" id="text-3_7">
+<div id="outline-container-3-7" class="outline-3">
+<h3 id="sec-3-7">7. Focus on arbitrary filesize </h3>
+<div class="outline-text-3" id="text-3-7">
 
 
 <p>
@@ -503,9 +458,9 @@ app.
 
 </div>
 
-<div id="outline-container-4_1" class="outline-3">
-<h3 id="sec-4_1">A new design philosophy </h3>
-<div class="outline-text-3" id="text-4_1">
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1">A new design philosophy </h3>
+<div class="outline-text-3" id="text-4-1">
 
 
 <p>
@@ -515,67 +470,58 @@ of Unix Programming book:
 </p>
 <dl>
 <dt>Modularity   </dt><dd>
-
 <p>
-Write simple parts connected by clean interfaces.
+  Write simple parts connected by clean interfaces.
 </p>
 </dd>
 <dt>Composition  </dt><dd>
-
 <p>
-Design libraries to be connected to other libraries.
+  Design libraries to be connected to other libraries.
 </p>
 </dd>
 <dt>Simplicity   </dt><dd>
-
 <p>
-Design for simplicity; add complexity only where you must.
+  Design for simplicity; add complexity only where you must.
 </p>
 </dd>
 <dt>Correctness  </dt><dd>
-
 <p>
-If it doesn't <b>fully</b> solves the problem it's designed to solve, it's
-broken.
+  If it doesn't <b>fully</b> solves the problem it's designed to solve, it's
+  broken.
 </p>
 </dd>
 <dt>Lazyness     </dt><dd>
-
 <p>
-Don't try to solve what's already solved; stop writing broken ES5
-fallbacks.
+  Don't try to solve what's already solved; stop writing broken ES5
+  fallbacks.
 </p>
 </dd>
 <dt>Parsimony    </dt><dd>
-
 <p>
-Write big libraries only when it's clear by demonstration that nothing
-else will do.
+  Write big libraries only when it's clear by demonstration that nothing
+  else will do.
 </p>
 </dd>
 <dt>Optimisation </dt><dd>
-
 <p>
-Prototype before polishing. Get it working before you optimise it (be
-it for size, speed or anything else).
+  Prototype before polishing. Get it working before you optimise it (be
+  it for size, speed or anything else).
 </p>
 </dd>
 <dt>Extensibility</dt><dd>
-
 <p>
-Design for the future, because it will be here sooner than you think
-(modules are a good thing, and they'll be added to the language!)
-</p>
-</dd>
+  Design for the future, because it will be here sooner than you think
+  (modules are a good thing, and they'll be added to the language!)
+</p></dd>
 </dl>
 
 </div>
 
 </div>
 
-<div id="outline-container-4_2" class="outline-3">
-<h3 id="sec-4_2">Problems with this philosophy </h3>
-<div class="outline-text-3" id="text-4_2">
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2">Problems with this philosophy </h3>
+<div class="outline-text-3" id="text-4-2">
 
 
 <p>
@@ -627,28 +573,30 @@ community as a whole :3
 </p>
 
 
-
-</div>
-</div>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 <p class="footnote"><sup><a class="footnum" name="fn.1" href="#fnr.1">1</a></sup> I hate using the term "framework" to refer to libraries with all
-my guts. Seriously, people, is `library` **that** hard to spell?
+       my guts. Seriously, people, is `library` **that** hard to spell?
 </p>
+
 <p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> I'll work on tests and documentation for <a href="http://github.com/killdream/ekho">Ekho</a> and friends when I
-have time to do so. Probably after I finish some of the core
-concepts/early prototypes for <a href="http://killdream.github.com/orpheos">OrpheOS</a>. Until then, considering
-the library a beta release may be a good thing.
+       have time to do so. Probably after I finish some of the core
+       concepts/early prototypes for <a href="http://killdream.github.com/orpheos">OrpheOS</a>. Until then, considering
+       the library a beta release may be a good thing.
 </p>
+
 <p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> I don't think PrototypeJS has a consistent API, for
-example. Though Ruby people might say otherwise, it just strikes
-me as odd if you use <code>bindAsEventListener</code> and <code>gsub</code> randomly on
-your API (I would never take a Ruby programmer's word on good API
-design anyways ;P). jQuery's API on the other hand (although I've
-only used a small subset of it for a short time) is just a mess
-of counter-intuitive and poorly-named methods. People should stop
-getting inspired by PHP when designing an API&hellip;
+       example. Though Ruby people might say otherwise, it just strikes
+       me as odd if you use <code>bindAsEventListener</code> and <code>gsub</code> randomly on
+       your API (I would never take a Ruby programmer's word on good API
+       design anyways ;P). jQuery's API on the other hand (although I've
+       only used a small subset of it for a short time) is just a mess
+       of counter-intuitive and poorly-named methods. People should stop
+       getting inspired by PHP when designing an API&hellip;
 </p>
+</div>
+</div>
+
 </div>
 </div>

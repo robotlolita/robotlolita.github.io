@@ -43,7 +43,7 @@ simply a collection of key/value pairs (and some internal magic
 sometimes).
 
 There are no concepts of classes anywhere, though. That is, an object
-with properties ~name: Linda, age: 21~ is not an instance of the
+with properties ~name: Linda, age: 21~ is not an instance of any class, the
 ~Object~ class. Both ~Object~ and ~Linda~ are instances of
 themselves. They define their own behaviour, directly. There are no
 layers of meta-data (i.e.: classes) to dictate what given object must
