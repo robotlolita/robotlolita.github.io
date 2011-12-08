@@ -42,6 +42,7 @@ object when you need to operate upon them. An object in the language is
 simply a collection of key/value pairs (and some internal magic
 sometimes).
 
+# FIXME: reword this paragraph so it doesn't look like JS has classes
 There are no concepts of classes anywhere, though. That is, an object
 with properties ~name: Linda, age: 21~ is not an instance of any class, the
 ~Object~ class. Both ~Object~ and ~Linda~ are instances of
@@ -124,19 +125,19 @@ to create and a descriptor that defines the semantics of the property.
 
 #+begin_src js
 Object.defineProperty(mikhail, 'name', { value:        'Mikhail'
-                                       , writable:     true
-                                       , configurable: true
-                                       , enumerable:   true })
+                                       ,, writable:     true
+                                       ,, configurable: true
+                                       ,, enumerable:   true })
 
 Object.defineProperty(mikhail, 'age', { value:        19
-                                      , writable:     true
-                                      , configurable: true
-                                      , enumerable:   true })
+                                      ,, writable:     true
+                                      ,, configurable: true
+                                      ,, enumerable:   true })
 
 Object.defineProperty(mikhail, 'gender', { value:        'Male'
-                                         , writable:     true
-                                         , configurable: true
-                                         , enumerable:   true })
+                                         ,, writable:     true
+                                         ,, configurable: true
+                                         ,, enumerable:   true })
 #+end_src
 
 =Object.defineProperty= will create a new property if a property with
@@ -149,19 +150,19 @@ semantics and value of the existing property.
 
   #+begin_src js
   Object.defineProperties(mikhail, { name:   { value:        'Mikhail'
-                                             , writable:     true
-                                             , configurable: true
-                                             , enumerable:   true }
+                                             ,, writable:     true
+                                             ,, configurable: true
+                                             ,, enumerable:   true }
                                              
                                    , age:    { value:        19
-                                             , writable:     true
-                                             , configurable: true
-                                             , enumerable:   true }
+                                             ,, writable:     true
+                                             ,, configurable: true
+                                             ,, enumerable:   true }
 
                                    , gender: { value:        'Male'
-                                             , writable:     true
-                                             , configurable: true
-                                             , enumerable:   true }})
+                                             ,, writable:     true
+                                             ,, configurable: true
+                                             ,, enumerable:   true }})
   #+end_src
 
   Obviously, both calls are overtly verbose — albeit also quite
@@ -347,10 +348,10 @@ data properties:
 
 #+begin_src js
 Object.defineProperty(mikhail, 'first_name', { value:    'Mikhail'
-                                             , writable: true })
+                                             ,, writable: true })
 
 Object.defineProperty(mikhail, 'last_name', { value:    'Weiß'
-                                            , writable: true })
+                                            ,, writable: true })
 #+end_src
 
 Then we can define a common way of accessing and setting both of those
@@ -372,9 +373,9 @@ function set_full_name(new_name) { var names
 }
 
 Object.defineProperty(mikhail, 'name', { get: get_full_name
-                                       , set: set_full_name
-                                       , configurable: true
-                                       , enumerable:   true })
+                                       ,, set: set_full_name
+                                       ,, configurable: true
+                                       ,, enumerable:   true })
 #+end_src
 
 Now, every-time we try to access the value of Mikhail's =name= property,
@@ -463,19 +464,19 @@ rewrite our Mikhail object to the following:
 
 #+begin_src js
 var mikhail = { first_name: 'Mikhail'
-              , last_name:  'Weiß'
-              , age:        19
-              , gender:     'Male'
+              ,, last_name:  'Weiß'
+              ,, age:        19
+              ,, gender:     'Male'
 
               // () → String
               // Returns the full name of object.
-              , get name() {
+              ,, get name() {
                     return this.first_name + ' ' + this.last_name }
 
               // (new_name:String) → undefined
               // Sets the name components of the object,
               // from a full name.
-              , set name(new_name) { var names
+              ,, set name(new_name) { var names
                     names = new_name.trim().split(/\s+/)
                     this.first_name = names[0] || ''
                     this.last_name  = names[1] || '' }
@@ -838,9 +839,9 @@ var person = Object.create(null)
 
 // Here we are reusing the previous getter/setter functions
 Object.defineProperty(person, 'name', { get: get_full_name
-                                      , set: set_full_name
-                                      , configurable: true
-                                      , enumerable:   true })
+                                      ,, set: set_full_name
+                                      ,, configurable: true
+                                      ,, enumerable:   true })
 
 // And adding the `greet' function
 person.greet = function (person) {
@@ -1092,8 +1093,8 @@ inherited, from one object to another.
 #+begin_src js
 // Aliases for the rather verbose methods on ES5
 var descriptor  = Object.getOwnPropertyDescriptor
-  , properties  = Object.getOwnPropertyNames
-  , define_prop = Object.defineProperty
+  ,, properties  = Object.getOwnPropertyNames
+  ,, define_prop = Object.defineProperty
 
 // (target:Object, source:Object) → Object
 // Copies properties from `source' to `target'
@@ -1498,9 +1499,9 @@ function Person(first_name, last_name) {
 
 // Defines the `name' getter/setter
 Object.defineProperty(Person.prototype, 'name', { get: get_full_name
-                                                , set: set_full_name
-                                                , configurable: true
-                                                , enumerable:   true })
+                                                ,, set: set_full_name
+                                                ,, configurable: true
+                                                ,, enumerable:   true })
 
 // (person:String) → String
 // Greets the given person
@@ -1619,7 +1620,7 @@ function defineProperty(target, key, descriptor) {
 var x = { }
 defineProperty(x, 'foo', { value: 'bar' })
 defineProperty(x, 'bar', { get: function() { return this.foo }
-                         , set: function(v){ this.foo = v    }})
+                         ,, set: function(v){ this.foo = v    }})
 
 x.foo
 // => 'bar'

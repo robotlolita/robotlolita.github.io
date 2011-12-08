@@ -148,19 +148,19 @@ to create and a descriptor that defines the semantics of the property.
 
 
 <pre class="src src-js">Object.defineProperty(mikhail, <span style="color: #A6E32D;">'name'</span>, { value:        <span style="color: #A6E32D;">'Mikhail'</span>
-                                        writable:     <span style="color: #FA2573;">true</span>
-                                        configurable: <span style="color: #FA2573;">true</span>
-                                        enumerable:   <span style="color: #FA2573;">true</span> })
+                                       , writable:     <span style="color: #FA2573;">true</span>
+                                       , configurable: <span style="color: #FA2573;">true</span>
+                                       , enumerable:   <span style="color: #FA2573;">true</span> })
 
 Object.defineProperty(mikhail, <span style="color: #A6E32D;">'age'</span>, { value:        19
-                                       writable:     <span style="color: #FA2573;">true</span>
-                                       configurable: <span style="color: #FA2573;">true</span>
-                                       enumerable:   <span style="color: #FA2573;">true</span> })
+                                      , writable:     <span style="color: #FA2573;">true</span>
+                                      , configurable: <span style="color: #FA2573;">true</span>
+                                      , enumerable:   <span style="color: #FA2573;">true</span> })
 
 Object.defineProperty(mikhail, <span style="color: #A6E32D;">'gender'</span>, { value:        <span style="color: #A6E32D;">'Male'</span>
-                                          writable:     <span style="color: #FA2573;">true</span>
-                                          configurable: <span style="color: #FA2573;">true</span>
-                                          enumerable:   <span style="color: #FA2573;">true</span> })
+                                         , writable:     <span style="color: #FA2573;">true</span>
+                                         , configurable: <span style="color: #FA2573;">true</span>
+                                         , enumerable:   <span style="color: #FA2573;">true</span> })
 
 </pre>
 
@@ -182,19 +182,19 @@ semantics and value of the existing property.
 
 
 <pre class="src src-js">Object.defineProperties(mikhail, { name:   { value:        <span style="color: #A6E32D;">'Mikhail'</span>
-                                            writable:     <span style="color: #FA2573;">true</span>
-                                            configurable: <span style="color: #FA2573;">true</span>
-                                            enumerable:   <span style="color: #FA2573;">true</span> }
+                                           , writable:     <span style="color: #FA2573;">true</span>
+                                           , configurable: <span style="color: #FA2573;">true</span>
+                                           , enumerable:   <span style="color: #FA2573;">true</span> }
 
                                   age:    { value:        19
-                                            writable:     <span style="color: #FA2573;">true</span>
-                                            configurable: <span style="color: #FA2573;">true</span>
-                                            enumerable:   <span style="color: #FA2573;">true</span> }
+                                           , writable:     <span style="color: #FA2573;">true</span>
+                                           , configurable: <span style="color: #FA2573;">true</span>
+                                           , enumerable:   <span style="color: #FA2573;">true</span> }
 
                                   gender: { value:        <span style="color: #A6E32D;">'Male'</span>
-                                            writable:     <span style="color: #FA2573;">true</span>
-                                            configurable: <span style="color: #FA2573;">true</span>
-                                            enumerable:   <span style="color: #FA2573;">true</span> }})
+                                           , writable:     <span style="color: #FA2573;">true</span>
+                                           , configurable: <span style="color: #FA2573;">true</span>
+                                           , enumerable:   <span style="color: #FA2573;">true</span> }})
 
 </pre>
 
@@ -487,10 +487,10 @@ data properties:
 
 
 <pre class="src src-js">Object.defineProperty(mikhail, <span style="color: #A6E32D;">'first_name'</span>, { value:    <span style="color: #A6E32D;">'Mikhail'</span>
-                                              writable: <span style="color: #FA2573;">true</span> })
+                                             , writable: <span style="color: #FA2573;">true</span> })
 
 Object.defineProperty(mikhail, <span style="color: #A6E32D;">'last_name'</span>, { value:    <span style="color: #A6E32D;">'Wei&#223;'</span>
-                                             writable: <span style="color: #FA2573;">true</span> })
+                                            , writable: <span style="color: #FA2573;">true</span> })
 
 </pre>
 
@@ -519,9 +519,9 @@ values at the same time — let's call it <code>name</code>:
 }
 
 Object.defineProperty(mikhail, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
-                                        set: set_full_name
-                                        configurable: <span style="color: #FA2573;">true</span>
-                                        enumerable:   <span style="color: #FA2573;">true</span> })
+                                       , set: set_full_name
+                                       , configurable: <span style="color: #FA2573;">true</span>
+                                       , enumerable:   <span style="color: #FA2573;">true</span> })
 
 </pre>
 
@@ -664,19 +664,19 @@ rewrite our Mikhail object to the following:
 
 
 <pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">mikhail</span> = { first_name: <span style="color: #A6E32D;">'Mikhail'</span>
-               last_name:  <span style="color: #A6E32D;">'Wei&#223;'</span>
-               age:        19
-               gender:     <span style="color: #A6E32D;">'Male'</span>
+              , last_name:  <span style="color: #A6E32D;">'Wei&#223;'</span>
+              , age:        19
+              , gender:     <span style="color: #A6E32D;">'Male'</span>
 
               <span style="color: #75766A;">// </span><span style="color: #75766A;">() &#8594; String</span>
               <span style="color: #75766A;">// </span><span style="color: #75766A;">Returns the full name of object.</span>
-               get name() {
+              , get name() {
                     <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.first_name + <span style="color: #A6E32D;">' '</span> + <span style="color: #FA2573;">this</span>.last_name }
 
               <span style="color: #75766A;">// </span><span style="color: #75766A;">(new_name:String) &#8594; undefined</span>
               <span style="color: #75766A;">// </span><span style="color: #75766A;">Sets the name components of the object,</span>
               <span style="color: #75766A;">// </span><span style="color: #75766A;">from a full name.</span>
-               set name(new_name) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">names</span>
+              , set name(new_name) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">names</span>
                     names = new_name.trim().split(<span style="color: #A6E32D;">/\s+/</span>)
                     <span style="color: #FA2573;">this</span>.first_name = names[3] || <span style="color: #A6E32D;">''</span>
                     <span style="color: #FA2573;">this</span>.last_name  = names[4] || <span style="color: #A6E32D;">''</span> }
@@ -1182,9 +1182,9 @@ We can implement this in JavaScript with the following definitions:
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Here we are reusing the previous getter/setter functions</span>
 Object.defineProperty(person, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
-                                       set: set_full_name
-                                       configurable: <span style="color: #FA2573;">true</span>
-                                       enumerable:   <span style="color: #FA2573;">true</span> })
+                                      , set: set_full_name
+                                      , configurable: <span style="color: #FA2573;">true</span>
+                                      , enumerable:   <span style="color: #FA2573;">true</span> })
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">And adding the `greet' function</span>
 person.greet = <span style="color: #C48DFF;">function</span> (<span style="color: #729FCF;">person</span>) {
@@ -1437,8 +1437,8 @@ inherited, from one object to another.
 
 <pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">Aliases for the rather verbose methods on ES5</span>
 <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">descriptor</span>  = Object.getOwnPropertyDescriptor
-   properties  = Object.getOwnPropertyNames
-   define_prop = Object.defineProperty
+  , properties  = Object.getOwnPropertyNames
+  , define_prop = Object.defineProperty
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">(target:Object, source:Object) &#8594; Object</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Copies properties from `source' to `target'</span>
@@ -1906,9 +1906,9 @@ property is:
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Defines the `name' getter/setter</span>
 Object.defineProperty(Person.<span style="color: #FA2573;">prototype</span>, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
-                                                 set: set_full_name
-                                                 configurable: <span style="color: #FA2573;">true</span>
-                                                 enumerable:   <span style="color: #FA2573;">true</span> })
+                                                , set: set_full_name
+                                                , configurable: <span style="color: #FA2573;">true</span>
+                                                , enumerable:   <span style="color: #FA2573;">true</span> })
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">(person:String) &#8594; String</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Greets the given person</span>
@@ -2065,7 +2065,7 @@ everywhere. Most notably, such methods have never been present in IE.
 <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">x</span> = { }
 defineProperty(x, <span style="color: #A6E32D;">'foo'</span>, { value: <span style="color: #A6E32D;">'bar'</span> })
 defineProperty(x, <span style="color: #A6E32D;">'bar'</span>, { get: <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.foo }
-                          set: <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">v</span>){ <span style="color: #FA2573;">this</span>.foo = v    }})
+                         , set: <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">v</span>){ <span style="color: #FA2573;">this</span>.foo = v    }})
 
 x.foo
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 'bar'</span>

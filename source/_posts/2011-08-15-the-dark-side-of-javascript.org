@@ -18,8 +18,8 @@ It supports both functional style:
 #+begin_src javascript
   black.unpack_all(['utils', 'generic'])
   each(map(filter(links, selectedp)
-          ,text)
-      ,display)
+          ,,text)
+      ,,display)
 #+end_src
         
 And Object Oriented style:
@@ -104,14 +104,14 @@ starting with the following:
 
 #+begin_src javascript
   var map    = [].map
-    , each   = [].each
-    , some   = [].some
-    , every  = [].every
-    , reduce = [].reduce
-    , filter = [].filter
-    , slice  = [].slice
-    , hasp   = {}.hasOwnProperty
-    , ( ... )
+    ,, each   = [].each
+    ,, some   = [].some
+    ,, every  = [].every
+    ,, reduce = [].reduce
+    ,, filter = [].filter
+    ,, slice  = [].slice
+    ,, hasp   = {}.hasOwnProperty
+    ,, ( ... )
 #+end_src
 
 Things were coming to a point that I had written a template in [[http://code.google.com/p/yasnippet][Yasnippet]] to
@@ -214,10 +214,10 @@ stuff, ~unpack~:
 #+begin_src javascript
   var numbers = [1, 2, 3, 4, 5]
   black.unpack(['own'], null              // global target
-                      , null              // generic target
-                      , Array.prototype   // own
-                      , black.list )      // source
-    
+                      ,, null              // generic target
+                      ,, Array.prototype   // own
+                      ,, black.list )      // source
+   
   function squared(x){ return x * x      }
   function evenp(x)  { return x % 2 == 0 }
   numbers.map(squared).filter(evenp).first()
