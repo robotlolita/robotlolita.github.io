@@ -34,6 +34,68 @@ primitive values, operators and such.
 </p>
 
 
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Objects </a>
+<ul>
+<li><a href="#sec-1-1">1.1. What are objects? </a></li>
+<li><a href="#sec-1-2">1.2. Creating properties </a></li>
+<li><a href="#sec-1-3">1.3. Descriptors </a></li>
+<li><a href="#sec-1-4">1.4. Ditching the verbosity </a></li>
+<li><a href="#sec-1-5">1.5. Accessing properties </a></li>
+<li><a href="#sec-1-6">1.6. Removing properties </a></li>
+<li><a href="#sec-1-7">1.7. Getters and setters </a></li>
+<li><a href="#sec-1-8">1.8. Listing properties </a></li>
+<li><a href="#sec-1-9">1.9. Object literals </a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Methods </a>
+<ul>
+<li><a href="#sec-2-1">2.1. Dynamic <code>this</code> </a></li>
+<li><a href="#sec-2-2">2.2. How <code>this</code> is resolved </a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. Called as a method </a></li>
+<li><a href="#sec-2-2-2">2.2.2. Called directly </a></li>
+<li><a href="#sec-2-2-3">2.2.3. Explicitly applied </a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. Bound methods </a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. Inheritance </a>
+<ul>
+<li><a href="#sec-3-1">3.1. Prototypes </a></li>
+<li><a href="#sec-3-2">3.2. How <code>[⁣[Prototype]⁣]</code> works </a></li>
+<li><a href="#sec-3-3">3.3. Overriding properties </a></li>
+<li><a href="#sec-3-4">3.4. Mixins </a></li>
+<li><a href="#sec-3-5">3.5. Accessing overwritten properties </a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Constructors </a>
+<ul>
+<li><a href="#sec-4-1">4.1. The <code>new</code> magic </a></li>
+<li><a href="#sec-4-2">4.2. Inheritance with constructors </a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5. Considerations and compatibility </a>
+<ul>
+<li><a href="#sec-5-1">5.1. Creating objects </a></li>
+<li><a href="#sec-5-2">5.2. Defining properties </a></li>
+<li><a href="#sec-5-3">5.3. Listing properties </a></li>
+<li><a href="#sec-5-4">5.4. Bound methods </a></li>
+<li><a href="#sec-5-5">5.5. Getting the <code>[⁣[Prototype]⁣]</code> </a></li>
+<li><a href="#sec-5-6">5.6. Libraries that provide fallbacks </a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6. Wrapping it up </a></li>
+<li><a href="#sec-7">7. Things worth reading up next </a></li>
+<li><a href="#sec-8">8. Acknowledgements </a></li>
+</ul>
+</div>
+</div>
+
 <div id="outline-container-1" class="outline-2">
 <h2 id="sec-1">1. Objects </h2>
 <div class="outline-text-2" id="text-1">
@@ -342,10 +404,11 @@ mikhail[<span style="color: #A6E32D;">'gender'</span>] = <span style="color: #A6
 
 
 <p>
-There is another way of referring to a property called <i>dot notation</i>, which usually looks less cluttered and is easier to read
-than the bracket alternative. However, it only works when the
-property name is a <a href="http://es5.github.com/#x7.6">valid JavaScript identifier</a>, and doesn't allow
-for arbitrary expressions (so, variables here are a no-go).
+There is another way of referring to a property called <i>dot notation</i>, which
+usually looks less cluttered and is easier to read than the bracket
+alternative. However, it only works when the property name is a
+<a href="http://es5.github.com/#x7.6">valid JavaScript IdentifierName</a><sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>, and doesn't allow for arbitrary expressions
+(so, variables here are a no-go).
 </p>
 <p>
 The rule for <i>dot notation</i> is:
@@ -353,7 +416,7 @@ The rule for <i>dot notation</i> is:
 
 
 
-<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;dot-access&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> <span style="color: #A6E32D;">"."</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;dot-access&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> <span style="color: #A6E32D;">"."</span> <span style="color: #729FCF;">&lt;identifier-name&gt;</span>
 
 </pre>
 
@@ -410,7 +473,7 @@ So, if we want to check on Mikhail's age:
 
 <p>
 Trying to access a property that does not exist in the object simply
-returns <code>undefined</code> <sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>:
+returns <code>undefined</code> <sup><a class="footref" name="fnr.3" href="#fn.3">3</a></sup>:
 </p>
 
 
@@ -514,8 +577,8 @@ values at the same time — let's call it <code>name</code>:
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Sets the name components of the object, from a full name.</span>
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">set_full_name</span>(<span style="color: #729FCF;">new_name</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">names</span>
     names = new_name.trim().split(<span style="color: #A6E32D;">/\s+/</span>)
-    <span style="color: #FA2573;">this</span>.first_name = names[3] || <span style="color: #A6E32D;">''</span>
-    <span style="color: #FA2573;">this</span>.last_name  = names[4] || <span style="color: #A6E32D;">''</span>
+    <span style="color: #FA2573;">this</span>.first_name = names[&#8291;<span style="color: #A6E32D;">'0'</span>] || <span style="color: #A6E32D;">''</span>
+    <span style="color: #FA2573;">this</span>.last_name  = names[<span style="color: #A6E32D;">'1'</span>] || <span style="color: #A6E32D;">''</span>
 }
 
 Object.defineProperty(mikhail, <span style="color: #A6E32D;">'name'</span>, { get: get_full_name
@@ -678,8 +741,8 @@ rewrite our Mikhail object to the following:
               <span style="color: #75766A;">// </span><span style="color: #75766A;">from a full name.</span>
               , set name(new_name) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">names</span>
                     names = new_name.trim().split(<span style="color: #A6E32D;">/\s+/</span>)
-                    <span style="color: #FA2573;">this</span>.first_name = names[3] || <span style="color: #A6E32D;">''</span>
-                    <span style="color: #FA2573;">this</span>.last_name  = names[4] || <span style="color: #A6E32D;">''</span> }
+                    <span style="color: #FA2573;">this</span>.first_name = names[<span style="color: #A6E32D;">'0'</span>] || <span style="color: #A6E32D;">''</span>
+                    <span style="color: #FA2573;">this</span>.last_name  = names[<span style="color: #A6E32D;">'1'</span>] || <span style="color: #A6E32D;">''</span> }
               }
 
 </pre>
@@ -1015,7 +1078,7 @@ arguments to the target function:
 <pre class="src src-js">add.apply(two, [2, 2])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to two.add(2, 2)</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6</span>
 
-add.apply(window, [5])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to add(4)</span>
+add.apply(window, [ 4 ])       <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to add(4)</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6</span>
 
 add.apply(one, [one.value])  <span style="color: #75766A;">// </span><span style="color: #75766A;">equivalent to one.add(one.value)</span>
@@ -1248,7 +1311,7 @@ parents of an object.
 </p>
 <p>
 This parent chain is defined by a hidden slot in every object, called
-<code>[⁣[Prototype]⁣]</code>. You can't change this slot directly<sup><a class="footref" name="fnr.6" href="#fn.6">6</a></sup>, so the only
+<code>[⁣[Prototype]⁣]</code>. You can't change this slot directly<sup><a class="footref" name="fnr.4" href="#fn.4">4</a></sup>, so the only
 way of setting it is when you're creating a fresh object.
 </p>
 <p>
@@ -1662,9 +1725,9 @@ a function that passes this information to the target function.
 
 
 
-<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object, fn:Function) &#8594; Function</span>
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">(object:Object, fun:Function) &#8594; Function</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Creates a method</span>
-<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">make_method</span>(<span style="color: #729FCF;">object</span>, <span style="color: #729FCF;">fn</span>) {
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">make_method</span>(<span style="color: #729FCF;">object</span>, <span style="color: #729FCF;">fun</span>) {
     <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">function</span>() { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">args</span>
         args = slice.call(<span style="color: #FA2573;">arguments</span>)
         args.unshift(object)        <span style="color: #75766A;">// </span><span style="color: #75766A;">insert `object' as first parameter</span>
@@ -2158,7 +2221,7 @@ application, through the <code>apply</code> method.
 
 <pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">slice</span> = [].slice
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">(fn:Function, bound_this:Object, args...) &#8594; Function</span>
+<span style="color: #75766A;">// </span><span style="color: #75766A;">(fun:Function, bound_this:Object, args...) &#8594; Function</span>
 <span style="color: #75766A;">//  </span><span style="color: #75766A;">--&gt; (args...) &#8594; *mixed*</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Creates a bound method from the function `fn'</span>
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">bind</span>(<span style="color: #729FCF;">fn</span>, <span style="color: #729FCF;">bound_this</span>) { <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">bound_args</span>
@@ -2343,6 +2406,11 @@ of the way functions are treated in JavaScript.
 <p>
 Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> for the additional revision of the article.
 </p>
+<p>
+Thanks to <code>--</code> for pointing out (in the comments) that properties expect
+an <code>IdentifierName</code>, rather than a plain <code>Identifier</code>, which would allow
+reserved words (like <code>foo.class</code> or <code>foo.null</code>) to be used unquoted.
+</p>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
@@ -2353,7 +2421,13 @@ Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> for the 
         string or number to that.
 </p>
 
-<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : It should be noted that, while ECMAScript-defined native objects
+<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : While an <code>IdentifierName</code> also allows reserved words, you should
+        be aware that ECMAScript engines that aren't fully compliant
+        with the ECMAScript 5 specs <b>may</b> choke on reserved words when
+        they're used for property access unquoted.
+</p>
+
+<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> : It should be noted that, while ECMAScript-defined native objects
         don't throw an error when you try to access a non-existing
         property, it's not guaranteed that the same will hold true for a
         host object (i.e. an object defined by the engine implementor). After all, 
@@ -2361,16 +2435,7 @@ Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> for the 
 		particular run-time implementation.
 </p>
 
-<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> DEFINITION NOT FOUND: 0
-</p>
-
-<p class="footnote"><sup><a class="footnum" name="fn.4" href="#fnr.4">4</a></sup> DEFINITION NOT FOUND: 1
-</p>
-
-<p class="footnote"><sup><a class="footnum" name="fn.5" href="#fnr.5">5</a></sup> DEFINITION NOT FOUND: 4
-</p>
-
-<p class="footnote"><sup><a class="footnum" name="fn.6" href="#fnr.6">6</a></sup> Some engines <b>do</b> expose the <code>[⁣[Prototype]⁣]</code> slot, usually
+<p class="footnote"><sup><a class="footnum" name="fn.4" href="#fnr.4">4</a></sup> Some engines <b>do</b> expose the <code>[⁣[Prototype]⁣]</code> slot, usually
        through a property like <code>__proto__</code>, however no such thing is
        described in the specifications for the language, so it's
        recommended that you avoid using it, unless you're well aware
