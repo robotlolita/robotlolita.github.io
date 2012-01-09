@@ -250,16 +250,16 @@ mikhail['gender'] = 'Male'
   =object[1]=, =object[⁣[1]⁣]=, =object['1']= and =object[variable]= (when
   the variable resolves to =1=) are all equivalent.
 
-There is another way of referring to a property called /dot
-notation/, which usually looks less cluttered and is easier to read
-than the bracket alternative. However, it only works when the
-property name is a [[http://es5.github.com/#x7.6][valid JavaScript identifier]], and doesn't allow
-for arbitrary expressions (so, variables here are a no-go).
+There is another way of referring to a property called /dot notation/, which
+usually looks less cluttered and is easier to read than the bracket
+alternative. However, it only works when the property name is a
+[[http://es5.github.com/#x7.6][valid JavaScript IdentifierName]][fn:2], and doesn't allow for arbitrary expressions
+(so, variables here are a no-go).
 
 The rule for /dot notation/ is:
 
 #+begin_src bnf
-<dot-access> ::= <identifier> "." <identifier>
+<dot-access> ::= <identifier> "." <identifier-name>
 #+end_src
 
 This would give us an even sweeter way of defining properties:
@@ -280,6 +280,11 @@ all semantic flags set to =true=.
         in some implementations. As such, you wouldn't be able to set a
         string or number to that.
 
+[fn:2]: While an =IdentifierName= also allows reserved words, you should
+        be aware that ECMAScript engines that aren't fully compliant
+        with the ECMAScript 5 specs *may* choke on reserved words when
+        they're used for property access unquoted.
+
 
 ** 1.5. Accessing properties
 
@@ -295,7 +300,7 @@ mikhail['age']
 #+end_src
 
 Trying to access a property that does not exist in the object simply
-returns =undefined= [fn:2]:
+returns =undefined= [fn:3]:
 
 #+begin_src js
 mikhail['address']
@@ -303,7 +308,7 @@ mikhail['address']
 #+end_src
 
 
-[fn:2]: It should be noted that, while ECMAScript-defined native objects
+[fn:3]: It should be noted that, while ECMAScript-defined native objects
         don't throw an error when you try to access a non-existing
         property, it's not guaranteed that the same will hold true for a
         host object (i.e. an object defined by the engine implementor). After all, 
@@ -368,8 +373,8 @@ function get_full_name() {
 // Sets the name components of the object, from a full name.
 function set_full_name(new_name) { var names
     names = new_name.trim().split(/\s+/)
-    this.first_name = names[0] || ''
-    this.last_name  = names[1] || ''
+    this.first_name = names[⁣'0'] || ''
+    this.last_name  = names['1'] || ''
 }
 
 Object.defineProperty(mikhail, 'name', { get: get_full_name
@@ -478,8 +483,8 @@ var mikhail = { first_name: 'Mikhail'
               // from a full name.
               ,, set name(new_name) { var names
                     names = new_name.trim().split(/\s+/)
-                    this.first_name = names[0] || ''
-                    this.last_name  = names[1] || '' }
+                    this.first_name = names['0'] || ''
+                    this.last_name  = names['1'] || '' }
               }
 #+end_src
 
@@ -700,7 +705,7 @@ arguments to the target function:
 add.apply(two, [2, 2])       // equivalent to two.add(2, 2)
 // => 6
 
-add.apply(window, [4])       // equivalent to add(4)
+add.apply(window, [ 4 ])       // equivalent to add(4)
 // => 6
 
 add.apply(one, [one.value])  // equivalent to one.add(one.value)
@@ -892,7 +897,7 @@ delegated property access, that is, a property is searched through all
 parents of an object.
 
 This parent chain is defined by a hidden slot in every object, called
-=[⁣[Prototype]⁣]=. You can't change this slot directly[fn:3], so the only
+=[⁣[Prototype]⁣]=. You can't change this slot directly[fn:4], so the only
 way of setting it is when you're creating a fresh object.
 
 When a property is requested from the object, the engine first tries to
@@ -915,7 +920,7 @@ mikhail.greet('you')
 // => 'Michael White: Harro, you.'
 #+end_src
 
-[fn:3] Some engines *do* expose the =[⁣[Prototype]⁣]= slot, usually
+[fn:4] Some engines *do* expose the =[⁣[Prototype]⁣]= slot, usually
        through a property like =__proto__=, however no such thing is
        described in the specifications for the language, so it's
        recommended that you avoid using it, unless you're well aware
@@ -1282,9 +1287,9 @@ We do this by introducing a new function — =make_method= — which creates
 a function that passes this information to the target function.
 
 #+begin_src js
-// (object:Object, fn:Function) → Function
+// (object:Object, fun:Function) → Function
 // Creates a method
-function make_method(object, fn) {
+function make_method(object, fun) {
     return function() { var args
         args = slice.call(arguments)
         args.unshift(object)        // insert `object' as first parameter
@@ -1685,7 +1690,7 @@ application, through the ~apply~ method.
 #+begin_src js
 var slice = [].slice
 
-// (fn:Function, bound_this:Object, args...) → Function
+// (fun:Function, bound_this:Object, args...) → Function
 //  --> (args...) → *mixed*
 // Creates a bound method from the function `fn'
 function bind(fn, bound_this) { var bound_args
@@ -1798,3 +1803,7 @@ of the way functions are treated in JavaScript.
 * 8. Acknowledgements
 
 Thanks to [[https://github.com/hughfdjackson][@hughfdjackson]] for the additional revision of the article.
+
+Thanks to =--= for pointing out (in the comments) that properties expect
+an =IdentifierName=, rather than a plain =Identifier=, which would allow
+reserved words (like =foo.class= or =foo.null=) to be used unquoted.
