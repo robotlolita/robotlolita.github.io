@@ -1987,7 +1987,7 @@ Person.<span style="color: #FA2573;">prototype</span>.greet = <span style="color
     <span style="color: #75766A;">// </span><span style="color: #75766A;">Find the parent of this object and invoke its constructor</span>
     <span style="color: #75766A;">// </span><span style="color: #75766A;">with the current this. We could have used:</span>
     <span style="color: #75766A;">//   </span><span style="color: #75766A;">Person.call(this, 'Mikhail', 'Wei&#223;')</span>
-    <span style="color: #75766A;">// </span><span style="color: #75766A;">But we'd loose some flexibility with that.</span>
+    <span style="color: #75766A;">// </span><span style="color: #75766A;">But we'd lose some flexibility with that.</span>
     proto(Mikhail.<span style="color: #FA2573;">prototype</span>).constructor.call(<span style="color: #FA2573;">this</span>, <span style="color: #A6E32D;">'Mikhail'</span>, <span style="color: #A6E32D;">'Wei&#223;'</span>)
 }
 
@@ -2404,7 +2404,8 @@ of the way functions are treated in JavaScript.
 
 
 <p>
-Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> for the additional revision of the article.
+Thanks to <a href="https://github.com/hughfdjackson">@hughfdjackson</a> and Taylor for the additional revision of the
+article.
 </p>
 <p>
 Thanks to <code>--</code> for pointing out (in the comments) that properties expect
