@@ -1522,7 +1522,7 @@ function Mikhail(age, gender) {
     // Find the parent of this object and invoke its constructor
     // with the current this. We could have used:
     //   Person.call(this, 'Mikhail', 'Weiß')
-    // But we'd loose some flexibility with that.
+    // But we'd lose some flexibility with that.
     proto(Mikhail.prototype).constructor.call(this, 'Mikhail', 'Weiß')
 }
 
@@ -1802,7 +1802,8 @@ of the way functions are treated in JavaScript.
 
 * 8. Acknowledgements
 
-Thanks to [[https://github.com/hughfdjackson][@hughfdjackson]] for the additional revision of the article.
+Thanks to [[https://github.com/hughfdjackson][@hughfdjackson]] and Taylor for the additional revision of the
+article.
 
 Thanks to =--= for pointing out (in the comments) that properties expect
 an =IdentifierName=, rather than a plain =Identifier=, which would allow
