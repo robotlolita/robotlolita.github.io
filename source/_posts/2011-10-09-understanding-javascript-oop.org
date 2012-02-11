@@ -52,7 +52,7 @@ look like.
 
 You might ask: "how?"; more so if you come from a highly classically
 Object Orientated language (like Java or C#). "Wouldn't having each
-object define their own behaviour, instead of a common /class/ mean that
+object defining their own behaviour, instead of a common /class/ mean that
 if I have 100 objects, I will have 100 different methods? Also, isn't it
 dangerous? How would one know if an object is really an Array, for
 example?"
@@ -430,7 +430,7 @@ properties in an object are public.
 ** 1.8. Listing properties
 
 Since properties are dynamic, JavaScript provides a way of checking out
-which properties an object define. There are two ways of listing the
+which properties an object defines. There are two ways of listing the
 properties of an object, depending on what kind of properties one is
 interested into.
 
@@ -459,7 +459,7 @@ Object.keys(mikhail)
 
 An even easier way of defining objects is to use the object literal
 (also called /object initialiser/) syntax that JavaScript provides. An
-object literal denotes a fresh object, that has it's parent as the
+object literal denotes a fresh object, that has its parent as the
 =Object.prototype= object. We'll talk more about parents when we visit
 inheritance, later on.
 
@@ -1802,8 +1802,8 @@ of the way functions are treated in JavaScript.
 
 * 8. Acknowledgements
 
-Thanks to [[https://github.com/hughfdjackson][@hughfdjackson]] and Taylor for the additional revision of the
-article.
+Thanks to [[https://github.com/hughfdjackson][@hughfdjackson]], Alex and Taylor for the additional revision of
+the article.
 
 Thanks to =--= for pointing out (in the comments) that properties expect
 an =IdentifierName=, rather than a plain =Identifier=, which would allow
