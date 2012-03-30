@@ -57,14 +57,14 @@ referential transparency and lazy evaluation.
 
 ** The basic theory
 
-The idea of functional abstracions comes from Alonzo Church's [[http://en.wikipedia.org/wiki/Lambda_calculus][lambda
-calculus]], which intended to use functions as the foundation of
-mathematics. The lambda calculus semantics defines computations and
-values as a series of lambda expressions. These expressions are
-evaluated through a series of reductions that take an abstraction to the
-value.
+The idea of functional abstracions comes from Alonzo Church's
+[[http://en.wikipedia.org/wiki/Lambda_calculus][lambda calculus]], which
+intended to use functions as the foundation of mathematics. The lambda
+calculus semantics defines computations and values as a series of lambda
+expressions. These expressions are evaluated through a series of
+reductions that take an abstraction to the value it represents.
 
-Take, the following mathematical expression: =2 + 3 * (5 / 2) - 1=. We
+Take the following mathematical expression: =2 + 3 * (5 / 2) - 1=. We
 can compute the value of the expression by reducing it to a value:
 
 #+begin_src text
@@ -96,8 +96,8 @@ we have functions that take numbers as arguments for the computation,
 and they return other lambda abstractions.
 
 When a lambda abstraction is applied to a number, we substitute all the
-terms with the same name as the lambda abstraction parameter by the
-number it was applied to.
+terms with the same name as the lambda abstraction parameter by that
+number.
 
 That is, =2= could be abstracted as =λx → x= (a lambda abstraction
 taking =x=, and immediately yielding =x=)[fn:2], and then we could apply
@@ -113,22 +113,117 @@ numbers to get them back: =(λx → x) 2= would yield =2=.
 
 ** Why use functional programming?
 
-Functional idioms aid making programs more structured and modular, since
-they make it easier to create abstractions over recurring patterns. This
-means that one can build programs that lead themselves naturally to a
-more declarative — therefore more readable — components, that interface
-with each other through the abstractions defined.
+Functional idioms provide an alternative method for composing programs,
+which tends to lead themselves more easily to a good deal of modularity,
+given the emphasis placed in purity, abstractions — usually in terms
+of higher-order functions — and declarative definitions of the
+computation being performed.
 
-Functional programs are often shorter and present less complexity
-up-front than their imperative counterparts. And since functional idioms
-value purity, these programs are also easier to reason about, because
-the programmer doesn't have to build and maintain the whole application
-state on his head when reading a piece of code.
+The declarative definitions are usually self-explanatory on which
+operation is carried about — rather than how. Which helps conveying the
+intent of such a piece of code. On the other hand, it makes it a little
+more difficult to understand the /how things get done/ part.
+
+These properties can, arguably, make the resulting application a great
+deal shorter, less complex, and easier to inspect and reason about, for
+the programmer has to keep less information on his head at any given
+time.
 
 
 * Functions
+
+Functions are, basically, a means of abstracting computations, as
+discussed previously in the section on the theory behind functional
+programming. This means that if I have the expression =2 + 2=, I can
+have a function that abstracts over that expression[fn:3]:
+
+#+begin_src js
+  2 + 2
+  // => 4
+
+  function two_plus_two() { return 2 + 2 }
+  two_plus_two()
+  // => 4
+#+end_src
+
+[fn:3]: While this generic claim may still hold true for JavaScript,
+        it's important to note that functions in the language don't
+        respect Tennet's Correspondence Principle, such you can't just
+        wrap every expression in a function while preserving the
+        properties of the expression before wrapping it.
+
+
 ** Definition
+
+There are two ways for defining a function in ECMAScript, which depends mostly
+on the context which such definition happens. Both ways are equivalent,
+however, in the sense that they both create a function object with the same
+properties.
+
+First, we have what the [[http://es5.github.com/#x13][specs]] call a =FunctionDeclaration=, which happens at
+the statement level. Since statements are things that yield no value, a
+=FunctionDeclaration=, instead of returning a function object, binds that
+object to the current scope, with the name the function was declared with.
+
+This means that if we declare a function named =square= in this manner, we can
+refer to it right away by that name:
+
+#+BEGIN_SRC js
+  function square(x) { return x * x }
+
+  square(2)
+  // => 4
+#+END_SRC
+
+An interesting property of =FunctionDeclarations= is that they are *hoisted*[fn:4],
+that is, regardless of where you declare them in your source code, they will be
+available anywhere in the scope. This allows for interesting orderings of a
+program's source code, without being bound by the evaluation order:
+
+#+BEGIN_SRC js
+  square(2)
+  // => 4
+
+  function square(x) { return x * x }
+#+END_SRC
+
+The other way of creating a function object is by what the specs call a
+=FunctionExpression=. The syntax is the same as a =FunctionDeclaration=, except
+the function's name is optional. Rather than binding the resulting function
+object to the current scope, a =FunctionExpression= works by making that
+function object the result of the expression.
+
+It might sound a bit insane at first, but this is an extremely powerful
+feature in the presence of first-class functions. We can decide when we
+want to treat a function as an object — a value we can manipulate, — or
+execute it.
+
+#+BEGIN_SRC js
+  var square_of = function(x){ return x * x }
+#+END_SRC
+
+Now, we have a variable =square= that holds a function which, when
+called with a numeric parameter, computes the square of that
+number:
+
+#+BEGIN_SRC js
+  square_of(3)
+  // => 9
+#+END_SRC
+
+Note that when you want to execute a function you need to use the
+additional parenthesis. Otherwise, the function is just treated as a
+regular object. The act of executing a function is also referred to as
+=calling=, or more formally =applying= a function to some arguments.
+
+[fn:4]: Hoisting is considered by many a misfeature. I think it has its uses,
+        though it can be obviously abused. One of the interesting properties it
+        allows is a more natural ordering of a program's source code, or even a
+        little of literate programming.
+
+
 ** Parameters
+** Arity
 ** Application
 * Scoping
 ** Lexical scoping
