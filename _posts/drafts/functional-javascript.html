@@ -1,0 +1,481 @@
+---
+layout: post
+title:  Functional JavaScript
+snip:   Bringing parens back to JS, without the parens.
+---
+
+<p>
+Functional programming is becoming a hot topic these days. Programmers
+are (re-)discovering functional idioms in their old languages, and new
+languages often feature multiple paradigms, with support to functional
+idioms to a certain extent — even Java is getting lambda expressions!
+</p>
+<p>
+JavaScript is one of these multiple paradigm languages, taking its
+functional side from <a href="http://en.wikipedia.org/wiki/Scheme_(programming_language)">Scheme</a>, a minimal dialect of the <a href="http://en.wikipedia.org/wiki/Lisp_programming_language">Lisp</a> family. It
+is, however, at the same time, a language designed for monkey patching,
+which means that side-effects are tied straight into the core of the
+language.
+</p>
+<p>
+This raises several questions on the validity of stating that JavaScript
+allows for functional idioms. In this article we'll go through what
+functional programming really is, how it applies to JavaScript and which
+kind of new and interesting compositional patterns it allows in the
+language.
+</p>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">Introduction</a>
+<ul>
+<li><a href="#sec-1-1">The basic theory</a></li>
+<li><a href="#sec-1-2">Why use functional programming?</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">Functions</a>
+<ul>
+<li><a href="#sec-2-1">Definition</a></li>
+<li><a href="#sec-2-2">Parameters</a></li>
+<li><a href="#sec-2-3">Arity</a></li>
+<li><a href="#sec-2-4">Application</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">Scoping</a>
+<ul>
+<li><a href="#sec-3-1">Lexical scoping</a></li>
+<li><a href="#sec-3-2">Scope chain</a></li>
+<li><a href="#sec-3-3">Environments</a></li>
+<li><a href="#sec-3-4">Closures</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">Patterns</a>
+<ul>
+<li><a href="#sec-4-1">Recursion</a></li>
+<li><a href="#sec-4-2">Higher-order functions</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">Practical applications</a>
+<ul>
+<li><a href="#sec-5-1">Currying and uncurrying</a></li>
+<li><a href="#sec-5-2">Composition</a></li>
+<li><a href="#sec-5-3">Memoisation</a></li>
+<li><a href="#sec-5-4">Encapsulation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">Introduction</h2>
+<div class="outline-text-2" id="text-1">
+
+
+<p>
+So, what's this "functional programming" business anyways?
+</p>
+<p>
+Well, functional programming has a fuzzy meaning these days (only not as
+fuzzy as <i>Object Oriented Programming</i>, I think). But in essence,
+functional programming languages revolve around computing expressions,
+rather than changing some global state through a series of statements.
+</p>
+<p>
+The major requirement for a programming language to support functional
+programming idioms is that functions <b>must be first-class<sup><a class="footref" name="fnr.1" href="#fn.1">1</a></sup></b>
+citizens. That is, functions need to be treated as any other value in
+the language, which means being able to pass them as arguments to other
+functions, store them in variables and return them from other functions,
+usually.
+</p>
+<p>
+Modern functional languages include several other features to improve
+the language's expressiveness, and make it easier to reason about a
+given program. Those include closures, higher-order functions,
+referential transparency and lazy evaluation.
+</p>
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1">The basic theory</h3>
+<div class="outline-text-3" id="text-1-1">
+
+
+<p>
+The idea of functional abstracions comes from Alonzo Church's
+<a href="http://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>, which
+intended to use functions as the foundation of mathematics. The lambda
+calculus semantics defines computations and values as a series of lambda
+expressions. These expressions are evaluated through a series of
+reductions that take an abstraction to the value it represents.
+</p>
+<p>
+Take the following mathematical expression: <code>2 + 3 * (5 / 2) - 1</code>. We
+can compute the value of the expression by reducing it to a value:
+</p>
+
+
+
+<pre class="src src-text">= 2 + 3 * (5 / 2) - 1
+= 2 + 3 * (2.5) - 1
+= 2 + 7.5 - 1
+= 9.5 - 1
+= 8.5
+</pre>
+
+
+<p>
+In lambda calculus, a similar series of reductions is used to evaluate a
+lambda expression:
+</p>
+
+
+
+<pre class="src src-text">calc = (&#955;a &#8594; &#955;b &#8594; &#955;c &#8594; &#955;d &#8594; a + b * (c / a) - d) 2
+     = (&#955;b &#8594; &#955;c &#8594; &#955;d &#8594; 2 + b * (c / 2) - d) 3
+     = (&#955;c &#8594; &#955;d &#8594; 2 + 3 * (c / 2) - d) 5
+     = (&#955;d &#8594; 2 + 3 * (5 / 2) - d) 1
+     = (2 + 3 * (5 / 2) - 1)
+     = 2 + 3 * (2.5) - 1
+     = 2 + 7.5 - 1
+     = 9.5 - 1
+     = 8.5
+</pre>
+
+
+<p>
+The biggest difference is that, instead of defining the numbers directly
+in the expression, we abstract that into <i>lambda abstractions</i>. That is,
+we have functions that take numbers as arguments for the computation,
+and they return other lambda abstractions.
+</p>
+<p>
+When a lambda abstraction is applied to a number, we substitute all the
+terms with the same name as the lambda abstraction parameter by that
+number.
+</p>
+<p>
+That is, <code>2</code> could be abstracted as <code>λx → x</code> (a lambda abstraction
+taking <code>x</code>, and immediately yielding <code>x</code>)<sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>, and then we could apply
+numbers to get them back: <code>(λx → x) 2</code> would yield <code>2</code>.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2">Why use functional programming?</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+<p>
+Functional idioms provide an alternative method for composing programs,
+which tends to lead themselves more easily to a good deal of modularity,
+given the emphasis placed in purity, abstractions — usually in terms
+of higher-order functions — and declarative definitions of the
+computation being performed.
+</p>
+<p>
+The declarative definitions are usually self-explanatory on which
+operation is carried about — rather than how. Which helps conveying the
+intent of such a piece of code. On the other hand, it makes it a little
+more difficult to understand the <i>how things get done</i> part.
+</p>
+<p>
+These properties can, arguably, make the resulting application a great
+deal shorter, less complex, and easier to inspect and reason about, for
+the programmer has to keep less information on his head at any given
+time.
+</p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">Functions</h2>
+<div class="outline-text-2" id="text-2">
+
+
+<p>
+Functions are, basically, a means of abstracting computations, as
+discussed previously in the section on the theory behind functional
+programming. This means that if I have the expression <code>2 + 2</code>, I can
+have a function that abstracts over that expression<sup><a class="footref" name="fnr.3" href="#fn.3">3</a></sup>:
+</p>
+
+
+
+<pre class="src src-js">2 + 2
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4</span>
+
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">two_plus_two</span>() { <span style="color: #C48DFF;">return</span> 2 + 2 }
+two_plus_two()
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4</span>
+</pre>
+
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1">Definition</h3>
+<div class="outline-text-3" id="text-2-1">
+
+
+<p>
+There are two ways for defining a function in ECMAScript, which depends mostly
+on the context in which such definition happens. Both ways are equivalent,
+however, in the sense that they both create a function object with the same
+properties.
+</p>
+<p>
+First, we have what the <a href="http://es5.github.com/#x13">specs</a> call a <code>FunctionDeclaration</code>, which happens at
+the statement level. Since statements are things that yield no value, a
+<code>FunctionDeclaration</code>, instead of returning a function object, binds that
+object to the current scope, with the name the function was declared with.
+</p>
+<p>
+This means that if we declare a function named <code>square</code> in this manner, we can
+refer to it right away by that name:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">square</span>(<span style="color: #729FCF;">x</span>) { <span style="color: #C48DFF;">return</span> x * x }
+
+square(2)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4</span>
+</pre>
+
+
+<p>
+An interesting property of <code>FunctionDeclarations</code> is that they are *hoisted*<sup><a class="footref" name="fnr.4" href="#fn.4">4</a></sup>,
+that is, regardless of where you declare them in your source code, they will be
+available anywhere in the scope. This allows for interesting orderings of a
+program's source code, without being bound by the evaluation order:
+</p>
+
+
+
+<pre class="src src-js">square(2)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4</span>
+
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">square</span>(<span style="color: #729FCF;">x</span>) { <span style="color: #C48DFF;">return</span> x * x }
+</pre>
+
+
+<p>
+The other way of creating a function object is by what the specs call a
+<code>FunctionExpression</code>. The syntax is the same as a <code>FunctionDeclaration</code>, except
+the function's name is optional. Rather than binding the resulting function
+object to the current scope, a <code>FunctionExpression</code> works by making that
+function object the result of the expression. This result can afterwards be
+invoked, stored in a variable or passed as a parameter to another function.
+</p>
+<p>
+It might sound a bit insane at first, but this is an extremely powerful
+feature in the presence of first-class functions. We can decide when we
+want to treat a function as an object — a value we can manipulate, — or
+execute it.
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">square_of</span> = <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>){ <span style="color: #C48DFF;">return</span> x * x }
+</pre>
+
+
+<p>
+Now, we have a variable <code>square_of</code> that holds a function which, when
+called with a numeric parameter, computes the square of that
+number:
+</p>
+
+
+
+<pre class="src src-js">square_of(3)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 9</span>
+</pre>
+
+
+<p>
+Note that when you want to execute a function you need to use the
+additional parenthesis. Otherwise, the function is just treated as a
+regular object. The act of executing a function is also referred to as
+<code>calling</code>, or more formally <code>applying</code> a function to some arguments.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2">Parameters</h3>
+<div class="outline-text-3" id="text-2-2">
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3">Arity</h3>
+<div class="outline-text-3" id="text-2-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4">Application</h3>
+<div class="outline-text-3" id="text-2-4">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3">Scoping</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1">Lexical scoping</h3>
+<div class="outline-text-3" id="text-3-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2">Scope chain</h3>
+<div class="outline-text-3" id="text-3-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3">Environments</h3>
+<div class="outline-text-3" id="text-3-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4">Closures</h3>
+<div class="outline-text-3" id="text-3-4">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4">Patterns</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1">Recursion</h3>
+<div class="outline-text-3" id="text-4-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2">Higher-order functions</h3>
+<div class="outline-text-3" id="text-4-2">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5">Practical applications</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1">Currying and uncurrying</h3>
+<div class="outline-text-3" id="text-5-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2">Composition</h3>
+<div class="outline-text-3" id="text-5-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3">Memoisation</h3>
+<div class="outline-text-3" id="text-5-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-5-4" class="outline-3">
+<h3 id="sec-5-4">Encapsulation</h3>
+<div class="outline-text-3" id="text-5-4">
+
+
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+<p class="footnote"><sup><a class="footnum" name="fn.1" href="#fnr.1">1</a></sup> : <b>first-class</b> is not a well-defined term, actually. It depends
+        mostly on how other kinds of primitive values are treated in the
+        language. The rights of function objects should be at least the
+        same as those. In JavaScript, in addition to the rights
+        mentioned above, functions can also store properties, since
+        that's something every object in the language can do.
+</p>
+
+<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : The lambda abstraction <code>λx → x</code> is also called <b>Identity</b> (or I,
+        for short). And it's a core combinator in Lambda Calculus. The
+        combinators are: <code>I: λx → x</code>, <code>K: λx → λy → x</code>, 
+        <code>S: λx → λy → λz → x z (y z)</code>. You could express any computation
+        using only those combinators.
+</p>
+
+<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> : While this generic claim may still hold true for JavaScript,
+        it's important to note that functions in the language don't
+        respect Tennet's Correspondence Principle, such you can't just
+        wrap every expression in a function while preserving the
+        properties of the expression before wrapping it.
+</p>
+
+<p class="footnote"><sup><a class="footnum" name="fn.4" href="#fnr.4">4</a></sup> : Hoisting is considered by many a misfeature. I think it has its uses,
+        though it can be obviously abused. One of the interesting properties it
+        allows is a more natural ordering of a program's source code, or even a
+        little of literate programming.
+</p></div>
+</div>
+</div>
+
+</div>
+</div>

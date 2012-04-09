@@ -24,22 +24,23 @@ some shape and use, it's time to release it officially.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">Why? Oh god WHY? </a></li>
-<li><a href="#sec-2">What Boo provides? </a>
+<li><a href="#sec-1">Why? Oh god WHY?</a></li>
+<li><a href="#sec-2">What Boo provides?</a>
 <ul>
-<li><a href="#sec-2-1">Mixins </a></li>
-<li><a href="#sec-2-2">Inheritance </a></li>
-<li><a href="#sec-2-3">Syntactical sugar </a></li>
+<li><a href="#sec-2-1">Mixins</a></li>
+<li><a href="#sec-2-2">Inheritance</a></li>
+<li><a href="#sec-2-3">Syntactical sugar</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">What's next? </a></li>
-<li><a href="#sec-4">Future developments? </a></li>
+<li><a href="#sec-3">What's next?</a></li>
+<li><a href="#sec-4">Future developments?</a></li>
+<li><a href="#sec-5">Acknowledgements</a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1">Why? Oh god WHY? </h2>
+<h2 id="sec-1">Why? Oh god WHY?</h2>
 <div class="outline-text-2" id="text-1">
 
 
@@ -59,12 +60,9 @@ So, instead of the ugly, factory-ish approach:
 
 <pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Animal</span>() { <span style="color: #75766A;">/* </span><span style="color: #75766A;">... */</span> }
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">Cat</span>()    { <span style="color: #75766A;">/* </span><span style="color: #75766A;">... */</span> }
-Cat.<span style="color: #FA2573;">prototype</span> = Object.create(Animal)
+Cat.<span style="color: #FA2573;">prototype</span> = Object.create(Animal.<span style="color: #FA2573;">prototype</span>)
 Cat.<span style="color: #FA2573;">prototype</span>.say = <span style="color: #C48DFF;">function</span>() { <span style="color: #75766A;">/* </span><span style="color: #75766A;">... */</span> }
-
 </pre>
-
-
 
 
 <p>
@@ -75,12 +73,9 @@ objects:
 
 
 <pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Base</span>   = boo.Base
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Animal</span> = Base.clone({ <span style="color: #75766A;">/* </span><span style="color: #75766A;">Animal's properties here */</span> })
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Cat</span>    = Animal.clone({ <span style="color: #75766A;">/* </span><span style="color: #75766A;">Cat's properties here */</span> })
-
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Animal</span> = Base.derive({ <span style="color: #75766A;">/* </span><span style="color: #75766A;">Animal's properties here */</span> })
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Cat</span>    = Animal.derive({ <span style="color: #75766A;">/* </span><span style="color: #75766A;">Cat's properties here */</span> })
 </pre>
-
-
 
 
 
@@ -89,7 +84,7 @@ objects:
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2">What Boo provides? </h2>
+<h2 id="sec-2">What Boo provides?</h2>
 <div class="outline-text-2" id="text-2">
 
 
@@ -104,7 +99,7 @@ themselves are orthogonal, which makes them composable.
 </div>
 
 <div id="outline-container-2-1" class="outline-3">
-<h3 id="sec-2-1">Mixins </h3>
+<h3 id="sec-2-1">Mixins</h3>
 <div class="outline-text-3" id="text-2-1">
 
 
@@ -155,10 +150,7 @@ spells.items
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; []</span>
 spells.max
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 3</span>
-
 </pre>
-
-
 
 
 
@@ -167,7 +159,7 @@ spells.max
 </div>
 
 <div id="outline-container-2-2" class="outline-3">
-<h3 id="sec-2-2">Inheritance </h3>
+<h3 id="sec-2-2">Inheritance</h3>
 <div class="outline-text-3" id="text-2-2">
 
 
@@ -177,7 +169,7 @@ For inheritance, <code>Boo</code> just defines a thin layer over the standard
 descriptors — which are way too verbose to be practical.
 </p>
 <p>
-The primitive <code>clone</code> is used for coupling inheritance and extension:
+The primitive <code>derive</code> is used for coupling inheritance and extension:
 </p>
 
 
@@ -198,8 +190,8 @@ The primitive <code>clone</code> is used for coupling inheritance and extension:
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">Clones the `collection' behaviours and extends the clone with the</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">`ring' behaviours</span>
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">RingCollection</span> = boo.clone(Collection, ring)
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">spells</span>         = boo.clone(RingCollection, ring_data)
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">RingCollection</span> = boo.derive(Collection, ring)
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">spells</span>         = boo.derive(RingCollection, ring_data)
 
 RingCollection.isPrototypeOf(spells)
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; true</span>
@@ -210,10 +202,7 @@ spells.push(<span style="color: #A6E32D;">'Patra'</span>)
 spells.push(<span style="color: #A6E32D;">'Recarm'</span>)
 spells.map(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">spell</span>){ <span style="color: #C48DFF;">return</span> spell.toUpperCase() })
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; ['RECARM', 'PATRA', 'DIA']</span>
-
 </pre>
-
-
 
 
 
@@ -222,7 +211,7 @@ spells.map(<span style="color: #C48DFF;">function</span>(<span style="color: #72
 </div>
 
 <div id="outline-container-2-3" class="outline-3">
-<h3 id="sec-2-3">Syntactical sugar </h3>
+<h3 id="sec-2-3">Syntactical sugar</h3>
 <div class="outline-text-3" id="text-2-3">
 
 
@@ -232,14 +221,14 @@ syntactical sugar to write all of this in a nice sort-of declarative
 syntax, which is easier to read and reason about.
 </p>
 <p>
-The base object is <code>Base</code>, which can be cloned through <code>clone</code> and
+The base object is <code>Base</code>, which can be cloned through <code>derive</code> and
 instantiated with <code>make</code>, although both use cloning in the prototypical
 sense:
 </p>
 
 
 
-<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Enum</span> = boo.Base.clone({
+<pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Enum</span> = boo.Base.derive({
   <span style="color: #67D9F0;">each</span>: <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">fn</span>) {
     <span style="color: #FA2573;">this</span>.items.forEach(fn) },
 
@@ -253,7 +242,7 @@ sense:
     <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">this</span>.items.reduce(fn, start) }
 })
 
-<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Coll</span> = Enum.clone({
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">Coll</span> = Enum.derive({
   <span style="color: #67D9F0;">push</span>: <span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">item</span>) {
     <span style="color: #FA2573;">this</span>.items.push(item) },
 
@@ -273,10 +262,7 @@ my_coll.map(<span style="color: #C48DFF;">function</span>(<span style="color: #7
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; [1, 4, 9]</span>
 my_coll.find(4)
 <span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 1</span>
-
 </pre>
-
-
 
 
 
@@ -286,7 +272,7 @@ my_coll.find(4)
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3">What's next? </h2>
+<h2 id="sec-3">What's next?</h2>
 <div class="outline-text-2" id="text-3">
 
 
@@ -297,10 +283,7 @@ my_coll.find(4)
 
 
 <pre class="src src-shell-script">$ git clone http://github.com/killdream/boo.git
-
 </pre>
-
-
 
 
 <p>
@@ -311,11 +294,8 @@ Though, if you want a quick'n'dirty install, just get it from NPM:
 
 <pre class="src src-shell-script">$ npm install boo
 node&gt; var boo = require(<span style="color: #A6E32D;">'boo'</span>)
-node&gt; var Stuff = boo.Base.clone({ ... })
-
+node&gt; var Stuff = boo.Base.derive({ ... })
 </pre>
-
-
 
 
 
@@ -324,7 +304,7 @@ node&gt; var Stuff = boo.Base.clone({ ... })
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4">Future developments? </h2>
+<h2 id="sec-4">Future developments?</h2>
 <div class="outline-text-2" id="text-4">
 
 
@@ -333,5 +313,20 @@ Next release of <code>Boo</code> will include traits, and should be up around
 December. Traits are more interesting for structuring larger programs
 than mixins are, but I have yet to experiment with them more until I can
 stick with a nice API :3
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5">Acknowledgements</h2>
+<div class="outline-text-2" id="text-5">
+
+
+<p>
+Thanks for <code>AdamR</code> in the comments and <code>xivix</code> on Freenode's
+<code>##javascript</code> channel for pointing out the issue with Object.create on
+the first snippet.
 </p></div>
 </div>
