@@ -167,6 +167,8 @@ describing the process that they perform.
 #+RESULTS:
 [[file:../../media/assets/fp-fndef.png]]
 
+[[blog:fp-fndef.png]]
+
 A =return= statement allows a function to yield back the result of the
 computation that was performed. Different from the mathematical concept of
 functions, though, functions in JavaScript doesn't need to always return a
@@ -190,7 +192,7 @@ the following grammar rules:
   <argument-list> ::= <identifier> (many "," <identifier>)
   <function-body> ::= "{" (many <statement>) "}"
 
-  ¹ Optional, in some cases. We discuss this in the next session.
+  # ¹: Optional, in some cases. We discuss this in the next session.
 #+END_SRC
 
 
@@ -290,7 +292,7 @@ variables would point to the same function object in memory:
 
 
 
-** Arity
+** Purity
 ** Application
 * Scoping
 ** Lexical scoping
