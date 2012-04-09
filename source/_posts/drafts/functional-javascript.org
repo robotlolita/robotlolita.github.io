@@ -146,6 +146,54 @@ have a function that abstracts over that expression[fn:3]:
   // => 4
 #+end_src
 
+Functions are usually given a name (though not necessarily always), a list of
+parameters for the computation they should perform and a list of statements
+describing the process that they perform.
+
+
+#+BEGIN_SRC ditaa :file ../../media/assets/fp-fndef.png :cmdline -r :exports none
+            Name      Parameters
+              |           | 
+           +--+-=+  +-----+--=--+ +---+
+  function | add | (|left, right|)| { |
+           +-----+  +-----------+ |   :
+  +-------------------------------+   +--- Body
+  |   return left + right             |
+  |   +-------------------------------+
+  | } |
+  +---+
+#+END_SRC
+
+#+RESULTS:
+[[file:../../media/assets/fp-fndef.png]]
+
+A =return= statement allows a function to yield back the result of the
+computation that was performed. Different from the mathematical concept of
+functions, though, functions in JavaScript doesn't need to always return a
+value. If a =return= statement is not present in the function, it's implicit
+that the return value of such function is the special value =undefined=.
+
+Functions that describe processes to be executed, rather than an expression to
+be evaluated, can happily omit the =return= statement. Such functions usually
+affect the state of the program outside of the function's realms (e.g.: by
+changing some object's properties or a non-local variable's value), are
+described as having *side effects* or simply being *impure*. We'll dwell on the
+subject shortly.
+
+More formally, the common anatomy of a function definition can be described by
+the following grammar rules:
+
+#+BEGIN_SRC bnf
+  <function-stmt> ::= "function" <function-name>¹ <arguments> <function-body>
+  <function-name> ::= <identifier>
+  <arguments>     ::= "(" (optional <argument-list>) ")"
+  <argument-list> ::= <identifier> (many "," <identifier>)
+  <function-body> ::= "{" (many <statement>) "}"
+
+  ¹ Optional, in some cases. We discuss this in the next session.
+#+END_SRC
+
+
 [fn:3]: While this generic claim may still hold true for JavaScript,
         it's important to note that functions in the language don't
         respect Tennet's Correspondence Principle, such you can't just
@@ -217,13 +265,28 @@ additional parenthesis. Otherwise, the function is just treated as a
 regular object. The act of executing a function is also referred to as
 =calling=, or more formally =applying= a function to some arguments.
 
+We could further store this value in other variable, in this case, both
+variables would point to the same function object in memory:
+
+#+BEGIN_SRC js
+  var sqr = square_of
+  sqr(3)
+  // => 9
+
+  square_of(3)
+  // => 9
+
+  sqr === square_of
+  // => true
+#+END_SRC
+
 [fn:4]: Hoisting is considered by many a misfeature. I think it has its uses,
         though it can be obviously abused. One of the interesting properties it
         allows is a more natural ordering of a program's source code, or even a
         little of literate programming.
 
 
-** Parameters
+** Parameters and arity
 
 
 
