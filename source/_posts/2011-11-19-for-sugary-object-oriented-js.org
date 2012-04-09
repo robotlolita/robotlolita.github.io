@@ -34,7 +34,7 @@ So, instead of the ugly, factory-ish approach:
 #+begin_src js
   function Animal() { /* ... */ }
   function Cat()    { /* ... */ }
-  Cat.prototype = Object.create(Animal)
+  Cat.prototype = Object.create(Animal.prototype)
   Cat.prototype.say = function() { /* ... */ }
 #+end_src
 
@@ -43,8 +43,8 @@ objects:
 
 #+begin_src js
   var Base   = boo.Base
-  var Animal = Base.clone({ /* Animal's properties here */ })
-  var Cat    = Animal.clone({ /* Cat's properties here */ })
+  var Animal = Base.derive({ /* Animal's properties here */ })
+  var Cat    = Animal.derive({ /* Cat's properties here */ })
 #+end_src
 
 
@@ -109,7 +109,7 @@ For inheritance, =Boo= just defines a thin layer over the standard
 =Object.create= method, such that it accepts mixins rather than property
 descriptors — which are way too verbose to be practical.
 
-The primitive =clone= is used for coupling inheritance and extension:
+The primitive =derive= is used for coupling inheritance and extension:
 
 #+begin_src js
   var Collection = {
@@ -128,8 +128,8 @@ The primitive =clone= is used for coupling inheritance and extension:
 
   // Clones the `collection' behaviours and extends the clone with the
   // `ring' behaviours
-  var RingCollection = boo.clone(Collection, ring)
-  var spells         = boo.clone(RingCollection, ring_data)
+  var RingCollection = boo.derive(Collection, ring)
+  var spells         = boo.derive(RingCollection, ring_data)
 
   RingCollection.isPrototypeOf(spells)
   // => true
@@ -149,12 +149,12 @@ Last but not least, =Boo= gives the developer nice object-oriented
 syntactical sugar to write all of this in a nice sort-of declarative
 syntax, which is easier to read and reason about.
 
-The base object is =Base=, which can be cloned through =clone= and
+The base object is =Base=, which can be cloned through =derive= and
 instantiated with =make=, although both use cloning in the prototypical
 sense:
 
 #+begin_src js
-  var Enum = boo.Base.clone({
+  var Enum = boo.Base.derive({
     each: function(fn) {
       this.items.forEach(fn) },
 
@@ -168,7 +168,7 @@ sense:
       return this.items.reduce(fn, start) }
   })
 
-  var Coll = Enum.clone({
+  var Coll = Enum.derive({
     push: function(item) {
       this.items.push(item) },
 
@@ -204,7 +204,7 @@ Though, if you want a quick'n'dirty install, just get it from NPM:
 #+begin_src shell-script
   $ npm install boo
   node> var boo = require('boo')
-  node> var Stuff = boo.Base.clone({ ... })
+  node> var Stuff = boo.Base.derive({ ... })
 #+end_src
 
 
@@ -214,3 +214,10 @@ Next release of =Boo= will include traits, and should be up around
 December. Traits are more interesting for structuring larger programs
 than mixins are, but I have yet to experiment with them more until I can
 stick with a nice API :3
+
+
+* Acknowledgements
+
+Thanks for =AdamR= in the comments and =xivix= on Freenode's
+=##javascript= channel for pointing out the issue with Object.create on
+the first snippet.
