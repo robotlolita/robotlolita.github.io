@@ -172,7 +172,6 @@ legend {
   width: auto;
   height: 32px;
   overflow: hidden;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   opacity: 0.5;
   -moz-transition-property: all;
@@ -201,7 +200,6 @@ legend {
 }
 /* line 46, /home/quildreen/www/sorellas-basement/source/media/sass/_blog.scss */
 .list-item-meta li:hover {
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   opacity: 0.8;
 }
@@ -818,7 +816,6 @@ strong {
   width: 64px;
   height: 64px;
   overflow: hidden;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   opacity: 0.5;
   -moz-transition-property: all;
@@ -836,7 +833,6 @@ strong {
 }
 /* line 252, ../sass/screen.scss */
 .page #social-list li a:hover, .main-page #social-list li a:hover {
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
   -moz-transition-property: none;
@@ -853,7 +849,6 @@ strong {
   visibility: visible;
   margin-bottom: 20px;
   z-index: 100;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
   opacity: 0.9;
 }
@@ -888,7 +883,6 @@ strong {
   font-style: italic;
   white-space: pre;
   visibility: hidden;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   -moz-transition-property: all;
@@ -920,7 +914,7 @@ strong {
   left: 50px;
   border: 15px solid #000;
   border-width: 15px 10px;
-  border-color: #000 transparent 										transparent transparent;
+  border-color: black transparent transparent transparent;
 }
 
 /* line 355, ../sass/screen.scss */
