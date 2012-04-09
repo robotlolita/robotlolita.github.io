@@ -156,7 +156,7 @@ have a function that abstracts over that expression[fn:3]:
 ** Definition
 
 There are two ways for defining a function in ECMAScript, which depends mostly
-on the context which such definition happens. Both ways are equivalent,
+on the context in which such definition happens. Both ways are equivalent,
 however, in the sense that they both create a function object with the same
 properties.
 
@@ -191,7 +191,8 @@ The other way of creating a function object is by what the specs call a
 =FunctionExpression=. The syntax is the same as a =FunctionDeclaration=, except
 the function's name is optional. Rather than binding the resulting function
 object to the current scope, a =FunctionExpression= works by making that
-function object the result of the expression.
+function object the result of the expression. This result can afterwards be
+invoked, stored in a variable or passed as a parameter to another function.
 
 It might sound a bit insane at first, but this is an extremely powerful
 feature in the presence of first-class functions. We can decide when we
@@ -202,7 +203,7 @@ execute it.
   var square_of = function(x){ return x * x }
 #+END_SRC
 
-Now, we have a variable =square= that holds a function which, when
+Now, we have a variable =square_of= that holds a function which, when
 called with a numeric parameter, computes the square of that
 number:
 
@@ -223,6 +224,9 @@ regular object. The act of executing a function is also referred to as
 
 
 ** Parameters
+
+
+
 ** Arity
 ** Application
 * Scoping
