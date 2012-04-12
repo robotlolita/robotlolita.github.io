@@ -26,50 +26,6 @@ language.
 </p>
 
 
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#sec-1">Introduction</a>
-<ul>
-<li><a href="#sec-1-1">The basic theory</a></li>
-<li><a href="#sec-1-2">Why use functional programming?</a></li>
-</ul>
-</li>
-<li><a href="#sec-2">Functions</a>
-<ul>
-<li><a href="#sec-2-1">Definition</a></li>
-<li><a href="#sec-2-2">Parameters and arity</a></li>
-<li><a href="#sec-2-3">Purity</a></li>
-<li><a href="#sec-2-4">Application</a></li>
-</ul>
-</li>
-<li><a href="#sec-3">Scoping</a>
-<ul>
-<li><a href="#sec-3-1">Lexical scoping</a></li>
-<li><a href="#sec-3-2">Scope chain</a></li>
-<li><a href="#sec-3-3">Environments</a></li>
-<li><a href="#sec-3-4">Closures</a></li>
-</ul>
-</li>
-<li><a href="#sec-4">Patterns</a>
-<ul>
-<li><a href="#sec-4-1">Recursion</a></li>
-<li><a href="#sec-4-2">Higher-order functions</a></li>
-</ul>
-</li>
-<li><a href="#sec-5">Practical applications</a>
-<ul>
-<li><a href="#sec-5-1">Currying and uncurrying</a></li>
-<li><a href="#sec-5-2">Composition</a></li>
-<li><a href="#sec-5-3">Memoisation</a></li>
-<li><a href="#sec-5-4">Encapsulation</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-
 <div id="outline-container-1" class="outline-2">
 <h2 id="sec-1">Introduction</h2>
 <div class="outline-text-2" id="text-1">
@@ -255,13 +211,13 @@ the following grammar rules:
 
 
 
-<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;function-stmt&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"function"</span> <span style="color: #729FCF;">&lt;function-name&gt;</span>&#185; <span style="color: #729FCF;">&lt;arguments&gt;</span> <span style="color: #729FCF;">&lt;function-body&gt;</span>
-<span style="color: #67D9F0;">&lt;function-name&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
-<span style="color: #67D9F0;">&lt;arguments&gt;</span>     <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"("</span> (optional <span style="color: #729FCF;">&lt;argument-list&gt;</span>) <span style="color: #A6E32D;">")"</span>
-<span style="color: #67D9F0;">&lt;argument-list&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> (many <span style="color: #A6E32D;">","</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>)
-<span style="color: #67D9F0;">&lt;function-body&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"{"</span> (many <span style="color: #729FCF;">&lt;statement&gt;</span>) <span style="color: #A6E32D;">"}"</span>
+<pre class="src src-bnf">&lt;function-stmt&gt; ::= <span style="color: #A6E32D;">"function"</span> &lt;function-name&gt;&#185; &lt;arguments&gt; &lt;function-body&gt;
+&lt;function-name&gt; ::= &lt;identifier&gt;
+&lt;arguments&gt;     ::= <span style="color: #A6E32D;">"("</span> (optional &lt;argument-list&gt;) <span style="color: #A6E32D;">")"</span>
+&lt;argument-list&gt; ::= &lt;identifier&gt; (many <span style="color: #A6E32D;">","</span> &lt;identifier&gt;)
+&lt;function-body&gt; ::= <span style="color: #A6E32D;">"{"</span> (many &lt;statement&gt;) <span style="color: #A6E32D;">"}"</span>
 
-<span style="color: #75766A;"># &#185;: Optional, in some cases. We discuss this in the next session.</span>
+# &#185;: Optional, in some cases. We discuss this in the next session.
 </pre>
 
 

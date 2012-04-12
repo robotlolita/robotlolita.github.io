@@ -18,8 +18,8 @@ It supports both functional style:
 
 <pre class="src src-javascript">black.unpack_all([<span style="color: #A6E32D;">'utils'</span>, <span style="color: #A6E32D;">'generic'</span>])
 each(map(filter(links, selectedp)
-        ,,text)
-    ,,display)
+        ,text)
+    ,display)
 </pre>
 
 
@@ -155,14 +155,14 @@ starting with the following:
 
 
 <pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">map</span>    = [].map
-  ,, each   = [].each
-  ,, some   = [].some
-  ,, every  = [].every
-  ,, reduce = [].reduce
-  ,, filter = [].filter
-  ,, slice  = [].slice
-  ,, hasp   = {}.hasOwnProperty
-  ,, ( ... )
+  , each   = [].each
+  , some   = [].some
+  , every  = [].every
+  , reduce = [].reduce
+  , filter = [].filter
+  , slice  = [].slice
+  , hasp   = {}.hasOwnProperty
+  , ( ... )
 </pre>
 
 
@@ -332,9 +332,9 @@ stuff, <code>unpack</code>:
 
 <pre class="src src-javascript"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">numbers</span> = [1, 2, 3, 4, 5]
 black.unpack([<span style="color: #A6E32D;">'own'</span>], <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">global target</span>
-                    ,, <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">generic target</span>
-                    ,, Array.<span style="color: #FA2573;">prototype</span>   <span style="color: #75766A;">// </span><span style="color: #75766A;">own</span>
-                    ,, black.list )      <span style="color: #75766A;">// </span><span style="color: #75766A;">source</span>
+                    , <span style="color: #FA2573;">null</span>              <span style="color: #75766A;">// </span><span style="color: #75766A;">generic target</span>
+                    , Array.<span style="color: #FA2573;">prototype</span>   <span style="color: #75766A;">// </span><span style="color: #75766A;">own</span>
+                    , black.list )      <span style="color: #75766A;">// </span><span style="color: #75766A;">source</span>
 
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">squared</span>(<span style="color: #729FCF;">x</span>){ <span style="color: #C48DFF;">return</span> x * x      }
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">evenp</span>(<span style="color: #729FCF;">x</span>)  { <span style="color: #C48DFF;">return</span> x % 2 == 0 }
