@@ -30,7 +30,7 @@ language.
 
 So, what's this "functional programming" business anyways?
 
-Well, functional programming has a fuzzy meaning these days (only not as
+Well, functional programming has a fuzzy meaning these days (just not as
 fuzzy as /Object Oriented Programming/, I think). But in essence,
 functional programming languages revolve around computing expressions,
 rather than changing some global state through a series of statements.
