@@ -16,9 +16,8 @@ layout: default
 
 	<div id="disqus_thread"></div>
 	<script type="text/javascript">
-		var disqus_identifier = '{{ page.title|slugify }}_'
-		                      + '{{ page.created|slugify}}'
-		  , disqus_url        = '{{ page.full_url }}';
+		var disqus_identifier = '{{ page.title }}_'
+		  , disqus_url        = 'http://killdream.github.com/{{ page.url }}';
 
 		(function() {
 			var dsq = document.createElement('script')
