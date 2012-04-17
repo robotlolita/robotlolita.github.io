@@ -228,7 +228,6 @@ accepts an *optional* return value:
 
   ;(function(){ return
                 2 }()
-
   // => undefined
 #+END_SRC
 
@@ -293,7 +292,7 @@ need to know the rules.
 
 ** Will my code suddenly break?!
 
-As [[http://twitter.com/littlecalculist][David Herman]], a TC39 member, kindly enough clarified [[https://twitter.com/#!/littlecalculist/status/191549755413889024%5D%5BDavid%20Herman%5D%5D][TC39 won't just break
+As [[http://twitter.com/littlecalculist][David Herman]], a TC39 member, kindly enough clarified [[https://twitter.com/#!/littlecalculist/status/191549755413889024][TC39 won't just break
 working code for no good reason]]. All the more when there's such a large body of
 working code relying on this particular feature all the way around.
 

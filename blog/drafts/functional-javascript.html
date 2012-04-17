@@ -26,8 +26,52 @@ language.
 </p>
 
 
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">Introduction</a>
+<ul>
+<li><a href="#sec-1-1">The basic theory</a></li>
+<li><a href="#sec-1-2">Why use functional programming?</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">Functions</a>
+<ul>
+<li><a href="#sec-2-1">Definition</a></li>
+<li><a href="#sec-2-2">Parameters and arity</a></li>
+<li><a href="#sec-2-3">Purity</a></li>
+<li><a href="#sec-2-4">Application</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">Scoping</a>
+<ul>
+<li><a href="#sec-3-1">Lexical scoping</a></li>
+<li><a href="#sec-3-2">Scope chain</a></li>
+<li><a href="#sec-3-3">Environments</a></li>
+<li><a href="#sec-3-4">Closures</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">Patterns</a>
+<ul>
+<li><a href="#sec-4-1">Recursion</a></li>
+<li><a href="#sec-4-2">Higher-order functions</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">Practical applications</a>
+<ul>
+<li><a href="#sec-5-1">Currying and uncurrying</a></li>
+<li><a href="#sec-5-2">Composition</a></li>
+<li><a href="#sec-5-3">Memoisation</a></li>
+<li><a href="#sec-5-4">Encapsulation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1">Introduction</h2>
+<h2 id="sec-1">Introduction </h2>
 <div class="outline-text-2" id="text-1">
 
 
@@ -35,7 +79,7 @@ language.
 So, what's this "functional programming" business anyways?
 </p>
 <p>
-Well, functional programming has a fuzzy meaning these days (only not as
+Well, functional programming has a fuzzy meaning these days (just not as
 fuzzy as <i>Object Oriented Programming</i>, I think). But in essence,
 functional programming languages revolve around computing expressions,
 rather than changing some global state through a series of statements.
@@ -58,7 +102,7 @@ referential transparency and lazy evaluation.
 </div>
 
 <div id="outline-container-1-1" class="outline-3">
-<h3 id="sec-1-1">The basic theory</h3>
+<h3 id="sec-1-1">The basic theory </h3>
 <div class="outline-text-3" id="text-1-1">
 
 
@@ -126,7 +170,7 @@ numbers to get them back: <code>(λx → x) 2</code> would yield <code>2</code>.
 </div>
 
 <div id="outline-container-1-2" class="outline-3">
-<h3 id="sec-1-2">Why use functional programming?</h3>
+<h3 id="sec-1-2">Why use functional programming? </h3>
 <div class="outline-text-3" id="text-1-2">
 
 
@@ -156,7 +200,7 @@ time.
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2">Functions</h2>
+<h2 id="sec-2">Functions </h2>
 <div class="outline-text-2" id="text-2">
 
 
@@ -226,7 +270,7 @@ the following grammar rules:
 </div>
 
 <div id="outline-container-2-1" class="outline-3">
-<h3 id="sec-2-1">Definition</h3>
+<h3 id="sec-2-1">Definition </h3>
 <div class="outline-text-3" id="text-2-1">
 
 
@@ -336,7 +380,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-2-2" class="outline-3">
-<h3 id="sec-2-2">Parameters and arity</h3>
+<h3 id="sec-2-2">Parameters and arity </h3>
 <div class="outline-text-3" id="text-2-2">
 
 
@@ -347,7 +391,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-2-3" class="outline-3">
-<h3 id="sec-2-3">Purity</h3>
+<h3 id="sec-2-3">Purity </h3>
 <div class="outline-text-3" id="text-2-3">
 
 </div>
@@ -355,7 +399,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-2-4" class="outline-3">
-<h3 id="sec-2-4">Application</h3>
+<h3 id="sec-2-4">Application </h3>
 <div class="outline-text-3" id="text-2-4">
 
 </div>
@@ -364,14 +408,14 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3">Scoping</h2>
+<h2 id="sec-3">Scoping </h2>
 <div class="outline-text-2" id="text-3">
 
 
 </div>
 
 <div id="outline-container-3-1" class="outline-3">
-<h3 id="sec-3-1">Lexical scoping</h3>
+<h3 id="sec-3-1">Lexical scoping </h3>
 <div class="outline-text-3" id="text-3-1">
 
 </div>
@@ -379,7 +423,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3-2" class="outline-3">
-<h3 id="sec-3-2">Scope chain</h3>
+<h3 id="sec-3-2">Scope chain </h3>
 <div class="outline-text-3" id="text-3-2">
 
 </div>
@@ -387,7 +431,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3-3" class="outline-3">
-<h3 id="sec-3-3">Environments</h3>
+<h3 id="sec-3-3">Environments </h3>
 <div class="outline-text-3" id="text-3-3">
 
 </div>
@@ -395,7 +439,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3-4" class="outline-3">
-<h3 id="sec-3-4">Closures</h3>
+<h3 id="sec-3-4">Closures </h3>
 <div class="outline-text-3" id="text-3-4">
 
 </div>
@@ -404,14 +448,14 @@ sqr === square_of
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4">Patterns</h2>
+<h2 id="sec-4">Patterns </h2>
 <div class="outline-text-2" id="text-4">
 
 
 </div>
 
 <div id="outline-container-4-1" class="outline-3">
-<h3 id="sec-4-1">Recursion</h3>
+<h3 id="sec-4-1">Recursion </h3>
 <div class="outline-text-3" id="text-4-1">
 
 </div>
@@ -419,7 +463,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-4-2" class="outline-3">
-<h3 id="sec-4-2">Higher-order functions</h3>
+<h3 id="sec-4-2">Higher-order functions </h3>
 <div class="outline-text-3" id="text-4-2">
 
 </div>
@@ -428,14 +472,14 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5">Practical applications</h2>
+<h2 id="sec-5">Practical applications </h2>
 <div class="outline-text-2" id="text-5">
 
 
 </div>
 
 <div id="outline-container-5-1" class="outline-3">
-<h3 id="sec-5-1">Currying and uncurrying</h3>
+<h3 id="sec-5-1">Currying and uncurrying </h3>
 <div class="outline-text-3" id="text-5-1">
 
 </div>
@@ -443,7 +487,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5-2" class="outline-3">
-<h3 id="sec-5-2">Composition</h3>
+<h3 id="sec-5-2">Composition </h3>
 <div class="outline-text-3" id="text-5-2">
 
 </div>
@@ -451,7 +495,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5-3" class="outline-3">
-<h3 id="sec-5-3">Memoisation</h3>
+<h3 id="sec-5-3">Memoisation </h3>
 <div class="outline-text-3" id="text-5-3">
 
 </div>
@@ -459,7 +503,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5-4" class="outline-3">
-<h3 id="sec-5-4">Encapsulation</h3>
+<h3 id="sec-5-4">Encapsulation </h3>
 <div class="outline-text-3" id="text-5-4">
 
 
