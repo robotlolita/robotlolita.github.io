@@ -40,8 +40,8 @@ language.
 <ul>
 <li><a href="#sec-2-1">Definition</a></li>
 <li><a href="#sec-2-2">Parameters and arity</a></li>
-<li><a href="#sec-2-3">Purity</a></li>
-<li><a href="#sec-2-4">Application</a></li>
+<li><a href="#sec-2-3">Application</a></li>
+<li><a href="#sec-2-4">Purity</a></li>
 </ul>
 </li>
 <li><a href="#sec-3">Scoping</a>
@@ -56,6 +56,7 @@ language.
 <ul>
 <li><a href="#sec-4-1">Recursion</a></li>
 <li><a href="#sec-4-2">Higher-order functions</a></li>
+<li><a href="#sec-4-3">Continuations</a></li>
 </ul>
 </li>
 <li><a href="#sec-5">Practical applications</a>
@@ -66,17 +67,19 @@ language.
 <li><a href="#sec-5-4">Encapsulation</a></li>
 </ul>
 </li>
+<li><a href="#sec-6">Wrapping it up</a></li>
+<li><a href="#sec-7">References</a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1">Introduction </h2>
+<h2 id="sec-1">Introduction</h2>
 <div class="outline-text-2" id="text-1">
 
 
 <p>
-So, what's this "functional programming" business anyways?
+So, what's this “functional programming” business anyways?
 </p>
 <p>
 Well, functional programming has a fuzzy meaning these days (just not as
@@ -88,9 +91,9 @@ rather than changing some global state through a series of statements.
 The major requirement for a programming language to support functional
 programming idioms is that functions <b>must be first-class<sup><a class="footref" name="fnr.1" href="#fn.1">1</a></sup></b>
 citizens. That is, functions need to be treated as any other value in
-the language, which means being able to pass them as arguments to other
-functions, store them in variables and return them from other functions,
-usually.
+the language, which means being able to at least pass them as arguments
+to other functions, store them in variables and return them from other
+functions.
 </p>
 <p>
 Modern functional languages include several other features to improve
@@ -102,17 +105,16 @@ referential transparency and lazy evaluation.
 </div>
 
 <div id="outline-container-1-1" class="outline-3">
-<h3 id="sec-1-1">The basic theory </h3>
+<h3 id="sec-1-1">The basic theory</h3>
 <div class="outline-text-3" id="text-1-1">
 
 
 <p>
-The idea of functional abstracions comes from Alonzo Church's
-<a href="http://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>, which
-intended to use functions as the foundation of mathematics. The lambda
-calculus semantics defines computations and values as a series of lambda
-expressions. These expressions are evaluated through a series of
-reductions that take an abstraction to the value it represents.
+The idea of functional abstracions comes from Alonzo Church's <a href="http://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>, which intended to use functions as the foundation of
+mathematics. The lambda calculus semantics defines computations and
+values as a series of lambda expressions. These expressions are
+evaluated through a series of reductions that take an abstraction to the
+value it represents.
 </p>
 <p>
 Take the following mathematical expression: <code>2 + 3 * (5 / 2) - 1</code>. We
@@ -152,7 +154,7 @@ lambda expression:
 The biggest difference is that, instead of defining the numbers directly
 in the expression, we abstract that into <i>lambda abstractions</i>. That is,
 we have functions that take numbers as arguments for the computation,
-and they return other lambda abstractions.
+and they return other lambda abstractions<sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>.
 </p>
 <p>
 When a lambda abstraction is applied to a number, we substitute all the
@@ -161,7 +163,7 @@ number.
 </p>
 <p>
 That is, <code>2</code> could be abstracted as <code>λx → x</code> (a lambda abstraction
-taking <code>x</code>, and immediately yielding <code>x</code>)<sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>, and then we could apply
+taking <code>x</code>, and immediately yielding <code>x</code>)<sup><a class="footref" name="fnr.3" href="#fn.3">3</a></sup>, and then we could apply
 numbers to get them back: <code>(λx → x) 2</code> would yield <code>2</code>.
 </p>
 
@@ -170,7 +172,7 @@ numbers to get them back: <code>(λx → x) 2</code> would yield <code>2</code>.
 </div>
 
 <div id="outline-container-1-2" class="outline-3">
-<h3 id="sec-1-2">Why use functional programming? </h3>
+<h3 id="sec-1-2">Why use functional programming?</h3>
 <div class="outline-text-3" id="text-1-2">
 
 
@@ -193,6 +195,31 @@ deal shorter, less complex, and easier to inspect and reason about, for
 the programmer has to keep less information on his head at any given
 time.
 </p>
+<p>
+On a more objective note, we could list unit testing, debugging and
+concurrency as the three major (and proven) benefits of functional
+programming. In particular, functional idioms have had a massive
+adoption over the last few years to improve the concurrency capabilities
+of imperative languages.
+</p>
+<p>
+In a functional program, since functions doesn't depend on shared state,
+the compiler can just parallelise everything and combine the results
+afterwards, it doesn't need to follow a strict evaluation order. In
+fact, this property leads to such a increase in the potential of static
+analysis of a program that a well-developed compiler can do a whole lot
+more of aggressive optimisations based on rewriting your program's order
+or phasing out evaluating some expressions completely.
+</p>
+<p>
+It's also because of the premise of not depending on shared state that
+unit testing and debugging are made a lot easier. For unit testing, you
+only need to verify that your function yields valid results for the
+given set of inputs its expected to receive. In fact, there are tools
+that will randomly generate a set of potential inputs and feed them to
+your function for testing, automatically (Haskell's QuickCheck is a good
+example), which is referred to as <i>random property testing</i>.
+</p>
 
 </div>
 </div>
@@ -200,7 +227,7 @@ time.
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2">Functions </h2>
+<h2 id="sec-2">Functions</h2>
 <div class="outline-text-2" id="text-2">
 
 
@@ -208,7 +235,7 @@ time.
 Functions are, basically, a means of abstracting computations, as
 discussed previously in the section on the theory behind functional
 programming. This means that if I have the expression <code>2 + 2</code>, I can
-have a function that abstracts over that expression<sup><a class="footref" name="fnr.3" href="#fn.3">3</a></sup>:
+have a function that abstracts over that expression<sup><a class="footref" name="fnr.4" href="#fn.4">4</a></sup>:
 </p>
 
 
@@ -270,7 +297,7 @@ the following grammar rules:
 </div>
 
 <div id="outline-container-2-1" class="outline-3">
-<h3 id="sec-2-1">Definition </h3>
+<h3 id="sec-2-1">Definition</h3>
 <div class="outline-text-3" id="text-2-1">
 
 
@@ -301,10 +328,11 @@ square(2)
 
 
 <p>
-An interesting property of <code>FunctionDeclarations</code> is that they are *hoisted*<sup><a class="footref" name="fnr.4" href="#fn.4">4</a></sup>,
-that is, regardless of where you declare them in your source code, they will be
-available anywhere in the scope. This allows for interesting orderings of a
-program's source code, without being bound by the evaluation order:
+An interesting property of <code>FunctionDeclarations</code> is that they are
+<b>hoisted</b> <sup><a class="footref" name="fnr.5" href="#fn.5">5</a></sup>, that is, regardless of where you declare them in your
+source code, they will be available anywhere in the scope. This allows
+for interesting orderings of a program's source code, without being
+bound by the declaration order:
 </p>
 
 
@@ -328,7 +356,13 @@ invoked, stored in a variable or passed as a parameter to another function.
 It might sound a bit insane at first, but this is an extremely powerful
 feature in the presence of first-class functions. We can decide when we
 want to treat a function as an object — a value we can manipulate, — or
-execute it.
+execute it to have a computation performed.
+</p>
+<p>
+If we were to write the previous <code>square</code> function as a
+<code>FunctionExpression</code>, it wouldn't be much useful to just write the
+function definition, we'd have to store it somewhere so we could use it
+later on. For example, we could bind it to a variable:
 </p>
 
 
@@ -353,12 +387,14 @@ number:
 <p>
 Note that when you want to execute a function you need to use the
 additional parenthesis. Otherwise, the function is just treated as a
-regular object. The act of executing a function is also referred to as
-<code>calling</code>, or more formally <code>applying</code> a function to some arguments.
+regular object — the same way <code>Strings</code> or <code>Numbers</code> are. The act of
+executing a function is also referred to as <code>calling</code>, or more formally
+<code>applying</code> a function to some arguments.
 </p>
 <p>
-We could further store this value in other variable, in this case, both
-variables would point to the same function object in memory:
+We could further store this <i>function object</i> in another variable, in
+this case, both variables would point to the same function object in
+memory:
 </p>
 
 
@@ -375,13 +411,215 @@ sqr === square_of
 </pre>
 
 
+<p>
+Sometimes you don't need to store a function object in a variable, but
+rather just want to evaluate the function's statements and expressions
+for their side-effects — especially isolating variables into a new scope
+(as we'll discuss more later on). In this case, the <code>FunctionExpression</code>
+offers a short-hand for that. Such that, instead of binding a function
+object to a variable, then applying the function stored in that
+variable, you just declare and call the function directly:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">It means that this piece of code:</span>
+<span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">temporary_function</span> = <span style="color: #C48DFF;">function</span>() {
+                           alert(<span style="color: #A6E32D;">'Hello, world!'</span>) }
+
+temporary_function()
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">Does the same thing as this one:</span>
+<span style="color: #C48DFF;">void</span> <span style="color: #C48DFF;">function</span>() {
+       alert(<span style="color: #A6E32D;">'Hello, world!'</span>) }
+
+<span style="color: #75766A;">// </span><span style="color: #75766A;">That is, both forms will alert `Hello, world!' right away.</span>
+</pre>
+
+
+<p>
+The usage of the <code>void</code> operator in this case is just a trick to force
+the engine to interpret the function declaration as a
+<code>FunctionExpression</code> <sup><a class="footref" name="fnr.6" href="#fn.6">6</a></sup>, otherwise, it would think we wanted a
+<code>FunctionDeclaration</code>. As we said before, a <code>FunctionDeclaration</code> is a
+statement, and as such yield no value, thus we can't perform any
+operation on it right away.
+</p>
+<p>
+This pattern of executing a <code>FunctionExpression</code> right away, is often
+times called by the community as <b>Immediately Invoked FunctionExpression</b>, or <i>IIFE</i>, for short.
+</p>
 </div>
 
 </div>
 
 <div id="outline-container-2-2" class="outline-3">
-<h3 id="sec-2-2">Parameters and arity </h3>
+<h3 id="sec-2-2">Parameters and arity</h3>
 <div class="outline-text-3" id="text-2-2">
+
+
+<p>
+Functions can declare which values their computation depends on. These
+are referred to as <b>formal parameters</b>. It's basically a list of things
+your function needs to know in order to perform the computation.
+</p>
+<p>
+In impure languages like JavaScript, though, a function might depend on
+other things that are not passed directly to the function, like global
+variables or an object's property.
+</p>
+<p>
+By declaring a list of <b>formal parameters</b>, a function is able to
+generalise a certain computation to work on a range of different
+inputs. The <code>square</code> function we declared previously is one example of
+this, should we not have parameters, we'd need to declare one different
+function for every possible input!
+</p>
+<p>
+In <i>lambda calculus</i> a function abstraction can only declare one formal
+parameter it depends on. In JavaScript, however, a function can declare
+any number of formal parameters that it depends upon. The number of
+formal parameters a function expects is called <b>arity</b>, which is exposed
+in JavaScript through the <code>length</code> property of every function object:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">square</span>(<span style="color: #729FCF;">x</span>) { <span style="color: #C48DFF;">return</span> x * x }
+square.length
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 1</span>
+
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">pow</span>(<span style="color: #729FCF;">base</span>, <span style="color: #729FCF;">exponent</span>){ ... }
+pow.length
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 2</span>
+</pre>
+
+
+<p>
+The parameters passed over to the function, on the other hand, are
+called <i>actual parameters</i>. For example, if we were to compute the
+<code>square</code> of <code>2</code>, <code>2</code> would be the <b>actual parameter</b>, while <code>x</code> would be
+the formal one:
+</p>
+
+
+
+<pre class="src src-js">square(2)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 4</span>
+</pre>
+
+
+<p>
+Likewise, if we were to invoke the <code>pow</code> function with arguments <code>2</code> and
+<code>3</code>, the list of actual parameters would be <code>2, 3</code>, whereas the list of
+formal parameters would be <code>base, exponent</code>:
+</p>
+
+
+
+<pre class="src src-js">pow(2, 3)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 8</span>
+</pre>
+
+
+<p>
+In JavaScript, however, a function doesn't need to declare the list of
+formal parameters it expects, and regardless of the number of formal
+parameters declared for a function, a function may receive any number of
+actual parameters. This particular feature of functions, where the arity
+of a function doesn't need to match the number of actual parameters is
+called <b>variadic arity</b>, or <b>variadic</b> for short.
+</p>
+<p>
+This means, that all of the following are valid JavaScript:
+</p>
+
+
+
+<pre class="src src-js">square(1, 2, 3, 4, 5)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 1                       // 1 is `x', the other parameters aren't bound</span>
+
+pow(2, 3, 4, 5)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 8                       // 2 is `base', `3' is exponent</span>
+
+square()
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; NaN                     // `x' is `undefined'</span>
+</pre>
+
+
+<p>
+So, you won't get an error when the number of actual parameters doesn't
+match the arity of the function, and you might be wondering how this is
+useful. I mean, it does look like an error, so why wouldn't it be
+treated as such? What happens with the additional parameters you've
+passed over to the function anyways?
+</p>
+<p>
+As it happens, regardless of the formal parameters declared for a
+function, all actual parameters can be accessed through a <i>magical</i>
+variable called <code>arguments</code>. The <code>arguments</code> variable, available for
+every function, is a list of all the actual parameters a function
+received.
+</p>
+<p>
+We could take advantage of this particular property to write a
+<code>summation</code> function that can take any number of parameters:
+</p>
+
+
+
+<pre class="src src-js"><span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">sum</span>() {
+  <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">result</span> = 0
+  <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">index</span>  = 0
+  <span style="color: #C48DFF;">while</span> (index &lt; <span style="color: #FA2573;">arguments</span>.length) {
+    result += <span style="color: #FA2573;">arguments</span>[index]
+    index   = index + 1 }
+
+  <span style="color: #C48DFF;">return</span> result }
+
+sum(1, 2, 3, 4)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 10                       // 1 + 2 + 3 + 4</span>
+</pre>
+
+
+<p>
+At first glance, the <code>arguments</code> object looks too much like your regular
+<code>Array</code>, however, while the <code>arguments</code> object provides you with a
+<code>length</code> property, and all of the actual parameters can be accessed by
+a numeric index. The <code>arguments</code> is a special kind of object, though,
+which doesn't have any relation with an <code>Array</code>, besides implementing a
+common <code>sequence</code> interface (having a <code>length</code> property and elements
+accessed through numeric indexes):
+</p>
+
+
+
+<pre class="src src-js">(<span style="color: #C48DFF;">function</span>(){ <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">arguments</span> <span style="color: #C48DFF;">instanceof</span> <span style="color: #FC951E;">Array</span> })()
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; false</span>
+</pre>
+
+
+<p>
+An interesting relationship between the formal parameters and the
+<code>arguments</code> object is that, according to the specifications, they both
+refer to the same value, such that if you modify a value in the
+<code>arguments</code> object, the respective formal parameter will be affected as
+well, and vice-versa.
+</p>
+
+
+
+<pre class="src src-js">(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>, <span style="color: #729FCF;">y</span>) {
+   <span style="color: #FA2573;">arguments</span>[0] = y
+   <span style="color: #C48DFF;">return</span> x + y })(2, 3)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6                       // 3 + 3</span>
+
+
+;(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">x</span>, <span style="color: #729FCF;">y</span>) {
+    x = y
+    <span style="color: #C48DFF;">return</span> <span style="color: #FA2573;">arguments</span>[0] + <span style="color: #FA2573;">arguments</span>[1] })(2, 3)
+<span style="color: #75766A;">// </span><span style="color: #75766A;">=&gt; 6                       // 3 + 3</span>
+</pre>
 
 
 
@@ -391,15 +629,23 @@ sqr === square_of
 </div>
 
 <div id="outline-container-2-3" class="outline-3">
-<h3 id="sec-2-3">Purity </h3>
+<h3 id="sec-2-3">Application</h3>
 <div class="outline-text-3" id="text-2-3">
+
+
+<p>
+Although we have briefly discussed function application throughout the
+previous sections, there are still a few concepts worthy discussing in
+more detail. Specially in the presence of <i>variadic</i> functions.
+</p>
+
 
 </div>
 
 </div>
 
 <div id="outline-container-2-4" class="outline-3">
-<h3 id="sec-2-4">Application </h3>
+<h3 id="sec-2-4">Purity</h3>
 <div class="outline-text-3" id="text-2-4">
 
 </div>
@@ -408,14 +654,14 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3">Scoping </h2>
+<h2 id="sec-3">Scoping</h2>
 <div class="outline-text-2" id="text-3">
 
 
 </div>
 
 <div id="outline-container-3-1" class="outline-3">
-<h3 id="sec-3-1">Lexical scoping </h3>
+<h3 id="sec-3-1">Lexical scoping</h3>
 <div class="outline-text-3" id="text-3-1">
 
 </div>
@@ -423,7 +669,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3-2" class="outline-3">
-<h3 id="sec-3-2">Scope chain </h3>
+<h3 id="sec-3-2">Scope chain</h3>
 <div class="outline-text-3" id="text-3-2">
 
 </div>
@@ -431,7 +677,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3-3" class="outline-3">
-<h3 id="sec-3-3">Environments </h3>
+<h3 id="sec-3-3">Environments</h3>
 <div class="outline-text-3" id="text-3-3">
 
 </div>
@@ -439,7 +685,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-3-4" class="outline-3">
-<h3 id="sec-3-4">Closures </h3>
+<h3 id="sec-3-4">Closures</h3>
 <div class="outline-text-3" id="text-3-4">
 
 </div>
@@ -448,14 +694,14 @@ sqr === square_of
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4">Patterns </h2>
+<h2 id="sec-4">Patterns</h2>
 <div class="outline-text-2" id="text-4">
 
 
 </div>
 
 <div id="outline-container-4-1" class="outline-3">
-<h3 id="sec-4-1">Recursion </h3>
+<h3 id="sec-4-1">Recursion</h3>
 <div class="outline-text-3" id="text-4-1">
 
 </div>
@@ -463,8 +709,16 @@ sqr === square_of
 </div>
 
 <div id="outline-container-4-2" class="outline-3">
-<h3 id="sec-4-2">Higher-order functions </h3>
+<h3 id="sec-4-2">Higher-order functions</h3>
 <div class="outline-text-3" id="text-4-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3">Continuations</h3>
+<div class="outline-text-3" id="text-4-3">
 
 </div>
 </div>
@@ -472,14 +726,14 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5">Practical applications </h2>
+<h2 id="sec-5">Practical applications</h2>
 <div class="outline-text-2" id="text-5">
 
 
 </div>
 
 <div id="outline-container-5-1" class="outline-3">
-<h3 id="sec-5-1">Currying and uncurrying </h3>
+<h3 id="sec-5-1">Currying and uncurrying</h3>
 <div class="outline-text-3" id="text-5-1">
 
 </div>
@@ -487,7 +741,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5-2" class="outline-3">
-<h3 id="sec-5-2">Composition </h3>
+<h3 id="sec-5-2">Composition</h3>
 <div class="outline-text-3" id="text-5-2">
 
 </div>
@@ -495,7 +749,7 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5-3" class="outline-3">
-<h3 id="sec-5-3">Memoisation </h3>
+<h3 id="sec-5-3">Memoisation</h3>
 <div class="outline-text-3" id="text-5-3">
 
 </div>
@@ -503,8 +757,25 @@ sqr === square_of
 </div>
 
 <div id="outline-container-5-4" class="outline-3">
-<h3 id="sec-5-4">Encapsulation </h3>
+<h3 id="sec-5-4">Encapsulation</h3>
 <div class="outline-text-3" id="text-5-4">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6">Wrapping it up</h2>
+<div class="outline-text-2" id="text-6">
+
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7">References</h2>
+<div class="outline-text-2" id="text-7">
 
 
 <div id="footnotes">
@@ -518,26 +789,40 @@ sqr === square_of
         that's something every object in the language can do.
 </p>
 
-<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : The lambda abstraction <code>λx → x</code> is also called <b>Identity</b> (or I,
+<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : In <i>lambda calculus</i> everything is actually a function (or
+        lambda), even numbers are represented as functions with
+        something known as Peano Numbers.
+</p>
+
+<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> : The lambda abstraction <code>λx → x</code> is also called <b>Identity</b> (or I,
         for short). And it's a core combinator in Lambda Calculus. The
         combinators are: <code>I: λx → x</code>, <code>K: λx → λy → x</code>, 
         <code>S: λx → λy → λz → x z (y z)</code>. You could express any computation
         using only those combinators.
 </p>
 
-<p class="footnote"><sup><a class="footnum" name="fn.3" href="#fnr.3">3</a></sup> : While this generic claim may still hold true for JavaScript,
+<p class="footnote"><sup><a class="footnum" name="fn.4" href="#fnr.4">4</a></sup> : While this generic claim may still hold true for JavaScript,
         it's important to note that functions in the language don't
         respect Tennet's Correspondence Principle, such you can't just
-        wrap every expression in a function while preserving the
+        wrap every expression in a function while preserving all of the
         properties of the expression before wrapping it.
 </p>
 
-<p class="footnote"><sup><a class="footnum" name="fn.4" href="#fnr.4">4</a></sup> : Hoisting is considered by many a misfeature. I think it has its uses,
+<p class="footnote"><sup><a class="footnum" name="fn.5" href="#fnr.5">5</a></sup> : Hoisting is considered by many a misfeature. I think it has its uses,
         though it can be obviously abused. One of the interesting properties it
         allows is a more natural ordering of a program's source code, or even a
         little of literate programming.
+</p>
+
+<p class="footnote"><sup><a class="footnum" name="fn.6" href="#fnr.6">6</a></sup> : Prefixing a <code>FunctionDeclaration</code> with the <code>void</code> operator is
+        just one of the ways of forcing a <code>FunctionExpression</code>, and the
+        one I think makes the most sense. The <code>void</code> operator semantics
+        basically say: <i>“I want this expression to be evaluated by their         side-effects, but I don't care about its return value.”</i>. You
+        will probably find examples of people wrapping functions in
+        parenthesis, <code>(function(){ })()</code>, or prefixing functions with an
+        exclamation mark, <code>!function(){}()</code>. They all serve the same
+        purpose.
 </p></div>
-</div>
 </div>
 
 </div>
