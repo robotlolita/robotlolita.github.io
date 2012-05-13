@@ -28,7 +28,7 @@ language.
 
 * Introduction
 
-So, what's this "functional programming" business anyways?
+So, what's this “functional programming” business anyways?
 
 Well, functional programming has a fuzzy meaning these days (just not as
 fuzzy as /Object Oriented Programming/, I think). But in essence,
@@ -38,9 +38,9 @@ rather than changing some global state through a series of statements.
 The major requirement for a programming language to support functional
 programming idioms is that functions *must be first-class[fn:1]*
 citizens. That is, functions need to be treated as any other value in
-the language, which means being able to pass them as arguments to other
-functions, store them in variables and return them from other functions,
-usually.
+the language, which means being able to at least pass them as arguments
+to other functions, store them in variables and return them from other
+functions.
 
 Modern functional languages include several other features to improve
 the language's expressiveness, and make it easier to reason about a
@@ -57,12 +57,12 @@ referential transparency and lazy evaluation.
 
 ** The basic theory
 
-The idea of functional abstracions comes from Alonzo Church's
-[[http://en.wikipedia.org/wiki/Lambda_calculus][lambda calculus]], which
-intended to use functions as the foundation of mathematics. The lambda
-calculus semantics defines computations and values as a series of lambda
-expressions. These expressions are evaluated through a series of
-reductions that take an abstraction to the value it represents.
+The idea of functional abstracions comes from Alonzo Church's [[http://en.wikipedia.org/wiki/Lambda_calculus][lambda
+calculus]], which intended to use functions as the foundation of
+mathematics. The lambda calculus semantics defines computations and
+values as a series of lambda expressions. These expressions are
+evaluated through a series of reductions that take an abstraction to the
+value it represents.
 
 Take the following mathematical expression: =2 + 3 * (5 / 2) - 1=. We
 can compute the value of the expression by reducing it to a value:
@@ -93,18 +93,22 @@ lambda expression:
 The biggest difference is that, instead of defining the numbers directly
 in the expression, we abstract that into /lambda abstractions/. That is,
 we have functions that take numbers as arguments for the computation,
-and they return other lambda abstractions.
+and they return other lambda abstractions[fn:2].
 
 When a lambda abstraction is applied to a number, we substitute all the
 terms with the same name as the lambda abstraction parameter by that
 number.
 
 That is, =2= could be abstracted as =λx → x= (a lambda abstraction
-taking =x=, and immediately yielding =x=)[fn:2], and then we could apply
+taking =x=, and immediately yielding =x=)[fn:3], and then we could apply
 numbers to get them back: =(λx → x) 2= would yield =2=.
 
 
-[fn:2]: The lambda abstraction =λx → x= is also called *Identity* (or I,
+[fn:2]: In /lambda calculus/ everything is actually a function (or
+        lambda), even numbers are represented as functions with
+        something known as Peano Numbers.
+
+[fn:3]: The lambda abstraction =λx → x= is also called *Identity* (or I,
         for short). And it's a core combinator in Lambda Calculus. The
         combinators are: =I: λx → x=, =K: λx → λy → x=, 
         =S: λx → λy → λz → x z (y z)=. You could express any computation
@@ -129,13 +133,35 @@ deal shorter, less complex, and easier to inspect and reason about, for
 the programmer has to keep less information on his head at any given
 time.
 
+On a more objective note, we could list unit testing, debugging and
+concurrency as the three major (and proven) benefits of functional
+programming. In particular, functional idioms have had a massive
+adoption over the last few years to improve the concurrency capabilities
+of imperative languages.
+
+In a functional program, since functions doesn't depend on shared state,
+the compiler can just parallelise everything and combine the results
+afterwards, it doesn't need to follow a strict evaluation order. In
+fact, this property leads to such a increase in the potential of static
+analysis of a program that a well-developed compiler can do a whole lot
+more of aggressive optimisations based on rewriting your program's order
+or phasing out evaluating some expressions completely.
+
+It's also because of the premise of not depending on shared state that
+unit testing and debugging are made a lot easier. For unit testing, you
+only need to verify that your function yields valid results for the
+given set of inputs its expected to receive. In fact, there are tools
+that will randomly generate a set of potential inputs and feed them to
+your function for testing, automatically (Haskell's QuickCheck is a good
+example), which is referred to as /random property testing/.
+
 
 * Functions
 
 Functions are, basically, a means of abstracting computations, as
 discussed previously in the section on the theory behind functional
 programming. This means that if I have the expression =2 + 2=, I can
-have a function that abstracts over that expression[fn:3]:
+have a function that abstracts over that expression[fn:4]:
 
 #+begin_src js
   2 + 2
@@ -196,10 +222,10 @@ the following grammar rules:
 #+END_SRC
 
 
-[fn:3]: While this generic claim may still hold true for JavaScript,
+[fn:4]: While this generic claim may still hold true for JavaScript,
         it's important to note that functions in the language don't
         respect Tennet's Correspondence Principle, such you can't just
-        wrap every expression in a function while preserving the
+        wrap every expression in a function while preserving all of the
         properties of the expression before wrapping it.
 
 
@@ -225,10 +251,11 @@ refer to it right away by that name:
   // => 4
 #+END_SRC
 
-An interesting property of =FunctionDeclarations= is that they are *hoisted*[fn:4],
-that is, regardless of where you declare them in your source code, they will be
-available anywhere in the scope. This allows for interesting orderings of a
-program's source code, without being bound by the evaluation order:
+An interesting property of =FunctionDeclarations= is that they are
+*hoisted* [fn:5], that is, regardless of where you declare them in your
+source code, they will be available anywhere in the scope. This allows
+for interesting orderings of a program's source code, without being
+bound by the declaration order:
 
 #+BEGIN_SRC js
   square(2)
@@ -247,7 +274,12 @@ invoked, stored in a variable or passed as a parameter to another function.
 It might sound a bit insane at first, but this is an extremely powerful
 feature in the presence of first-class functions. We can decide when we
 want to treat a function as an object — a value we can manipulate, — or
-execute it.
+execute it to have a computation performed.
+
+If we were to write the previous =square= function as a
+=FunctionExpression=, it wouldn't be much useful to just write the
+function definition, we'd have to store it somewhere so we could use it
+later on. For example, we could bind it to a variable:
 
 #+BEGIN_SRC js
   var square_of = function(x){ return x * x }
@@ -264,11 +296,13 @@ number:
 
 Note that when you want to execute a function you need to use the
 additional parenthesis. Otherwise, the function is just treated as a
-regular object. The act of executing a function is also referred to as
-=calling=, or more formally =applying= a function to some arguments.
+regular object — the same way =Strings= or =Numbers= are. The act of
+executing a function is also referred to as =calling=, or more formally
+=applying= a function to some arguments.
 
-We could further store this value in other variable, in this case, both
-variables would point to the same function object in memory:
+We could further store this /function object/ in another variable, in
+this case, both variables would point to the same function object in
+memory:
 
 #+BEGIN_SRC js
   var sqr = square_of
@@ -282,18 +316,198 @@ variables would point to the same function object in memory:
   // => true
 #+END_SRC
 
-[fn:4]: Hoisting is considered by many a misfeature. I think it has its uses,
+Sometimes you don't need to store a function object in a variable, but
+rather just want to evaluate the function's statements and expressions
+for their side-effects — especially isolating variables into a new scope
+(as we'll discuss more later on). In this case, the =FunctionExpression=
+offers a short-hand for that. Such that, instead of binding a function
+object to a variable, then applying the function stored in that
+variable, you just declare and call the function directly:
+
+#+BEGIN_SRC js
+  // It means that this piece of code:
+  var temporary_function = function() {
+                             alert('Hello, world!') }
+
+  temporary_function()
+
+  // Does the same thing as this one:
+  void function() {
+         alert('Hello, world!') }
+
+  // That is, both forms will alert `Hello, world!' right away.
+#+END_SRC
+
+The usage of the =void= operator in this case is just a trick to force
+the engine to interpret the function declaration as a
+=FunctionExpression= [fn:6], otherwise, it would think we wanted a
+=FunctionDeclaration=. As we said before, a =FunctionDeclaration= is a
+statement, and as such yield no value, thus we can't perform any
+operation on it right away.
+
+This pattern of executing a =FunctionExpression= right away, is often
+times called by the community as *Immediately Invoked
+FunctionExpression*, or /IIFE/, for short.
+
+[fn:5]: Hoisting is considered by many a misfeature. I think it has its uses,
         though it can be obviously abused. One of the interesting properties it
         allows is a more natural ordering of a program's source code, or even a
         little of literate programming.
 
+[fn:6]: Prefixing a =FunctionDeclaration= with the =void= operator is
+        just one of the ways of forcing a =FunctionExpression=, and the
+        one I think makes the most sense. The =void= operator semantics
+        basically say: /“I want this expression to be evaluated by their
+        side-effects, but I don't care about its return value.”/. You
+        will probably find examples of people wrapping functions in
+        parenthesis, =(function(){ })()=, or prefixing functions with an
+        exclamation mark, =!function(){}()=. They all serve the same
+        purpose.
+
 
 ** Parameters and arity
+
+Functions can declare which values their computation depends on. These
+are referred to as *formal parameters*. It's basically a list of things
+your function needs to know in order to perform the computation.
+
+In impure languages like JavaScript, though, a function might depend on
+other things that are not passed directly to the function, like global
+variables or an object's property.
+
+By declaring a list of *formal parameters*, a function is able to
+generalise a certain computation to work on a range of different
+inputs. The =square= function we declared previously is one example of
+this, should we not have parameters, we'd need to declare one different
+function for every possible input!
+
+In /lambda calculus/ a function abstraction can only declare one formal
+parameter it depends on. In JavaScript, however, a function can declare
+any number of formal parameters that it depends upon. The number of
+formal parameters a function expects is called *arity*, which is exposed
+in JavaScript through the =length= property of every function object:
+
+#+BEGIN_SRC js
+  function square(x) { return x * x }
+  square.length
+  // => 1
+
+  function pow(base, exponent){ ... }
+  pow.length
+  // => 2
+#+END_SRC
+
+The parameters passed over to the function, on the other hand, are
+called /actual parameters/. For example, if we were to compute the
+=square= of =2=, =2= would be the *actual parameter*, while =x= would be
+the formal one:
+
+#+BEGIN_SRC js
+  square(2)
+  // => 4
+#+END_SRC
+
+Likewise, if we were to invoke the =pow= function with arguments =2= and
+=3=, the list of actual parameters would be =2, 3=, whereas the list of
+formal parameters would be =base, exponent=:
+
+#+BEGIN_SRC js
+  pow(2, 3)
+  // => 8
+#+END_SRC
+
+In JavaScript, however, a function doesn't need to declare the list of
+formal parameters it expects, and regardless of the number of formal
+parameters declared for a function, a function may receive any number of
+actual parameters. This particular feature of functions, where the arity
+of a function doesn't need to match the number of actual parameters is
+called *variadic arity*, or *variadic* for short.
+
+This means, that all of the following are valid JavaScript:
+
+#+BEGIN_SRC js
+  square(1, 2, 3, 4, 5)
+  // => 1                       // 1 is `x', the other parameters aren't bound
+
+  pow(2, 3, 4, 5)
+  // => 8                       // 2 is `base', `3' is exponent
+
+  square()
+  // => NaN                     // `x' is `undefined'
+#+END_SRC
+
+So, you won't get an error when the number of actual parameters doesn't
+match the arity of the function, and you might be wondering how this is
+useful. I mean, it does look like an error, so why wouldn't it be
+treated as such? What happens with the additional parameters you've
+passed over to the function anyways?
+
+As it happens, regardless of the formal parameters declared for a
+function, all actual parameters can be accessed through a /magical/
+variable called =arguments=. The =arguments= variable, available for
+every function, is a list of all the actual parameters a function
+received.
+
+We could take advantage of this particular property to write a
+=summation= function that can take any number of parameters:
+
+#+BEGIN_SRC js
+  function sum() {
+    var result = 0
+    var index  = 0
+    while (index < arguments.length) {
+      result += arguments[index]
+      index   = index + 1 }
+
+    return result }
+
+  sum(1, 2, 3, 4)
+  // => 10                       // 1 + 2 + 3 + 4
+#+END_SRC
+
+At first glance, the =arguments= object looks too much like your regular
+=Array=, however, while the =arguments= object provides you with a
+=length= property, and all of the actual parameters can be accessed by
+a numeric index. The =arguments= is a special kind of object, though,
+which doesn't have any relation with an =Array=, besides implementing a
+common =sequence= interface (having a =length= property and elements
+accessed through numeric indexes):
+
+#+BEGIN_SRC js
+  (function(){ return arguments instanceof Array })()
+  // => false
+#+END_SRC
+
+An interesting relationship between the formal parameters and the
+=arguments= object is that, according to the specifications, they both
+refer to the same value, such that if you modify a value in the
+=arguments= object, the respective formal parameter will be affected as
+well, and vice-versa.
+
+#+BEGIN_SRC js
+  (function(x, y) {
+     arguments[0] = y
+     return x + y })(2, 3)
+  // => 6                       // 3 + 3
+
+
+  ;(function(x, y) {
+      x = y
+      return arguments[0] + arguments[1] })(2, 3)
+  // => 6                       // 3 + 3
+#+END_SRC
+
+
+
+** Application
+
+Although we have briefly discussed function application throughout the
+previous sections, there are still a few concepts worthy discussing in
+more detail. Specially in the presence of /variadic/ functions.
 
 
 
 ** Purity
-** Application
 * Scoping
 ** Lexical scoping
 ** Scope chain
@@ -302,8 +516,11 @@ variables would point to the same function object in memory:
 * Patterns
 ** Recursion
 ** Higher-order functions
+** Continuations
 * Practical applications
 ** Currying and uncurrying
 ** Composition
 ** Memoisation
 ** Encapsulation
+* Wrapping it up
+* References
