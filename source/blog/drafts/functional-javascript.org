@@ -57,8 +57,8 @@ referential transparency and lazy evaluation.
 
 ** The basic theory
 
-The idea of functional abstracions comes from Alonzo Church's [[http://en.wikipedia.org/wiki/Lambda_calculus][lambda
-calculus]], which intended to use functions as the foundation of
+The idea of functional abstracions comes from Alonzo Church's
+[[http://en.wikipedia.org/wiki/Lambda_calculus][lambda calculus]], which intended to use functions as the foundation of
 mathematics. The lambda calculus semantics defines computations and
 values as a series of lambda expressions. These expressions are
 evaluated through a series of reductions that take an abstraction to the
@@ -452,17 +452,16 @@ We could take advantage of this particular property to write a
 =summation= function that can take any number of parameters:
 
 #+BEGIN_SRC js
-  function sum() {
-    var result = 0
-    var index  = 0
-    while (index < arguments.length) {
-      result += arguments[index]
-      index   = index + 1 }
+  function to_array(sequence) {
+    return Array.prototype.slice.call(sequence) }
 
-    return result }
+  function sum() {
+    return to_array(arguments).reduce( function(result, item) {
+                                         return result + item }
+                                     , 0 )} // initial result
 
   sum(1, 2, 3, 4)
-  // => 10                       // 1 + 2 + 3 + 4
+  // => 10                       // ((((0 + 1) + 2) + 3) + 4)
 #+END_SRC
 
 At first glance, the =arguments= object looks too much like your regular
@@ -505,12 +504,117 @@ Although we have briefly discussed function application throughout the
 previous sections, there are still a few concepts worthy discussing in
 more detail. Specially in the presence of /variadic/ functions.
 
+So, /application/ is the act of invoking a particular function with a
+given list of formal parameters. In /JavaScript/, however, there are two
+different kinds of parameters you can pass to a function when applying
+them: [[http://killdream.github.com/blog/2011/10/understanding-javascript-oop/index.html#sec-2][special parameters]] (or the =this= binding), which only make sense
+for functions that act as methods; and the /formal parameters/, which we
+have discussed in the previous section.
+
+Since /this/ bindings don't play much of a role outside of Object
+Orientation patterns, we won't discuss it here, however my [[http://killdream.github.com/blog/2011/10/understanding-javascript-oop/index.html#sec-2][previous
+article]] on JavaScript's Object Orientation describes it at length.
+
+Back to the functional world, there are two ways /formal parameters/ can
+be applied to a function. And choosing between one or the other depends
+on whether you know the number of arguments you'll be using in advance
+or not.
+
+When the arguments to apply are statically known, the way we've been
+using up until now for invoking functions is the way to go:
+
+#+BEGIN_SRC js
+  function add(x, y) { return x + y }
+  add(1, 2)
+  // => 3
+#+END_SRC
+
+However, sometimes the arguments you're applying aren't readily stored
+in variables, or the function's /arity/ is unknown. For these cases, you
+have a /variadic application/ method for functions. This takes care of
+applying a list of parameters of arbitrary length to some function:
+
+#+BEGIN_SRC js
+  add.apply(null, [1, 2])       // same as add(1, 2)
+  // => 3
+#+END_SRC
 
 
-** Purity
-* Scoping
+
+* Structure and scoping
+
+Now that we know how to define and evaluate abstractions over
+computations (aka functions), let's dive deeper and understand the
+structure of a function and its declarations.
+
+This section will guide you through the internal representations of a
+function[fn:7], as well as scoping rules for its definitions. That is, how
+does the JavaScript engine decide where a given definition (a parameter
+or a variable) is valid, and how it resolves an identifier to its bound
+value.
+
+[fn:7]: We'll be using higher-level descriptions taken mostly
+        from the specifications, since the actual representation will be
+        platform-specific.
+
+
 ** Lexical scoping
-** Scope chain
+
+There are basically two kinds of scoping in programming languages:
+/dynamic scoping/ and /lexical scoping/. JavaScript, as most other
+modern languages, uses the latter. Some languages use a combination of
+the two, and most old languages uses the former.
+
+In a /lexically scoped/ (or /statically scoped/) language, any given
+identifier has its scope fixed at the time of the compilation to the
+region it's been declared in the source code. Such regions may be
+=blocks=, =functions=, =procedures= or some other kind of delimiter used
+by the language. In JavaScript, only =functions= define new /scopes/ [fn:8],
+and as such identifiers are only valid in the =function= they have been
+declared.
+
+#+BEGIN_SRC js
+  function add(x, y, continuation) {
+    continuation(x + y)
+  }
+
+  add(1, 2, function(result) {
+    x // => ReferenceError, since `x' is not declared in this region.
+  })
+#+END_SRC
+
+On the other hand, /dynamically scoped/ languages have the scope of an
+identifier based on the run-time evaluation of a program's source
+code. This means that it's the nesting of function calls that define
+where and how long an identifier is valid. For example, if JavaScript
+had dynamic scopes, the previous example would yield this:
+
+#+BEGIN_SRC js
+  function add(x, y, continuation) {
+    continuation(x + y)
+  }
+
+  add(1, 2, function(result) {
+    x // => 1, since we're still inside `add's run-time evaluation
+  })
+#+END_SRC
+
+/Lexical scoping/ makes it easier to reason about a given piece of code,
+since you can analyse the effects of a given identifier just by looking
+at the source code alone, whereas /dynamic scoping/ requires one to know
+the order in which functions are called in order to know such
+effects. /Lexical scoping/ also allow nested function definitions, where
+the inner functions can use values defined in the outer function.
+
+
+[fn:8]: The exception to this rule is a =try/catch= block, where the
+        =catch='d error identifier is actually scoped to the =catch=
+        block. Also, the new version of ECMAScript introduces /block
+        scoping/ through the [[https://developer.mozilla.org/en/JavaScript/Reference/Statements/let][=let=]] operator.
+
+
+** Declarations and Hoisting
+** Locals vs Globals
 ** Environments
 ** Closures
 * Patterns
@@ -522,5 +626,7 @@ more detail. Specially in the presence of /variadic/ functions.
 ** Composition
 ** Memoisation
 ** Encapsulation
+* Functional philosophy
+** Referential transparency
 * Wrapping it up
 * References
