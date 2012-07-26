@@ -755,7 +755,7 @@ two.one_adder = one_add
 two.one_adder(2) // this === one
 // => 3
 
-one_add.call(two) // this === one
+one_add.call(two, 2) // this === one
 // => 3
 #+end_src
 
