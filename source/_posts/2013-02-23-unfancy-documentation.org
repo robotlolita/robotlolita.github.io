@@ -1,0 +1,91 @@
+#+STARTUP: showall hidestars indent
+#+BEGIN_HTML
+---
+layout: post
+title:  Unfancy API Documentation
+snip:   Making API references easier. Faster. Sweeter.
+---
+#+END_HTML
+
+I've been fiddling with different approaches to API documentation over
+the last years, and found a sweet spot that actually fits my
+needs. However I still faced a problem: there were no tools to support
+my approach to documentation. There were lots of tools out there that
+took different approaches for documentation, but I couldn't use any of
+them because they were either monolithic or language-specific and not
+that easy to bend my way.
+
+So, in this blog post I describe that approach better and my way of
+trying to solve not just my problem, but alleviating the cost of coming
+up with different approaches to documentation, which should probably
+benefit more people (specially those who disagree with my dictatorial
+rules :3)
+
+
+* An overview of the documentation landscape
+
+I work with a few different languages in a daily basis. Sometimes I'll code in
+Python, then hack up some stuff in Clojure, or invoke some clever computer
+spirits with JavaScript spells. Still, most of my time these days is spent
+working with LiveScript. At the end of the day, though, this context switching
+between a dozen of different languages leads to a really, *really* annoying
+thing: they use completely different tools and environments.
+
+Some of those tooling is specific to a language because it needs to be specific
+to a language, for example editor modes, or the runtime library, static
+checkers and linters, etc. Others aren't really specific to a language, but
+still, like editors, debugger interfaces, build tools or documentation
+toolkits. Except that more often than not, people tend to make
+non-language-specific tools /language specific/, which kills the idea of
+reusing a otherwise generic tool in different environments.
+
+I really mean it, reusing generic tools for different languages is a big
+thing. And it'll be even more of a big thing as people start working in more
+than one environment at the same time — front-end developers usually work with at
+least three.
+
+I lied. Documentation isn't actually generic. There are plenty of
+language-specific parts. For example, language A might have run-time macros,
+whereas language B has a different concept of modules, and you want to capture
+those differences in the documentation in order to help the user grasp the
+meaning of your code quicker. However, these "language-specific" features are
+more often than not based upon years-old programming language fundamental
+building blocks, and those can be well generalised up to a point — at least, as
+long as it concerns the programmers' understanding of what an API does, why it
+does such, how it does such and how you should use it.
+
+And please, let's not forget that API documentation can be "consumed" and
+visualised in lots of ways, using the same basic meta-data, whether it's
+generalised or not. You could say, documentation is made of several steps, and
+each of these steps produce something useful (or "consumable").
+
+Even with this possibility of generalising things, I've found that the majority
+of the main-stream tools for documentation are language specific or totally
+overlook the step part, or yet only lets you change how the basic meta-data is
+visualised in a handful of ways. This is true for JSDoc, Docco, Marginalia,
+PyDoc, etc. Tools that can give you the meta-data they gather from the source
+code, like Doxygen, are often monolithic and generate this meta-data in
+annoying formats, like XML. Tools that don't rely on the structure of the
+language don't allow you to make that meta-information available by other
+tools, and there isn't a "visualisation only" format (well, you could kind of
+call Sphinx one, but then you're not really using meta-data).
+
+For example, if you have a project that uses Scala and Java, but you want to
+present their API together because it *actually makes sense*, you can't easily
+do that. Or if you want to include the documentation directly on your project's
+README because you have only one or two public API methods, you also can't do
+that easily because there's no tool that just does: "hey, take this
+documentation meta-data, and generate something I can use in a
+Markdown-formatted README." You have to actually reinvent the wheel all the
+time by parsing the whole source and generating the thing in the format you
+want, or be forever tied to a particular tool by writing a plugin.
+
+You also can't say, "Oh, I want to parse the documentation in this language
+using its structure, because that's easily to statically determine, but for
+this other language I want a generic thing because it's all too dynamic and you
+can only take guesses about what everything means. But I still want to display
+them using the same format." If that thing happens, you're basically out of
+luck.
+
+* Separating the concerns in documentation tools
+
