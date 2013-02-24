@@ -135,4 +135,90 @@ steps. There are four steps in documenting an API, to be more precise:
        of information that might be associated with the entities in a way that
        makes sense *in the context of the visualisation tool*.
 
+The graph below shows one way the concerns could fit in the steps above:
+
+#+begin_src ditaa :file ../media/assets/2013-02-23-doc-steps.png :cmdline -E :exports none
+
+                      +-----------------------+       +--------------------+
+              +---=-> | Extract entities cYEL |-=-+   | Relationships cBLU |           
+              |       +-----------------------+   |   +--------------------+       +-------------+
+     (1)      |                                   |     ^ |              +------=->| Editor cGRE |
+     +-----------+                                |     | |              :         +-------------+
+     | cRED      |   (2)                       (3)v     | v              |    (4)
+     | annotated |   +----------+              +-------------+           |    +--------------+
+     | source    |-->| Analysis |------------->| Merging     |--------------->| Visualising  |
+     |           |   | cYEL     |       +----->| cBLU        |           |    | cGRE         |
+     | {d}       |   +----------+       |      +-------------+           |    +--------------+
+     +-----------+                      :              | ^               :
+              |                         |              v |               |         +-------------+
+              |       +--------------------+          +--------------+   +---+---->| Static cGRE |
+              +----=->| Type analysis cYEL |          | Context cBLU |       |     +-------------+
+                      +--------------------+          +--------------+       |     
+                                                                             +---> ...
+#+end_src
+
+#+RESULTS:
+[[file:../media/assets/2013-02-23-doc-steps.png]]
+
+[[file:../media/assets/2013-02-23-doc-steps.png]]
+
+So, why would this work? Simple (despite what my failures at graphs would tell
+you), the annotated source is the canonical reference for everything, it's what
+tells us which *Entities* we care about to handle in the next stages.
+
+Then, several tools analyse this annotated source from different angles, one
+tool may extract entities using a simple structural analysis of the sources,
+another can extract type annotations, another can make sense of annotation
+meta-data in the comments, or here-docs if the language supports it. At the end
+of the day, however, all of those tools are able to communicate between each
+other and collaborate because they use *a standard format*.
+
+Then, all of those (up until now) disjoint information about the entities in
+your code base moves on to the merging stage. At this point, all of the entity
+information that we gathered is put together as a single thing, and tools
+collaborate between each other to resolve relationship graphs, they could also
+provide better contextual organisations, solve links between entities,
+automatically "suggest" similar or more abstract methods, load examples, etc.
+
+At last, all the information that was put together in the /merging/ phase
+passes to the last phase, which is visualisation. Again, since everything uses
+an standard format, the visualisation tools don't need to care about which
+tools were ran, they just care about the information they were given. At this
+stage, the information can be used to display the API documentation inline in
+README files, if it is small enough, or as an interactive web application, or
+even as a searchable resource within your text editor (Emacs has this).
+
+
+* Meet Dollphie, Calliope, Kalamoi and Papyr°
+
+As an experimental implementation of the concept defined above, I quickly
+hacked together these three tools ([[http://github.com/killdream/kalamoi][Kalamoi]], [[http://github.com/killdream/papyr][Papyr°]], [[http://github.com/killdream/calliope][Calliope]]) over the course
+of this week. I needed a generic documentation format since I want to use the
+same toolkit for documenting all the languages I work with. But I also needed
+to take into account the differences in each language's semantics and
+fundamentals behind each kind of entity. And I wanted to use different kinds of
+visualisation depending on the context, thus small modules with one or two
+public functions would have all their API documentation in a =README.md=,
+whereas more complex ones would be displayed in an interactive web application.
+
+These tools are far from production ready (for example, there are no support
+for class hierarchies right now, nor field visibilities, nor multi-methods),
+and they need some serious refactoring (for example, =kalamoi= does everything
+from analysis to merging), but they're usable. =Calliope= is an opinionated
+wrapper over the other two tools for JavaScript projects that are already using
+CommonJS packages, and it's a really thin wrapper.
+
+The basic idea of this toolkit revolves around a simple and generic structural
+annotation format (Dollphie) to describe entities in a non-language-specific
+way. This alone gets us around the problem of relying on a language's structure
+in overly dynamic languages like JavaScript, and works as a fallback for
+providing a common ground for languages that don't have specialised tools. Then
+there's a parser and analyser (Kalamoi) for this format, which spits out a
+standard documentation JSON with the entities meta-data, and finally the
+visualiser (Papyr°) takes that JSON and displays to the user in an interactive
+way.
+
+
+** The generic structural annotation
+
 
