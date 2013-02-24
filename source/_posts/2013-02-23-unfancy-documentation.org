@@ -343,5 +343,74 @@ This all works well for well structured source code, and probably somewhat well
 for pseudo-literate code.
 
 
-** Making sense of the meta-data
+** A format to exchange entity meta-data
 
+I said before that all the benefits of this approach derive from a standard and
+simple format to exchange meta-data about entities. And there isn't anything
+easier nowadays for this kind of structured data than JSON. It's available
+everywhere, easy to parse, easy to write, and it usually maps nicely to lots of
+language's core data structures (at least dynamic ones) since it uses Maps,
+Vectors, Strings and Numbers as types, rather than a document tree .
+
+This format is devised from an overt generalisation of all entities, with basis
+on what users of the API might be looking for when they browse through API
+references. This includes ideas that are common in other documentation systems,
+and kind of obvious, like an entity's name, its type or a description about
+what it means:
+
+#+begin_src haskell
+  type URI = String
+  
+  type EntityKind = Data
+                  | Module
+                  | Function
+                  | Object
+                  | Type
+  
+  type Author = { name    :: String
+                ; email   :: String
+                ; website :: String
+                }
+  
+  type Entity = { id         :: URI  -- An unique ID for the entity
+                ; parent     :: URI -- The entity that contains this entity
+                ; kind       :: EntityKind -- The type of the entity being represented
+                ; name       :: String -- The name of this entity
+                ; signatures :: [String] -- The types of the entity
+                ; text       :: String -- A text describing this entity
+                ; code       :: String -- The source code associated with this entity
+                ; meta       :: { String -> String | Bool } -- Additional metadata
+                ; language   :: String -- The language of the source code
+                ; line       :: Number -- Where the source code starts
+                ; end-line   :: Number -- Where the source code ends
+                ; file       :: String -- The file where the entity appears
+                ; copyright  :: String -- Short copyright notice (if any)
+                ; repository :: String -- The canonical repository for the code
+                ; authors    :: [Author] -- Who contributed to the code
+                ; licence    :: String -- The terms in which the code is released
+                }
+
+  type Entities = [Entity]
+#+end_src
+
+- Note ::
+  Yes, I do realise it makes more sense to create a new data structure to store
+  all information related to =code=, I'll likely do it when refactoring these
+  tools. I'll probably make =code= a =List= as well, so it can handle
+  multi-methods and such.
+
+This, however does not cover several kinds of entities, specially entities that
+have intrinsic relationships with others in a way that it changes their
+behaviour, like Classes and SuperClasses/Mixins/Traits/Delegative &
+Concatenative Prototypes, etc. It could just well be encoded in the type
+annotation, but then you lose the ability of using these relationships to
+convey additional information for the user when visualising the documentation,
+and encoding it as an additional but non-specified meta-data means that, while
+other tools can easily make sense of the data, we don't have a common-ground
+for them to collaborate with every other tool in this environment, so that's a
+no-go.
+
+As it current stands, these things would need to be devised on top of the
+current standard and be added for the specification, so we don't have the risk
+of conflicts between different notations, and tools that don't understand that
+"extension" can just ignore the additional meta-data.
