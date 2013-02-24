@@ -221,4 +221,127 @@ way.
 
 ** The generic structural annotation
 
+Since most of my work is in a overtly dynamic language like JavaScript (granted
+I use LiveScript now, but same semantics), parsing the source and trying to
+make sense of it isn't always easy. Say you have the following:
+
+#+begin_src js
+  /// Given an ID, sanitises it, otherwise generates an unique ID.
+  var id = function() { var guid = 0
+  
+                        return function(name) {
+                                 return name?    sanitise(name)
+                                 :      /* _ */  (++guid).toString(16) }
+  
+                        // Sanitises an ID
+                        function sanitise(name) {
+                          return name.replace(/\s/, '-')
+                                     .replace(/\W/, '')
+                                     .toLowerCase() }}()
+#+end_src
+
+Even though this use of the "Module Pattern" is way too common, it's not
+obvious right away that the documentation refers to the /inner function/ rather
+than the immediately invoked function expression that surrounds it. Or say you
+have something like this:
+
+#+begin_src js
+  /// Takes the first `n` items of a list.
+  var take = curry(function(n, xs) {
+                     return xs.slice(0, n) })
+#+end_src
+
+Which is also fairly common (not just the currying, but decorating a function
+in general), not just in JavaScript, but also in Python. This doesn't make the
+/type/ of =take= immediately obvious, unless you happen to have figured out the
+type of =curry= already, or if your documentation tool evaluates a certain
+sub-set of JavaScript to figure out these things.
+
+So, you have to annotate your code anyways with types, but there might be cases
+where your documentation tool will have some trouble figuring out the structure
+of your code anyways. Not to say you'd need extremely language-specific tools
+to extract this information. In the end I ditched this approach and decided for
+a generalisation of all languages I worked mostly with (which at the time were
+mainly JavaScript and Python), not just on the way entities are annotated, but
+also in the way *structure* itself is annotated.
+
+The documentation format I came up with (and evolved informally through the
+course of this year) is heavily inspired by ReStructuredText and Markdown. The
+basic idea is that you have sections with varying depth levels (nested sections
+yay!), and each section can have a range of information belonging to it,
+including other sections. This way, entities are just special kinds of
+sections. The main difference from systems like [[http://jashkenas.github.com/docco/][Docco]], etc. is that there are
+subtle annotations that make it possible to figure out the structure of the
+code and extract meta-data concerning a particular entity.
+
+The whole [[https://github.com/killdream/kalamoi/blob/master/src/parser.ls#L61][parser]] fits in under 100-loc of LiveScript code. You can get a
+[[https://github.com/killdream/kalamoi/blob/master/src/parser.ls#L61][feeling of the documentation format]] by reading Kalamoi, Papyr°, Calliope or [[https://github.com/killdream/boo/blob/master/lib/boo.js][Boo]]
+source code. Boo is written in JavaScript, the others are all
+LiveScript. Adapting the parser to other languages can be done in three lines
+of code, but until I refactor stuff this is still a pain:
+
+#+begin_src js
+  // in parser.ls
+  exports.luaSyntax = boo.derive(baseSyntax, { comment: '--' })
+  
+  // in index.ls
+  var languageFor = function(extension){ ...
+    case '.lua': return 'Lua'
+  
+  var syntaxFor = function(language){ ...
+    case: 'lua': return parser.luaSyntax
+#+end_src
+
+You probably guessed the parser relies on single-line comments, and yes. That's
+because the parser is line-based for simplicity. Basically, every line that
+starts with =<comment-character>= is treated as special meta-data for the
+parser, and the rest is treated as code. Lines that start with a repetition of
+the last =<comment-character>= are treated as sections, and the number of
+=<comment-character>= defines the level of that section (just as Markdown
+headings).
+
+#+begin_src livescript
+  ## Module foo
+  # Description of `foo`.
+  
+  ### -- Internal functions
+  
+  #### Function id
+  # Description of `id`
+  id = (x) -> x
+  
+  ### -- Public functions
+  
+  #### Function k
+  # Description of `k`
+  k = (x) -> (y) -> x
+#+end_src
+
+As you can probably guess, the special "kind" of section is defined by the
+first =<word>= after the comment character. A =<word>= here is more in the
+sense of Lisp, except the only thing that works as a word boundary is
+white-space. Sections where the kind is =--= are special headers, that have no
+special entity meaning, but can be used to logically group things within a
+source code to make it easier to navigate and understand the structure.
+
+There are only two other special constructs that can be used inside of a
+section to declare special meta-data about an entity. The =<generic meta
+data>=, in the form of =:keys: optional value=, and the =<type signature>=, in
+the Haskell-veins of =:: type=, although the format of the type signatures
+themselves is not specified — not a job for this particular language:
+
+#+begin_src livescript
+  ### Function id
+  # :internal, deprecated:
+  # The identity function.
+  #
+  # :: a -> a
+  id = (x) -> x
+#+end_src
+
+This all works well for well structured source code, and probably somewhat well
+for pseudo-literate code.
+
+
+** Making sense of the meta-data
 
