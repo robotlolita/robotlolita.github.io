@@ -89,3 +89,50 @@ luck.
 
 * Separating the concerns in documentation tools
 
+
+Most of this can be fixed by separating the documentation in some well-defined
+steps, and creating the whole picture by mixing-and-matching tools that fit
+those steps. Below is a list of concerns that could be addressed by any
+documentation tool, but are at the same time independent of all other
+concerns:
+
+  1) Analysing the entities that occur in a code-base (classes, modules, etc.)
+  2) Resolving types in the code by way of type-inference.
+  3) Resolving relationships between entities (multi-methods, inheritance,
+     etc.)
+  4) Analysing or guessing contextual relationships or abstractions.
+  5) Merging documentations from different projects into one.
+  6) Searching a particular entity in a code-base.
+  7) Visualising documentation.
+  
+This list is in no way authoritative, there might be plenty of concerns that
+aren't listed here depending on the particular needs of a project. Or those
+concerns might be too much for a particular project. But again, this just shows
+how we could all benefit from separating all those concerns in tools that can
+be easily mixed and matched to achieve a greater goal: a nice way of
+documenting your APIs.
+
+So, I did say that we could separate a documentation tool in a fixed number of
+steps. There are four steps in documenting an API, to be more precise:
+
+    1) A developer annotates his code following certain rules. This helps
+       analysis tools get a better sense of the code, and users of the API to
+       see faster how to use or what's the intention of a particular part of
+       the API.
+
+    2) A tool analyses and extracts meta-information about API
+       entities. Entities are all the things that are visible or usable in some
+       way by the end user. So, classes, modules and functions are examples of
+       entities in most contexts, whereas syntactical constructions like `for`
+       or `if` are not — but more on that later.
+
+    3) Meta-information including structure, relationships and annotations is
+       put together in a single place, in some easy to parse and easy to use
+       format.
+
+    4) A visualisation tool uses the previous meta-information to display the
+       structure, relationships, annotations, usage examples and any other kind
+       of information that might be associated with the entities in a way that
+       makes sense *in the context of the visualisation tool*.
+
+
