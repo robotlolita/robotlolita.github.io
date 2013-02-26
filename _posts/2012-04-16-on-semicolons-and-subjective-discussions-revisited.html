@@ -21,28 +21,8 @@ important post. <a href="http://xkcd.com/386/">Someone is <b>wrong</b> on the in
 </p>
 
 
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#sec-1">A bit of history</a></li>
-<li><a href="#sec-2">What is <i>ASI</i>?</a></li>
-<li><a href="#sec-3">How <i>ASI</i> actually works?</a></li>
-<li><a href="#sec-4">Is <i>ASI</i> safe?</a>
-<ul>
-<li><a href="#sec-4-1">Do all of the engines implement it properly?</a></li>
-<li><a href="#sec-4-2">Is it safe?</a></li>
-<li><a href="#sec-4-3">Will my code suddenly break?!</a></li>
-</ul>
-</li>
-<li><a href="#sec-5">Reasons to use or not ASI</a></li>
-<li><a href="#sec-6">Conclusion</a></li>
-</ul>
-</div>
-</div>
-
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1">A bit of history </h2>
+<h2 id="sec-1">A bit of history</h2>
 <div class="outline-text-2" id="text-1">
 
 
@@ -86,7 +66,7 @@ on.
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2">What is <i>ASI</i>? </h2>
+<h2 id="sec-2">What is <i>ASI</i>?</h2>
 <div class="outline-text-2" id="text-2">
 
 
@@ -150,8 +130,8 @@ categorise famous languages' semicolon insertion rules in the following groups:
 
 
 
-<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;statement&gt;</span>        <span style="color: #FA2573;">::=</span> ( lots of junk ) <span style="color: #729FCF;">&lt;end-of-statement&gt;</span>
-<span style="color: #67D9F0;">&lt;end-of-statement&gt;</span> <span style="color: #FA2573;">::=</span> NEWLINE <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #A6E32D;">";"</span>
+<pre class="src src-bnf">&lt;statement&gt;        ::= ( lots of junk ) &lt;end-of-statement&gt;
+&lt;end-of-statement&gt; ::= NEWLINE | <span style="color: #A6E32D;">";"</span>
 </pre>
 
 
@@ -255,7 +235,7 @@ SyntaxError: unexpected character after line continuation character.
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3">How <i>ASI</i> actually works? </h2>
+<h2 id="sec-3">How <i>ASI</i> actually works?</h2>
 <div class="outline-text-2" id="text-3">
 
 
@@ -273,11 +253,11 @@ first define what the usual rule for ending a statement in JavaScript is:
 
 
 
-<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;end-of-statement&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">";"</span>
-                     <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;horizontal-space&gt;</span>* NEWLINE blank*
-                       (and STATEMENT_ENDED? (not <span style="color: #729FCF;">&lt;continuation&gt;</span>))
-<span style="color: #67D9F0;">&lt;horizontal-space&gt;</span> <span style="color: #FA2573;">::=</span> SPACE <span style="color: #E52222; font-weight: bold;">|</span> TAB <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;comment&gt;</span>
-<span style="color: #67D9F0;">&lt;continuation&gt;</span>     <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"("</span> <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #A6E32D;">"["</span> <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;infix-operator&gt;</span>
+<pre class="src src-bnf">&lt;end-of-statement&gt; ::= <span style="color: #A6E32D;">";"</span>
+                     | &lt;horizontal-space&gt;* NEWLINE blank*
+                       (and STATEMENT_ENDED? (not &lt;continuation&gt;))
+&lt;horizontal-space&gt; ::= SPACE | TAB | &lt;comment&gt;
+&lt;continuation&gt;     ::= <span style="color: #A6E32D;">"("</span> | <span style="color: #A6E32D;">"["</span> | &lt;infix-operator&gt;
 </pre>
 
 
@@ -313,7 +293,7 @@ accepts an <b>optional</b> return value:
 
 
 
-<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;return-stmt&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"return"</span> [no line break here] <span style="color: #729FCF;">&lt;expression&gt;</span>
+<pre class="src src-bnf">&lt;return-stmt&gt; ::= <span style="color: #A6E32D;">"return"</span> [no line break here] &lt;expression&gt;
 </pre>
 
 
@@ -342,7 +322,7 @@ than I have here. Inimino's post is particularly awesome.
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4">Is <i>ASI</i> safe? </h2>
+<h2 id="sec-4">Is <i>ASI</i> safe?</h2>
 <div class="outline-text-2" id="text-4">
 
 
@@ -369,7 +349,7 @@ concerns in order:
 </div>
 
 <div id="outline-container-4-1" class="outline-3">
-<h3 id="sec-4-1">Do all of the engines implement it properly? </h3>
+<h3 id="sec-4-1">Do all of the engines implement it properly?</h3>
 <div class="outline-text-3" id="text-4-1">
 
 
@@ -404,7 +384,7 @@ are the rules given by the spec and explained above.
 </div>
 
 <div id="outline-container-4-2" class="outline-3">
-<h3 id="sec-4-2">Is it safe? </h3>
+<h3 id="sec-4-2">Is it safe?</h3>
 <div class="outline-text-3" id="text-4-2">
 
 
@@ -419,7 +399,7 @@ need to know the rules.
 </div>
 
 <div id="outline-container-4-3" class="outline-3">
-<h3 id="sec-4-3">Will my code suddenly break?! </h3>
+<h3 id="sec-4-3">Will my code suddenly break?!</h3>
 <div class="outline-text-3" id="text-4-3">
 
 
@@ -447,7 +427,7 @@ and there. Now, I can't guarantee people won't want to break <b>you</b>.
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5">Reasons to use or not ASI </h2>
+<h2 id="sec-5">Reasons to use or not ASI</h2>
 <div class="outline-text-2" id="text-5">
 
 
@@ -511,7 +491,7 @@ you're just relying on a broken tool.
 </div>
 
 <div id="outline-container-6" class="outline-2">
-<h2 id="sec-6">Conclusion </h2>
+<h2 id="sec-6">Conclusion</h2>
 <div class="outline-text-2" id="text-6">
 
 

@@ -22,7 +22,7 @@ language.
 This raises several questions on the validity of stating that JavaScript
 allows for functional idioms. In this article we'll go through what
 functional programming really is, how it applies to JavaScript and which
-kind of new and interesting compositional patterns it allows in the
+kind of new and interesting composition patterns it allows in the
 language.
 
 
@@ -33,7 +33,7 @@ So, what's this “functional programming” business anyways?
 Well, functional programming has a fuzzy meaning these days (just not as
 fuzzy as /Object Oriented Programming/, I think). But in essence,
 functional programming languages revolve around computing expressions,
-rather than changing some global state through a series of statements.
+rather than mutating some state through a series of statements.
 
 The major requirement for a programming language to support functional
 programming idioms is that functions *must be first-class[fn:1]*
@@ -106,7 +106,7 @@ numbers to get them back: =(λx → x) 2= would yield =2=.
 
 [fn:2]: In /lambda calculus/ everything is actually a function (or
         lambda), even numbers are represented as functions with
-        something known as Peano Numbers.
+        something known as [[http://en.wikipedia.org/wiki/Peano_axioms#The_axioms][Peano Numbers]].
 
 [fn:3]: The lambda abstraction =λx → x= is also called *Identity* (or I,
         for short). And it's a core combinator in Lambda Calculus. The
@@ -123,36 +123,38 @@ given the emphasis placed in purity, abstractions — usually in terms
 of higher-order functions — and declarative definitions of the
 computation being performed.
 
-The declarative definitions are usually self-explanatory on which
-operation is carried about — rather than how. Which helps conveying the
-intent of such a piece of code. On the other hand, it makes it a little
-more difficult to understand the /how things get done/ part.
+The declarative definitions are usually self-explanatory on what the
+operation being executed is about — rather than how this operation
+should be executed. This helps conveying the intent of such a piece of
+code. On the other hand, it makes it a little more difficult to
+understand the /how things get done/ part.
 
-These properties can, arguably, make the resulting application a great
+Such properties can, arguably, make the resulting application a great
 deal shorter, less complex, and easier to inspect and reason about, for
-the programmer has to keep less information on his head at any given
+the programmer has to keep less information in his head at any given
 time.
 
 On a more objective note, we could list unit testing, debugging and
 concurrency as the three major (and proven) benefits of functional
 programming. In particular, functional idioms have had a massive
-adoption over the last few years to improve the concurrency capabilities
+adoption over the last few years to improve the concurrent capabilities
 of imperative languages.
 
-In a functional program, since functions doesn't depend on shared state,
+In a functional program, since functions don't depend on shared state,
 the compiler can just parallelise everything and combine the results
 afterwards, it doesn't need to follow a strict evaluation order. In
 fact, this property leads to such a increase in the potential of static
 analysis of a program that a well-developed compiler can do a whole lot
 more of aggressive optimisations based on rewriting your program's order
-or phasing out evaluating some expressions completely.
+or phasing out evaluating some expressions completely — [[http://www.haskell.org/haskellwiki/Haskell][Haskell]] does
+just that.
 
 It's also because of the premise of not depending on shared state that
 unit testing and debugging are made a lot easier. For unit testing, you
 only need to verify that your function yields valid results for the
 given set of inputs its expected to receive. In fact, there are tools
 that will randomly generate a set of potential inputs and feed them to
-your function for testing, automatically (Haskell's QuickCheck is a good
+your function for testing, automatically (Haskell's [[http://www.cse.chalmers.se/~rjmh/QuickCheck/][QuickCheck]] is a good
 example), which is referred to as /random property testing/.
 
 
@@ -174,7 +176,7 @@ have a function that abstracts over that expression[fn:4]:
 
 Functions are usually given a name (though not necessarily always), a list of
 parameters for the computation they should perform and a list of statements
-describing the process that they perform.
+describing the process they perform.
 
 
 #+BEGIN_SRC ditaa :file ../../media/assets/fp-fndef.png :cmdline -r :exports none
@@ -197,15 +199,15 @@ describing the process that they perform.
 
 A =return= statement allows a function to yield back the result of the
 computation that was performed. Different from the mathematical concept of
-functions, though, functions in JavaScript doesn't need to always return a
+functions, though, functions in JavaScript don't need to always return a
 value. If a =return= statement is not present in the function, it's implicit
 that the return value of such function is the special value =undefined=.
 
 Functions that describe processes to be executed, rather than an expression to
 be evaluated, can happily omit the =return= statement. Such functions usually
 affect the state of the program outside of the function's realms (e.g.: by
-changing some object's properties or a non-local variable's value), are
-described as having *side effects* or simply being *impure*. We'll dwell on the
+changing some object's properties or a non-local variable's value), and are
+described as having *side effects* or being *impure*. We'll dwell on the
 subject shortly.
 
 More formally, the common anatomy of a function definition can be described by
@@ -218,13 +220,13 @@ the following grammar rules:
   <argument-list> ::= <identifier> (many "," <identifier>)
   <function-body> ::= "{" (many <statement>) "}"
 
-  # ¹: Optional, in some cases. We discuss this in the next session.
+  # ¹: Optional for `FunctionExpression's. We discuss this in the next session.
 #+END_SRC
 
 
 [fn:4]: While this generic claim may still hold true for JavaScript,
         it's important to note that functions in the language don't
-        respect Tennet's Correspondence Principle, such you can't just
+        respect Tennet's Correspondence Principle, as such you can't just
         wrap every expression in a function while preserving all of the
         properties of the expression before wrapping it.
 
@@ -236,7 +238,7 @@ on the context in which such definition happens. Both ways are equivalent,
 however, in the sense that they both create a function object with the same
 properties.
 
-First, we have what the [[http://es5.github.com/#x13][specs]] call a =FunctionDeclaration=, which happens at
+First, we have what the [[http://ecma-international.org/ecma-262/5.1/#sec-13][specs]] call a =FunctionDeclaration=, which happens at
 the statement level. Since statements are things that yield no value, a
 =FunctionDeclaration=, instead of returning a function object, binds that
 object to the current scope, with the name the function was declared with.
@@ -272,9 +274,9 @@ function object the result of the expression. This result can afterwards be
 invoked, stored in a variable or passed as a parameter to another function.
 
 It might sound a bit insane at first, but this is an extremely powerful
-feature in the presence of first-class functions. We can decide when we
-want to treat a function as an object — a value we can manipulate, — or
-execute it to have a computation performed.
+feature in the language. We can decide when we want to treat a function
+as an object — a value we can manipulate, — or execute it to have a
+computation performed.
 
 If we were to write the previous =square= function as a
 =FunctionExpression=, it wouldn't be much useful to just write the
@@ -318,11 +320,11 @@ memory:
 
 Sometimes you don't need to store a function object in a variable, but
 rather just want to evaluate the function's statements and expressions
-for their side-effects — especially isolating variables into a new scope
-(as we'll discuss more later on). In this case, the =FunctionExpression=
-offers a short-hand for that. Such that, instead of binding a function
-object to a variable, then applying the function stored in that
-variable, you just declare and call the function directly:
+for their side-effects — isolating variables into a new scope (as we'll
+discuss more later on). In this case, the =FunctionExpression= offers a
+short-hand for that. Such that, instead of binding a function object to
+a variable, then applying the function stored in that variable, you just
+declare and call the function directly:
 
 #+BEGIN_SRC js
   // It means that this piece of code:
@@ -333,7 +335,7 @@ variable, you just declare and call the function directly:
 
   // Does the same thing as this one:
   void function() {
-         alert('Hello, world!') }
+         alert('Hello, world!') }()
 
   // That is, both forms will alert `Hello, world!' right away.
 #+END_SRC
@@ -345,14 +347,14 @@ the engine to interpret the function declaration as a
 statement, and as such yield no value, thus we can't perform any
 operation on it right away.
 
-This pattern of executing a =FunctionExpression= right away, is often
-times called by the community as *Immediately Invoked
+This pattern of executing a =FunctionExpression= immediately, is often
+times called by the community an *Immediately Invoked
 FunctionExpression*, or /IIFE/, for short.
 
-[fn:5]: Hoisting is considered by many a misfeature. I think it has its uses,
-        though it can be obviously abused. One of the interesting properties it
-        allows is a more natural ordering of a program's source code, or even a
-        little of literate programming.
+[fn:5]: Hoisting is considered by many a misfeature. I think it has its
+        uses, though it can be obviously abused. One of the interesting
+        properties it allows is a more natural ordering of a program's
+        source code, or even a little of literate programming.
 
 [fn:6]: Prefixing a =FunctionDeclaration= with the =void= operator is
         just one of the ways of forcing a =FunctionExpression=, and the
@@ -466,16 +468,20 @@ We could take advantage of this particular property to write a
 
 At first glance, the =arguments= object looks too much like your regular
 =Array=, however, while the =arguments= object provides you with a
-=length= property, and all of the actual parameters can be accessed by
-a numeric index. The =arguments= is a special kind of object, though,
-which doesn't have any relation with an =Array=, besides implementing a
-common =sequence= interface (having a =length= property and elements
-accessed through numeric indexes):
+=length= property, and all of the actual parameters can be accessed by a
+numeric index. The =arguments= is a special kind of object which doesn't
+have any relation with an =Array=, besides implementing a common
+=sequence= interface (having a =length= property and elements accessed
+through numeric indexes):
 
 #+BEGIN_SRC js
   (function(){ return arguments instanceof Array })()
   // => false
 #+END_SRC
+
+None the less, you can convert an =arguments= object to an array by
+invoking the Array's =slice= method on the =arguments= object, as shown
+previously in the =to_array= function.
 
 An interesting relationship between the formal parameters and the
 =arguments= object is that, according to the specifications, they both
@@ -513,7 +519,7 @@ have discussed in the previous section.
 
 Since /this/ bindings don't play much of a role outside of Object
 Orientation patterns, we won't discuss it here, however my [[http://killdream.github.com/blog/2011/10/understanding-javascript-oop/index.html#sec-2][previous
-article]] on JavaScript's Object Orientation describes it at length.
+article on JavaScript's Object Orientation]] describes it at length.
 
 Back to the functional world, there are two ways /formal parameters/ can
 be applied to a function. And choosing between one or the other depends
@@ -614,6 +620,59 @@ the inner functions can use values defined in the outer function.
 
 
 ** Declarations and Hoisting
+
+There are three ways a name ends up in the scope:
+
+  - Variable declaration
+  - Function declaration
+  - Function parameter declaration
+
+We went over /function declarations/ and /parameter declarations/
+before, so we'll just cover /variable declarations/ here and how
+hoisting affects all declarations within a scope.
+
+Variables are introduced (*bound*) in a scope through the statement
+=var=. When a variable is declared within a function scope, it is
+taken to be /local/ to that scope. You can contrast this to variables
+that are accessible from the current scope, but are declared on
+enclosing scopes (/non-local/), and variables that are declared on the
+top-level scope (/global/).
+
+#+BEGIN_SRC js
+  var foo = 1;          // global
+  void function Parent() {
+    var foo = 2;        // non-local
+    void function Current() {
+      var foo = 3;      // local
+      console.log('local foo:', foo)
+    }()
+  }()
+
+  // => 'local foo: 3'
+#+END_SRC
+
+It's important to note that JavaScript doesn't prevent assignments to
+undeclared variables, instead, it acts as a new variable declaration on
+the top-level scope. *Leaked* globals in this manner makes it more
+difficult to reason about a code-base, since side-effects are not
+immediately apparent.
+
+#+BEGIN_SRC js
+  void function() {
+    foo = 1
+  }()
+  console.log(foo)  // => 1
+#+END_SRC
+
+
+
+Back to the declarations matter, as mentioned previously, all
+declarations are hoisted within the scope they occur. This means that
+regardless of where the declarations appear physically, they're executed
+before any code in the scope, in 
+
+
+
 ** Locals vs Globals
 ** Environments
 ** Closures
