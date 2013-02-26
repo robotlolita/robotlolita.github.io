@@ -3,7 +3,7 @@
 ---
 layout: post
 title:  Unfancy API Documentation
-snip:   Making API references easier. Faster. Sweeter.
+snip:   Making API references Easier. Faster. Sweeter.
 ---
 #+END_HTML
 
@@ -137,7 +137,7 @@ steps. There are four steps in documenting an API, to be more precise:
 
 The graph below shows one way the concerns could fit in the steps above:
 
-#+begin_src ditaa :file ../media/assets/2013-02-23-doc-steps.png :cmdline -E :exports none
+#+begin_src ditaa :file ../media/assets/2013-02-23-doc-steps.png :cmdline -s 0.8 -E :exports none
 
                       +-----------------------+       +--------------------+
               +---=-> | Extract entities cYEL |-=-+   | Relationships cBLU |           
@@ -160,7 +160,7 @@ The graph below shows one way the concerns could fit in the steps above:
 #+RESULTS:
 [[file:../media/assets/2013-02-23-doc-steps.png]]
 
-[[file:../media/assets/2013-02-23-doc-steps.png]]
+[[blog:2013-02-23-doc-steps.png]]
 
 So, why would this work? Simple (despite what my failures at graphs would tell
 you), the annotated source is the canonical reference for everything, it's what
@@ -397,20 +397,101 @@ what it means:
   Yes, I do realise it makes more sense to create a new data structure to store
   all information related to =code=, I'll likely do it when refactoring these
   tools. I'll probably make =code= a =List= as well, so it can handle
-  multi-methods and such.
+  multi-methods defined in different parts of the code and such.
 
 This, however does not cover several kinds of entities, specially entities that
 have intrinsic relationships with others in a way that it changes their
 behaviour, like Classes and SuperClasses/Mixins/Traits/Delegative &
-Concatenative Prototypes, etc. It could just well be encoded in the type
-annotation, but then you lose the ability of using these relationships to
-convey additional information for the user when visualising the documentation,
-and encoding it as an additional but non-specified meta-data means that, while
-other tools can easily make sense of the data, we don't have a common-ground
-for them to collaborate with every other tool in this environment, so that's a
-no-go.
+Concatenative Prototypes, etc.. It could just well be encoded in the type annotation,
+but then you lose the ability of using these relationships to convey additional
+information for the user when visualising the documentation, and encoding it as
+an additional but non-specified meta-data means that, while other tools can
+easily make sense of the data, we don't have a common-ground for them to
+collaborate with every other tool in this environment, so that's a no-go.
 
 As it current stands, these things would need to be devised on top of the
 current standard and be added for the specification, so we don't have the risk
 of conflicts between different notations, and tools that don't understand that
 "extension" can just ignore the additional meta-data.
+
+
+** Visualising entity meta-data
+
+Well, meta-data is good for applications to manipulate them, but not good for
+the end user, thus we are left with the problem of "how do we visualise this
+meta-data". Turns out, there might be many different cases where we want to do
+different visualisations. The goal of Papyr° is to cover one of them: finding
+some entity that fits the problem the user is trying to solve in a potentially
+large and complex API, and discovering how to use that entity. In the current
+form, Papyr° manages to achieve almost none of the goals outlined above,
+although it is a starting point.
+
+[[blog:papyro.png]]
+
+First, helping the user find the right component to use for a certain problem
+involves first knowing how the user searches for information about that
+particular problem. In some cases it's easy to guess, for example, the user
+might be looking for a stable sort, and as such he'll type "stable sort" in the
+search box and expect to see classes, functions, procedures, methods, whatever
+that will do the thing he wants. But perhaps the user isn't really looking for
+a stable sort, perhaps in his case some other sorting algorithm will do the job
+better or faster because he doesn't have the constraints he gave in the first
+place. In this case, the system has to guess the intentions of the user from
+the provided context, and suggest things that fit the context but provide
+different constraints, or different benefits.
+
+This also kind of asks for a more expressive search. One where the user can
+define his constraints better. For example, if he knows he's working with a
+list of Elements, he might be looking for a sorting function that is efficient
+for those, so he could provide a basic type, say: =sort :: [Element] ->
+[Element]=, and the search engine would attempt to match sorting functions that
+provide an approximate type to that. [[http://www.haskell.org/hoogle/][Hoogle]] does this kind of approximate type
+searches. Other constraints might involve platforms, mutability, etc. Ranking
+the search results by favouring the ones that fit the constraints the user
+provided better is also an interesting addition.
+
+Currently Papyr° does not provide automatic contextual hints for potentially
+useful components, but this is definitely a feature I want to work on, and that
+could perhaps be branched in other projects. So, for example, an analysis tool
+could be ran on the entities meta-data earlier on to determine some possible
+logical tags for each entity, which could be used by the visualisation tool for
+relating different entities and ranking them. Approximate type searches are
+something that are planned but not yet implemented, this is however something I
+need to give a little more thought since the type signatures are not defined,
+so it's not something as straight-forward as Hoogle's type search. The problem
+is also more with analysing the user input and determining the types rather
+than having different type annotations used by the entities, since you could
+probably determine that by some meta-data or language.
+
+So, the second goal of Papyr° is helping the user to use a particular entity to
+solve his or her problem. This is partially done by automatically loading
+Markdown literate examples and displaying them alongside the source code and
+other details for an entity. The literate examples are, however, static. There
+could be some use in defining a format for interactive examples, or even
+examples that would be ran by a particular engine when building the
+documentation JSON, for the cases where fully interactive examples in the
+browsers aren't possible.
+
+The only other visualisation format I plan on writing is Reedox, a minimal
+visualisation format for overly small APIs (one or two functions), where it
+doesn't make much sense to have the user load an entire new page to search for
+something where the whole API fits in two paragraphs in your project's
+README. And this is the case for quite a few packages on NPM, including many I
+plan on writing in order to refactor the projects outlined above.
+
+
+* Conclusion and future works
+
+This is just the beginning, there's lots of stuff to do, not only in
+standardisation, so we can get better processing and analysis tools to extract
+the meta-data we need, but also in visualisation tools so we can actually use
+that meta-data in a way that it's useful for the user.
+
+Again, none of the projects above is really finished, but they can work for you
+right now, and the core interfaces are unlikely to change. Calliope will surely
+have the same interface and it'll be updated to reflect any changes that might
+happen in the other projects. It's also quite easy to integrate with your
+existing NPM package, so you can give it a try :3
+
+None the less, I'll be actively working on these and other tools (testing and
+building, mostly). More crazy stuff to come ;3
