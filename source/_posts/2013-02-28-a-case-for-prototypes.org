@@ -280,9 +280,9 @@ instances.
 
 There's much more to [[http://github.com/killdream/claire][Claire]] than what I've shown above, but those are out of
 the scope of this blog post, which was to outline how you can take advantage of
-prototypical inheritance, since you're already coding in a language that
-provides it for you, to create awesome things. Dynamic delegation chains are
-sweet for lots of things, these are just some of them.
+prototypical inheritance to create awesome things, since you're already coding
+in a language that provides it for you. Dynamic delegation chains are sweet for
+lots of things, these are just some of them.
 
 Perhaps I might write a new blog post on some other aspect of Claire (for
 instance, shrinking or program generation, when those are done). But I don't
