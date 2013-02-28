@@ -81,11 +81,11 @@ when you write things like:
 #+end_src
 
 Even though =satisfy= modifies the =invariant= field of a =Property=,
-=all_positive_ints= and =sqrt_p= should be two completely independent data
-structures. It could be obviously achieved by creating a new object, copying
-all fields of the previous object in the new one, and changing the =invariant=
-field, but prototypes make that both dead simple and efficient (in terms of
-processing power and memory usage).
+=all_positive_ints= and =sqrt_p= should be two different data structures. It
+could be obviously achieved by creating a new object, copying all fields of the
+previous object in the new one, and changing the =invariant= field, but
+prototypes make that both dead simple and efficient (in terms of processing
+power and memory usage).
 
 So, turns out the implementation for this is just a simple and straight-forward
 one-line (the actual implementation is simpler due to both LiveScript's syntax
@@ -100,9 +100,10 @@ and the fact that Property inherits from Boo's =Base= object):
   }
 #+end_src
 
-So, =derive= here is just a thin abstraction over =Object.create= that creates
-a new Object which delegates to another object (=this=, in the case above), and
-extends that new object with the given properties.
+- note ::
+  So, =derive= here is just a thin abstraction over =Object.create= that
+  creates a new =Object= which delegates to another object (=this=, in the case
+  above), and extends that new object with the given properties.
 
 If you inspect the values of =invariant=, you'll get:
 
