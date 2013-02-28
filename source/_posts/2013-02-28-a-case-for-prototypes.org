@@ -243,11 +243,11 @@ is easily done by the =repeat= combinator. In fact, the =List= core generator
 is a thin abstraction on the =repeat= combinator, just so you don't have to
 type =repeat(choice(...))=. 
 
-Now is where the magic of prototypes truly shine. I didn't tell you until now,
-but all generators need to maintain all of the properties of the previous
+Now, this is where the magic of prototypes truly shine. I didn't tell you until
+now, but all generators need to maintain all of the properties of the previous
 generator. All of them! This is because other generators might depend on those
 properties (for example, =size=). And in fact, the =size= field plays a huge
-and important role in the =repeat= combinator, since it will only generates
+and important role in the =repeat= combinator, since it will only generate
 lists of values up to that length!
 
 Now, enough talk, this is how the =repeat= combinator looks for reals:
