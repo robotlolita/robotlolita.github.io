@@ -288,7 +288,7 @@ Perhaps I might write a new blog post on some other aspect of Claire (for
 instance, shrinking or program generation, when those are done). But I don't
 know, I've got some other quite hot and sweet topics to talk about as well! :3
 
-Anyways, hope you guys can see now why inheriting directly from Objects is a
+Anyways, hope you guys can see now why inheriting directly from objects is a
 Darn Good Thing™. And why I still think that =Function.prototype= is an
 anti-pattern in the language, which should be avoided (although it's undeniably
 fast).
