@@ -154,7 +154,7 @@ combinators. Yes, we get all we need from combinators, and still have
 combinators as plain functions (that yield new Generators).
 
 
-** The as-generator combinator
+** The `asGenerator' combinator
 
 So, the first and most basic generator is the =asGenerator=. This is a
 function that takes any value =a=, and returns a Generator that will always
@@ -186,7 +186,7 @@ you would have to encode the =asGenerator= function as a whole new Class,
 making the implementation unnecessarily complicated.
 
 
-** The choice and frequency combinators
+** The `choice' and `frequency' combinators
 
 On top of the lifting generator, a clear second step is to provide people with
 a way to alternatively select between different generators to create a new
@@ -234,7 +234,7 @@ This is a simplified implementation of =choice= and =frequency=:
 #+end_src
 
 
-** The repeat combinator
+** And finally, the `repeat' combinator
 
 Once we have all this in place, we can also generate lists of things, and this
 is easily done by the =repeat= combinator. In fact, the =List= core generator
@@ -273,34 +273,6 @@ kind of =Generator= that efficiently shares all the properties defined in the
 previous generator, but also defines its own properties. This is the true
 beauty of prototypical inheritance — or instances inheriting directly from
 instances.
-
-
-** And finally, the transform combinator
-
-Now that we have =repeat= and =asGenerator= and =choice=, and we can combine
-them in any way we want to generate rather complex data generators (take a look
-at the =data.ls= file in Claire to see this in action!), we need just one more
-thing to make it perfect: a =fold= operator.
-
-So, we have =repeat= that can give us many values, but sometimes we want a
-generator that takes a list of generated data, and gives us back a single,
-consolidated value. Enter the =transform= combinator, which uses a function to
-reduce those values:
-
-#+begin_src js
-  function join(xs) { return xs.join('') }
-
-  var string = transform(join, repeat(char))
-#+end_src
-
-And, again, the simplified implementation is straightforward:
-
-#+begin_src js
-  function transform(f, g) {
-    g = asGenerator(g)
-    return g.derive({ next: function(){ return f(g.next()) } })
-  }
-#+end_src
 
 
 * Conclusion
