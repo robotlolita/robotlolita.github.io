@@ -135,7 +135,7 @@ Things start getting a lot more awesome when we take a look at how Generators
 were modelled, specially when we take into account the combinators defined for
 creating new Generators. Here's the deal:
 
-  - We want generators to follow the pure model as Properties.
+  - We want generators to follow the pure model Properties do.
 
   - We want combinators to be expressive, but still easy enough to write.
 
