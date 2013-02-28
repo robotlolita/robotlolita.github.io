@@ -45,7 +45,7 @@ decided on two basic data types:
     size   :: Int
     next   :: () -> a
 
-  -- | A more semantic way of getting a Property than Property.make()
+  -- | A semantic way of getting a Property than Property.make()
   forAll :: Gen a... -> Property
 #+end_src
 
