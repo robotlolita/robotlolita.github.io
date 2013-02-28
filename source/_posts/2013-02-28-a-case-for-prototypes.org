@@ -272,7 +272,7 @@ Pretty straight forward, huh? So is the simplified implementation:
 So, now we're taking any kind of =Generator=, an instance, and making a new
 kind of =Generator= that efficiently shares all the properties defined in the
 previous generator, but also defines its own properties. This is the true
-beauty of prototypical inheritance — or instances inheriting directly from
+beauty of prototypical inheritance: instances inheriting directly from
 instances.
 
 
