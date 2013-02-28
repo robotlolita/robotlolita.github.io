@@ -157,11 +157,12 @@ combinators as plain functions (that yield new Generators).
 
 ** The `asGenerator' combinator
 
-So, the first and most basic generator is the =asGenerator=. This is a
-function that takes any value =a=, and returns a Generator that will always
-yield that value. On the other hand, if the function receives a generator as
-value, it works like the identity function. This allows us to lift a regular
-primitive value, like a Boolean or a String, into a generator:
+So, the first and most basic generator is the =asGenerator=. This is a function
+that takes any value =a=, and returns a Generator that will always yield that
+value (or the result of applying a function, if =a= is a function). On the
+other hand, if the function receives a generator as value, it works like the
+identity function. This allows us to lift a regular primitive value, like a
+Boolean or a String, into a generator:
 
 #+begin_src js
   var True = asGenerator(true)
@@ -199,7 +200,7 @@ instead.
 
 So, what's the big deal here? Ain't those other two cases that you could encode
 as a class? Well, sure. You can always encode things using something in
-computer science, but that doesn't mean that'll be easy, simple or
+computer science, but that doesn't mean it'll be easy, simple or
 straight-forward. And I want the three of those characteristics.
 
 Using these combinators looks like this:
