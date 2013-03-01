@@ -206,7 +206,7 @@ straight-forward. And I want the three of those characteristics.
 Using these combinators looks like this:
 
 #+begin_src js
-  var vowels = choice('a', 'b', 'c', 'd', 'e')
+  var vowels = choice('a', 'e', 'i', 'o', 'u')
   var coins = frequency([3, true], [5, false])
 #+end_src
 
@@ -292,3 +292,8 @@ Anyways, hope you guys can see now why inheriting directly from objects is a
 Darn Good Thing™. And why I still think that =Function.prototype= is an
 anti-pattern in the language, which should be avoided (although it's undeniably
 fast).
+
+
+* Acknowledgements
+
+Thanks to =Theo= for pointing out that =abcde= aren't vowels ;3
