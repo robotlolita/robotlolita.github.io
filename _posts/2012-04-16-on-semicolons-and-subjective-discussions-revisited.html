@@ -130,8 +130,8 @@ categorise famous languages' semicolon insertion rules in the following groups:
 
 
 
-<pre class="src src-bnf">&lt;statement&gt;        ::= ( lots of junk ) &lt;end-of-statement&gt;
-&lt;end-of-statement&gt; ::= NEWLINE | <span style="color: #A6E32D;">";"</span>
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;statement&gt;</span>        <span style="color: #FA2573;">::=</span> ( lots of junk ) <span style="color: #729FCF;">&lt;end-of-statement&gt;</span>
+<span style="color: #67D9F0;">&lt;end-of-statement&gt;</span> <span style="color: #FA2573;">::=</span> NEWLINE <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #A6E32D;">";"</span>
 </pre>
 
 
@@ -253,11 +253,11 @@ first define what the usual rule for ending a statement in JavaScript is:
 
 
 
-<pre class="src src-bnf">&lt;end-of-statement&gt; ::= <span style="color: #A6E32D;">";"</span>
-                     | &lt;horizontal-space&gt;* NEWLINE blank*
-                       (and STATEMENT_ENDED? (not &lt;continuation&gt;))
-&lt;horizontal-space&gt; ::= SPACE | TAB | &lt;comment&gt;
-&lt;continuation&gt;     ::= <span style="color: #A6E32D;">"("</span> | <span style="color: #A6E32D;">"["</span> | &lt;infix-operator&gt;
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;end-of-statement&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">";"</span>
+                     <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;horizontal-space&gt;</span>* NEWLINE blank*
+                       (and STATEMENT_ENDED? (not <span style="color: #729FCF;">&lt;continuation&gt;</span>))
+<span style="color: #67D9F0;">&lt;horizontal-space&gt;</span> <span style="color: #FA2573;">::=</span> SPACE <span style="color: #E52222; font-weight: bold;">|</span> TAB <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;comment&gt;</span>
+<span style="color: #67D9F0;">&lt;continuation&gt;</span>     <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"("</span> <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #A6E32D;">"["</span> <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;infix-operator&gt;</span>
 </pre>
 
 
@@ -293,7 +293,7 @@ accepts an <b>optional</b> return value:
 
 
 
-<pre class="src src-bnf">&lt;return-stmt&gt; ::= <span style="color: #A6E32D;">"return"</span> [no line break here] &lt;expression&gt;
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;return-stmt&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"return"</span> [no line break here] <span style="color: #729FCF;">&lt;expression&gt;</span>
 </pre>
 
 

@@ -299,7 +299,7 @@ JavaScript also understands references to a property using what we call
 
 
 
-<pre class="src src-bnf">&lt;bracket-access&gt; ::= &lt;identifier&gt; <span style="color: #A6E32D;">"["</span> &lt;expression&gt; <span style="color: #A6E32D;">"]"</span>
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;bracket-access&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> <span style="color: #A6E32D;">"["</span> <span style="color: #729FCF;">&lt;expression&gt;</span> <span style="color: #A6E32D;">"]"</span>
 </pre>
 
 
@@ -348,7 +348,7 @@ The rule for <i>dot notation</i> is:
 
 
 
-<pre class="src src-bnf">&lt;dot-access&gt; ::= &lt;identifier&gt; <span style="color: #A6E32D;">"."</span> &lt;identifier-name&gt;
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;dot-access&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span> <span style="color: #A6E32D;">"."</span> <span style="color: #729FCF;">&lt;identifier-name&gt;</span>
 </pre>
 
 
@@ -659,26 +659,26 @@ The rules for object literal can be described as the following:
 
 
 
-<pre class="src src-bnf">&lt;object-literal&gt;  ::= <span style="color: #A6E32D;">"{"</span> &lt;property-list&gt; <span style="color: #A6E32D;">"}"</span>
+<pre class="src src-bnf"><span style="color: #67D9F0;">&lt;object-literal&gt;</span>  <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"{"</span> <span style="color: #729FCF;">&lt;property-list&gt;</span> <span style="color: #A6E32D;">"}"</span>
                     ;
-&lt;property-list&gt;   ::= &lt;property&gt; [<span style="color: #A6E32D;">","</span> &lt;property&gt;]*
+<span style="color: #67D9F0;">&lt;property-list&gt;</span>   <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;property&gt;</span> [<span style="color: #A6E32D;">","</span> <span style="color: #729FCF;">&lt;property&gt;</span>]*
                     ;
-&lt;property&gt;        ::= &lt;data-property&gt;
-                    | &lt;getter-property&gt;
-                    | &lt;setter-property&gt;
+<span style="color: #67D9F0;">&lt;property&gt;</span>        <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;data-property&gt;</span>
+                    <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;getter-property&gt;</span>
+                    <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;setter-property&gt;</span>
                     ;
-&lt;data-property&gt;   ::= &lt;property-name&gt; <span style="color: #A6E32D;">":"</span> &lt;expression&gt;
+<span style="color: #67D9F0;">&lt;data-property&gt;</span>   <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;property-name&gt;</span> <span style="color: #A6E32D;">":"</span> <span style="color: #729FCF;">&lt;expression&gt;</span>
                     ;
-&lt;getter-property&gt; ::= <span style="color: #A6E32D;">"get"</span> &lt;identifier&gt;
-                    :       &lt;function-parameters&gt;
-                    :       &lt;function-block&gt;
+<span style="color: #67D9F0;">&lt;getter-property&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"get"</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-parameters&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-block&gt;</span>
                     ;
-&lt;setter-property&gt; ::= <span style="color: #A6E32D;">"set"</span> &lt;identifier&gt;
-                    :       &lt;function-parameters&gt;
-                    :       &lt;function-block&gt;
+<span style="color: #67D9F0;">&lt;setter-property&gt;</span> <span style="color: #FA2573;">::=</span> <span style="color: #A6E32D;">"set"</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-parameters&gt;</span>
+                    :       <span style="color: #729FCF;">&lt;function-block&gt;</span>
                     ;
-&lt;property-name&gt;   ::= &lt;identifier&gt;
-                    | &lt;quoted-identifier&gt;
+<span style="color: #67D9F0;">&lt;property-name&gt;</span>   <span style="color: #FA2573;">::=</span> <span style="color: #729FCF;">&lt;identifier&gt;</span>
+                    <span style="color: #E52222; font-weight: bold;">|</span> <span style="color: #729FCF;">&lt;quoted-identifier&gt;</span>
                     ;
 </pre>
 
