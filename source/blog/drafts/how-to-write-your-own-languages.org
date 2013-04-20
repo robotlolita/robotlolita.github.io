@@ -173,6 +173,180 @@ framework to talk to the computer about a particular problem is a good thing
 
 * 3. The syntax
 
+Since we're interested in making the most out of data processing in a
+functional language, we're going to encode everything as a function. This means
+that we'll have no operators, and as a side-effect of that we'll just use
+[[http://en.wikipedia.org/wiki/Polish_notation][Prefix notation]] for simplicity. In other words, our language will be closer in
+syntax to LISP, but without all the overloading of parenthesis. Rather, our
+language will take inspiration on Dylan and Haskell.
+
+
+** 3.1. Values
+
+Ultimately our language is about values, and that's why we make them
+immutable. Since we'll be dealing with values a lot, we need a nice way of
+representing them. Here we'll use the same notation Clojure uses for them,
+which is close to the JavaScript notation, with the only exception that strings
+may span as many lines as they want:
+
+#+BEGIN_SRC lua
+  1, 12.35  -- Number
+  "foo bar" -- String
+  [1, 2, 3] -- List
+#+END_SRC
+
+
+** 3.2. Expressions and applications
+
+Falsetto will be a expression language. In other words, we'll have no
+statements, because statements only do side-effects and don't return a
+value. And we care about values. A simple expression always ends up with a
+semicolon, and expressions can be grouped into sequential blocks with braces
+(={}=), in this case, the last expression in the brace is returned as the value
+of the entire brace.
+
+Function application is something we'll do a lot, so we encode application
+as whitespace separated values. This leaves the usage of parenthesis in an
+expression to be used exclusively for grouping expressions. For functions that
+expect no parameters, we'll use a =!= suffix to call them (e.g.: =inc!=).
+
+Assignments will be treated specially, both in syntax and meaning. This means
+that you can't store an assignment, and you can't refer to it. Assignments are
+scary and we'll leave them as alien thingies in this language.
+
+
+** 3.3. Identifiers
+
+Identifiers are the names we use to refer to values (and functions, which are
+also values). For falsetto, we'll allow any combination of symbols to form a
+name (with the exception of brackets, quotes, semicolons, commas and colons). A
+name must start with anything that isn't a number, however, because numbers
+already expect that, and we don't want the parser to be confused about whether
+=12e= is a number or a name.
+
+We'll use a convention similar to Dylan and Scheme when naming things:
+
+ - Predicates :: Predicates are functions that test something and return a
+                 boolean indicating whether the test passed or not. The name of
+                 these functions will end with a question mark (e.g.:
+                 =number?=).
+
+ - Constants  :: These are things that are shared between several functions in
+                 a module. To easily distinguish them, we'll surround them in
+                 asterisks (e.g.: =*max-list-depth*=). Other languages tend to
+                 use uppercase letters, like =MAX_LIST_DEPTH=, but our
+                 identifiers are more expressive so we can make things a little
+                 more readable.
+
+The identifiers =->= and => will be reserved because it's used by the function syntax,
+and allowing that identifier would make things confusing. However, identifiers
+like =string->number= are allowed.
+
+
+** 3.6. Pattern matching
+
+Last, but not least, Falsetto will have pattern matching. We'll use the same
+notation we use for data structures to represent the patterns of values we
+accept in a function.
+
+A programmer will be able to combine patterns using three different set
+operators: 
+
+  - disjunction (=1 | 2=) :: will accept either values;
+
+  - intersection (=[1, 2] & [ 2 ]=)  :: will reduce the set of accepted values
+                                        to one present in both; 
+
+  - difference (=[1, 2] - [ 1 ]=) :: will accept everything that is in the
+                                     former set but not the latter
+    
+Besides the operators, we'll use the wildcard character (=_=) to mean that we
+accept any kind of value, and the range operator (=x ... y=) to define a set of
+values accepted that are larger than x and smaller than y. A range of kind =[1,
+2, ...]= will accept a list that starts with the numbers 1 and 2.
+
+Specific parts of a pattern may be bound to a identifier by using the *binding*
+(=:=) operator, such that the pattern =bs:[1, as:[ _ ], ...]= would create two
+bindings, one referring to the whole list (=bs=) and the other referring to the
+first sublist (=as=).
+
+To talk about patterns, we'll have the special thing =match=, which will take a
+list of patterns and the branches to execute if any of them matches:
+
+#+BEGIN_SRC lua
+  match n
+  | 0   => 0;
+  | 1   => 1;
+  | n:_ => + (fib (- n 1)) (fib (- n 2));
+#+END_SRC
+
+
+** 3.5. Functions
+
+Functions are our bread and butter. Functions are our tough guys. Functions
+know their way 'round the town. Functions know how to deal with values and give
+us back new values. Since functions will be used extensively, we need a concise
+way of writing them:
+
+#+BEGIN_SRC lua
+  -- a simple function.
+  add : (a, b) -> + a b;
+
+  -- a function with lots of expressions. The last expression is always
+  -- returned as the value of the function.
+  foo : (a) -> { x : do-x-to a
+               ; y : do-y!
+               ; do-z-to x y
+               }
+#+END_SRC
+
+For multiple dispatching, we'll allow the programmer to define the expected
+types right in the parameter definition list. These use the same notation as
+the pattern matching described previously.
+
+#+BEGIN_SRC lua
+  fib : (0)   -> 0;
+  fib : (1)   -> 1;
+  fib : (n:_) -> + (fib (- n 1)) (fib (- n 2));
+#+END_SRC
+
+
+** 3.6. Control flow
+
+So far, we haven't mentioned any control flow syntax. If you're only familiar
+with C-family languages (C, JavaScript, Java, etc.) you might be wondering how
+the fuck you're supposed to write anything in this language at all. Well, if
+that's what you were wondering, I'm proud to tell you that Falsetto will not
+have any =if=, =cond=, =while=, =for=, or any other construct of the
+sort. Instead, we'll only have pattern matching, multiple dispatching and
+boolean functions.
+
+What this means is that, instead of writing this:
+
+#+BEGIN_SRC js
+  if (foo == bar) { doX() }
+  else            { doY() }
+#+END_SRC
+
+You'll be writing this:
+
+#+BEGIN_SRC lua
+  (foo == bar) { do-x! } { do-y! };
+#+END_SRC
+
+Or you can encode it as a function:
+
+#+BEGIN_SRC lua
+  when = (condition, consequent) -> condition consequent {};
+
+  when (> 1 n) { do-x! };
+#+END_SRC
+
+A Boolean value is just a function, where =true= calls the first parameter, and
+=false= calls the second parameter. If you're familiar with Smalltalk or Lambda
+Calculus, those languages use this, and it gives an expressive framework the
+programmer can use to write their own flow semantics — and flow is something we
+really value in a language about data processing.
 
 
 
