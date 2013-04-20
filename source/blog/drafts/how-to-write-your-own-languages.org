@@ -1,0 +1,187 @@
+#+STARTUP: showall hidestars indent
+#+BEGIN_HTML
+---
+layout: post
+title:  How To Write Your Own Programming Languages
+snip:   Some people say writing PLs is difficult. I say it couldn't be easier!!1
+---
+#+END_HTML
+
+I've heard it a lot, people saying that writing your own programming languages
+is so difficult only a selected few programmers are able to do it. Well,
+writing smart compilers is difficult, writing decent JITs is difficult, but
+writing programming languages is actually rather easy: it's just about tree
+transformations.
+
+In this blog post I'll show you how simple tree transformations and pattern
+matching make the task of writing a programming language. We'll use [[http://www.tinlizzie.org/ometa/][OMetaJS]] for
+writing both the parser and the compiler. OMeta is interesting for this because
+it generalises parsing, optimising and compiling as tree transformations, which
+is actually the essence of those.
+
+In a sense, this is a tutorial about OMetaJS, but it's also a more general
+article on an introduction to the design of programming languages. It's a
+*huge* topic, so don't expect me to cover everything. However, it's a good
+starting point to see if you'll be interested in digging more into the awesome
+field of Programming Language Theory :3
+
+
+* 0. Introduction
+
+This is an article on the basics of programming language design. As an
+introduction to the topic, I've dropped most of the mathematical formalism and
+advanced techniques for complex semantics. But I'll try to give pointers as to
+how you'd go about the whole process which will hopefully be enough for writing
+a few hobby-ist DSLs.
+
+The article is structured in 6 sections, a conclusion and an appendix. First
+section provides an overview to the concept of programming languages, and why
+you would want to write a new one at all. That's followed by a section on the
+semantics of programming languages and how we encode semantics for a human
+programmer (syntax). These sections have very little mathematical formalism,
+and provide an overview of the subset of PLT we'll be using throughout the
+article. They also present the language we'll be building.
+
+Sections 4, 5 and 6 go about how we encode the syntax and semantics of our
+programming language using OMetaJS. We'll be using Node here just because it
+makes everything simpler, but you could just as well follow the article using
+the [[http://www.tinlizzie.org/ometa-js/][OMetaJS playground]]. These sections basically go about explaining the
+process of parsing, optimising and compiling as generalisations of tree
+transformation with pattern matching, which is what OMeta is all about. While
+most of it will be OMeta syntax, which I'll explain at length, OMetaJS is
+written as a superset of JavaScript, and as such this article expects a fair
+deal of familiarity with JavaScript concepts — JS will also be the compilation
+target, so...
+
+Section 7 provides a few TL;DR; paragraphs on the design and implementation of
+programming languages, and Appendix A provides pointers to additional reading
+and references to the things described throughout this article.
+
+
+* 1. About general programming languages and DSLs
+
+So, you know what programming languages are. You have probably heard of all
+these weirdly named things, like Java, JavaScript, C, C++, C#, D, E, F#, LISP,
+Scala, ... Well, perhaps you haven't heard about all of them, but you likely
+know that they're things that let you talk to the computer, and in this sense,
+they're not that much different from English or French.
+
+Some people think programming languages are black magic. They're weaved by all
+those long-bearded wizards that can bend the computer to do anything they
+want. But that's not really true. Programming languages are just a way to
+communicate ideas with the computer. The only requirement is that you be
+familiar with the ideas you're encoding in your language.
+
+Then there are Domain-Specific Languages. These are like regionalisms or
+slangs. They are sub-sets of a particular language that are specific to a
+particular domain. For example, you could write a language that only knew how
+to talk to the computer about how to play music. Or a language that only knew
+how to draw something on the screen.
+
+People create new languages all the time, and there are all the sort of reasons
+for that. It might be for making a particular thing run faster, or to make it
+easier to express a particular idea (for example, parallel programs). But not
+all languages are general languages, so people write Domain-Specific ones to
+make it easier for non-programmers (or even to programmers) to express ideas
+that are confined to a particular problem. DSLs are good because they make it
+easier to reason about something in a particular domain, where a domain could
+be physics, project automation, business logic, or anything.
+
+This is also one of the reasons polyglot programmers are better at solving
+problems than those who only speak one language. Polyglot programmers can
+express ideas with more clarity and with less effort depending on what the
+problem requires, by carefully choosing how they'll /talk/ about that problem
+with the computer. Choosing the right language leads to a great reduction on
+the overall complexity of a system, and the time necessary to build it.
+
+And that, my dearest friends, is more or less why people write new
+languages. Of course, there also all the sort of languages that are only
+written out of boredom and academic curiosity. We're not going to deal with
+languages [[http://tvtropes.org/pmwiki/pmwiki.php/Main/ForTheLULZ][FOR TEH LULZ]] here, however ;3
+
+
+* 2. The semantics
+
+Before getting our hands dirty with writing a compiler, we have to first decide
+what we're going to build. As I said, languages are all about ideas. And ideas
+in Programming Language Theory are just another word for *semantics*. For
+example, the main ideas about JavaScript are /prototype object orientation with
+single delegation/, /closures/, /first-class functions/, /applicative order/,
+/strict evaluation/, etc. If you don't know what all of these are, don't worry,
+it won't matter for now ;3
+
+For the language we're going to build, we'll keep it as simple as
+possible. It'll be a dynamically typed functional language with immutable
+values for processing data[1], modelled after a subset of the [[http://clojure.org/][Clojure]]
+language. In other words, our language (let's call it Falsetto) will be able to
+express the following ideas:
+
+[1]: While functional languages are good for this, concatenative or flow-based
+     programming languages would likely fit the purpose better.
+
+
+  - Functions as values (or First-Class Functions) ::
+    Our language will treat functions as any other value (numbers, strings), so
+    we can return it from other functions, take it as an argument, or store it
+    in variables.
+
+  - Immutable primitives (values) ::
+    Our language will be able to talk about Numbers, Strings and Lists. All of
+    these will be immutable — that is, once you create a List, you can't change
+    the things in that List, but you can create a new List based on the
+    original one.
+
+  - Pattern matching ::
+    Our language will choose different transformations to apply to the data
+    depending on how the data looks. Pattern matching is a better way to branch
+    like this for complex data structures.
+
+  - Proper closures ::
+    As a nice bonus from choosing to compile to JavaScript, we'll get proper
+    closures for free (since I'll not go about on how to implement them).
+
+  - Call by value/sharing ::
+    Our language will evaluate the arguments to a function before applying the
+    function, then pass the resulting values. Since everything is immutable, we
+    don't need to pay the price to copy things to a new place in memory and
+    just share the reference instead.
+
+  - Multiple dispatching on structural typing ::
+    Our language will use structural typing (or duck typing) to determine which
+    branch of a function should be applied to a particular data structure. A
+    function on the other hand will have to declare which kinds of data it
+    supports. We call these kinds of functions *generics*, and they provide a
+    nice and expressive way to write polymorphic code.
+
+  - Automatic currying ::
+    Our functions will be automatically [[http://en.wikipedia.org/wiki/Currying][curried]]. This means that if we have a
+    function =f= that takes two arguments, and we apply that function one
+    argument (say, =2=), we get a new function (=g=), which when applied to
+    another argument will call =f= with the previous applied value and the new
+    value. That is, =f(2)(3)= is the same as =f(2, 3)=.
+
+
+The purposes of all these ideas is to make all the data transformations
+easy to reason about and clearer. More than that, they are orthogonal concepts
+that compose nicely and help making the language more expressive to the
+particular problem we're designing it for: data processing.
+
+Choosing orthogonal ideas that can be easily composed to provide an expressive
+framework to talk to the computer about a particular problem is a good thing
+(sometimes rather overlooked) when designing a new programming language.
+
+
+* 3. The syntax
+
+
+
+
+* 4. Parsing with OMeta
+
+* 5. Optimisations as tree transformations
+
+* 6. Compiling
+
+* 7. Conclusion
+
+* A. References and additional reading
