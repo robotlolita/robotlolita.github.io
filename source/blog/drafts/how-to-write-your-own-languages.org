@@ -112,12 +112,12 @@ it won't matter for now ;3
 
 For the language we're going to build, we'll keep it as simple as
 possible. It'll be a dynamically typed functional language with immutable
-values for processing data[1], modelled after a subset of the [[http://clojure.org/][Clojure]]
+values for processing data[fn:1], modelled after a subset of the [[http://clojure.org/][Clojure]]
 language. In other words, our language (let's call it Falsetto) will be able to
 express the following ideas:
 
-[1]: While functional languages are good for this, concatenative or flow-based
-     programming languages would likely fit the purpose better.
+[fn:1]: While functional languages are good for this, concatenative or
+        flow-based programming languages would likely fit the purpose better.
 
 
   - Functions as values (or First-Class Functions) ::
@@ -226,17 +226,17 @@ already expect that, and we don't want the parser to be confused about whether
 
 We'll use a convention similar to Dylan and Scheme when naming things:
 
- - Predicates :: Predicates are functions that test something and return a
-                 boolean indicating whether the test passed or not. The name of
-                 these functions will end with a question mark (e.g.:
-                 =number?=).
+ - Predicates :: 
+   Predicates are functions that test something and return a boolean indicating
+   whether the test passed or not. The name of these functions will end with
+   a question mark (e.g.: =number?=). 
 
- - Constants  :: These are things that are shared between several functions in
-                 a module. To easily distinguish them, we'll surround them in
-                 asterisks (e.g.: =*max-list-depth*=). Other languages tend to
-                 use uppercase letters, like =MAX_LIST_DEPTH=, but our
-                 identifiers are more expressive so we can make things a little
-                 more readable.
+ - Constants ::
+   These are things that are shared between several functions in a module. To
+   easily distinguish them, we'll surround them in asterisks (e.g.:
+   =*max-list-depth*=). Other languages tend to use uppercase letters, like
+   =MAX_LIST_DEPTH=, but our identifiers are more expressive so we can make
+   things a little more readable.
 
 The identifiers =->= and => will be reserved because it's used by the function syntax,
 and allowing that identifier would make things confusing. However, identifiers
@@ -252,13 +252,14 @@ accept in a function.
 A programmer will be able to combine patterns using three different set
 operators: 
 
-  - disjunction (=1 | 2=) :: will accept either values;
+  - disjunction (=1 | 2=) ::
+    will accept either values;
 
-  - intersection (=[1, 2] & [ 2 ]=)  :: will reduce the set of accepted values
-                                        to one present in both; 
+  - intersection (=[1, 2] & [ 2 ]=) ::
+    will reduce the set of accepted values to one present in both; 
 
-  - difference (=[1, 2] - [ 1 ]=) :: will accept everything that is in the
-                                     former set but not the latter
+  - difference (=[1, 2] - [ 1 ]=) ::
+    will accept everything that is in the former set but not the latter
     
 Besides the operators, we'll use the wildcard character (=_=) to mean that we
 accept any kind of value, and the range operator (=x ... y=) to define a set of
@@ -348,9 +349,71 @@ Calculus, those languages use this, and it gives an expressive framework the
 programmer can use to write their own flow semantics — and flow is something we
 really value in a language about data processing.
 
+Loops can be easily replaced by recursion. Falsetto won't implement tail call
+optimisation nor proper tail calls, but it's a relatively easy thing to do
+(which I'll leave as an exercise to the reader ;3), other kinds of
+transformations, like mapping or iterating over a list will be done using a
+[[http://www.cs.nott.ac.uk/~gmh/fold.pdf][Fold]] (or =reduceRight=, as it's called in JavaScript).
 
 
 * 4. Parsing with OMeta
+
+So, now that we know how our language will more or less look like, and which
+ideas we'll be able to talk about using it, it's about time we actually get our
+hands dirty with the implementation. For this section, I'll introduce a little
+bit of notation formalism, but it also happens to be the syntax for OMeta
+programs. Rest assured, however, this will be simpler than you might expect it
+to be :3
+
+
+** 4.1. What is OMeta?
+
+We discussed previously that OMeta is a thing that generalises the notion of
+tree transformations, and as such can be used for writing the parser, optimiser
+and compiler (or interpreter) for any programming language out there. It's a
+really nice tool for prototyping programming languages either for playing
+around, or to provide the basis for [[http://en.wikipedia.org/wiki/Self-hosting][Self-hosted compilers/interpreters]].
+
+How OMeta does that? Well, OMeta is a language that provides a [[http://bford.info/packrat/][Packrat parser]]
+in a parsing expression grammar. This means that we can parse any language in
+OMeta in linear time[fn:2] (that is, the parsing time is only dependent on the
+length of the input). Usually these kinds of parsers are recursive descent (we
+start with the topmost rule, and recurse through the rules they refer to in
+order to parse the input), and do not allow for left recursion. For example, a
+regular PEG would not allow one to write this rule:
+
+[fn:2]: Due to OMeta's optimisation for left-recursiveness. Direct and indirect
+        recursive rules might be parsed in super-linear time, but the whole
+        parser is still pretty much linear time.
+
+
+#+BEGIN_SRC bnf
+  -- An expression can be an addition of any expression with a number, or a
+  -- simple number.
+  -- `1` is a valid expression, as is `1 + 2 + 3`
+  <expression> ::= <expression> "+" <number>
+                 | <number>
+#+END_SRC
+
+OMeta implements a simple optimisation that allows these kinds of rules to be
+expressed through the language without having to do any black magic (people
+would usually rewrite the grammar to be right-recursive, which is not exactly
+straight-forward). This makes OMeta much more approachable than regular parser
+combinators or Parsing Expression Grammars (which are in turn much more
+approachable than any other kind of parser).
+
+
+** 4.2. The OMeta-JS language
+
+OMeta-JS is a super-set of the JavaScript programming language that adds
+a domain specific language to talk about tree transformations, using rules,
+patterns, predicates and actions. These can be combined in several ways, and as
+such form a rather expressive framework to talk about data transformations, be
+it from =String -> Tree= or =Tree -> Tree=.
+
+
+
+
 
 * 5. Optimisations as tree transformations
 
