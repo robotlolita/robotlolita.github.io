@@ -452,7 +452,7 @@ that can talk about additions of integers in this way:
 #+BEGIN_SRC js
   ometa Addition {
     space    = ' ',
-    digit    = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
+    digit    = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9",
     number   = space* digit+:a         -> Number(a.join('')),
     addition = addition:a "+" number:b -> (a + b)
              | number:a                -> a
