@@ -14,12 +14,12 @@ writing programming languages is actually rather easy: it's just about tree
 transformations.
 
 In this blog post I'll show you how simple tree transformations and pattern
-matching make the task of writing a programming language. We'll use [[http://www.tinlizzie.org/ometa/][OMetaJS]] for
+matching make the task of writing a programming language. We'll use [[http://www.tinlizzie.org/ometa/][OMeta/JS]] for
 writing both the parser and the compiler. OMeta is interesting for this because
 it generalises parsing, optimising and compiling as tree transformations, which
 is actually the essence of those.
 
-In a sense, this is a tutorial about OMetaJS, but it's also a more general
+In a sense, this is a tutorial about OMeta/JS, but it's also a more general
 article on an introduction to the design of programming languages. It's a
 *huge* topic, so don't expect me to cover everything. However, it's a good
 starting point to see if you'll be interested in digging more into the awesome
@@ -43,12 +43,12 @@ and provide an overview of the subset of PLT we'll be using throughout the
 article. They also present the language we'll be building.
 
 Sections 4, 5 and 6 go about how we encode the syntax and semantics of our
-programming language using OMetaJS. We'll be using Node here just because it
+programming language using OMeta/JS. We'll be using Node here just because it
 makes everything simpler, but you could just as well follow the article using
-the [[http://www.tinlizzie.org/ometa-js/][OMetaJS playground]]. These sections basically go about explaining the
+the [[http://www.tinlizzie.org/ometa-js/][OMeta/JS playground]]. These sections basically go about explaining the
 process of parsing, optimising and compiling as generalisations of tree
 transformation with pattern matching, which is what OMeta is all about. While
-most of it will be OMeta syntax, which I'll explain at length, OMetaJS is
+most of it will be OMeta syntax, which I'll explain at length, OMeta/JS is
 written as a superset of JavaScript, and as such this article expects a fair
 deal of familiarity with JavaScript concepts — JS will also be the compilation
 target, so...
@@ -403,17 +403,313 @@ combinators or Parsing Expression Grammars (which are in turn much more
 approachable than any other kind of parser).
 
 
-** 4.2. The OMeta-JS language
+** 4.2. Installing OMeta
 
-OMeta-JS is a super-set of the JavaScript programming language that adds
+I'm going to assume you're a cool guy and will be using [[http://nodejs.org/][Node.js]] to follow along
+the article, however you can also use the [[http://tinlizzie.org/ometa-js/][OMeta/JS playground]]. For Node, you
+can just clone the repository on Github and follow from there (feel free to
+fork and clone your own repository as well):
+
+#+BEGIN_SRC bash
+  $ git clone git://github.com/killdream/falsetto.git
+  $ cd falsetto
+  $ npm install    # so you grab all the dependencies
+#+END_SRC
+
+From there, you have access to OMeta by just =require('ometa-js')=-ing. This
+will also add a hook to Node's require and allow you to require =.ometa= files
+directly.
+
+
+** 4.2. The OMeta/JS language
+
+OMeta/JS is a super-set of the JavaScript programming language that adds
 a domain specific language to talk about tree transformations, using rules,
 patterns, predicates and actions. These can be combined in several ways, and as
 such form a rather expressive framework to talk about data transformations, be
 it from =String -> Tree= or =Tree -> Tree=.
 
+To declare a transformer in OMeta/JS, one uses the object definition syntax,
+optionally specifying which object to inherit from:
+
+#+BEGIN_SRC js
+  ometa FalsettoParser {
+    /* rules will go about here */
+  }
+
+  // Inheritance is a just an operator away ;3
+  ometa AnotherParser <: FalsettoParser {}
+#+END_SRC
+
+An OMeta object is made up of rules and consequences. A consequence is made up
+of patterns, predicates and actions. Patterns define which kind of data a rule
+can be applied to (and predicates further reduce the data space), whereas
+actions specify how to transform the data.
+
+For example, we could specify a parser and interpreter for a simple calculator
+that can talk about additions of integers in this way:
+
+#+BEGIN_SRC js
+  ometa Addition {
+    space    = ' ',
+    digit    = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
+    number   = space* digit+:a         -> Number(a.join('')),
+    addition = addition:a "+" number:b -> (a + b)
+             | number:a                -> a
+  }
+#+END_SRC
+
+So, let's take a couple of seconds to understand this simple parser a little
+better. An object in OMeta describes a list of rules. In this case we have
+=digit=, =number= and =addition=. A rule on the other hand provides a pattern
+that tells OMeta when such a rule can be applied. 
+
+A pattern can be a single number or boolean (=2=, =true=), a character ('f'), a
+token[fn:3] ("foo"), a list (=[1, 2]=), or another rule application
+(=digit=). Patterns succeed if the value that's going through them succeeds,
+and they return the matched value. So, if I feed "1" to the =Addition= parser,
+it'll match that value with =number=, which in turn will match the =1= pattern
+in =digit=.
+
+[fn:3]: Tokens differ from strings as in that the default rule application will
+        skip any number of spaces before applying the rule. You can overwrite
+        this particular semantic by providing a different pattern for the
+        =token= rule.
+
+Patterns can be transformed through a few operators, some of which should be
+familiar if you have worked with Regular Expressions before. In any case, the
+klenee (=*=) will try to match a pattern zero or more times. The many (=+=)
+operator will try to match a pattern one or more times. The choice (=|=)
+operator will try to match the first pattern, and if it fails try to match the
+second pattern. The negation (=~=) operator will match if the pattern fails,
+and lastly the look-ahead (=~~=) operator will match if the next thing in the
+input matches the pattern, but won't consume anything.
+
+Then we get actions and bindings. The result of matching a pattern can be
+stored in an identifier by using the binding operator. =number:a= stores the
+result of applying the =number= rule to =a=, which we can refer to later on. An
+action is something that we can use to transform the value of a pattern, so if
+we have =['a' 'b' 'c']:a= as a pattern, we can transform join the three using
+an action: =-> a.join(', ')=, and the pattern will return the string =a, b, c=
+instead of the list =['a', 'b', 'c']=.
+
+To use an OMeta object and match things, there are two provided APIs: =match=,
+will take a value and a rule, and succeed if the value matches the rule. And
+=matchAll=, which will take a list of values and a rule, and succeed if all
+values match the provided rule, returning a list of the transformed values. As
+such, we can play around with our little calculator:
+
+#+BEGIN_SRC js
+  function calculate(expression) {
+    return Addition.match(expression, "addition")
+  }
+
+  calculate('1')                 // => (Number) 1
+  calculate('1 + 2')             // => (Number) 3
+  calculate('1 + 2 + 3 + 2 + 1') // => (Number 9)
+#+END_SRC
+
+Here's a visual representation of what the fuck is going on with all the OMeta
+"black magic":
+
+#+BEGIN_SRC ditaa :file ../../media/assets/lang.png :cmdline -E :exports none
+
+  We put all our things into little boxes...
+
+  +---+ +---+ +---+ +---+ +---+
+  | 1 | |   | | + | |   | | 2 | 
+  +---+ +---+ +---+ +---+ +---+
+    |
+    |  And feed them over to the "addition" rule...
+    |          +------+
+    |          |      |
+    v          v      |
+  /---------------\   |
+  | addition cBLU +-=-+  (sadly, we have defined "addition" in terms
+  \---------------/          of itself. Which means it would just keep
+                             calling itself endlessly...)
+                             
+
+          
+                                       ——But fear not, buddy, for
+                                         OMeta/JS has got our back!
 
 
 
+  
+  Instead of wandering aimlessly through the realms of "addition",
+  we'll just carry on to the next alternative.
+
+  +---+ +---+ +---+ +---+ +---+
+  | 1 | |   | | + | |   | | 2 | 
+  +---+ +---+ +---+ +---+ +---+
+    |                                   +---- We'll bind this to `a`
+    |                                   |
+    |    /--------------\               v
+    +--> | Number cBLU  +----> Number(["1"].join(''))
+         \--------------/
+            |        | ^
+            v        | |
+         +--------+  | |
+         | space* |  | |
+         +--------+  | +-------+
+                     |         | 
+                     v       ["1"] (Oh, yeah, this looks like an "1")
+                  +--------+   |
+                  | digit+ +---+
+                  +--------+
+
+
+
+  Once we get a match, we can just get back to "addition" and continue
+  with the next pattern.
+
+  +---+ +---+ +---+ +---+
+  |   | | + | |   | | 2 | 
+  +---+ +---+ +---+ +---+
+    |      |
+    |      : (this gets consumed too!)
+    |      v
+    |    /------\
+    +--> | "+"  +---> "+"
+         | cBLU |
+         \------/
+
+   
+  
+  And since we still get matches, we continue happily forward with
+  the "addition" rule.
+
+  +---+ +---+
+  |   | | 2 | 
+  +---+ +---+
+    |      |
+    |      : (this gets consumed too!)
+    |      v
+    |    /-------------\
+    +--> | Number cBLU +--> Number(["2"].join(''))
+         \-------------/             ^
+                                     |
+                                     +-- We'll bind this to `b`.
+
+
+
+  Now, since that was the last pattern, we'd usually return it as
+  a result of the "addition" rule, however, we've got a little
+  action here.
+
+
+
+                   ——Actions are sneaky. Actions are teh shit.
+                     Actions let us transform the result of a
+                     match in any way we want.
+
+
+
+  /---------------\
+  | addition cGRE +--> a + b -> 1 + 2 -> 3
+  \---------------/
+#+END_SRC
+
+#+RESULTS:
+[[file:../../media/assets/lang.png]]
+
+[[blog:lang.png]]
+
+
+** 4.3. Writing the parser for Falsetto
+
+Now that you understand a little more about all this tree transformation
+business OMeta/JS is about, let's start writing the parser for our little
+language, *Falsetto*.
+
+
+*** 4.3.1. Comments and whitespace
+
+First, let's define which kind of stuff we'll just "ignore" in our
+language. For this, create a file named =src/grammar.ometa= in the project
+directory and fill it up with the following code:
+
+#+BEGIN_SRC js
+  ometa FalsettoBlankParser {
+    eol     = '\n' | '\r',
+    space   = ' ' | '\t' | eol,
+    comment = seq('--') (~eol char)*:a eol -> a.join(''),
+    blank   = space | comment
+  }
+
+  // Lets the outside world know about our new awesome parser
+  module.exports = {
+    FalsettoBlankParser: FalsettoBlankParser
+  }
+#+END_SRC
+
+A quick note about the =comment= rule: we're matching two consecutive =-=
+characters, then grabbing every other character in the input that isn't a new
+line (and then consuming the new line as well).
+
+You can run the tests using =npm test= on the project directory to see if you
+got everything right, but other than that, this doesn't allow us to write
+anything interesting just yet.
+
+
+*** 4.3.2. Numbers, strings and lists
+
+So, let's pack our language with more interesting stuff: let's define how we'll
+express values:
+
+#+BEGIN_SRC js
+ometa FalsettoValueParser <: FalsettoBlankParser {
+  digit  = char:a ?(a >= 0 && a <= 9)   -> a,
+  digits = digit+:as                    -> as.join(''),
+  number = digits:i ('.' digits:r)      -> [#num, Number(i + '.' + r)]
+         | digits:i                     -> [#num, Number(i)],
+  
+  stringEscape = seq('\\"'),
+  stringChar   = stringEscape | ~'"' char,
+  string       = '"' stringChar*:as '"' -> [#str, as.join('')],
+
+  list = "[" "]"                                -> [#list, []]
+       | "[" value:a ("," space* value)*:bs "]" -> [#list, [a].concat(bs)],
+
+  value = number | string | list
+}
+
+module.exports.FalsettoValueParser = FalsettoValueParser
+#+END_SRC
+
+There are a few things worth noting about this particular parser. First, notice
+how we transform the value of all =Value= rules to be something like =[#foo,
+a]=. So, why would one do this? Why not just return a Number or String or
+whatever? Well, these =#num=, =#str= and =#list= thingies[fn:4] are what we
+call =tags=. The idea of the parser is to build a tree that expresses the
+syntax in a way the optimiser and compiler can understand, and these tags
+provide an easy way of identifying different types of nodes in this tree.
+
+Then note that =number= and =list= are composed of two different
+patterns. Since they have two different possible representations, we need two
+different patterns to encode all of these representations.
+
+Digits are also computed differently from what we used for spaces before, it
+uses semantic predicates to both make the parser more efficient and reduce the
+number of things we have to type. Another way to write the =digit= parser would
+have been:
+
+#+BEGIN_SRC js
+  digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+#+END_SRC
+
+But that doesn't really scale, and it requires the parser to try a value and
+backtrack way too much (even though OMeta could optimise for this situation
+easily).
+
+
+[fn:4] OMeta's =#num= symbols are just strings, so =#foo= and "foo" are the
+       same thing. The former is just a convenient way of writing "foo" for
+       these kinds of tags.
+
+
+*** 4.3.3. Parsing identifiers
 
 * 5. Optimisations as tree transformations
 
