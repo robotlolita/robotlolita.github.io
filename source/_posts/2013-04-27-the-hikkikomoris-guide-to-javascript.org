@@ -95,7 +95,7 @@ straightforward):
     retweeted     :: Boolean
     retweet_count :: Number
 
-    created_at :: String  --^ Serialised Date
+    created_at :: String  -- ^ Serialised Date
     source     :: String
     user       :: User
     id_str     :: String
@@ -118,8 +118,8 @@ better, so let's define a better type to encode a Tweet:
 
 #+BEGIN_SRC haskell
   type User
-    name :: String --^ The users' screen name
-    id   :: String --^ Twitter's user ID
+    name :: String -- ^ The users' screen name
+    id   :: String -- ^ Twitter's user ID
     
   type Entity
     url          :: String
@@ -136,11 +136,11 @@ better, so let's define a better type to encode a Tweet:
                 }
 
   type Tweet
-    id            :: String --^ Unique identifier for this tweet
-    user          :: User   --^ The user that tweeted this
+    id            :: String -- ^ Unique identifier for this tweet
+    user          :: User   -- ^ The user that tweeted this
     inReplyTo     :: Tweet
-    source        :: String --^ Which application was used to compose this
-    date          :: Date   --^ When this tweet was crafted
+    source        :: String -- ^ Which application was used to compose this
+    date          :: Date   -- ^ When this tweet was crafted
     favourited    :: Boolean
     retweeted     :: Boolean
     retweetCount  :: Number
@@ -160,38 +160,38 @@ types, given the operations we'll be applying to them and the output.
 #+BEGIN_SRC haskell
   -- * Type conversions
 
-  --| We need to convert from Twitter format to ours
+  -- | We need to convert from Twitter format to ours
   normaliseTweet :: TwitterTweet -> Tweet
 
-  --| Convert Twitter Date serialisation to actual DateTime
+  -- | Convert Twitter Date serialisation to actual DateTime
   parseDate :: String -> Date
 
-  --| Extract User that composed the tweet
+  -- | Extract User that composed the tweet
   twittedBy :: TwitterText -> User
 
-  --| Extract reply information
+  -- | Extract reply information
   repliedToUser :: TwitterText -> User
   repliedToTweet :: TwitterText -> Tweet
 
-  --| Extract the Text
+  -- | Extract the Text
   textFor :: TwitterText -> Text
 
 
   -- * Display transformations
 
-  --| We want to display a Tweet as HTML
+  -- | We want to display a Tweet as HTML
   renderTweet :: Tweet -> HTML
 
-  --| We want to display a Text as HTML
+  -- | We want to display a Text as HTML
   textToHTML :: Text -> HTML
 
-  --| We want to know the relative time since the tweet
+  -- | We want to know the relative time since the tweet
   fromNow :: Date -> String
 
-  --| We want to display a link to a User
+  -- | We want to display a link to a User
   linkToUser :: User -> HTML
 
-  --| We also want to display a link to a Tweet
+  -- | We also want to display a link to a Tweet
   linkToTweet :: Tweet -> HTML
 #+END_SRC
 
@@ -310,8 +310,8 @@ things, and add them to a container (the glue):
 I can't stress this point enough! If you want people to actually use
 your API in a meaningful way, you *must* work with structured
 data. Please don't “but strings are easy!” me. Strings might be easy,
-but we don't want *easy* when designing an API, we want *simple*
-[fn:2]. Simple stuff sometimes means you get to write more, but also you
+but we don't want *easy* when designing an API, we want *simple* [fn:2]. 
+Simple stuff sometimes means you get to write more, but also you
 get something that's more meaningful overall, that's extensible and that
 composes well with other things without randomly breaking for no good
 reason. When you pass Strings around for other people to parse you lose
