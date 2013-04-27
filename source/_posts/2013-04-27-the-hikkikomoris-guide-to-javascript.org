@@ -24,17 +24,17 @@ applications for the Great Good™ of the JavaScript community here.
 
 Here's a TL;DR:
 
-  - Start with an API to manipulate your data, not with an Application.
+  1) Start with an API to manipulate your data, not with an Application.
 
-  - Extract the most basic, orthogonal concepts, and provide primitives
-    to encode them.
+  2) Extract the most basic, orthogonal concepts, and provide primitives
+     to encode them.
 
-  - Provide “glue” code to compose concepts together and create big
-    things.
+  3) Provide “glue” code to compose concepts together and create big
+     things.
 
-  - Work with structured data.
+  4) Work with structured data.
 
-  - Write the actual application using your API.
+  5) Write the actual application using your API.
 
 
 * Introduction
@@ -43,6 +43,9 @@ There was a time when no one knew how to write JavaScript, but those
 times are long since gone. People know how to write JavaScript now
 (some), and that's good!!1ELEVEN! Unfortunately, there's still a large
 portion of people who don't know how to write applications[fn:1].
+
+[fn:1]: I am, of course, referring to my own notion of How Applications
+        Should Be Written™, which might be fairly arbitrary.
 
 As a result of this, you often end up with applications that do too
 much, or applications that do too little. But the worst problem of all
@@ -192,6 +195,22 @@ types, given the operations we'll be applying to them and the output.
   linkToTweet :: Tweet -> HTML
 #+END_SRC
 
+If there's one hint I can provide when doing the initial API design, it
+would be:
+
+#+BEGIN_QUOTE
+  Extract the most basic, orthogonal concepts, and provide primitives to
+  encode them.
+#+END_QUOTE
+
+You can always add combinators on top of those minimal and simple
+primitives to let them do more stuff. Working with reeeeally small set
+of primitives and a lot of combinators means you get to write simple
+code that actually scales! But then, picking the right primitives can be
+really hard at times, so you need to have a good deal of knowledge about
+the domain you're trying to encode in your API.
+
+
 
 * Provide “glue” code to compose concepts
 
@@ -284,7 +303,123 @@ things, and add them to a container (the glue):
     return container
   })
 #+END_SRC
- 
 
-[fn:1]: I am, of course, referring to my own notion of How Applications
-        Should Be Written™, which might be fairly arbitrary.
+
+* Work with structured data
+
+I can't stress this point enough! If you want people to actually use
+your API in a meaningful way, you *must* work with structured
+data. Please don't “but strings are easy!” me. Strings might be easy,
+but we don't want *easy* when designing an API, we want *simple*
+[fn:2]. Simple stuff sometimes means you get to write more, but also you
+get something that's more meaningful overall, that's extensible and that
+composes well with other things without randomly breaking for no good
+reason. When you pass Strings around for other people to parse you lose
+all the guarantees that they'll agree with each other on the structure
+your API (and external APIs) expect.
+
+[fn:2]: For a much better explanation why we should value *simplicity*
+        over *easiness*, Rich Hickey (the guy from Clojure) has a most
+        awesome presentation on the topic, called [[http://www.infoq.com/presentations/Simple-Made-Easy][Simple Made Easy]].
+
+In the case of our API example, it would mean passing around =Tweet=
+types, rather than the HTML representation of them!. All of the central
+points of the API should accept one of our types (=Tweet=, =User=,
+=Text=), not arbitrary HTML or plain text strings, because then everyone
+can encode that slightly different.
+
+“So, what if I want to send it over to someone else over the wire?
+Wouldn't it be better if I just use the representation that the other
+side will use to display the thing?”
+
+Well, think about the following scenario: You have your application
+sending tweets to a logger that will display them. You want to “Keep It
+Easy”, and so decides it's a good idea to just send the way you want
+tweets to be displayed on the other side, so people don't need to write
+anything besides =console.log=.
+
+A few weeks later someone comes up to those guys and say, “Hey, we're
+going to log only stuff that got retweeted at least 50 times.” The
+other-side guys quickly hack together a regular expression that looks
+for =/(\d+) retweet/= and call it a day.
+
+Some days later you decide =retweet= is too long and it's taking
+valuable space on the screen of your application now that you're porting
+it over to mobile devices. Then you decide to shorten that to
+=rt=. Guess who just got all their system's screwed?
+
+If you pass over structured data, then it's simple. They wouldn't even
+need to touch their main system if they didn't want to, just put on a
+proxy in front of the service with this code:
+
+#+BEGIN_SRC js
+  next(tweets.filter(function(tweet){ tweet.retweetCount > 50 }))
+#+END_SRC
+
+If you need to communicate data with other services, you should just
+encode a structured representation using the best serialisation format
+for the job. JSON everywhere won't cut it, as won't XML. JSON is a
+generic data serialisation format as plain text, and XML is a *document*
+serialisation format as plain text. They're cool if they fit your data,
+and you don't care about the additional bandwidth/encoding
+time. Otherwise there are other stuff like Protocol Buffers to take a
+look at.
+
+  - Warning ::
+    Please please please please please please! For the love of God,
+    don't use XML to encode general data. XML is a document
+    serialisation format, it's something you use to serialise *TREE
+    STRUCTURES*. Mind you, Lists are not the best case for XML,
+    dictionaries aren't either. Use a general data serialisation format
+    for everything that isn't a tree.
+
+
+* Write your application using your API
+
+You've gone through great lengths to create a minimal and polished API,
+now it's finally time to use it by writing your Application on top of
+it. Why, you might ask? Well, because Applications are the =human-facing
+interface= to your data. Applications talk to humans, and only ever to
+humans, because they choose a format that is difficult or impossible to
+use to talk to other application. APIs on the other hand talk only to
+applications using structured data, which is not the best format to
+present to the user for most types of data.
+
+Say we want an application that will get the timeline of a given user
+and display it on a webpage. This can be encoded simple using our API:
+
+#+BEGIN_SRC js
+  var dataP = twitter.statuses('notSorella')
+  dataP.then(function(data) {
+    var tweets = data.map(normaliseTweet)
+    addAllTo(twitterContainer, renderTweetList(tweets))
+  }).done()
+#+END_SRC
+
+If we then are tasked with displaying the same set of Tweets on the
+command line, we can just use the primitives, which are not
+HTML-specific!
+
+#+BEGIN_SRC js
+  var dataP = twitter.statuses('notSorella')
+
+  function renderTweet(tweet) { 
+    return '@' + tweet.user.name + ': ' + tweet.text.plain
+  }
+
+  dataP.then(function(data) {
+    var tweets = data.map(normaliseTweet)
+    tweets.map(compose(print, renderTweet))
+  })
+#+END_SRC
+
+
+* Conclusion
+
+This is it, me dears. This is the key to write large applications, this
+is the key to write extensible applications, and the key to write easily
+maintainable applications: compositionality.
+
+You start with an idea, extract the key components of that idea
+(primitives), provide combinators to compose ideas together, and only
+then provide additional transformations for the user-facing interface.
