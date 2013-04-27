@@ -17,12 +17,12 @@ majesty and calm.”
 
 
 <p>
-Why am I quoting Douglas Adam's most awesome book? Why am I using a
-wordplay on its title on my blog post title? Why are JavaScript's
-modules such a mess? How do brains work? Well, my dearest basement
-dwellers, I am afraid I do not have all the answers, but none the less I
-shall try to provide some tips on writing useful, simple and composable
-applications for the Great Good™ of the JavaScript community here.
+Why am I quoting Douglas Adams' most awesome book? Why am I using a
+wordplay on my blog post's title? Why are JavaScript's modules such a
+mess? How do brains work? Well, my dearest basement dwellers, I am
+afraid I do not have all the answers, but none the less I shall try to
+provide some tips on writing useful, simple and composable applications
+for the Great Good™ of the JavaScript community here.
 </p>
 <p>
 Here's a TL;DR:
@@ -64,7 +64,7 @@ portion of people who don't know how to write applications<sup><a class="footref
 As a result of this, you often end up with applications that do too
 much, or applications that do too little. But the worst problem of all
 is when you end up with applications that you can only use through some
-interface of sorts, and can't easily manipulate the stuff you're
+human interface of sorts, and can't easily manipulate the stuff you're
 interested in with different things. Mind you, programmatic extensions
 matter a lot!
 </p>
@@ -85,14 +85,14 @@ achieve small, composable and extensible applications. Stick with me!
 <p>
 Don't start with an Application, start with the API. This might seem
 weird, but it actually makes a lot of sense, because the API defines how
-other people can interact with the data your application
-manipulates. But hey, why should we leave that as “other people”? Let me
-rephrase:
+other computer things can interact with the data your application
+manipulates. But hey, why should we leave that as “other computer
+things”? Let me rephrase:
 </p>
 <blockquote>
 
-<p>The API defines how you (and other people) can interact with the data
-in your application.
+<p>The API defines how your application (and other computer things) can
+interact with the data you're interested in.
 </p>
 </blockquote>
 
@@ -107,12 +107,14 @@ an actual application.
 This fits nicely with the "One Module Does One Thing" approach because
 then the API defines which kind of data you're dealing with, and all the
 meaningful transformations you can apply to such data. Transformations
-in turn do one thing, and might be grouped logically.
+in turn do one thing, and might be grouped logically. Modules are really
+just a logical group of computations, that it happens to be a file in
+many languages is just an accident.
 </p>
 <p>
 For example, let's say we want to write an application to display Tweets
 to the user. First and foremost, we examine the inputs and outputs, and
-draft a types to encode the data in our application (I'm using a type
+draft some types to encode the data in our application (I'm using a type
 notation inspired by Haskell, but this should be nonetheless pretty
 straightforward):
 </p>
@@ -206,7 +208,7 @@ types, given the operations we'll be applying to them and the output.
 <span style="color: #ACAE95;">-- | Convert Twitter Date serialisation to actual DateTime</span>
 <span style="color: #67D9F0;">parseDate</span> <span style="color: #729FCF;">::</span> <span style="color: #FC951E;">String</span> <span style="color: #729FCF;">-&gt;</span> <span style="color: #FC951E;">Date</span>
 
-<span style="color: #ACAE95;">-- | Extract User that composed the tweet</span>
+<span style="color: #ACAE95;">-- | Extract the User that composed the tweet</span>
 <span style="color: #67D9F0;">twittedBy</span> <span style="color: #729FCF;">::</span> <span style="color: #FC951E;">TwitterText</span> <span style="color: #729FCF;">-&gt;</span> <span style="color: #FC951E;">User</span>
 
 <span style="color: #ACAE95;">-- | Extract reply information</span>
@@ -218,6 +220,8 @@ types, given the operations we'll be applying to them and the output.
 
 
 <span style="color: #75766A;">-- </span><span style="color: #75766A;">* Display transformations</span>
+<span style="color: #75766A;">-- </span><span style="color: #75766A;">(These are application-specific because they only make sense in the</span>
+<span style="color: #75766A;">-- </span><span style="color: #75766A;">context of user-facing HTML pages)</span>
 
 <span style="color: #ACAE95;">-- | We want to display a Tweet as HTML</span>
 <span style="color: #67D9F0;">renderTweet</span> <span style="color: #729FCF;">::</span> <span style="color: #FC951E;">Tweet</span> <span style="color: #729FCF;">-&gt;</span> <span style="color: #FC951E;">HTML</span>
@@ -280,7 +284,7 @@ usually get a List of tweets. Notice that nothing in the previous API
 allows you to take a list of Tweets and spits back a list of HTMLs, but
 it can take a single tweet and spit back a single HTML. We also have
 baked right into the standard library a function that takes a List of
-things, a function that transforms a thing A in thing B, and returns a
+things, a function that transforms a thing A into thing B, and returns a
 list of things B. Well, this is enough to derive our transformation for
 lists of Tweets:
 </p>
@@ -301,7 +305,7 @@ lists of Tweets:
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">-- An aside: ------------------------------------------------------</span>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">If you don't know what `curry` is, well. A minimal explanation</span>
+<span style="color: #75766A;">// </span><span style="color: #75766A;">If you don't know what `curry` is, well... A minimal explanation</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">would be that functions in JavaScript actually takes a List of</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">arguments. You should think about:</span>
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">add</span>(<span style="color: #729FCF;">a</span>, <span style="color: #729FCF;">b</span>) { <span style="color: #C48DFF;">return</span> a + b }
@@ -318,12 +322,12 @@ lists of Tweets:
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">If you need to create a function that takes more than one argument,</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">you use closures:</span>
-<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">add</span>(<span style="color: #729FCF;">a</span>){ <span style="color: #C48DFF;">return</span> to(b) { <span style="color: #C48DFF;">return</span> a + b }}
+<span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">add</span>(<span style="color: #729FCF;">a</span>){ <span style="color: #C48DFF;">return</span> <span style="color: #C48DFF;">function</span> to(b) { <span style="color: #C48DFF;">return</span> a + b }}
 
 <span style="color: #75766A;">// </span><span style="color: #75766A;">And when you're calling it as: add(1, 2) you're actually saying</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">add(1)(2).</span>
 
-<span style="color: #75766A;">// </span><span style="color: #75766A;">You can see an implementation here:</span>
+<span style="color: #75766A;">// </span><span style="color: #75766A;">You can see an implementation of currying here:</span>
 <span style="color: #75766A;">// </span><span style="color: #75766A;">https://github.com/killdream/athena/blob/master/src/higher-order.ls#L56-L81</span>
 </pre>
 
@@ -334,7 +338,7 @@ lists of Tweets:
 But this doesn't display anything in the screen yet, mostly because
 that's not the job of renderTweetList — it already does everything it
 needs to do. A thing that displays tweets on the screen should be
-something that takes an HTML a container and adds that HTML to the
+something that takes an HTML, a container and adds that HTML to the
 container:
 </p>
 
@@ -350,14 +354,14 @@ container:
 
 <p>
 Now we can derive a simple function that will take a list of HTML
-things, and add them to a container (the glue):
+things, and add them to a container:
 </p>
 
 
 
 <pre class="src src-js"><span style="color: #75766A;">// </span><span style="color: #75766A;">addAllTo :: HTML, [HTML] -&gt; HTML</span>
 <span style="color: #C48DFF;">function</span> <span style="color: #67D9F0;">addAllTo</span>(<span style="color: #729FCF;">container</span>, <span style="color: #729FCF;">htmls</span>) {
-  htmls.map(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">html</span>){ addTo(container) })
+  htmls.map(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">html</span>){ addTo(container, html) })
   <span style="color: #C48DFF;">return</span> container
 }
 
@@ -385,12 +389,12 @@ I can't stress this point enough! If you want people to actually use
 your API in a meaningful way, you <b>must</b> work with structured
 data. Please don't “but strings are easy!” me. Strings might be easy,
 but we don't want <b>easy</b> when designing an API, we want <b>simple</b> <sup><a class="footref" name="fnr.2" href="#fn.2">2</a></sup>. 
-Simple stuff sometimes means you get to write more, but also you
-get something that's more meaningful overall, that's extensible and that
-composes well with other things without randomly breaking for no good
-reason. When you pass Strings around for other people to parse you lose
-all the guarantees that they'll agree with each other on the structure
-your API (and external APIs) expect.
+Simple stuff sometimes means you get to write more, but also means that
+you get something that's more meaningful overall, that's extensible and
+that composes well with other things without randomly breaking for no
+good reason. When you pass Strings around for other people to parse you
+lose all the guarantees that they'll agree with each other on the
+structure your API (and external APIs) expect.
 </p>
 <p>
 In the case of our API example, it would mean passing around <code>Tweet</code>
@@ -478,12 +482,14 @@ present to the user for most types of data.
 </p>
 <p>
 Say we want an application that will get the timeline of a given user
-and display it on a webpage. This can be encoded simple using our API:
+and display it on a webpage. This can be encoded in a simple way using
+our API:
 </p>
 
 
 
 <pre class="src src-js"><span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">dataP</span> = twitter.statuses(<span style="color: #A6E32D;">'notSorella'</span>)
+
 dataP.then(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">data</span>) {
   <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">tweets</span> = data.map(normaliseTweet)
   addAllTo(twitterContainer, renderTweetList(tweets))
@@ -508,7 +514,7 @@ HTML-specific!
 dataP.then(<span style="color: #C48DFF;">function</span>(<span style="color: #729FCF;">data</span>) {
   <span style="color: #C48DFF;">var</span> <span style="color: #729FCF;">tweets</span> = data.map(normaliseTweet)
   tweets.map(compose(print, renderTweet))
-})
+}).done()
 </pre>
 
 
@@ -540,7 +546,7 @@ then provide additional transformations for the user-facing interface.
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : For a much better explanation why we should value <b>simplicity</b>
+<p class="footnote"><sup><a class="footnum" name="fn.2" href="#fnr.2">2</a></sup> : For a much better explanation of why we should value <b>simplicity</b>
         over <b>easiness</b>, Rich Hickey (the guy from Clojure) has a most
         awesome presentation on the topic, called
         <a href="http://www.infoq.com/presentations/Simple-Made-Easy">Simple Made Easy</a>.
