@@ -15,12 +15,12 @@ snip:   How to write simple, useful and composable JavaScript applications.
   — Douglas Adams in The Hitchhiker's Guide to the Galaxy.
 #+END_QUOTE
 
-Why am I quoting Douglas Adam's most awesome book? Why am I using a
-wordplay on its title on my blog post title? Why are JavaScript's
-modules such a mess? How do brains work? Well, my dearest basement
-dwellers, I am afraid I do not have all the answers, but none the less I
-shall try to provide some tips on writing useful, simple and composable
-applications for the Great Good™ of the JavaScript community here.
+Why am I quoting Douglas Adams' most awesome book? Why am I using a
+wordplay on my blog post's title? Why are JavaScript's modules such a
+mess? How do brains work? Well, my dearest basement dwellers, I am
+afraid I do not have all the answers, but none the less I shall try to
+provide some tips on writing useful, simple and composable applications
+for the Great Good™ of the JavaScript community here.
 
 Here's a TL;DR:
 
@@ -50,7 +50,7 @@ portion of people who don't know how to write applications[fn:1].
 As a result of this, you often end up with applications that do too
 much, or applications that do too little. But the worst problem of all
 is when you end up with applications that you can only use through some
-interface of sorts, and can't easily manipulate the stuff you're
+human interface of sorts, and can't easily manipulate the stuff you're
 interested in with different things. Mind you, programmatic extensions
 matter a lot!
 
@@ -62,13 +62,13 @@ achieve small, composable and extensible applications. Stick with me!
 
 Don't start with an Application, start with the API. This might seem
 weird, but it actually makes a lot of sense, because the API defines how
-other people can interact with the data your application
-manipulates. But hey, why should we leave that as “other people”? Let me
-rephrase:
+other computer things can interact with the data your application
+manipulates. But hey, why should we leave that as “other computer
+things”? Let me rephrase:
 
 #+BEGIN_QUOTE
-  The API defines how you (and other people) can interact with the data
-  in your application.
+  The API defines how your application (and other computer things) can
+  interact with the data you're interested in.
 #+END_QUOTE
 
 My usual design approach is to examine the inputs and outputs of the
@@ -79,11 +79,13 @@ an actual application.
 This fits nicely with the "One Module Does One Thing" approach because
 then the API defines which kind of data you're dealing with, and all the
 meaningful transformations you can apply to such data. Transformations
-in turn do one thing, and might be grouped logically.
+in turn do one thing, and might be grouped logically. Modules are really
+just a logical group of computations, that it happens to be a file in
+many languages is just an accident.
 
 For example, let's say we want to write an application to display Tweets
 to the user. First and foremost, we examine the inputs and outputs, and
-draft a types to encode the data in our application (I'm using a type
+draft some types to encode the data in our application (I'm using a type
 notation inspired by Haskell, but this should be nonetheless pretty
 straightforward):
 
@@ -166,7 +168,7 @@ types, given the operations we'll be applying to them and the output.
   -- | Convert Twitter Date serialisation to actual DateTime
   parseDate :: String -> Date
 
-  -- | Extract User that composed the tweet
+  -- | Extract the User that composed the tweet
   twittedBy :: TwitterText -> User
 
   -- | Extract reply information
@@ -178,6 +180,8 @@ types, given the operations we'll be applying to them and the output.
 
 
   -- * Display transformations
+  -- (These are application-specific because they only make sense in the
+  -- context of user-facing HTML pages)
 
   -- | We want to display a Tweet as HTML
   renderTweet :: Tweet -> HTML
@@ -225,7 +229,7 @@ usually get a List of tweets. Notice that nothing in the previous API
 allows you to take a list of Tweets and spits back a list of HTMLs, but
 it can take a single tweet and spit back a single HTML. We also have
 baked right into the standard library a function that takes a List of
-things, a function that transforms a thing A in thing B, and returns a
+things, a function that transforms a thing A into thing B, and returns a
 list of things B. Well, this is enough to derive our transformation for
 lists of Tweets:
 
@@ -244,7 +248,7 @@ lists of Tweets:
 
   // -- An aside: ------------------------------------------------------
 
-  // If you don't know what `curry` is, well. A minimal explanation
+  // If you don't know what `curry` is, well... A minimal explanation
   // would be that functions in JavaScript actually takes a List of
   // arguments. You should think about:
   function add(a, b) { return a + b }
@@ -261,12 +265,12 @@ lists of Tweets:
 
   // If you need to create a function that takes more than one argument,
   // you use closures:
-  function add(a){ return to(b) { return a + b }}
+  function add(a){ return function to(b) { return a + b }}
 
   // And when you're calling it as: add(1, 2) you're actually saying
   // add(1)(2).
 
-  // You can see an implementation here:
+  // You can see an implementation of currying here:
   // https://github.com/killdream/athena/blob/master/src/higher-order.ls#L56-L81
 #+END_SRC
 
@@ -275,7 +279,7 @@ lists of Tweets:
 But this doesn't display anything in the screen yet, mostly because
 that's not the job of renderTweetList — it already does everything it
 needs to do. A thing that displays tweets on the screen should be
-something that takes an HTML a container and adds that HTML to the
+something that takes an HTML, a container and adds that HTML to the
 container:
 
 #+BEGIN_SRC js
@@ -287,12 +291,12 @@ container:
 #+END_SRC
 
 Now we can derive a simple function that will take a list of HTML
-things, and add them to a container (the glue):
+things, and add them to a container:
 
 #+BEGIN_SRC js
   // addAllTo :: HTML, [HTML] -> HTML
   function addAllTo(container, htmls) {
-    htmls.map(function(html){ addTo(container) })
+    htmls.map(function(html){ addTo(container, html) })
     return container
   }
 
@@ -311,14 +315,14 @@ I can't stress this point enough! If you want people to actually use
 your API in a meaningful way, you *must* work with structured
 data. Please don't “but strings are easy!” me. Strings might be easy,
 but we don't want *easy* when designing an API, we want *simple* [fn:2]. 
-Simple stuff sometimes means you get to write more, but also you
-get something that's more meaningful overall, that's extensible and that
-composes well with other things without randomly breaking for no good
-reason. When you pass Strings around for other people to parse you lose
-all the guarantees that they'll agree with each other on the structure
-your API (and external APIs) expect.
+Simple stuff sometimes means you get to write more, but also means that
+you get something that's more meaningful overall, that's extensible and
+that composes well with other things without randomly breaking for no
+good reason. When you pass Strings around for other people to parse you
+lose all the guarantees that they'll agree with each other on the
+structure your API (and external APIs) expect.
 
-[fn:2]: For a much better explanation why we should value *simplicity*
+[fn:2]: For a much better explanation of why we should value *simplicity*
         over *easiness*, Rich Hickey (the guy from Clojure) has a most
         awesome presentation on the topic, called [[http://www.infoq.com/presentations/Simple-Made-Easy][Simple Made Easy]].
 
@@ -386,10 +390,12 @@ applications using structured data, which is not the best format to
 present to the user for most types of data.
 
 Say we want an application that will get the timeline of a given user
-and display it on a webpage. This can be encoded simple using our API:
+and display it on a webpage. This can be encoded in a simple way using
+our API:
 
 #+BEGIN_SRC js
   var dataP = twitter.statuses('notSorella')
+
   dataP.then(function(data) {
     var tweets = data.map(normaliseTweet)
     addAllTo(twitterContainer, renderTweetList(tweets))
@@ -410,7 +416,7 @@ HTML-specific!
   dataP.then(function(data) {
     var tweets = data.map(normaliseTweet)
     tweets.map(compose(print, renderTweet))
-  })
+  }).done()
 #+END_SRC
 
 
