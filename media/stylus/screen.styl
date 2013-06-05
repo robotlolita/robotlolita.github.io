@@ -1,0 +1,112 @@
+@css {
+  @import url("http://fonts.googleapis.com/css?family=Ubuntu:300,500|Goudy+Bookletter+1911");
+}
+
+jsk-body-font = 'Goudy Bookletter 1911', serif
+jsk-heading-font = 'Ubuntu', sans
+jsk-base-line-height = 1.2em
+jsk-base-font-size = 16px
+jsk-base-colour = #424242
+link-colour = #70b1ef
+
+@import "nib"
+global-reset()
+
+@import "entypo-stylus"
+@import "jumper-skirt/layout/grid"
+@import "jumper-skirt/layout/typography"
+
+jsk-grid-width = 100%
+entypo-define('Entypo Social', '/fonts/entypo-social/entypo-social', 'entypo-social')
+
+// -- Actual definitions -----------------------------------------------
+body
+  background: #f3f3f3
+
+a
+  color: darken(link-colour, 20%)
+  text-decoration: none
+a:hover
+  text-decoration: underline
+
+#header
+  clearfix: yes
+  background: #fff
+  #logo
+    jsk-grid-make-column: 7
+  #top-navigation
+    jsk-grid-make-column: 5
+
+#logo
+  h1
+    margin-left: 50px
+    font-size: 3em
+  em
+    font-size: jsk-base-font-size
+    font-style: normal
+    color: #999
+    margin-top: -0.5em
+    margin-left: 12em
+    display: block
+  a
+    color: jsk-base-colour
+    text-decoration: none
+    font-weight: 500
+    color: #777
+
+#top-navigation
+  ul
+    margin-right: 50px
+    line-height: 150px
+    text-align: right
+    list-style: none
+  li
+    display: inline-block
+  a
+    text-decoration: none
+    color: #888
+    padding: 0.3em 1.5em 0.5em 1.5em
+    font-size: 1.8em
+    font-family: jsk-heading-font
+    font-weight: lighter
+    transition: all .3s ease-out
+  a:hover
+    color: link-colour
+  a.active
+    background: link-colour
+    color: #fff
+
+#content
+  background: #fff
+  padding: 2em 0
+    
+#footer
+  padding: 3em 0 2em 0
+  border-top: 1px solid #ddd
+  box-shadow: inset 1px 0px 0px rgba(255,255,255,0.8)
+  background: #f3f3f3
+  text-align: center  
+  
+  #social
+    list-style: none
+    li, a
+      width: 64px
+      height: 64px
+      display: inline-block
+    a
+      text-decoration: none
+      color: #999
+    a:hover
+      color: jsk-base-colour
+    i
+      font-size: 96px
+      font-style: normal
+
+  #meta-info
+    font-family: jsk-heading-font
+    font-weight: 300
+    color: #999
+    sub
+      font-size: 0.7em
+      top: 0.2em
+      position: relative
