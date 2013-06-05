@@ -1,8 +1,8 @@
 @css {
-  @import url("http://fonts.googleapis.com/css?family=Ubuntu:300,500|Goudy+Bookletter+1911");
+  @import url("http://fonts.googleapis.com/css?family=Droid+Serif|Ubuntu:300,500");
 }
 
-jsk-body-font = 'Goudy Bookletter 1911', serif
+jsk-body-font = 'Droid Serif', serif
 jsk-heading-font = 'Ubuntu', sans
 jsk-base-line-height = 1.2em
 jsk-base-font-size = 16px
@@ -33,9 +33,9 @@ a:hover
   clearfix: yes
   background: #fff
   #logo
-    jsk-grid-make-column: 7
+    jsk-grid-make-column: 6
   #top-navigation
-    jsk-grid-make-column: 5
+    jsk-grid-make-column: 6
 
 #logo
   h1
@@ -65,7 +65,7 @@ a:hover
   a
     text-decoration: none
     color: #888
-    padding: 0.3em 1.5em 0.5em 1.5em
+    padding: 0.3em 1em 0.5em 1em
     font-size: 1.8em
     font-family: jsk-heading-font
     font-weight: lighter
@@ -110,3 +110,61 @@ a:hover
       font-size: 0.7em
       top: 0.2em
       position: relative
+
+// -- Le blog
+#content-wrapper
+  max-width: 960px
+  margin: 0 auto
+  font-size: 18px
+  color: jsk-base-colour
+
+#post-listing
+  list-style: none
+
+  li
+    border-bottom: 1px solid #ddd
+    margin-bottom: 1em
+
+  li:last-child
+    border: none
+
+  .post-title:before
+    content: "λ"
+    font-family: jsk-body-font
+    color: #999
+
+  .post-title
+    margin-bottom: 0
+    
+  .post-subtitle
+    font-family: jsk-body-font
+    margin: 0.5em 0px 0.5em 0px
+    font-size: 1.5em
+    color: #aaa
+
+  .post-subtitle:before
+    content: "—"
+
+  .date
+    color: #bbb
+    font-size: 0.6em
+    margin-left: 0.5em
+    
+.headline
+  text-align: center
+  padding: 4em 100px 6em 100px
+
+  p:first-child
+    font-size: 1.5em
+    line-height: 1.5em
+    color: #555
+
+  p
+    font-size: 1.2em
+    line-height: 1.3em
+    color: #777
+
+#content
+  h1, h2, h3, h4, h5, h6
+    font-family: jsk-body-font
+

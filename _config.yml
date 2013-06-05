@@ -1,2 +1,10 @@
-name: Your New Jekyll Site
+name: Sorella's Basement
 pygments: true
+
+navigation:
+- text: Blog
+  url: /index.html
+- text: Lab
+  url: /lab/index.html
+- text: About
+  url: /about/index.html
