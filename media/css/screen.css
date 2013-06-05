@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Droid+Serif|Ubuntu:300,500");
+@import url("http://fonts.googleapis.com/css?family=Droid+Serif|Montserrat");
 html,
 body,
 div,
@@ -1312,7 +1312,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Ubuntu', sans;
+  font-family: 'Montserrat', sans;
   line-height: 100%;
   margin: 1.2em 0 0.6em 0;
   font-weight: 300 !important;
@@ -1421,7 +1421,7 @@ a:hover {
   color: #888;
   padding: 0.3em 1em 0.5em 1em;
   font-size: 1.8em;
-  font-family: 'Ubuntu', sans;
+  font-family: 'Montserrat', sans;
   font-weight: lighter;
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
@@ -1469,7 +1469,7 @@ a:hover {
   font-style: normal;
 }
 #footer #meta-info {
-  font-family: 'Ubuntu', sans;
+  font-family: 'Montserrat', sans;
   font-weight: 300;
   color: #999;
 }
@@ -1530,11 +1530,26 @@ a:hover {
   line-height: 1.3em;
   color: #777;
 }
-#content h1,
-#content h2,
-#content h3,
-#content h4,
-#content h5,
-#content h6 {
+.page-heading {
+  margin-bottom: 2em;
+}
+.page-heading .page-snip {
   font-family: 'Droid Serif', serif;
+  font-size: 1.5em;
+  color: #999;
+  margin: -0.4em 0 1em 0;
+  text-align: right;
+}
+.page-heading .page-snip:before {
+  content: "—";
+}
+.page-heading .meta {
+  font-size: 0.9em;
+  color: #999;
+  font-family: 'Montserrat', sans;
+}
+#disqus_thread {
+  margin-top: 3em;
+  padding-top: 3em;
+  border-top: 1px solid #eee;
 }

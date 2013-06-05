@@ -1,13 +1,18 @@
 @css {
-  @import url("http://fonts.googleapis.com/css?family=Droid+Serif|Ubuntu:300,500");
+  @import url("http://fonts.googleapis.com/css?family=Droid+Serif|Montserrat");
 }
 
 jsk-body-font = 'Droid Serif', serif
-jsk-heading-font = 'Ubuntu', sans
+jsk-heading-font = 'Montserrat', sans
 jsk-base-line-height = 1.2em
 jsk-base-font-size = 16px
 jsk-base-colour = #424242
 link-colour = #70b1ef
+
+// Noto Sans
+// ABeeZee
+// Monda
+// Open Sans
 
 @import "nib"
 global-reset()
@@ -164,7 +169,28 @@ a:hover
     line-height: 1.3em
     color: #777
 
-#content
-  h1, h2, h3, h4, h5, h6
-    font-family: jsk-body-font
+//#content
+//  h1, h2, h3, h4, h5, h6
+//    font-family: jsk-body-font
 
+.page-heading
+  margin-bottom: 2em
+  .page-snip
+    font-family: jsk-body-font
+    font-size: 1.5em
+    color: #999
+    margin: -0.4em 0 1em 0
+    text-align: right
+  .page-snip:before
+    content: "—"
+  .meta
+    font-size: 0.9em
+    color: #999
+    font-family: jsk-heading-font
+
+#disqus_thread
+  margin-top: 3em
+  padding-top: 3em
+  border-top: 1px solid #eee
+  
+    
