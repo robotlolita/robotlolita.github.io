@@ -57,23 +57,37 @@ The module landscape in JavaScript consists of a few well-known players (AMD, Co
 
 ### The no-module way
 
+The worst thing you could ever do: not using modules, nor namespaces. Since JS only gives you a single namespace everywhere, name collisions are just waiting to bite you in the ass. Let's not mention that now you're going to have a hard time explaining people how to play well with your code and get everything working. So, don't do this:
+
+```js
+function random(n) {
+  return Math.random() * n
+}
+
+function randomInt(n) {
+  return Math.abs(random(n))
+}
+
+/* ... */
+```
+
 ### The "Hey let's give JS namespaces" crowd
 
-Oh, the naïvety is strong in this one. Somehow, there are people out there that still believe that namespacing solves the same problems as modules do. But they're entirely different and orthogonal features. Modules give you a way to split your code in components that can be easily assembled together, and in a way you can replace one of these components by another that provides the same interface. Namespaces solve name colision problems.
+Then, there came the Java crowd. These are particularly annoying, because they're treating a symptom of not having modules nor multiple namespaces with... just giving a half-baked solution. Oh, the naïvety. Somehow, there are still people out there that believe that namespacing solves the same problems as modules do, but if you have been paying close attention to this article you already know they don't.
 
-This crowd comes barging down your house and saying "THOU MUST NAMESPACE YOUR SCRIPTS", now you write things like this:
+This is, however, not what this crowd wants you to believe, instead they come barging down your house, screaming "THOU MUST NAMESPACE ALL YOUR SCRIPTS", and then some people go and write shit like this:
 
-{% highlight js %}
+```js
 var com = {}
 com.myCompany = {}
 com.myCompany.myPackage = {}
 com.myCompany.myPackage.someOtherDumbThing = {}
 com.myCompany.myPackage.someOtherDumbThing.identity = function(a){ return a }
-{% endhighlight %}
+```
 
 And, well, the madness goes on and on.
 
-In JavaScript, namespacing can be emulated through objects, but we don't get full-on first-class namespaces — we can't manipulate the contents of a function's locals, for example, as we would be able to do in Io, Clojure and a couple of other languages. And ES5+ just got rid of `with` — which was badly designed anyways. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
+In JavaScript, first-class namespacing can be emulated through objects, but we don't get full-on first-class namespaces — we can't manipulate the contents of a function's locals, for example, as we would be able to do in Io, Clojure and a couple of other languages. And ES5 strict just got rid of `with` — which was badly designed anyways. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
 ### Poor ports of other languages's package systems
 
