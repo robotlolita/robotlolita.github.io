@@ -1,5 +1,0 @@
-syntax:glob
-_site
-assets
-.sass-cache
-*.org_archive
