@@ -23,7 +23,12 @@ There have been plenty of module solutions over the time in JavaScript, the most
 [CommonJS]: http://wiki.commonjs.org/wiki/Modules/1.1
 [modules talk]: http://2013.flatmap.no/spiewak.html
 
-The rest of this article is laid out as follows: in the first section I give an overview of all module solutions available for JavaScript, and quickly analyse the pros-and-cons of each one. In the subsequent sections I present CommonJS in more depth, then introduce the concepts of parametric modules. Then there's a whole section on package management and NPM. In the last section I itroduce Browserify as a tool for using CommonJS modules in non-Node.js environments. Finally, I give a kick-ass conclusion on all of this mess and point you to additional reading material and tools.
+The rest of this article is laid out as follows: in the first section I give a conceptual overview of namespacing and modules, in the second section there's an overview of all module solutions available for JavaScript, and a quick analysis the pros-and-cons of each one. In the subsequent sections I present CommonJS in more depth, then introduce the concepts of parametric modules. Then there's a whole section on package management and NPM. In the last section I itroduce Browserify as a tool for using CommonJS modules in non-Node.js environments. Finally, I give a kick-ass conclusion on all of this mess and point you to additional reading material and tools.
+
+## Namespacing and Modules
+
+### What's a namespace?
+### What's a module?
 
 ## Module solutions for JS
 
@@ -32,6 +37,8 @@ It's actually interesting to see how many things the lack of module support back
 Languages and platforms that are heavily batteries-included usually strive for "There Should Be Only One Way of Doing X", and with that way of thinking those solutions might lose relevance with time, or they might simply not solve the stated problem in the best way it could (for example, Python's module system is shitty as fuck).
 
 The module landscape in JavaScript consists of a few well-known players (AMD, CommonJS), and attempts to port less-expressive package/namespacing conventions to the language (Gjs), to the most-naïve-solution-that-could-possibly-work (Module pattern).
+
+### The no-module way
 
 ### The "Hey let's give JS namespaces" crowd
 
@@ -51,7 +58,35 @@ And, well, the madness goes on and on.
 
 In JavaScript, namespacing can be emulated through objects, but we don't get full-on first-class namespaces — we can't manipulate the contents of a function's locals, for example, as we would be able to do in Io, Clojure and a couple of other languages. And ES5+ just got rid of `with` — which was badly designed anyways. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
+### Poor ports of other languages's package systems
 
 ### The Module Pattern
 
-Moving on, the module pattern gives you... you guessed it: modules! Albeit a rather crude form of that. 
+Moving on, the module pattern gives you... you guessed it: modules! Albeit a rather crude form of that. In the module pattern you use a function to get a new scope where you can hide implementation details, and then you return an object that provides the interface your module exposes.
+
+### Asynchronous Module Definition (AMD)
+
+## CommonJS modules (as implemented by Node.js)
+
+### A quick conceptual overview
+### First-class modules
+### Module loading
+### Parametric modules and delayed binding
+
+## One NPM to Rule Them All
+
+### On Package management in general
+### How NPM works?
+### Why is there a need for package management?
+
+## NPM and CommonJS outside of Node-land
+
+### Limitations
+### Browserify means CommonJS + NPM in the browser
+### Stand-alone modules
+### Common bundles
+### Other games in the town
+
+## Conclusion
+
+## References and additional reading
