@@ -9,14 +9,14 @@ Years ago I wrote a little post on modules, frameworks and micro-frameworks, and
 
 TL;DR:
 
-- Modularise: write small modules that do only one thing, and compose them together to do more complex stuff.
-- Use a package manager: use NPM to manage your dependencies and stop worrying about them.
-- Use CommonJS: it's a simple and expressive module system. And it gives you first-class modules!
+- **Modularise**: write small modules that do only one thing, and compose them together to do more complex stuff.
+- **Use a package manager**: use NPM to manage your dependencies and stop worrying about them.
+- **Use CommonJS**: it's a simple and expressive module system. And it gives you first-class modules!
 
 
 ## Introduction
 
-If you have ever read my blog, you'd know I'm a strong advocate of both the Unix philosophy and functional programming. They both encourage you to write small, self-contained pieces of functionality and compose them together to build bigger things. Unfortunately, lots of people writing JavaScript are still in the dark ages when it comes down to modularising their applications. You see, there are still plenty of people that think that "The Module Pattern" is a good idea; it is not, however, it's just boilerplate that indicates the lack of proper tooling — and if you ever find yourself having boilerplate, you should be worrying about your tools not solving your problem, because *they aren't*.
+If you have ever read my blog, you'd know I'm a strong advocate of both the *Unix philosophy* and *functional programming*. They encourage you to write small, self-contained pieces of functionality and compose them together to build bigger things. Unfortunately, lots of people writing JavaScript are still dwelling in the dark ages when it comes down to modularising their applications. You see, there are still plenty of people that think that "The Module Pattern" is a good enough idea; it is not, however, it's just boilerplate that indicates the lack of proper tooling — and if you ever find yourself having boilerplate, you should be worrying about your tools not solving your problem, because *that's the first symptom of I Ain't Not Solving Ya Problem, Son*.
 
 There have been plenty of module solutions over the time in JavaScript, the most expressive and simple of them is still the [CommonJS][] standard, which is used in a slightly different form in Node. CommonJS gives you a nice syntax, and more important, **first-class modules**. You might ask why first-class modules are important, and I could answer you with "for the same reason first-class functions" are, but instead I will just leave you with a [most awesome keynote that explains that][modules talk], and assume you know the answer from now on.
 
@@ -27,8 +27,25 @@ The rest of this article is laid out as follows: in the first section I give a c
 
 ## Namespacing and Modules
 
+Both namespaces and modules are important when developing any kind of application, but they also solve entirely different problems. Some people tend to think that namespaces give you modularity: they don't, they only solve name collision problems.
+
 ### What's a namespace?
+
+A namespace is something that holds a mapping from a particular name to a particular meaning. Some languages have different namespaces for different kinds of things (for example, the namespace used for functions is not the same as the one used for types, or variables, so a variable A is still different from a function A), some other languages (like JavaScript) just roll out with a single namespace for everything.
+
+Namespaces exist because we can only give things so much names before we run out of alternatives, and then starting writing **SquareRoot2345**, as if you were trying to find an available username on Twitter is not the best thing.
+
+
 ### What's a module?
+
+A module provides a set of logically related functionality in a particular interface. So, for example, one could say that an object X is a module. Some languages, like Java or Clojure, don't give you modules, and instead just give you namespaces — Clojure's namespaces are first-class and expressive, though, unlike Java's.
+
+For modularity, we want more. Basically, there are three things we look for in a good module implementation:
+
+- It must allow one to provide a set of functionality that fulfills a given interface. A Queue could be an interface, as much as List or DOM.
+- It must be first-class, so you can hold and abstract over a module.
+- It must allow delayed dependency binding, so you can mix and match different implementations of the same module easily.
+
 
 ## Module solutions for JS
 
