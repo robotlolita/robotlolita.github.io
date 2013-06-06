@@ -1,0 +1,8 @@
+name: Sorella's Basement
+pygments: true
+
+navigation:
+- text: Blog
+  url: /index.html
+- text: About
+  url: /about/index.html
