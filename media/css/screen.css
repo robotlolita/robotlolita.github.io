@@ -1512,9 +1512,10 @@ a:hover {
   content: "—";
 }
 #post-listing .date {
-  color: #bbb;
-  font-size: 0.6em;
+  color: #ccc;
+  font-size: 0.5em;
   margin-left: 0.5em;
+  white-space: nowrap;
 }
 .headline {
   text-align: center;
@@ -1537,7 +1538,7 @@ a:hover {
   font-family: 'Droid Serif', serif;
   font-size: 1.5em;
   color: #999;
-  margin: -0.4em 0 2em 0;
+  margin: 0 0 2em 0;
   text-align: right;
 }
 .page-heading .page-snip:before {
@@ -1565,18 +1566,49 @@ a:hover {
 #post blockquote p:last-child {
   margin-bottom: 0;
 }
-#post .highlight {
+#post .highlight,
+#post pre.src {
   margin-left: -50px;
   margin-bottom: 2em;
   border-left: 60px solid #555753;
+  background: #2a2a2a;
   padding: 10px;
+  font-family: monospace;
 }
-#post .highlight code {
+#post .highlight code,
+#post pre.src code {
   background: none;
   color: #ccc;
+}
+#post pre.src {
+  color: #eee;
 }
 #post code {
   font-family: monospace;
   color: #777;
   background: #f3f3f3;
+}
+#post sup,
+#post sub {
+  font-size: 80%;
+}
+#post sup {
+  vertical-align: super;
+}
+#post sub {
+  vertical-align: bottom;
+}
+#post dt {
+  font-weight: bold;
+  font-family: 'Montserrat', sans;
+  font-size: 1.5em;
+  color: #999;
+}
+#post dd {
+  border-left: 2px solid #ddd;
+  padding-left: 20px;
+  color: #999;
+  margin-top: 10px;
+  margin-bottom: 1.5em;
+  line-height: 1.3em;
 }
