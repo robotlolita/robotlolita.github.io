@@ -3,8 +3,8 @@ layout: default
 ---
 <header class="page-heading">
   <h2 class="page-title">{{ page.title }}</h2>
+  <p class="meta published-date">Published {{ page.date | date_to_long_string }}</p>
   <h3 class="page-snip">{{ page.snip }}</h3>
-  <p class="meta published-date">Published {{ page.date | date_to_string }}</p>
 </header>
 
 <div id="post">

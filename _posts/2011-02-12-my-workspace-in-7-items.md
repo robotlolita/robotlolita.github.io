@@ -19,19 +19,19 @@ using the Ubuntu distro for quite some time now and I'm quite happy with
 it. Though I still dislike some of its organisation, most of the things are
 nicer than the other GNU/Linux distros I've tried so far.
 
-And yes, I'm saying that being /noob friendly/ (as in /user friendly/) isn't a
-bad thing — /au contraire/, it's one of its strengths. At any rate, it's still
+And yes, I'm saying that being *noob friendly* (as in *user friendly*) isn't a
+bad thing — *au contraire*, it's one of its strengths. At any rate, it's still
 a GNU/Linux at its core, and you can customise it to your likings, just like
 any other distro. Which, mind you, it's the important part.
 
-Metacity sucks balls though, so I've switched to using *Enlightenment* /e17/
+Metacity sucks balls though, so I've switched to using **Enlightenment** *e17*
 as my Window Manager. Despite being a dev version, it's actually pretty stable
 and the core libraries just hit a stable release a while ago. The thing I like
 about it are the customisable key bindings for everything, so I almost don't
 need to use the mouse for anything. Not to mention it's hella fast and
 beautiful :D
 
-![blog:desktop-thumb.jpg][]
+![Desktop](/files/2011/02/desktop.jpg)
 
 
 
@@ -41,25 +41,25 @@ My second OS... I mean, my text editor of choice! Emacs, like GNU/Linux is
 pretty customisable and robust. Vim people like saying it lacks a good text
 editor — I beg to disagree. I love most of Emacs text editing features, and I
 have gotten so used to its shortcuts that they just make sense (and I keep
-pressing ~C-s~ to search texts in Chrome now)
+pressing `C-s` to search texts in Chrome now)
 
-*Kill ring* and *mark ring* are one of my favourite features. The first one
+**Kill ring** and **mark ring** are one of my favourite features. The first one
 allows you to cycle through previous text copied to the clipboard, the second
 lets you save positions in the buffer and cycle through it.
 
-For programming, I use ~js2-mode~ with ~yasnippet~ and ~auto-complete-mode~ for
-JavaScript, and ~python-mode~ with ~pymacs/ropemacs~ for Python. I use the
+For programming, I use `js2-mode` with `yasnippet` and `auto-complete-mode` for
+JavaScript, and `python-mode` with `pymacs/ropemacs` for Python. I use the
 standard modes for most of the other languages, where available.
 
 Obviously, I don't use Emacs just for programming. As a good Emacs hipster, I
-try to do everything from it, so I use ~ERC~ for chatting with people on IRC,
-~Twittering-mode~ for posting to twitter and stalking people, ~Tumble-mode~ for
-posting to my Tumblelog, ~aHG~ for versioning my files through Mercurial, and a
+try to do everything from it, so I use `ERC` for chatting with people on IRC,
+`Twittering-mode` for posting to twitter and stalking people, `Tumble-mode` for
+posting to my Tumblelog, `aHG` for versioning my files through Mercurial, and a
 few other things.
 
 For e-mail I decided I'm better off sticking with Thunderbird though...
 
-![blog:emacs-thumb.jpg][]
+![Emacs](/files/2011/02/emacs.jpg)
 
 
 ## Mercurial
@@ -68,7 +68,7 @@ Simply the best VCS. Ever. Period. Take that, git!
 
 Erm, anyways, I use Mercurial for my versioning. I used to rely on ol' SVN pal
 back then, and the transition to Mercurial was really pretty smooth. Everything
-in Hg feels pretty natural if you have some background in /version control/,
+in Hg feels pretty natural if you have some background in *version control*,
 and when it doesn't feel that intuitive, the great help is there to save the
 day.
 
@@ -81,21 +81,17 @@ I've used Git, but it's just not my thing. Each command in Git is like a swiss
 army knife, and it's not anything near intuitive until you get familiar with
 the git-way of doing things (which I never did).
 
-For interacting with Git repositories I prefer using the ~hg-git~ extension and
+For interacting with Git repositories I prefer using the `hg-git` extension and
 sticking with Mercurial for my local versioning.
 
-![blog:mercurial-thumb.jpg][]
+![Mercurial](/files/2011/02/mercurial.jpg)
 
 
 ## Headphones
 
 Now these are more important than my OS. REALLY, I'm one to listen to music all
 day long. I just can't live without it. When I'm not listening to music on the
-'puter, I'm doing so on my mobile, so yeah, I'm a /bit/ of a music freak :3
-
-![blog:me.jpg][]
-
-Bad mobile pictures plus messy hair for the win :3
+'puter, I'm doing so on my mobile, so yeah, I'm a *bit* of a music freak :3
 
 
 ## Compass
@@ -127,7 +123,7 @@ get motivated to do work :3
 It goes without saying that all my pictures include properly dressed girls (and
 traps)...
 
-![blog:images-thumb.jpg][]
+![Images folder](/files/2011/02/images.jpg)
 
 
 ## Wrapping it up
@@ -136,5 +132,5 @@ That's about it. But now that I've gone through it all, I'm curious to see how
 my fella programmers' workspace looks like.
 
 No, this is not an implicit invitation for a meme. In fact, it's not
-*implicit* at all, so go write it up now :D
+**implicit** at all, so go write it up now :D
 

@@ -1537,7 +1537,7 @@ a:hover {
   font-family: 'Droid Serif', serif;
   font-size: 1.5em;
   color: #999;
-  margin: -0.4em 0 1em 0;
+  margin: -0.4em 0 2em 0;
   text-align: right;
 }
 .page-heading .page-snip:before {
@@ -1548,8 +1548,35 @@ a:hover {
   color: #999;
   font-family: 'Montserrat', sans;
 }
+.page-heading .published-date {
+  margin-top: -0.5em;
+}
 #disqus_thread {
   margin-top: 3em;
   padding-top: 3em;
   border-top: 1px solid #eee;
+}
+#post img {
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  display: block;
+}
+#post blockquote p:last-child {
+  margin-bottom: 0;
+}
+#post .highlight {
+  margin-left: -50px;
+  margin-bottom: 2em;
+  border-left: 60px solid #555753;
+  padding: 10px;
+}
+#post .highlight code {
+  background: none;
+  color: #ccc;
+}
+#post code {
+  font-family: monospace;
+  color: #777;
+  background: #f3f3f3;
 }

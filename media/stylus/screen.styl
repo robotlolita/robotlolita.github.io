@@ -4,6 +4,7 @@
 
 jsk-body-font = 'Droid Serif', serif
 jsk-heading-font = 'Montserrat', sans
+jsk-mono-font = monospace
 jsk-base-line-height = 1.2em
 jsk-base-font-size = 16px
 jsk-base-colour = #424242
@@ -175,7 +176,7 @@ a:hover
     font-family: jsk-body-font
     font-size: 1.5em
     color: #999
-    margin: -0.4em 0 1em 0
+    margin: -0.4em 0 2em 0
     text-align: right
   .page-snip:before
     content: "—"
@@ -183,10 +184,34 @@ a:hover
     font-size: 0.9em
     color: #999
     font-family: jsk-heading-font
+  .published-date
+    margin-top: -0.5em
 
 #disqus_thread
   margin-top: 3em
   padding-top: 3em
   border-top: 1px solid #eee
   
-    
+#post
+  img
+    margin: 0 auto
+    padding: 20px
+    border: 1px solid #ddd
+    display: block
+
+  blockquote p:last-child
+    margin-bottom: 0
+
+  .highlight
+    margin-left: -50px
+    margin-bottom: 2em
+    border-left: 60px solid #555753
+    padding: 10px
+    code
+      background: none
+      color: #ccc
+
+  code
+    font-family: jsk-mono-font
+    color: #777
+    background: #f3f3f3
