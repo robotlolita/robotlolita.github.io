@@ -285,11 +285,37 @@ var printingSession = require('printing-session')(storage)
 
 As you see, all of the other modules are decoupled from the implementation details of how data is stored and retrieved, and they can just carry on with their business as usual. If we didn't have such straight-forward parametric modules (or worse, no parametric modules at all), we'd have to place the burden of such decisions within each high-level module, which clearly couldn't care less about the particulars of how data storage is performed.
 
+
 ## One NPM to Rule Them All
 
+Okay, cool, we have a way to load independant components in our applications and even swap in different implementations without breaking a sweat. Now there's one thing left: solving dependency hell. Once you start having lots of modules — and you should, because modules are awesome, and modules make your applications a fucking ton simpler, — you're eventually run into things like: "OH MY GOD I have to fetch this module, and then this, and on this one depends on this version of that one which depdends on that other version of OH FUCK THIS SHIT"
+
+Meet NPM, the guy who's going to do that job for you, so you can just keep your mind into coding awesome applications in JavaScript.
+
 ### On Package management in general
+
+Package management is not an entirely new idea, it goes back all the way down the story of computing. It's sad that even though we had a lot of time to improve on this area, some package managers still repeat lots of mistakes from the past.
+
+What it basically means is that, instead of telling every user and every developer the requirements for running your application, you just tell that to one guy: the package manager. And this guy will fetch everything for you, properly install and configure them, and have all you need ready for rocking, any time you want.
+
 ### How NPM works?
-### Why is there a need for package management?
+
+NPM stores packages in a registry. Packages are a possible collection of modules along with their meta-data, which means every package knows who created it, which versions of Node it runs in, and which other packages (and their versions) are needed for it to properly work.
+
+This meta-data is specified in a `package.json` file at the root of your module directory. The most basic file that could possible work would be something like this:
+
+```js
+{ "name": "my-thingie"
+, "description": "It does ~~awesome~~ stuff"
+, "version": "1.0.0"
+, "dependencies": { "other-module": ">=1.0.0" }
+}
+```
+
+There's quite a bit more to these meta-data, though, so be sure to check out [NPM's documentation on package.json](https://npmjs.org/doc/json.html) to learn everything else.
+
+Moving on, having NPM installed in your system means you can now declare that your module depends on X, Y and Z to work and just leave the job of fetching and configuring those for NPM, by running `npm install` at the root of your module directory. Then, once you've finished fiddling with your module and are ready to let the world know about it, you just `npm publish` it, and everyone else can install your module as easily as doing `npm install my-thingie`.
+
 
 ## NPM and CommonJS outside of Node-land
 
