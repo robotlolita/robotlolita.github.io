@@ -317,11 +317,67 @@ There's quite a bit more to these meta-data, though, so be sure to check out [NP
 Moving on, having NPM installed in your system means you can now declare that your module depends on X, Y and Z to work and just leave the job of fetching and configuring those for NPM, by running `npm install` at the root of your module directory. Then, once you've finished fiddling with your module and are ready to let the world know about it, you just `npm publish` it, and everyone else can install your module as easily as doing `npm install my-thingie`.
 
 
-## NPM and CommonJS outside of Node-land
+## NPM and Node modules outside of Node-land
+
+Alas, while NPM is a general tool for managing JavaScript dependencies, it uses Node-style modules (which are a superset of CommonJS modules), which your browser, and most other JavaScript environments don't quite understand. Amazed by the awesomeness of Node modules, and pulled by the desire of having the same amazing development experience in other platforms, people wrote tools to fix this. I'll talk about [Browserify][], by [substack][], here, but there are other tools that do similar things.
+
+[Browserify]: http://browserify.org/
+[substack]: https://github.com/substack
 
 ### Limitations
-### Browserify means CommonJS + NPM in the browser
+
+Let me start by saying a few words about the limitations of a tool like Browserify for Node modules: they work by performing optimistic static analysis on your modules and then generating one or more bundles that provide the necessary run-time for loading up code objects. With Browserify, this means that you'll send down a single JavaScript file to your users, containing everything they need.
+
+This also means that **we can't have conditionally bundled modules** in Browserify, because that would require flow-control analysis and runtime support for loading modules. Such a thing is, however, possible with a tool that would compile Node-style modules to AMD, and then lazily load dependencies — in that case you'd be trading off higher bandwidth usage for higher-latency, and the latter is most likely to be a ton more times horrible in most cases, unless you need to send >1MB of scripts down to your user, or keep sending scripts over the time.
+
+It also means that **most modules will just work**, as long as you don't use `require` as a first-class construct — you don't bind it to another variable and use that variable for loading modules, or pass an expression to `require`. We can not have first-class module loading with just optimistic static analysis, we'd need runtime support, but the trade-offs don't justify it most of the time.
+
+### Browserify means Node modules + NPM in the browser
+
+The first thing you need to do to get browserify kicking up and running is:
+
+```sh
+$ npm install -g browserify
+```
+
+Now you can write all your modules as if you were writing for Node, use NPM to manage all your dependencies and then just generate a bundle of your module that you can use in a web browser:
+
+```sh
+# Step 1: bundle your module
+$ browserify entry-module.js > bundle.js
+```
+```html
+<!-- step 2: reference the bundle -->
+<script src="bundle.js"></script>
+```
+```js
+// There is no step 3
+```
+
 ### Stand-alone modules
+
+Sometimes you need to share your modules with people who don't know the awesome world of Node modules yet, shame on them. Browserify allows you to generate stand-alone modules, which will include all dependencies, but can be used with AMD or the No-module approach:
+
+```sh
+# Step 1: generate a standalone module
+browserify --standalone thing thing-module.js > thing.umd.js
+```
+```html
+<!-- step 2: have people reference your module -->
+<script src="thing.umd.js"></script>
+```
+```js
+// Step 3: people can use your module with whatever
+thing.doSomething()
+// or
+var thing = require('thing')
+thing.doSomething()
+// or
+define(['thing'], function(thing) {
+  thing.doSomething()
+})
+```
+
 ### Common bundles
 ### Other games in the town
 
