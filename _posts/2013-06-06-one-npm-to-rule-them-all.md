@@ -244,6 +244,46 @@ listSwap() // => [2, 1]
 
 ### A real-world scenario
 
+So, the above example was simple just to convey the basics of the applicability of parametric modules, but let's see a more real-world scenario. We've had to recently store some data in the session in a website, and we had to support old browsers that have no support to SessionStorage **and** we had to write a handful of services on top of that. What we did was to write a parametric module that expected a Storage-like interface, and instantiate it with the right implementation depending on the capabilities of the browser.
+
+Basically, we had this interface:
+
+```hs
+type Storage a b {
+  get: a -> Promise (Maybe b)
+  set: a, b -> Promise b
+}
+```
+
+And derived a concrete implementation for browsers supporting local storage, and one for browsers that do not by talking to a webservice over HTTP (which is slower):
+
+```hs
+implement SessionStorage String String {
+  get: String -> Promise (Maybe String)
+  set: String, String -> Promise String
+}
+
+implement HTTPStorage String String {
+  get: String -> Promise (Maybe String)
+  set: String, String -> Promise String
+}
+```
+
+With this, we had a single `storage` module, which we could instantiate with the implementation of `SessionStorage` or `HTTPStorage` depending on the browser (this was for in-app performance, not for optimising bandwidth, so both modules were bundled), all of the other modules that depended on a storage then were made parametric modules, accepting a concrete implementation of `storage`. The following is a simplified version:
+
+```js
+// Get the proper storage for the browser
+var HTTPStorage    = require('http-storage')
+var SessionStorage = require('session-storage')
+var storage = 'sessionStorage' in window?  SessionStorage : HTTPStorage
+
+// Instantiates the high-level modules
+var downloadSession = require('download-session')(storage)
+var printingSession = require('printing-session')(storage)
+/* ... */
+```
+
+As you see, all of the other modules are decoupled from the implementation details of how data is stored and retrieved, and they can just carry on with their business as usual. If we didn't have such straight-forward parametric modules (or worse, no parametric modules at all), we'd have to place the burden of such decisions within each high-level module, which clearly couldn't care less about the particulars of how data storage is performed.
 
 ## One NPM to Rule Them All
 
