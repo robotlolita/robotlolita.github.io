@@ -149,13 +149,20 @@ Unfortunately, the Node implementation is still a tad bit too complex, because i
 Node modules are conceptually fairly simple:
 
  -  Each file corresponds to exactly one object. Once your module runs, you get a fresh object already instantiated, but you can replace it by any other value.
+ 
  -  Each module gets three magical variables:
+ 
      -  The `require` function, bound to the module's location (so that relative modules do The Right Thing™);
+     
      -  The `__dirname` variable, which contains the module's location.
+     
      -  The `module` variable, conforming to the interface `{ exports: Object }`, used to store the module's value.
--  A call to `require` with a relative path will resolve to a module file (and ultimately an Object) relative to the current module.
--  A call to `require` with an absolute path will resolve to a single module file (and ultimately an Object) relative to the root of the file system tree.
--  A call to `require` with a module identifier (no leading dot or slash) will resolve to the closest module with that name in a parent or sister `node_modules` folder.
+     
+ -  A call to `require` with a relative path will resolve to a module file (and ultimately an Object) relative to the current module.
+ 
+ -  A call to `require` with an absolute path will resolve to a single module file (and ultimately an Object) relative to the root of the file system tree.
+ 
+ -  A call to `require` with a module identifier (no leading dot or slash) will resolve to the closest module with that name in a parent or sister `node_modules` folder.
 
 Additionally, a module can be a part of a package. Packages encode a potential collection of modules along with their meta-data (dependencies, author, main module, binaries, etc). We'll talk about packages in depth once we visit NPM later in this article.
 
