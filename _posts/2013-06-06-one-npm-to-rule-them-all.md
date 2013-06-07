@@ -53,7 +53,7 @@ It's actually interesting to see how many things the lack of module support back
 
 Languages and platforms that are heavily batteries-included usually strive for "There Should Be Only One Way of Doing X", and with that way of thinking those solutions might lose relevance with time, or they might simply not solve the stated problem in the best way it could (for example, Python's module system is shitty as fuck).
 
-The module landscape in JavaScript consists of a few well-known players (AMD, CommonJS), and attempts to port less-expressive package/namespacing conventions to the language (Gjs), to the most-naïve-solution-that-could-possibly-work (Module pattern).
+The module landscape in JavaScript consists of a few well-known players (AMD, CommonJS), to the most-naïve-solution-that-could-possibly-work (Module pattern).
 
 ### The no-module way
 
@@ -89,13 +89,27 @@ And, well, the madness goes on and on.
 
 In JavaScript, first-class namespacing can be emulated through objects, but we don't get full-on first-class namespaces — we can't manipulate the contents of a function's locals, for example, as we would be able to do in Io, Clojure and a couple of other languages. And ES5 strict just got rid of `with` — which was badly designed anyways. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
-### Poor ports of other languages's package systems
-
 ### The Module Pattern
 
 Moving on, the module pattern gives you... you guessed it: modules! Albeit a rather crude form of that. In the module pattern you use a function to get a new scope where you can hide implementation details, and then you return an object that provides the interface your module exposes.
 
+```js
+// we use `new` here just to abuse how badly designed it is,
+// (we can return a different object not related to the function's prototype)
+// You could call the function as an IIFE, as everyone else does.
+var Queue = new function() {
+  return { make: function(){ ... }
+         , push: function(q){ ... }
+         , pop:  function(q){ ... }
+         }
+}
+```
+
+Now, `Queue` is properly isolated and exposes only the interface we need. Nice, but then it doesn't tell us which kind of dependencies `Queue` has, so while the module pattern is a start, it doesn't solve all our problems. We need our modules to specify their own dependencies, so we can have the module system assemble everything together for us.
+
 ### Asynchronous Module Definition (AMD)
+
+
 
 ## CommonJS modules (as implemented by Node.js)
 
