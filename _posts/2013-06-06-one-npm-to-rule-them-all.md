@@ -1,8 +1,8 @@
 ---
-layout:    post
-title:     One NPM to Rule Them All
-snip:      Modules need a package manager, so just meet NPM and stop worrying.
 published: false
+layout: post
+title: One NPM to Rule Them All
+snip: "Modules need a package manager, so just meet NPM and stop worrying."
 ---
 
 Years ago I wrote a little post on modules, frameworks and micro-frameworks, and oh boy did the landscape change! Today, if you're not using NPM and CommonJS when writing any JavaScript code, you're most likely doing it wrong. It doesn't matter if you're writing for the Browser, Node or a small Arduino sitting idle on your table, and in this post I'll show you why.
@@ -205,6 +205,7 @@ Module identifiers can also be the name of a module, for example `jquery` or `fo
        |  `--+ /foo
        `--o the-module.js
 
+Node's module loading algorithm, while slightly complex (due to allowing one to omit extensions **and** allowing people to register transformers based on the file extension), is still pretty straight forward, and encourages people have dependencies installed per-module, rather than globally, which avoids lots of versioning hell.
 
 ### Parametric modules and delayed binding
 
