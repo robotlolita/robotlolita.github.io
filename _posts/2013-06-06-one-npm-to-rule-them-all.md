@@ -209,6 +209,25 @@ Node's module loading algorithm, while slightly complex (due to allowing one to 
 
 ### Parametric modules and delayed binding
 
+Last, but not least, Node modules allow straight-forward parametric modules, by making it possible for your module to be a closure. Parametric modules gives us the possibility of delaying implementation decisions, so you code your module using a particular interface, and when instantiating your module the user gives you the correct implementation of that. This is good for a handful of things, from shims, to modular and abstract DOM manipulation, to choosing performant implementations of X or Y.
+
+So, in practice, it works like this: You define an interface for writing your code against.
+
+```hs
+type Stack a {
+  push: a -> ()
+  pop: () -> Maybe a
+}
+```
+
+Then you export a function that takes the concrete implementation of that interface:
+
+```hs
+module.exports = function(stack) {
+  
+}
+```
+
 ## One NPM to Rule Them All
 
 ### On Package management in general
