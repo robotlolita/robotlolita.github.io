@@ -138,15 +138,67 @@ Lazy and dynamic loading of modules, which are things AMD enable, are a nice thi
 
 [Require.JS]: http://requirejs.org/
 
-## CommonJS modules (as implemented by Node.js)
+## Node modules (a superset of CommonJS modules)
 
 The CommonJS modules defined by the standard just don't cut it. But Node modules are an improved implementation of CommonJS modules that give you first-class and straight forward parametric modules (as AMD does), with a simpler mapping of module identifiers to implementations. Plus, you get to use NPM for managing your dependencies, but we'll get there in a second.
 
-
+Unfortunately, the Node implementation is still a tad bit too complex, because it allows the use of plugins to transform modules before they are loaded, and allow one to omit file extensions, which are the trigger for plugins — [these two features combined are not a good thing, as acknowledged by Isaacs](https://github.com/joyent/node/issues/5430#issuecomment-17696415).
 
 ### A quick conceptual overview
+
+Node modules are conceptually fairly simple:
+
+ -  Each file corresponds to exactly one object. Once your module runs, you get a fresh object already instantiated, but you can replace it by any other value.
+ -  Each module gets three magical variables:
+     -  The `require` function, bound to the module's location (so that relative modules do The Right Thing™);
+     -  The `__dirname` variable, which contains the module's location.
+     -  The `module` variable, conforming to the interface `{ exports: Object }`, used to store the module's value.
+-  A call to `require` with a relative path will resolve to a module file (and ultimately an Object) relative to the current module.
+-  A call to `require` with an absolute path will resolve to a single module file (and ultimately an Object) relative to the root of the file system tree.
+-  A call to `require` with a module identifier (no leading dot or slash) will resolve to the closest module with that name in a parent or sister `node_modules` folder.
+
+Additionally, a module can be a part of a package. Packages encode a potential collection of modules along with their meta-data (dependencies, author, main module, binaries, etc). We'll talk about packages in depth once we visit NPM later in this article.
+
 ### First-class modules
+
+As mentioned before, Node modules are first-class. This means they're just a plain JavaScript object that you can store in variables and pass around. This one of the most important steps for a good module system.
+
+To write a Node module, you just create a new JavaScript file, and assign any value you want to `module.exports`:
+
+```js
+// hello.js
+function hello(thing) {
+  console.log('Hello, ' + thing + '.')
+}
+
+// The module is now a Function
+module.exports = hello
+```
+
 ### Module loading
+
+Then, Node modules give you a way of resolving a module identifier to an actual module object. This is done by the first-class function `require`. This function takes in a module identifier, resolve the identifier to a JavaScript file, executes the file, then returns the object that it exports:
+
+```js
+var hello = require('./hello.js')
+
+hello('dear reader') // => "Hello, dear reader."
+```
+
+A module identifier can be either a relative or absolute path, in which case the regular file lookup rules apply: `./foo` resolves to a `foo` file in the requirer's directory, `/foo/bar` resolves to the `/foo/bar` file relative to the root of the file system.
+
+Module identifiers can also be the name of a module, for example `jquery` or `foo/bar` — in the latter case `bar` is resolved relative to the root of `foo`. In these cases, the algorithm will try to find the closest module that matches that name living in a `node_modules` folder above the requirer's location.
+
+    + /
+    |--+ /node_modules
+    |  `--+ /foo          // we'll load this
+    `--+ /my-package
+       |--+ /node_modules
+       |  |--+ /jquery    // and this one too
+       |  `--+ /foo
+       `--o the-module.js
+
+
 ### Parametric modules and delayed binding
 
 ## One NPM to Rule Them All
