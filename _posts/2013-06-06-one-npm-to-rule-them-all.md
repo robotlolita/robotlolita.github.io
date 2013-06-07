@@ -109,9 +109,40 @@ Now, `Queue` is properly isolated and exposes only the interface we need. Nice, 
 
 ### Asynchronous Module Definition (AMD)
 
+AMD is a step in the right direction when it comes down to modules in JS, they give you both first-class modules **and** parametric modules (it should be noted that the CommonJS standard **does not** support straight-forward parametric modules — you can't export a function).
 
+However, AMD comes with the cost of way-too-much-boilerplate. Remember that I said boilerplate is harmful and means your tools are not solving your problem, well this happens to AMD:
+
+```js
+// Dependency names are separated from bindings, which creates confusion
+define('queue', ['foo'], function(foo) {
+  return TheModule // this is pretty cool, though
+})
+
+// The confusion is not apparent from a simple example, so here's a "real-world" one:
+define('queue', ['a', 'b', 'c', 'd', 'e', 'f', ..., 'x']
+              , function(...what goes here again?) {
+                  return TheModule
+                })
+                
+// You can use CommonJS's binding syntax, but then you need tooling anyways,
+// and if you're going to get better tooling, you can at least make sure you get
+// a proper tool that doesn't require boilerplate
+```
+
+Besides this, there is not a clear mapping about the identifier used to refer to a module and the actual module being loaded. While this allows us to delay the concrete binding of a module by just requiring a certain interface to be implemented in the loaded modules, this means we need to know everything about every dependency of every module we use — with enough dependencies there's such a high cognitive load to keep everything working that it outweights the benefits of modules, and makes keeping track of script tag insertion order simpler. Relative modules are supported, however.
+
+The major implementation of AMD in JavaScript is [Require.JS][], although there are a few others. Require.JS still allows plugins to be defined for loading different kinds of modules — or even things that aren't modules at all! This only adds complexity to the implementation and the applications using it, without giving back anything that outweights the cognitive costs of such behaviour.
+
+Lazy and dynamic loading of modules, which are things AMD enable, are a nice thing to have, if your application ever needs to load more than 1MB of JavaScript — there are some kinds of applications that will just load a lot of new code over time, where it would be a nice fit. I'd still write a simpler implementation in that case, without all the warts.
+
+[Require.JS]: http://requirejs.org/
 
 ## CommonJS modules (as implemented by Node.js)
+
+The CommonJS modules defined by the standard just don't cut it. But Node modules are an improved implementation of CommonJS modules that give you first-class and straight forward parametric modules (as AMD does), with a simpler mapping of module identifiers to implementations. Plus, you get to use NPM for managing your dependencies, but we'll get there in a second.
+
+
 
 ### A quick conceptual overview
 ### First-class modules
