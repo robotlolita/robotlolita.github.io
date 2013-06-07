@@ -222,11 +222,28 @@ type Stack a {
 
 Then you export a function that takes the concrete implementation of that interface:
 
-```hs
+```js
 module.exports = function(stack) {
+  function swap() {
+    var e1 = stack.pop()
+    var e2 = stack.pop()
+    if (e2 != null) stack.push(e2)
+    if (e1 != null) stack.push(e1)
+  }
   
+  return swap
 }
 ```
+
+And finally, when someone wants to use your module, they just instantiate the code with the right implementation of the Stack interface:
+
+```js
+var listSwap = require('swap')([1, 2]) // note the additional call for instantiating
+listSwap() // => [2, 1]
+```
+
+### A real-world scenario
+
 
 ## One NPM to Rule Them All
 
