@@ -208,7 +208,7 @@ Module identifiers can also be the name of a module, for example `jquery` or `fo
        |  `--+ /foo
        `--o the-module.js
 
-Node's module loading algorithm, while slightly complex (due to allowing one to omit extensions **and** allowing people to register transformers based on the file extension), is still pretty straight forward, and encourages people have dependencies installed per-module, rather than globally, which avoids lots of versioning hell.
+Node's module loading algorithm, while slightly complex (due to allowing one to omit extensions **and** allowing people to register transformers based on the file extension), is still pretty straight forward, and encourages people to have dependencies installed per-module, rather than globally, which avoids lots of versioning hell.
 
 ### Parametric modules and delayed binding
 
