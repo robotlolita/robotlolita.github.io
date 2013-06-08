@@ -391,3 +391,26 @@ For now, I just hope you can go back to your projects and use these techniques t
 
 ## References and additional reading
 
+<dl>
+  <dt><a href="http://2013.flatmap.no/spiewak.html">Living in a Post-Functional World</a></dt>
+  <dd>This amazing talk by Daniel Spiewak at flatMap(Oslo) touches some important aspects of first-class & parametric modules, and is an absolute must watch.</dd>
+  
+  <dt><a href="http://nodejs.org/api/modules.html">The Node.js documentation on Modules</a></dt>
+  <dd>These describe Node modules in much more detail than I have in this little article.</dd>
+  
+  <dt><a href="https://github.com/substack/node-browserify">Browserify</a></dt>
+  <dd>The browserify tool, which transforms Node-style modules so they can run in non-Node environments.</dd>
+  
+  <dt><a href="http://citeseer.uark.edu:8080/citeseerx/viewdoc/summary;jsessionid=152911076D9D138C931FC84E909173C5?doi=10.1.1.68.8684">Separating Concerns With First-Class Namespaces</a></dt>
+  <dd>Nierstraz & Archermann present Piccola, a language with first-class namespaces based on π-calculus. Piccola uses forms (you can think of them as objects) as modules, services (you can squint your eyes hard and think of them as functions) as parametric modules and mixin layer composition for composing different modules together.</dd>
+  
+  <dt><a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.51.662">The Programming Language Jigsaw - Mixins, Modularity and Multiple Inheritance</a></dt>
+  <dd>Gilad Bracha's thesis describe a framework for modularity in programming languages with basis in inheritance for module manipulation. A fairly interesting read.</dd>
+  
+  <dt><a href="http://scg.unibe.ch/archive/phd/schaerli-phd.pdf">Traits - Composing Classes from Behavioural Building Blocks</a></dt>
+  <dd>Traits came up as an alternative for multiple inheritance and the diamond problem, being a saner choice than plain mixins. Schärli's dissertation describes them in a rather nice way, and the operators and semantics for traits just happen to make a perfect fit for enforcing compositionality contracts for dynamic module.</dd>
+  
+  <dt><a href="https://github.com/killdream/pandora">Pandora</a></dt>
+  <dd>Pandora is a rather old module I've written that uses Trait operators to define a series of constraints for first-class modules. It's influenced by Scheme, Clojure, Piccola and Traits, and here mostly for the conceptual relevance.</dd>
+  
+</dl>  
