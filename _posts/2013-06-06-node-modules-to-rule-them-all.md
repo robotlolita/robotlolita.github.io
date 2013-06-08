@@ -299,15 +299,15 @@ As you see, all of the other modules are decoupled from the implementation detai
 
 ## One NPM to Rule Them All
 
-Okay, cool, we have a way to load independant components in our applications and even swap in different implementations without breaking a sweat. Now there's one thing left: solving dependency hell. Once you start having lots of modules — and you should, because modules are awesome, and modules make your applications a fucking ton simpler, — you're eventually run into things like: "OH MY GOD I have to fetch this module, and then this, and on this one depends on this version of that one which depdends on that other version of OH FUCK THIS SHIT"
+Okay, cool, we have a way to load independent components in our applications and even swap in different implementations without breaking a sweat. Now there's one thing left: solving dependency hell. Once you start having lots of modules — and you should, because modules are awesome, and modules make your applications a fucking ton simpler, — you're eventually run into things like: "OH MY GOD I have to fetch this module, and then this, and on this one depends on this version of that one which depdends on that other version of OH FUCK THIS SHIT"
 
 Meet NPM, the guy who's going to do that job for you, so you can just keep your mind into coding awesome applications in JavaScript.
 
 ### On Package management in general
 
-Package management is not an entirely new idea, it goes back all the way down the story of computing. It's sad that even though we had a lot of time to improve on this area, some package managers still repeat lots of mistakes from the past.
+Package management is not a new idea, it goes back all the way down the story of computing. It's sad that even though we had a lot of time to improve on this area, some package managers still repeat lots of mistakes from the past.
 
-What it basically means is that, instead of telling every user and every developer the requirements for running your application, you just tell that to one guy: the package manager. And this guy will fetch everything for you, properly install and configure them, and have all you need ready for rocking, any time you want.
+Package managers are, basically, tools that handle all the requirements of your application upfront, instead of you having to tell every user and every developer the requirements for running your application, and expecting them to search for those, download, install, configure, etc. A package manager will do all of that for free, so you can just jump into rocking on right away, any time you want.
 
 ### How NPM works?
 
