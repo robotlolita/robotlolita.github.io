@@ -167,7 +167,7 @@ Node modules and its loader are conceptually easy, and relatively simple:
  
  -  A call to `require` with a module identifier (no leading dot or slash) will resolve to the closest module with that name in a parent or sister `node_modules` folder.
 
-Additionally, a module can be a part of a package. Packages encode a potential collection of modules along with their meta-data (dependencies, author, main module, binaries, etc). We'll talk about packages in depth once we visit NPM later in this article.
+Additionally, a module can be a part of a package. Packages encode a collection of modules along with their meta-data (dependencies, author, main module, binaries, etc). We'll talk about packages in depth once we visit NPM later in this article.
 
 ### First-class modules
 
