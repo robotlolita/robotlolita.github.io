@@ -23,7 +23,7 @@ There have been plenty of module solutions over the time in JavaScript, the most
 [CommonJS]: http://wiki.commonjs.org/wiki/Modules/1.1
 [modules talk]: http://2013.flatmap.no/spiewak.html
 
-The rest of this article is laid out as follows: in the first section I give a conceptual overview of namespacing and modules, in the second section there's an overview of all module solutions available for JavaScript, and a quick analysis the pros-and-cons of each one. In the subsequent sections I present CommonJS in more depth, then introduce the concepts of parametric modules. Then there's a whole section on package management and NPM. In the last section I introduce Browserify as a tool for using CommonJS modules in non-Node.js environments. Finally, I give a kick-ass conclusion on all of this mess and point you to additional reading material and tools.
+The rest of this article is laid out as follows: in the first section I give a conceptual overview of namespacing and modules, in the second section there's an overview of all module solutions available for JavaScript, and a quick analysis of the pros-and-cons in each one. In the subsequent sections I present Node modules in more depth, then introduce the concepts of parametric modules. Then there's a whole section on package management and NPM. In the last section I introduce Browserify as a tool for using Node modules in non-Node.js environments. Finally, I give a kick-ass conclusion on all of this mess and point you to additional reading material.
 
 ## Namespacing and Modules
 
@@ -33,7 +33,7 @@ Both namespaces and modules are important when developing any kind of applicatio
 
 A namespace is something that holds a mapping from a particular name to a particular meaning. Some languages have different namespaces for different kinds of things (for example, the namespace used for functions is not the same as the one used for types, or variables, so a variable A is still different from a function A), some other languages (like JavaScript) just roll out with a single namespace for everything.
 
-Namespaces exist because we can only give things so much names before we run out of alternatives, and then starting writing **SquareRoot2345**, as if you were trying to find an available username on Twitter is not the best thing.
+Namespaces exist because we can only give things so much names before we run out of alternatives and start writing **SquareRoot2345**, as if we were trying to find an available username on Twitter. Not the best thing, you see.
 
 
 ### What's a module?
