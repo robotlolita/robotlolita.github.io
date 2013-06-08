@@ -362,7 +362,7 @@ $ browserify entry-module.js > bundle.js
 <script src="bundle.js"></script>
 ```
 ```js
-// There is no step 3
+// THERE AM NO STEP 3
 ```
 
 ### Stand-alone modules
