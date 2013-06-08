@@ -389,9 +389,6 @@ define(['thing'], function(thing) {
 })
 ```
 
-
-### Other games in the town
-
 ## Conclusion
 
 Modularity is really important for developing large applications that you can actually maintain, and first-class parametric modules give you just the right tool for that. Anything less powerful than that and you're going to suffer badly from experssiveness sooner or later, sometimes people just put up with that and say "Oh, just use this boilerplate" or "Here, I just gave this pattern a name."
