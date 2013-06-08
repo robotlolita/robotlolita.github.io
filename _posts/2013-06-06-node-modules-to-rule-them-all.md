@@ -5,7 +5,7 @@ title: Node Modules to Rule Them All
 snip: "First-class parametric modules + NPM = ♥"
 ---
 
-Years ago I wrote a little post on modules, frameworks and micro-frameworks, and oh boy did the landscape change! Today, if you're not using NPM and CommonJS when writing any JavaScript code, you're most likely doing it wrong. It doesn't matter if you're writing for the Browser, Node or anything else.
+Years ago I wrote a little post on modules, frameworks and micro-frameworks, and oh boy did the landscape change! Today, if you're not using NPM and Node modules when writing any JavaScript code, you're most likely doing it wrong. It doesn't matter if you're writing for the Browser, Node or anything else.
 
 TL;DR:
 
