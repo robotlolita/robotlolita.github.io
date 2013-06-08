@@ -129,16 +129,17 @@ define('queue', ['a', 'b', 'c', 'd', 'e', 'f', ..., 'x']
                 
 // You can use CommonJS's binding syntax, but then you need tooling anyways,
 // and if you're going to get better tooling, you can at least make sure you get
-// a proper tool that doesn't require boilerplate
+// a proper tool that doesn't Require.js boilerplate
 ```
 
-Besides this, there is not a clear mapping about the identifier used to refer to a module and the actual module being loaded. While this allows us to delay the concrete binding of a module by just requiring a certain interface to be implemented in the loaded modules, this means we need to know everything about every dependency of every module we use — with enough dependencies there's such a high cognitive load to keep everything working that it outweights the benefits of modules, and makes keeping track of script tag insertion order simpler. Relative modules are supported, however.
+Besides this, there is not a clear mapping about the identifier used to refer to a module and the actual module being loaded. While this allows us to delay the concrete binding of a module by just requiring a certain interface to be implemented in the loaded modules, this means we need to know everything about every dependency of every module we use — with enough dependencies there's such a high cognitive load to keep everything working that it outweights the benefits of modules.
 
-The major implementation of AMD in JavaScript is [Require.JS][], although there are a few others. Require.JS still allows plugins to be defined for loading different kinds of modules — or even things that aren't modules at all! This only adds complexity to the implementation and the applications using it, without giving back anything that outweights the cognitive costs of such behaviour.
-
-Lazy and dynamic loading of modules, which are things AMD enable, are a nice thing to have, if your application ever needs to load more than 1MB of JavaScript — there are some kinds of applications that will just load a lot of new code over time, where it would be a nice fit. I'd still write a simpler implementation in that case, without all the warts.
+The major implementation of AMD in JavaScript is [Require.JS][], although there are a few others. Require.JS still allows plugins to be defined for loading different kinds of modules, which is a powerful feature, but one that can be easily abused and a source of complexity. In general, my impression from reading Require.js's documentation is that its loader (the thing that'll map module identifiers to actual Module objects) is far too complected. However, I am not too familiar with its actual implementation to say anything on this.
 
 [Require.JS]: http://requirejs.org/
+
+Lazy and dynamic loading of modules, which are things AMD enable, are a nice thing to have, if your application ever needs to load more than 1MB of JavaScript — there are some kinds of applications that will just load a lot of new code over time, where it would be a nice fit. I'd still use a tool that converts from a simpler format to AMD, however.
+
 
 ## Node modules (a superset of CommonJS modules)
 
