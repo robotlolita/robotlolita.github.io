@@ -46,6 +46,8 @@ For modularity, we want more. Basically, there are three things we look for in a
 - It must be first-class, so you can hold and abstract over a module.
 - It must allow delayed dependency binding, so you can mix and match different implementations of the same module easily.
 
+To make it a little bit clearer, repeat after me **"Modules are not files. Modules are not files. Modules are not files!"**. The correlation of files and modules in most programming languages is just incidental, but modules are objects that provide a particular interface, a file is just a medium used to describe that and load it.
+
 
 ## Module solutions for JS
 
@@ -413,4 +415,4 @@ For now, I just hope you can go back to your projects and use these techniques t
   <dt><a href="https://github.com/killdream/pandora">Pandora</a></dt>
   <dd>Pandora is a rather old module I've written that uses Trait operators to define a series of constraints for first-class modules. It's influenced by Scheme, Clojure, Piccola and Traits, and here mostly for the conceptual relevance.</dd>
   
-</dl>  
+</dl>
