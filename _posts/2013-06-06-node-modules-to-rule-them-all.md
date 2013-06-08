@@ -89,7 +89,7 @@ com.myCompany.myPackage.someOtherDumbThing.identity = function(a){ return a }
 
 And, well, the madness goes on and on.
 
-In JavaScript, first-class namespacing can be emulated through objects, but they're still rather awkward to work with. We can't have a function run in a particular namespace, for example, as you'd be able to do in something like Io. And ES5 strict just got rid of `with`, so you can't unpack a first-class namespace in the current scope — though the feature did cause way too much more problems than it was worth it. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
+In JavaScript, first-class namespacing can be emulated through objects, but they're still rather awkward to work with. We can't have a function run in a particular namespace, for example, as you'd be able to do in something like Io or Piccola. And ES5 strict just got rid of `with`, so you can't unpack a first-class namespace in the current scope — though the feature did cause way too much more problems than it was worth it. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
 ### The Module Pattern
 
