@@ -255,7 +255,7 @@ listSwap() // => [2, 1]
 
 ### A real-world scenario
 
-So, the above example was simple just to convey the basics of the applicability of parametric modules, but let's see a more real-world scenario. We've had to recently store some data in the session in a website, and we had to support old browsers that have no support to SessionStorage **and** we had to write a handful of services on top of that. What we did was to write a parametric module that expected a Storage-like interface, and instantiate it with the right implementation depending on the capabilities of the browser.
+So, the above example was simple just to convey the basics of the applicability of parametric modules, but let's see a more real-world scenario. At the company I work for we've had to store some data in the session in a website, and we had to support old browsers that have no support to SessionStorage **and** we had to write a handful of services on top of that. What we did was to write a parametric module that expected a Storage-like interface, and instantiate it with the right implementation depending on the capabilities of the browser.
 
 Basically, we had this interface:
 
@@ -266,7 +266,7 @@ type Storage a b {
 }
 ```
 
-And derived a concrete implementation for browsers supporting local storage, and one for browsers that do not by talking to a webservice over HTTP (which is slower):
+And derived a concrete implementation for browsers supporting local storage, and one for browsers that do not by talking to a webservice over HTTP (which is slower, and we didn't want to push the cost on every user):
 
 ```hs
 implement SessionStorage String String {
