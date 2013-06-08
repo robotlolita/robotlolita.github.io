@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 layout: post
 title: Node Modules to Rule Them All
 snip: "First-class parametric modules + NPM = ♥"
