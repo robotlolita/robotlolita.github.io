@@ -55,7 +55,7 @@ It's actually interesting to see how many things the lack of module support bake
 
 Languages and platforms that are heavily batteries-included usually strive for "There Should Be Only One Way of Doing X", and with that way of thinking those solutions might lose relevance with time, or they might simply not solve the stated problem in the best way it could (for example, Python's module system is shitty as fuck).
 
-But look at JavaScript, it has evolved over the time and accumulated a handful of different solutions to this problem, from a handful of few well-known players (AMD, CommonJS), to the most-naïve-solution-that-could-possibly-work (Module pattern).
+But look at JavaScript, it has evolved over the time and accumulated a handful of different solutions to this problem, from a handful of well-known players that do the job (AMD, CommonJS, Node modules), to silly ports of non-expressive module systems in other languages (Gjs), to the most-naïve-solution-that-could-possibly-work (Module pattern).
 
 ### The no-module way
 
@@ -89,7 +89,7 @@ com.myCompany.myPackage.someOtherDumbThing.identity = function(a){ return a }
 
 And, well, the madness goes on and on.
 
-In JavaScript, first-class namespacing can be emulated through objects, but we don't get full-on first-class namespaces — we can't manipulate the contents of a function's locals, for example, as we would be able to do in Io, Clojure and a couple of other languages. And ES5 strict just got rid of `with` — which was badly designed anyways. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
+In JavaScript, first-class namespacing can be emulated through objects, but they're still rather awkward to work with. We can't have a function run in a particular namespace, for example, as you'd be able to do in something like Io. And ES5 strict just got rid of `with`, so you can't unpack a first-class namespace in the current scope — though the feature did cause way too much more problems than it was worth it. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
 ### The Module Pattern
 
