@@ -149,9 +149,9 @@ Unfortunately, the Node implementation is still a tad bit too complex, because i
 
 ### A quick conceptual overview
 
-Node modules are conceptually fairly simple:
+Node modules and its loader are conceptually easy, and relatively simple:
 
- -  Each file corresponds to exactly one object. Once your module runs, you get a fresh object already instantiated, but you can replace it by any other value.
+ -  Each file corresponds to exactly one object. Once your module runs, you get a fresh `exports` object already instantiated, but you can replace it by any other value.
  
  -  Each module gets three magical variables:
  
@@ -159,7 +159,7 @@ Node modules are conceptually fairly simple:
      
      -  The `__dirname` variable, which contains the module's location.
      
-     -  The `module` variable, conforming to the interface `{ exports: Object }`, used to store the module's value.
+     -  The `module` variable, conforming to the interface `{ exports: Object }` (and a few other fields), used to store the module's value.
      
  -  A call to `require` with a relative path will resolve to a module file (and ultimately an Object) relative to the current module.
  
