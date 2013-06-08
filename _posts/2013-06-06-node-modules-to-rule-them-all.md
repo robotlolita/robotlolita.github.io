@@ -1,8 +1,8 @@
 ---
 published: false
 layout: post
-title: One NPM to Rule Them All
-snip: "Modules need a package manager, so just meet NPM and stop worrying."
+title: Node Modules to Rule Them All
+snip: "First-class parametric modules + NPM = ♥"
 ---
 
 Years ago I wrote a little post on modules, frameworks and micro-frameworks, and oh boy did the landscape change! Today, if you're not using NPM and CommonJS when writing any JavaScript code, you're most likely doing it wrong. It doesn't matter if you're writing for the Browser, Node or a small Arduino sitting idle on your table, and in this post I'll show you why.
