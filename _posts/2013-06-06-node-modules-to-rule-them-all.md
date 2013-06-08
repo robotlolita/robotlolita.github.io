@@ -284,7 +284,7 @@ With this, we had a single `storage` module, which we could instantiate with the
 
 ```js
 // Get the proper storage for the browser
-var HTTPStorage    = require('http-storage')
+var HTTPStorage    = require('http-storage')('/api/session')
 var SessionStorage = require('session-storage')
 var storage = 'sessionStorage' in window?  SessionStorage : HTTPStorage
 
