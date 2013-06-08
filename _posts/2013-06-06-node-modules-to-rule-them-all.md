@@ -187,7 +187,7 @@ module.exports = hello
 
 ### Module loading
 
-Then, Node modules give you a way of resolving a module identifier to an actual module object. This is done by the first-class function `require`. This function takes in a module identifier, resolve the identifier to a JavaScript file, executes the file, then returns the object that it exports:
+Then, Node modules give you a way of resolving a module identifier to an actual module object. This is done by the first-class function `require`. This function takes in a String containing a module identifier, resolve the identifier to a JavaScript file, executes the file, then returns the object that it exports:
 
 ```js
 var hello = require('./hello.js')
