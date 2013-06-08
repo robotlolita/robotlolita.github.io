@@ -383,4 +383,11 @@ define(['thing'], function(thing) {
 
 ## Conclusion
 
+Modularity is really important for developing large applications that you can actually maintain, and first-class parametric modules give you just the right tool for that. Anything less powerful than that and you're going to suffer badly from experssiveness sooner or later, sometimes people just put up with that and say "Oh, just use this boilerplate" or "Here, I just gave this pattern a name."
+
+Patterns and boilerplates should not what we, as developers, should be striving for. We should be using our creativity to solve our problems, not just work around the symptoms. Node modules are not perfect either, but they're a real good start considering all the other alternatives. Could we do better? Possibly. And I have some ideas of my own that I'd like to try over the next weeks, but that's the topic of another blog post.
+
+For now, I just hope you can go back to your projects and use these techniques to write even bigger and awesomer stuff :D
+
 ## References and additional reading
+
