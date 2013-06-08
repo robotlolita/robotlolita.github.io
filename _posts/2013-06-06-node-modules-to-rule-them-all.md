@@ -52,10 +52,9 @@ To make it a little bit clearer, repeat after me **"Modules are not files. Modul
 
 Since Modules are not files, but we more often than not use files to store them, we need something that'll evaluate a file and give us back a module. These things are often called *module loaders*. Not all languages have these, of course, but some do.
 
-In Node.js, `require` is the module loader. In Python, `import` is the loader. In Io objects are modules, and the loader is the Importer object, and can be implicit when you reference any object (Io will try to load a file with the same name if the message doesn't exist in the Lobby). In Java you don't have loaders because you don't have modules. In Clojure modules are replaced by first-class namespaces, so you don't have a loader either.
+In Node.js, `require` is the module loader. In Python, `import` is the loader. In Io objects are modules, and the loader is the Importer object, and can be implicit when you reference any object (Io will try to load a file with the same name if the message doesn't exist in the Lobby). In Java you don't have loaders because you don't have modules. In Clojure modules are replaced by first-class namespaces, so you don't have a loader either — you have read and eval, however, and can apply your way around everything.
 
 Module loaders are interesting because they allow one to dynamically reference a Module that is stored in any other medium. A medium could be a file, it could be the internets, it could be a database, a zip file, an image, or anything else.
-
 
 
 ## Module solutions for JS
