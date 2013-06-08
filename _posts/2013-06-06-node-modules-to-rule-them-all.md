@@ -367,7 +367,7 @@ $ browserify entry-module.js > bundle.js
 
 ### Stand-alone modules
 
-Sometimes you need to share your modules with people who don't know the awesome world of Node modules yet, shame on them. Browserify allows you to generate stand-alone modules, which will include all dependencies, but can be used with AMD or the No-module approach:
+Sometimes you need to share your modules with people who don't know the awesome world of Node modules yet, shame on them. Browserify allows you to generate stand-alone modules, which will include all dependencies, and can be used with AMD or the No-module approach:
 
 ```sh
 # Step 1: generate a standalone module
