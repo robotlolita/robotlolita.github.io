@@ -6,12 +6,12 @@ snip: "First-class parametric modules + NPM = ♥"
 ---
 
 Years ago I wrote a little post on modules, frameworks and micro-frameworks, and oh boy did the landscape change! Today, if you're not using NPM and CommonJS when writing any JavaScript code, you're most likely doing it wrong. It doesn't matter if you're writing for the Browser, Node or anything else.
-
+bit
 TL;DR:
 
 - **Modularise**: write small modules that do only one thing, and compose them together to do more complex stuff.
 - **Use a package manager**: use NPM to manage your dependencies and stop worrying about them.
-- **Use CommonJS**: it's a simple and expressive module system. And it gives you first-class modules!
+- **Use Node modules**: it's a simple and expressive module system. And it gives you first-class parametric modules!
 
 
 ## Introduction
