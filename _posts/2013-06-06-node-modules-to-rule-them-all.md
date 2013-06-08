@@ -378,7 +378,7 @@ define(['thing'], function(thing) {
 })
 ```
 
-### Common bundles
+
 ### Other games in the town
 
 ## Conclusion
