@@ -419,4 +419,10 @@ For now, I just hope you can go back to your projects and use these techniques t
   <dt><a href="http://requirejs.org/docs/api.html">RequireJS API</a></dt>
   <dd>The documentation on the RequireJS loader API.</dd>
   
+  <dt><a href="http://wiki.commonjs.org/wiki/Modules/1.1">CommonJS Modules/1.1</a></dt>
+  <dd>The specification for CommonJS modules.</dd>
+  
+  <dt><a href="http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition">CommonJS Modules/Asynchronous Modules Definition</a></dt>
+  <dd>The specification for Asynchronous Module Definition in the CommonJS standard</dd>
+  
 </dl>
