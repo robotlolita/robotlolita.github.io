@@ -38,7 +38,7 @@ Namespaces exist because we can only give things so much names before we run out
 
 ### What's a module?
 
-A module provides a set of logically related functionality in a particular interface. So, for example, one could say that an object X is a module. Some languages, like Java or Clojure, don't give you modules, and instead just give you namespaces — Clojure's namespaces are first-class and expressive, though, unlike Java's.
+A module provides a set of logically related functionality that fulfills a particular interface. So, for example, one could say that an object X that implements the interface Y is a module. Some languages, like Java or Clojure, don't give you modules, and instead just give you namespaces — Clojure's namespaces are first-class and expressive, though, unlike Java's.
 
 For modularity, we want more. Basically, there are three things we look for in a good module implementation:
 
@@ -49,11 +49,11 @@ For modularity, we want more. Basically, there are three things we look for in a
 
 ## Module solutions for JS
 
-It's actually interesting to see how many things the lack of module support backed right into the language has spawned. This is, in fact, one of the things that keep amazing me in Node.js: give people a really small core, but a rather expressive one, and they'll come up with their own creative solutions to solve problems X and Y, and these solutions will then compete to see which one solves the problem best.
+It's actually interesting to see how many things the lack of module support baked right into the language has spawned. This is, in fact, one of the things that keep amazing me in Node.js: give people a really small core, but a rather expressive one, and they'll come up with their own creative solutions to solve problems X and Y, and these solutions will then compete to see which one solves the problem best.
 
 Languages and platforms that are heavily batteries-included usually strive for "There Should Be Only One Way of Doing X", and with that way of thinking those solutions might lose relevance with time, or they might simply not solve the stated problem in the best way it could (for example, Python's module system is shitty as fuck).
 
-The module landscape in JavaScript consists of a few well-known players (AMD, CommonJS), to the most-naïve-solution-that-could-possibly-work (Module pattern).
+But look at JavaScript, it has evolved over the time and accumulated a handful of different solutions to this problem, from a handful of few well-known players (AMD, CommonJS), to the most-naïve-solution-that-could-possibly-work (Module pattern).
 
 ### The no-module way
 
