@@ -416,4 +416,7 @@ For now, I just hope you can go back to your projects and use these techniques t
   <dt><a href="https://github.com/killdream/pandora">Pandora</a></dt>
   <dd>Pandora is a rather old module I've written that uses Trait operators to define a series of constraints for first-class modules. It's influenced by Scheme, Clojure, Piccola and Traits, and here mostly for the conceptual relevance.</dd>
   
+  <dt><a href="http://requirejs.org/docs/api.html">RequireJS API</a></dt>
+  <dd>The documentation on the RequireJS loader API.</dd>
+  
 </dl>
