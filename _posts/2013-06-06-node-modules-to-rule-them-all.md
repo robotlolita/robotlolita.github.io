@@ -69,7 +69,7 @@ But look at JavaScript, it has evolved over the time and accumulated a handful o
 
 The worst thing you could ever do: not using modules, nor namespaces. Since JS only gives you a single namespace everywhere, name collisions are just waiting to bite you in the ass. Let's not mention that now you're going to have a hard time explaining people how to play well with your code and get everything working. So, don't do this:
 
-```js
+{% highlight js %}
 function random(n) {
   return Math.random() * n
 }
@@ -79,7 +79,7 @@ function randomInt(n) {
 }
 
 /* ... */
-```
+{% endhighlight %}
 
 ### The "Hey let's give JS namespaces" crowd
 
@@ -87,13 +87,13 @@ Then, there came the Java crowd. These are particularly annoying, because they'r
 
 This is, however, not what this crowd wants you to believe, instead they come barging down your house, screaming "THOU MUST NAMESPACE ALL YOUR SCRIPTS", and then some people go and write shit like this:
 
-```js
+{% highlight js %}
 var com = {}
 com.myCompany = {}
 com.myCompany.myPackage = {}
 com.myCompany.myPackage.someOtherDumbThing = {}
 com.myCompany.myPackage.someOtherDumbThing.identity = function(a){ return a }
-```
+{% endhighlight %}
 
 And, well, the madness goes on and on.
 
@@ -103,7 +103,7 @@ In JavaScript, first-class namespacing can be emulated through objects, but they
 
 Moving on, the module pattern gives you... you guessed it: modules! Albeit a rather crude form of that. In the module pattern you use a function to get a new scope where you can hide implementation details, and then you return an object that provides the interface your module exposes.
 
-```js
+{% highlight js %}
 // we use `new` here just to abuse how badly designed it is,
 // (we can return a different object not related to the function's prototype)
 // You could call the function as an IIFE, as everyone else does.
@@ -113,7 +113,7 @@ var Queue = new function() {
          , pop:  function(q){ ... }
          }
 }
-```
+{% endhighlight %}
 
 Now, `Queue` is properly isolated and exposes only the interface we need. Nice, but then it doesn't tell us which kind of dependencies `Queue` has, so while the module pattern is a start, it doesn't solve all our problems. We need our modules to specify their own dependencies, so we can have the module system assemble everything together for us.
 
@@ -123,7 +123,7 @@ AMD is a step in the right direction when it comes down to modules in JS, they g
 
 However, AMD comes with the cost of way-too-much-boilerplate. Remember that I said boilerplate is harmful and means your tools are not solving your problem, well this happens to AMD:
 
-```js
+{% highlight js %}
 // Dependency names are separated from bindings, which creates confusion
 define('queue', ['foo'], function(foo) {
   return TheModule // this is pretty cool, though
@@ -138,7 +138,7 @@ define('queue', ['a', 'b', 'c', 'd', 'e', 'f', ..., 'x']
 // You can use CommonJS's binding syntax, but then you need tooling anyways,
 // and if you're going to get better tooling, you can at least make sure you get
 // a proper tool that doesn't Require.js boilerplate
-```
+{% endhighlight %}
 
 Besides this, there is not a clear mapping about the identifier used to refer to a module and the actual module being loaded. While this allows us to delay the concrete binding of a module by just requiring a certain interface to be implemented in the loaded modules, this means we need to know everything about every dependency of every module we use — with enough dependencies there's such a high cognitive load to keep everything working that it outweights the benefits of modules.
 
@@ -183,7 +183,7 @@ As mentioned before, Node modules are first-class. This means they're just a pla
 
 To write a Node module, you just create a new JavaScript file, and assign any value you want to `module.exports`:
 
-```js
+{% highlight js %}
 // hello.js
 function hello(thing) {
   console.log('Hello, ' + thing + '.')
@@ -191,30 +191,32 @@ function hello(thing) {
 
 // The module is now a Function
 module.exports = hello
-```
+{% endhighlight %}
 
 ### Module loading
 
 Then, Node modules give you a way of resolving a module identifier to an actual module object. This is done by the first-class function `require`. This function takes in a String containing a module identifier, resolve the identifier to a JavaScript file, executes the file, then returns the object that it exports:
 
-```js
+{% highlight js %}
 var hello = require('./hello.js')
 
 hello('dear reader') // => "Hello, dear reader."
-```
+{% endhighlight %}
 
 A module identifier can be either a relative or absolute path, in which case the regular file lookup rules apply: `./foo` resolves to a `foo` file in the requirer's directory, `/foo/bar` resolves to the `/foo/bar` file relative to the root of the file system.
 
 Module identifiers can also be the name of a module, for example `jquery` or `foo/bar` — in the latter case `bar` is resolved relative to the root of `foo`. In these cases, the algorithm will try to find the closest module that matches that name living in a `node_modules` folder above the requirer's location.
 
-    + /
-    |--+ /node_modules
-    |  `--+ /foo          // we'll load this
-    `--+ /my-package
-       |--+ /node_modules
-       |  |--+ /jquery    // and this one too
-       |  `--+ /foo
-       `--o the-module.js
+{% highlight text %}
++ /
+|--+ /node_modules
+|  `--+ /foo          // we'll load this
+`--+ /my-package
+   |--+ /node_modules
+   |  |--+ /jquery    // and this one too
+   |  `--+ /foo
+   `--o the-module.js
+{% endhighlight %}
 
 Node's module loading algorithm, while slightly complex (due to allowing one to omit extensions **and** allowing people to register transformers based on the file extension), is still pretty straight forward, and encourages people to have dependencies installed per-module, rather than globally, which avoids lots of versioning hell.
 
@@ -224,16 +226,16 @@ Last, but not least, Node modules allow straight-forward parametric modules, by 
 
 So, in practice, it works like this: You define an interface for writing your code against.
 
-```hs
+{% highlight hs %}
 type Stack a {
   push: a -> ()
   pop: () -> Maybe a
 }
-```
+{% endhighlight %}
 
 Then you export a function that takes the concrete implementation of that interface:
 
-```js
+{% highlight js %}
 module.exports = function(stack) {
   function swap() {
     var e1 = stack.pop()
@@ -244,14 +246,14 @@ module.exports = function(stack) {
   
   return swap
 }
-```
+{% endhighlight %}
 
 And finally, when someone wants to use your module, they just instantiate the code with the right implementation of the Stack interface:
 
-```js
+{% highlight js %}
 var listSwap = require('swap')([1, 2]) // note the additional call for instantiating
 listSwap() // => [2, 1]
-```
+{% endhighlight %}
 
 ### A real-world scenario
 
@@ -259,16 +261,16 @@ So, the above example was simple just to convey the basics of the applicability 
 
 Basically, we had this interface:
 
-```hs
+{% highlight hs %}
 type Storage a b {
   get: a -> Promise (Maybe b)
   set: a, b -> Promise b
 }
-```
+{% endhighlight %}
 
 And derived a concrete implementation for browsers supporting local storage, and one for browsers that do not by talking to a webservice over HTTP (which is slower, and we didn't want to push the cost on every user):
 
-```hs
+{% highlight hs %}
 implement SessionStorage String String {
   get: String -> Promise (Maybe String)
   set: String, String -> Promise String
@@ -278,11 +280,11 @@ implement HTTPStorage String String {
   get: String -> Promise (Maybe String)
   set: String, String -> Promise String
 }
-```
+{% endhighlight %}
 
 With this, we had a single `storage` module, which we could instantiate with the implementation of `SessionStorage` or `HTTPStorage` depending on the browser (this was for in-app performance, not for optimising bandwidth, so both modules were bundled), all of the other modules that depended on a storage then were made parametric modules, accepting a concrete implementation of `storage`. The following is a simplified version:
 
-```js
+{% highlight js %}
 // Get the proper storage for the browser
 var HTTPStorage    = require('http-storage')('/api/session')
 var SessionStorage = require('session-storage')
@@ -292,7 +294,7 @@ var storage = 'sessionStorage' in window?  SessionStorage : HTTPStorage
 var downloadSession = require('download-session')(storage)
 var printingSession = require('printing-session')(storage)
 /* ... */
-```
+{% endhighlight %}
 
 As you see, all of the other modules are decoupled from the implementation details of how data is stored and retrieved, and they can just carry on with their business as usual. If we didn't have such straight-forward parametric modules (or worse, no parametric modules at all), we'd have to place the burden of such decisions within each high-level module, which clearly couldn't care less about the particulars of how data storage is performed.
 
@@ -315,13 +317,13 @@ NPM stores packages in a registry. Packages are a possible collection of modules
 
 This meta-data is specified in a `package.json` file at the root of your module directory. The most basic file that could possible work would be something like this:
 
-```js
+{% highlight js %}
 { "name": "my-thingie"
 , "description": "It does ~~awesome~~ stuff"
 , "version": "1.0.0"
 , "dependencies": { "other-module": ">=1.0.0" }
 }
-```
+{% endhighlight %}
 
 There's quite a bit more to these meta-data, though, so be sure to check out [NPM's documentation on package.json](https://npmjs.org/doc/json.html) to learn everything else.
 
@@ -347,37 +349,41 @@ It also means that **most modules will just work**, as long as you don't use `re
 
 The first thing you need to do to get browserify kicking up and running is:
 
-```sh
+{% highlight sh %}
 $ npm install -g browserify
-```
+{% endhighlight %}
 
 Now you can write all your modules as if you were writing for Node, use NPM to manage all your dependencies and then just generate a bundle of your module that you can use in a web browser:
 
-```sh
+{% highlight sh %}
 # Step 1: bundle your module
 $ browserify entry-module.js > bundle.js
-```
-```html
+{% endhighlight %}
+
+{% highlight html %}
 <!-- step 2: reference the bundle -->
 <script src="bundle.js"></script>
-```
-```js
+{% endhighlight %}
+
+{% highlight js %}
 // THERE AM NO STEP 3
-```
+{% endhighlight %}
 
 ### Stand-alone modules
 
 Sometimes you need to share your modules with people who don't know the awesome world of Node modules yet, shame on them. Browserify allows you to generate stand-alone modules, which will include all dependencies, and can be used with AMD or the No-module approach:
 
-```sh
+{% highlight sh %}
 # Step 1: generate a standalone module
 browserify --standalone thing thing-module.js > thing.umd.js
-```
-```html
+{% endhighlight %}
+
+{% highlight html %}
 <!-- step 2: have people reference your module -->
 <script src="thing.umd.js"></script>
-```
-```js
+{% endhighlight %}
+
+{% highlight js %}
 // Step 3: people can use your module with whatever
 thing.doSomething()
 // or
@@ -387,7 +393,7 @@ thing.doSomething()
 define(['thing'], function(thing) {
   thing.doSomething()
 })
-```
+{% endhighlight %}
 
 ## Conclusion
 
@@ -401,7 +407,7 @@ For now, I just hope you can go back to your projects and use these techniques t
 
 <dl>
   <dt><a href="http://2013.flatmap.no/spiewak.html">Living in a Post-Functional World</a></dt>
-  <dd>This amazing talk by Daniel Spiewak at flatMap(Oslo) touches some important aspects of first-class & parametric modules, and is an absolute must watch.</dd>
+  <dd>This amazing talk by Daniel Spiewak at flatMap(Oslo) touches some important aspects of first-class &amp; parametric modules, and is an absolute must watch.</dd>
   
   <dt><a href="http://nodejs.org/api/modules.html">The Node.js documentation on Modules</a></dt>
   <dd>These describe Node modules in much more detail than I have in this little article.</dd>
@@ -410,7 +416,7 @@ For now, I just hope you can go back to your projects and use these techniques t
   <dd>The browserify tool, which transforms Node-style modules so they can run in non-Node environments.</dd>
   
   <dt><a href="http://citeseer.uark.edu:8080/citeseerx/viewdoc/summary;jsessionid=152911076D9D138C931FC84E909173C5?doi=10.1.1.68.8684">Separating Concerns With First-Class Namespaces</a></dt>
-  <dd>Nierstraz & Archermann present Piccola, a language with first-class namespaces based on π-calculus. Piccola uses forms (you can think of them as objects) as modules, services (you can squint your eyes hard and think of them as functions) as parametric modules and mixin layer composition for composing different modules together.</dd>
+  <dd>Nierstraz &amp; Archermann present Piccola, a language with first-class namespaces based on π-calculus. Piccola uses forms (you can think of them as objects) as modules, services (you can squint your eyes hard and think of them as functions) as parametric modules and mixin layer composition for composing different modules together.</dd>
   
   <dt><a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.51.662">The Programming Language Jigsaw - Mixins, Modularity and Multiple Inheritance</a></dt>
   <dd>Gilad Bracha's thesis describe a framework for modularity in programming languages with basis in inheritance for module manipulation. A fairly interesting read.</dd>
