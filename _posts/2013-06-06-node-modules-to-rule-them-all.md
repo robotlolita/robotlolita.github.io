@@ -33,7 +33,7 @@ Both namespaces and modules are important when developing any kind of applicatio
 
 A namespace is something that holds a mapping from a particular name to a particular meaning. Some languages have different namespaces for different kinds of things (for example, the namespace used for functions is not the same as the one used for types, or variables, so a variable A is still different from a function A), some other languages (like JavaScript) just roll out with a single namespace for everything.
 
-Namespaces exist because we can only give things so much names before we run out of alternatives and start writing **SquareRoot2345**, as if we were trying to find an available username on Twitter. Not the best thing, you see.
+Namespaces exist because we can only give things so many names before we run out of alternatives and start writing **SquareRoot2345**, as if we were trying to find an available username on Twitter. Not the best thing, you see.
 
 
 ### What's a module?
@@ -67,7 +67,7 @@ But look at JavaScript, it has evolved over the time and accumulated a handful o
 
 ### The no-module way
 
-The worst thing you could ever do: not using modules, nor namespaces. Since JS only gives you a single namespace everywhere, name collisions are just waiting to bite you in the ass. Let's not mention that now you're going to have a hard time explaining people how to play well with your code and get everything working. So, don't do this:
+The worst thing you could ever do: not using modules, nor namespaces. Since JS only gives you a single namespace everywhere, name collisions are just waiting to bite you in the ass. Let's not mention that now you're going to have a hard time explaining to people how to play well with your code and get everything working. So, don't do this:
 
 {% highlight js %}
 function random(n) {
@@ -75,7 +75,7 @@ function random(n) {
 }
 
 function randomInt(n) {
-  return Math.abs(random(n))
+  return Math.floor(random(n))
 }
 
 /* ... */
@@ -97,7 +97,7 @@ com.myCompany.myPackage.someOtherDumbThing.identity = function(a){ return a }
 
 And, well, the madness goes on and on.
 
-In JavaScript, first-class namespacing can be emulated through objects, but they're still rather awkward to work with. We can't have a function run in a particular namespace, for example, as you'd be able to do in something like Io or Piccola. And ES5 strict just got rid of `with`, so you can't unpack a first-class namespace in the current scope — though the feature did cause way too much more problems than it was worth it. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
+In JavaScript, first-class namespacing can be emulated through objects, but they're still rather awkward to work with. We can't have a function run in a particular namespace, for example, as you'd be able to do in something like Io or Piccola. And ES5 strict just got rid of `with`, so you can't unpack a first-class namespace in the current scope — though the feature did cause way too many more problems than it was worth it. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
 ### The Module Pattern
 
@@ -179,7 +179,7 @@ Additionally, a module can be a part of a package. Packages encode a collection 
 
 ### First-class modules
 
-As mentioned before, Node modules are first-class. This means they're just a plain JavaScript object that you can store in variables and pass around. This one of the most important steps for a good module system.
+As mentioned before, Node modules are first-class. This means they're just a plain JavaScript object that you can store in variables and pass around. This is one of the most important steps for a good module system.
 
 To write a Node module, you just create a new JavaScript file, and assign any value you want to `module.exports`:
 
