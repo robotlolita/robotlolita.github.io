@@ -12,3 +12,5 @@ There are, however, some problems with the Promises/A+ specification, which make
 *This is where [Domenic](https://twitter.com/domenic) comes in giving me a Roundhouse kick and saying **thou must not use promises for synchronous computations**. :)*
 
 
+# What are promises?
+
