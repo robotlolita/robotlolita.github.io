@@ -14,3 +14,10 @@ There are, however, some problems with the Promises/A+ specification, which make
 
 # What are promises?
 
+# Why Promises/A+?
+
+# Sources of complexity
+
+# Performance hits
+
+# Conclusion
