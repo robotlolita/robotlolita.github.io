@@ -38,7 +38,7 @@ The first big problem with Promises/A+ is how it decides to provide asynchronous
 
 Let me walk you through a few examples where this is harmful, and then I'll talk about an alternative for asynchronous error handling in promises.
 
- 1)  Imagine you're 
+ 1)  Imagine you're calling a particular API which sums all the values in a list, asynchronously. You write the following piece of code:
 
 ## Thenable assimilation
 
