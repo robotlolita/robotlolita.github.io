@@ -25,6 +25,7 @@ I'm not going to write too much about promises here, since [James Coglan](http:/
 
 Promises/A+ is a specification for how promises in JavaScript should behave, so that we can treat asynchronous code in a similar fashion to their synchronous counterpart. Broadly, what this means is that we allow asynchronous functions to return a value, and errors to be handled by the caller.
 
+The specification builds on lots of previous works in the promise landscape in JavaScript, and attempts to unify them, so each one can talk to each other — which is the whole point of standardising something. As such, we can use different Promises/A+ interchangeably, and we can build useful libraries that work on promises generically, rather than implementation A or B. In short, everyone wins.
 
 
 # Sources of complexity
