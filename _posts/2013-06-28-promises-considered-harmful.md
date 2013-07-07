@@ -30,6 +30,17 @@ The specification builds on lots of previous works in the promise landscape in J
 
 # Sources of complexity
 
+Sadly, not everything is bright, sweet and cheerful in the Promises/A+ land. There are a couple of problems with it that make Promises/A+ a complex thing, which is what people oposing the use of promises in JavaScript usually mean when they say "promises are complex" — though those are not an inherent fault of promises, per se. In part, these complexities are there to "play along well" with legacy implementations. Not exactly what I would consider a good idea, but Promises/A+ proponents think it was necessary for Promises/A+ to do that.
+
+## Exception handling
+
+The first big problem with Promises/A+ is how it decides to provide asynchronous exception handling: wrapping every asynchronous call in an implicit `try...catch` block. While the caught exceptions are available in the Promise object, such that the caller can decide how to handle it, catching all the exceptions by default is not the best way to do this.
+
+
+
+## Thenable assimilation
+
+
 # Performance hits
 
 # Conclusion
