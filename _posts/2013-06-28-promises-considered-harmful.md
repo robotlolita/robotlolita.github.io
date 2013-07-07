@@ -34,9 +34,11 @@ Sadly, not everything is bright, sweet and cheerful in the Promises/A+ land. The
 
 ## Exception handling
 
-The first big problem with Promises/A+ is how it decides to provide asynchronous exception handling: wrapping every asynchronous call in an implicit `try...catch` block. While the caught exceptions are available in the Promise object, such that the caller can decide how to handle it, catching all the exceptions by default is not the best way to do this.
+The first big problem with Promises/A+ is how it decides to provide asynchronous exception handling: wrapping every asynchronous call in an implicit `try...catch` block. While the caught exceptions are available in the Promise object, such that the caller can decide how to handle it, catching all the exceptions by default is not the best way to do this. In fact, this makes all your programs instantly less robust, because you're catching things you're not sure you can handle, instead of just letting it crash and solve the problem.
 
+Let me walk you through a few examples where this is harmful, and then I'll talk about an alternative for asynchronous error handling in promises.
 
+ 1)  Imagine you're 
 
 ## Thenable assimilation
 
