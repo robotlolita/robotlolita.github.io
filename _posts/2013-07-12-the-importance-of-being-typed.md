@@ -1,7 +1,7 @@
 ---
 published: false
 layout: post
-snip: Why types are important even in templating engines
+snip: "With great powers, comes great responsibilities."
 ---
 
 # An introduction to the problem
