@@ -197,13 +197,86 @@ It's now the job of the `html` function to parse the literal parts and substitut
 
 ## Parsing is still hard (ouch!)
 
+I won't get in much [details on parsing theory, techniques and other stuff][parsing], since [people did that already][parsing]. However there is a problem when most people aren't exposed to a primer on parsing and interpretation techniques that they can actually use when they have to deal with different formats of data, or programming languages. Those two topics become even more essential when you work on top of a platform that needs to bring together so many different languages at the same time, like The Web.
 
-      
+This lack of basic knowledge in programming languages, the mindset that "Strings are okay" for structured formats, the perception people have that parsing and interpretation are *"so hard only geniuses can do it"*, and the fact that ECMAScript 6's quasis are too generic to put the burden of parsing on the library authors (something you don't have in Lisps).
+
+While [TC39 definitely acknowledges the problem and is trying to fix them for the common cases][quasi-ti], everything mentioned contributes to possible misuses of quasi-literals for cases that deviate a little from that, like HTTP headers, or building shell commands, for example.
+
+Having no standard and simple way of writing parsers in the language also contributes for this. Specially since you can't easily bend JavaScript to make it more suitable for some of the rich EDSLs that could make expressing parsers easy, as you have in Haskell or Lisps — quasis might fix that, however. Parser combinators currently suffer considerably in expressiveness in the language, and PEGs often either use a String to encode the parser or provide a super-set of the JavaScript language.
+
+For example, this would be a simplified HTML parser in [OMeta/JS][], a super-set of JavaScript:
+
+	ometa HTML <: Parser {
+        tagChar = char:c ?(/a-zA-Z/.test(c)) -> c,
+        tagName = tagChar*:cs -> [ 'id', cs.join('') ],
+    	tag     = '<' tagName:name '>' node*:ns '<' '/' tagName:n '>' ?(n === name) -> [ 'tag', name, ns ],
+        entity  = char:c ?(c != '<') -> c,
+        text    = entity*:cs -> [ 'text', cs.join('') ],
+        node    = tag | text
+        html    = node*
+    }
+    
+Parsing some text like: `<b><i>Some text</i></b>` would yield the following AST (abstract syntax tree):
+
+	[['tag', ['id', 'b'],
+      ['tag', ['id', 'i'],
+       ['text', 'Some text']]]]
+       
+While parsing an incorrect HTML like: `<b><i>Some text</x>` would give you a parsing error. 
+
+[parsing]: http://blog.reverberate.org/2013/07/ll-and-lr-parsing-demystified.html
+[quasi-ti]: http://js-quasis-libraries-and-repl.googlecode.com/svn/trunk/safetemplate.html      
+[OMeta/JS]: http://www.tinlizzie.org/ometa/
+
+## Conclusion
+
+We need to start using smart templates, which take into account the language they're working with, since this is the only sane and safe way to work with this data. However, the programmer mindset is a major issue, in all of the problems outlined in this post. We've been taught how to work with Strings, we've been given tools to work with Strings, but we're working with data that just don't fit what the String type is supposed to hold.
+
+Lisps are far better in this aspect because the internal structures, values and composition operators are all defined on top of S-expressions, so composition between things is easier. There's no reason we shouldn't learn from the Lisp crowd and start working with structured data in a structured format, however.
+
+There's lots of things to be invented for the future of ECMAScript, specially in light of things like quasi-literals. We need simpler, standard ways to work with, and compose ASTs if we want to change how people perceive the difficult of working with structured data and EDSLs. 
+
+But until then, we can keep demanding better of our tools, libraries and frameworks!
+
+
+## Recommended Libraries
+
+<dl>
+  <dt><a href="https://github.com/weavejester/hiccup">Clojure's Hiccup</a></dt>
+  <dd>A widely-used library for generating HTML from Vector data structures in Clojure.</dd>
+  
+  <dt><a href="https://github.com/Raynos/jsonml-stringify">JSONML</a></dt>
+  <dd>Rayno's take on using Array data structures to encode structured formats in JavaScript. Has extensible formats for serialisation.</dd>
+  
+  <dt><a href="https://github.com/killdream/dominatrix">Dominatrix</a></dt>
+  <dd>My take on HTML templating on the Browser side. Uses the DOM for creating elements and lets the Browser deal with all the quirks. It's being used in production right now, but attributes aren't handled specially, which is quite the problem.</dd>
+  
+  <dt><a href="http://hackage.haskell.org/package/hamlet-1.1.7">Hamlet</a></dt>
+  <dd>A member of Haskell's (and the Yesod web framework) Shakesperean Templates. Hamlet is a EDSL for writing HTML, which quite reminds the approach shown above in ECMAScript 6's quasi-literals, but with type guarantees. Other libraries include Cassius (CSS EDSL) and Julius (JavaScript EDSL).</dd>
+  
+  <dt><a href="http://facebook.github.io/react/">React</a></dt>
+  <dd>A reactive library that uses a structured object model instead of the DOM. With this, templates can be shared between the server and the client, and effective interface updates can be performed automatically when necessary.</dd>
+  
+  <dt><a href="https://github.com/cgrand/enlive">Enlive</a></dt>
+  <dd>A templating library for HTML/XML and other tree-structured languages that takes a different approach than anything else. Templates are parsed by the library, and a sequence of transformations are applied to parts of the tree by using "CSS-selectors" to filter the nodes.</dd>
+</dl>
+
+
+## References and additional reading
+
+<dl>
+  <dt>
+</dl>
 
 
 
 
-- - - 
+
+
+
+
+## Footnotes
 
 <a name="fn1"></a>
 ¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.
@@ -212,6 +285,3 @@ It's now the job of the `html` function to parse the literal parts and substitut
 ²: [Quasi-literals][] in Harmony are supposed to fix this, but it remains to be seen if they'll be used correctly due to the current mindset with regards to working with structured data.
 
 [Quasi-literals]: http://wiki.ecmascript.org/doku.php?id=harmony:quasis
-
-# The problem of SQL Injection
-# Clueless templating engines
