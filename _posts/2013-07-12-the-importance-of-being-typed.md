@@ -21,7 +21,7 @@ These problems arise exactly from the use of: naïvely concatenating Strings —
 
 TL;DR:
 
-  - **DO NOT** be lazy;
+  - **DO NOT** be lazy (as far as parsing & generating structured data goes);
   - **DO NOT** use regular expressions to parse structured data;
   - **DO NOT** use naïve String concatenation (or *Clueless* templating engines) to generate structured data;
   - **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Hiccup][], [JSONML][], [Hamlet][], [React][], ...).
