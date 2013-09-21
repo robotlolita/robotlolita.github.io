@@ -24,7 +24,7 @@ These problems arise exactly from the use of: naïvely concatenating Strings —
 [express-bug]: https://github.com/senchalabs/connect/issues/831
 
 
-# An introduction to the problem
+## An introduction to the problem
 
 This problem is not new, it dates back from all the way in Computer Science, for as long as String types existed — and possibly intensified and made wide-spread due to PERL and the lovely Unix philosophy. In essence, we can trace back the culprites to these two maximums:
 
@@ -50,11 +50,18 @@ Or its close cousin:
 But oh, silly me. Of course this is *wrong*, I just forgot to escape **user.name**, how could I **ever** do something as horrible as this?! I should just escape the data and, really, I need to stop coding so late in the morning... right y'all?
 
 
-# It's not about escaping!
+## It's not about escaping!
 
-Oh, but wait, I'm obviously missing something important here. "**Handlebars and Mustache are for HTML, you dumb!**" But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
+Oh, but wait, I'm obviously missing something important here. "**Handlebars and Mustache are for HTML, you dumb! They'll escape stuff automatically for you!**" But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
+
+There **is** a more fundamental problem that we're kind of missing here: we're just repeating the same mistakes of the past by writing buggy String concatenation, and buggy Regular Expression-based parsers. Of course we can make this all work, people did back in the days. That we can make it work **is not the problem**, the problem is that **no one will tell us when it doesn't work**. Or, in other words, it's just too easy to forget to escape a little piece of data and have [Little Bob Tables throw the work of your whole life into the void][bob-tables] — and that's when you'll learn things "don't work".
+
+But Handlebars and Mustache will escape things automatically, so that solves all of our problems, right? No one will ever get a XSS injection, because Handlebars will automatically replace all of your `<` characters by `&lt;`. This is **amazing**, right? Well, it is, until you have to actually deal with HTML and other structured formats, as your *input* for the template.
 
 
+
+
+[bob-tables]: http://xkcd.com/327/
 
 # The problem of SQL Injection
 # Clueless templating engines
