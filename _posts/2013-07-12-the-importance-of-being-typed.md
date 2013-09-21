@@ -58,8 +58,35 @@ There **is** a more fundamental problem that we're kind of missing here: we're j
 
 But Handlebars and Mustache will escape things automatically, so that solves all of our problems, right? No one will ever get a XSS injection, because Handlebars will automatically replace all of your `<` characters by `&lt;`. This is **amazing**, right? Well, it is, until you have to actually deal with HTML and other structured formats, as your *input* for the template.
 
+So, let's suppose you have a piece of HTML that was generated from another process, that you know it's safe (it plays correctly by the rules of HTML), and you want to embed in another template:
 
+	<div>{{ yourHTML }}</div> :)
+    
+Is no good, because now all of the `<` characters will be replaced by `&lt;` and the final thing will mean something else entirely. But Handlebars allows one to include any HTML verbatim in another template by using the "triple-staches":
 
+	<div>{{{ yourHTML }}}</div> :)
+    
+Oh, now your HTML works beautifully, and the meaning is preserved... or is it? Imagine you have the following templates:
+
+	yourHTML:
+    <noscript>This website requires JavaScript
+    
+    main:
+    <div>{{{ yourHTML }}}</div> :)
+    
+You might question the validity of the first snippet, but it's a perfectly valid HTML snippet on its own right, since the HTML format is supposed to be forgiving — in fact, code like this is in some production sites out there on the wild internets.
+
+The problem here is that, while both snippets are valid on their own right, the result of composing both is not what you expect:
+
+	<div><noscript>This website requires JavaScript</noscript></div> :)
+    
+But rather something monstruous:
+
+	<div><noscript>This website requires JavaScript</div> :)
+    
+Which is interpreted by the HTML parser as the following, effectively changing the meaning that we intended!
+
+    <div><noscript>This website requires JavaScript&lt;/div&gt; :)</noscript></div>
 
 [bob-tables]: http://xkcd.com/327/
 
