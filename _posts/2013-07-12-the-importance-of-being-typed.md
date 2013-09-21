@@ -24,7 +24,7 @@ TL;DR:
   - **DO NOT** be lazy (as far as parsing & generating structured data goes);
   - **DO NOT** use regular expressions to parse structured data;
   - **DO NOT** use naïve String concatenation (or *Clueless* templating engines) to generate structured data;
-  - **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Hiccup][], [JSONML][], [Hamlet][], [React][], ...).
+  - **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Enlive][], [Hiccup][], [JSONML][], [Hamlet][], [React][], ...).
 
 [Handlebars]: http://handlebarsjs.com/
 [Mustache]: http://mustache.github.io/
@@ -33,6 +33,7 @@ TL;DR:
 [JSONML]: https://github.com/Raynos/jsonml-stringify
 [Hamlet]: http://hackage.haskell.org/package/hamlet-1.1.7
 [React]: http://facebook.github.io/react/
+[Enlive]: https://github.com/cgrand/enlive
 
 ## An introduction to the problem
 
@@ -121,7 +122,7 @@ Some people, when confronted with the word "type" will shy away and say that the
 
 So, templating engines like Handlebars, Mustache, etc. are clueless, in that they don't acknowledge the rules and structure of the data they're working with — it's just plain text. This makes them a bad choice for generating data such as HTML, XML or JSON. A smart templating engine will acknowledge these things, and not only help you with escaping data, but warn you (loudly) when any kind of error happens!
 
-
+Most of the problem here lies on how people perceive Strings to be an "easy" solution for anything, and they just take the path of least friction — which is working within a structured world without any of the structure. This is possibly a 
 
 - - - 
 
