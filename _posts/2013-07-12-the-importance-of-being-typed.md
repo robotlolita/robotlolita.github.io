@@ -50,6 +50,10 @@ Or its close cousin:
 But oh, silly me. Of course this is *wrong*, I just forgot to escape **user.name**, how could I **ever** do something as horrible as this?! I should just escape the data and, really, I need to stop coding so late in the morning... right y'all?
 
 
+# It's not about escaping!
+
+Oh, but wait, I'm obviously missing something important here. "**Handlebars and Mustache are for HTML, you dumb!**" But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
+
 
 
 # The problem of SQL Injection
