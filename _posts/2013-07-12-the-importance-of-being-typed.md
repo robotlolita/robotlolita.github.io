@@ -24,7 +24,8 @@ TL;DR:
   - **DO NOT** be lazy (as far as parsing & generating structured data goes);
   - **DO NOT** use regular expressions to parse structured data;
   - **DO NOT** use naïve String concatenation (or *Clueless* templating engines) to generate structured data;
-  - **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Enlive][], [Hiccup][], [JSONML][], [Hamlet][], [React][], ...).
+  - **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Enlive][], [Hiccup][], [JSONML][], [Hamlet][], [React][], ...);
+  - ES6's quasi-literals can make things easier, as long as we don't use them for String interpolation!
 
 [Handlebars]: http://handlebarsjs.com/
 [Mustache]: http://mustache.github.io/
