@@ -167,7 +167,39 @@ Where, `page.title`, `page.content` and `page.arbitraryHTML` will be properly ha
 
 ## The future (in JavaScript)
 
-ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to 
+ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to Lisp quasi-quotation than naïve String interpolation in languages like Ruby, CoffeeScript or PHP. And this is a *real good thing*, because in the future we'll be able to embed all sorts of amazing DSLs in JavaScript, maintaining all of the composition referred to above. This means that your HTML templating would look like this:
+
+	html`<html>
+    	   <head><title>${page.title}</title>
+                 <meta charset="utf-8"></head>
+           <body>
+             <section class="main">${page.content}</section>
+             ${parseHtml(page.arbitraryHTML)}
+           </body>
+         </html>`
+         
+Now, this *does* look easy, and it does look like your usual String interpolation in Ruby or PHP, doesn't it? So, what's the trick? How will this not be just one more naïve String concatenation approach that I've argued against since the beginning of the article?
+
+The sad news: **ECMAScript 6's quasi-literals make no guarantee of such.** This means that, surely, that code snippet could easily do plain String concatenation. The good news is that it doesn't **need** to be clueless. The reason is that, unlike Lisp's quasi-quotation, ECMAScript 6's quasi-literals are intended to be generic and as such they make no assumptions about the underlying format of the contents of the literals — your function is supposed to provide that.
+
+The above snippet could be thought of as (and this is a simplified view deviating a little from the spec):
+
+	html([ "<html><head><title>", 0
+         , "</title><meta charset=\"utf-8\"><body><section class=\"main\">", 1,
+         , "</section>", 2,
+         , "</body></html>"
+         ], { page: { title: "..."
+                    , content: "..."
+                    , arbitraryHtml: parseHtml("...") }})
+         
+It's now the job of the `html` function to parse the literal parts and substitute the varying parts appropriately, maintaining the composition rules of the underlying language — which means verifying the arbitraryHTML to see if it's valid, and entity encoding the other values. So, as a start, it's *a freaking awesome thing!*
+
+
+## Parsing is still hard (ouch!)
+
+
+      
+
 
 
 
