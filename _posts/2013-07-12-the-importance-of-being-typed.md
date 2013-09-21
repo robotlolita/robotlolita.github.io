@@ -19,21 +19,32 @@ There are a myriad of problems with the approach that popular templating engines
 
 These problems arise exactly from the use of: naïvely concatenating Strings — exactly what we'd like to avoid! Sounds insane?! Smells like bullshit?! Well, stick with me!
 
+TL;DR:
+
+  - Don't use regular expressions to parse structured data;
+  - Don't use naïve String concatenation (or *Clueless* templating engines) to generate structured data;
+  - When working with structured data, use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Hiccup][], [JSONML][], [Hamlet][], [React][], ...).
+
 [Handlebars]: http://handlebarsjs.com/
 [Mustache]: http://mustache.github.io/
 [express-bug]: https://github.com/senchalabs/connect/issues/831
-
+[Hiccup]: https://github.com/weavejester/hiccup
+[JSONML]: https://github.com/Raynos/jsonml-stringify
+[Hamlet]: http://hackage.haskell.org/package/hamlet-1.1.7
+[React]: http://facebook.github.io/react/
 
 ## An introduction to the problem
 
-This problem is not new, it dates back from all the way in Computer Science, for as long as String types existed — and possibly intensified and made wide-spread due to PERL and the lovely Unix philosophy. In essence, we can trace back the culprites to these two maximums:
+This problem is not new, it dates back from the early days of Computer Science, for as long as String types existed — and possibly intensified and made wide-spread due to PERL and the lovely [Unix philosophy][unix]. In essence, we can trace back the culprites to these two maximums:
+
+[unix]: http://en.wikipedia.org/wiki/Unix_philosophy#Mike_Gancarz:_The_UNIX_Philosophy
 
  1.  Store data in flat text files.
  2.  Make every program a filter (receive a Stream of text as input, output a Stream of text).
 
-Since people have been encouraged to store data in flat text files which disregard any structure that the data might have had, people are forced to continuously try to make sense of structured formats and hack buggy parsers with Regular Expressions, and then naïvely concatenate everything back up so that the next buggy parser can take a swing at it.
+Since people have been encouraged to store data in flat text files which disregard any structure that the data might have had, people are forced to continuously try to make sense of rich, structured data by hacking buggy parsers with Regular Expressions, and then naïvely concatenate everything back up so that the next buggy parser can take a swing at it.
 
-But hey, it's best when data can be read by humans, right? Unfortunately, when you need to communicate between two processes in a computer, "data that can be read by humans" is not the best way to do this. Enter the **structured formats**. These are simple formats with a few rules that describe how the data is encoded and how the computer can get at it — in other words, it avoids buggy parsers, because now we can write just one nice and robust parser and use whenever we need to parse that format!
+But hey, it's best when data can be read by humans, right? Unfortunately, when you need to communicate between two processes in a computer, "data that can be read by humans" is not the best way to do this. Enter the **structured format gang** (XML, JSON & friends). These are simple formats with a few rules that describe how the data is encoded and how the computer can get that information — in other words, it avoids buggy parsers, because now we can write just one nice and robust parser and use whenever we need to parse that format!
 
 People did start to store things in structured formats, indeed. The cult of XML, alongside its chant of *"THOU MUST XML ALL THE THINGS!"* (repeat for JSON), and its impact on how we now write programs that need to communicate between themselves is proof that this works fairly well.
 
@@ -54,7 +65,7 @@ But oh, silly me. Of course this is *wrong*, I just forgot to escape **user.name
 
 Oh, but wait, I'm obviously missing something important here. "**Handlebars and Mustache are for HTML, you dumb! They'll escape stuff automatically for you!**" But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
 
-There **is** a more fundamental problem that we're kind of missing here: we're just repeating the same mistakes of the past by writing buggy String concatenation, and buggy Regular Expression-based parsers. Of course we can make this all work, people did back in the days. That we can make it work **is not the problem**, the problem is that **no one will tell us when it doesn't work**. Or, in other words, it's just too easy to forget to escape a little piece of data and have [Little Bob Tables throw the work of your whole life into the void][bob-tables] — and that's when you'll learn things "don't work".
+There **is** a more fundamental problem that we're kind of missing here: we're just repeating the same mistakes of the past by writing buggy String concatenation, and buggy Regular Expression-based parsers. Of course we can make this all work, people did back in the days. That we can make it work **is not the problem**, the problem is that **no one will tell us when it doesn't work**. Or, in other words, it's just too easy to forget to escape a little piece of data and have [Little Bob Tables throw the work of your whole life into the void][bob-tables] — and that's when you'll learn that something "didn't work".
 
 But Handlebars and Mustache will escape things automatically, so that solves all of our problems, right? No one will ever get a XSS injection, because Handlebars will automatically replace all of your `<` characters by `&lt;`. This is **amazing**, right? Well, it is, until you have to actually deal with HTML and other structured formats, as your *input* for the template.
 
@@ -62,7 +73,7 @@ So, let's suppose you have a piece of HTML that was generated from another proce
 
 	<div>{{ yourHTML }}</div> :)
     
-Is no good, because now all of the `<` characters will be replaced by `&lt;` and the final thing will mean something else entirely. But Handlebars allows one to include any HTML verbatim in another template by using the "triple-staches":
+The previous template is no good, because now all of the `<` characters will be replaced by `&lt;` and the final thing will mean something else entirely. But Handlebars allows one to include any HTML verbatim in another template by using the "triple-staches":
 
 	<div>{{{ yourHTML }}}</div> :)
     
@@ -104,8 +115,14 @@ Some people, when confronted with the word "type" will shy away and say that the
 
 [Domenic's]: http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/
 
-- - - 
 
+## From clueless to smart templates
+
+So, templating engines like Handlebars, Mustache, etc. are clueless, in that they don't acknowledge the rules and structure of the data they're working with — it's just plain text. This makes them a bad choice for generating data such as HTML, XML or JSON. A smart templating engine will acknowledge these things, and not only help you with escaping data, but warn you (loudly) when any kind of error happens!
+
+
+
+- - - 
 
 <a name="fn1"></a>
 ¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.
