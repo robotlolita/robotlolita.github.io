@@ -122,12 +122,64 @@ Some people, when confronted with the word "type" will shy away and say that the
 
 So, templating engines like Handlebars, Mustache, etc. are clueless, in that they don't acknowledge the rules and structure of the data they're working with — it's just plain text. This makes them a bad choice for generating data such as HTML, XML or JSON. A smart templating engine will acknowledge these things, and not only help you with escaping data, but warn you (loudly) when any kind of error happens!
 
-Most of the problem here lies on how people perceive Strings to be an "easy" solution for anything, and they just take the path of least friction — which is working within a structured world without any of the structure. This is possibly a 
+Most of the problem here lies on how people perceive Strings to be an "easy" solution for anything, and they just take the path of least friction — which is working within a structured world without any of the structure. This is possibly PERL and C-family language's fault, given that the LISP family has been working with structured data using, well, structured data since the beginning of times.
+
+The thing is: we should come to a format that makes people *feel* that working with structured data using proper structures is just as easy. And better yet, it's much safer. Unfortunately, JavaScript is not the best language to encode EDSLs (embedded domain specific language), as Lisp or Haskell, and the tools to do this aren't "quite" there yet, as are the tools for working with Strings. This is a fault of the language, but one that we can kind of easily circumvent, and we should strive for[²](#fn2).
+
+For instance, let's suppose one wants to generate an SQL query. Instead of the naïve String-based approach, they could encode commands and parameters as objects or functions, and compose them from there. The [Korma][] library in Clojure takes a similar approach. The following is an oversimplification in JavaScript:
+
+[Korma]: http://sqlkorma.com/
+
+	//+ SELECT :: ([Name], Name) → [SQL]
+	function SELECT(fields, table) {
+    	return [ SQLCommand("SELECT")
+        	   , fields.map(FieldName)
+               , SQLCommand("FROM")
+               , Name(table) ]
+    }
+    
+    //+ SQLCommand :: String → Command
+    //+ FieldName :: String → Field
+    //+ Name :: String → Name
+
+	var fields = ["id", "user"]
+    var table = "Robert'; DROP TABLE --"
+    runSql(SELECT(fields, table)).forEach(displayUser)
+    
+Contrasting with the usage for the naïve approach, the usage of a safe approach that acknowledges the structure of SQL, and enforces proper composition (therefore eliminating any errors resulting from the need of escaping data) is just as easy:
+
+	runSql("SELECT {fields} FROM {table}").forEach(displayUser)
+
+With the added advantages of never being able to write an improper SQL query, or one where you forgot to sanitise an input. A similar claim could be made for an HTML templating engine that supports structured templates:
+
+	Html(
+    	Head(
+        	Title(page.title),
+            Meta({ charset: "utf-8" })
+        ), Body(
+        	Section({ classes: ["main"] }, page.content),
+            parseHtml(page.arbitraryHTML),
+        )
+    )
+  
+Where, `page.title`, `page.content` and `page.arbitraryHTML` will be properly handled to fit **in the context that they appear**, avoiding any composition errors, or throwing an early error if any of these components violate the rules of HTML and breaks the original intent of the code.
+        
+
+## The future (in JavaScript)
+
+ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to 
+
+
 
 - - - 
 
 <a name="fn1"></a>
 ¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.
+
+<a name="fn2"></a>
+²: [Quasi-literals][] in Harmony are supposed to fix this, but it remains to be seen if they'll be used correctly due to the current mindset with regards to working with structured data.
+
+[Quasi-literals]: http://wiki.ecmascript.org/doku.php?id=harmony:quasis
 
 # The problem of SQL Injection
 # Clueless templating engines
