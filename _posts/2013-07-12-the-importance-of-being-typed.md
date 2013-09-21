@@ -90,5 +90,22 @@ Which is interpreted by the HTML parser as the following, effectively changing t
 
 [bob-tables]: http://xkcd.com/327/
 
+## Types to the rescue
+
+As I said, the problem is not that one of the snippets doesn't have a matching close tag — they're both **perfectly valid** acording to HTML rules. The problem is that Handlebars, plain and simply, can't handle HTML. Instead, Handlebars will just stitch several strings together and escape strings that are supposed to be used as text, nothing else. Nothing wrong with that approach, of course, but it only works well for things that are plain text, and hell breaks loose as soon as you try to use it for structured things and arbitrarily compose these different structures.
+
+But why would you want to compose templates? Composition is a good way to manage complexity and scale things in a way you can still understand and easily change. It's the whole reason we don't write every one of the possible pages of a website with duplicated HTML everywhere, so why should our templating engines enforce this? Doesn't it sound counter-intuitive?
+
+The problem is even worse when you need to work with data that comes from entirely different structures, and play by entirely different rules. For example, I might have a piece of data in a structure that requires it to be encoded as base64, I can't just take that base64 value pass it over to Handlebars and have it magically display as the original text for the user. But again, the problem here is that nothing in Handlebars will tell me that I forgot to convert the base64 value to the original text, just as nothing will tell me that my composed HTML breaks the rules of HTML.
+
+But hey... what if we had types?
+
+Some people, when confronted with the word "type" will shy away and say that they have tests, which are just as good. I'll steal [Domenic's][] words here and just say that those people are Missing The Point Of Types®. It's not really about proofs[¹][fn1], it's a composition tool! And since JavaScript is a dynamic language, we can instead enforce the composition rules at the "Value" level. In other words, we should use rich objects to represent the structure, rather than plain strings.
+
+
+
+<a name="fn1"></a>
+¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.
+
 # The problem of SQL Injection
 # Clueless templating engines
