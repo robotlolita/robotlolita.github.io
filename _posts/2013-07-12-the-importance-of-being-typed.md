@@ -192,7 +192,7 @@ The above snippet could be thought of as (and this is a simplified view deviatin
                     , content: "..."
                     , arbitraryHtml: parseHtml("...") }})
          
-It's now the job of the `html` function to parse the literal parts and substitute the varying parts appropriately, maintaining the composition rules of the underlying language — which means verifying the arbitraryHTML to see if it's valid, and entity encoding the other values. So, as a start, it's *a freaking awesome thing!*
+It's now the job of the `html` function to parse the literal parts and substitute the varying parts appropriately, maintaining the composition rules of the underlying language — which means verifying the arbitraryHTML to see if it's valid, and entity encoding the other values. So, as a start, **it's a freaking awesome thing!**
 
 
 ## Parsing is still hard (ouch!)
