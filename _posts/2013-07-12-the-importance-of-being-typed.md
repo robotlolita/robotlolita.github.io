@@ -266,14 +266,24 @@ But until then, we can keep demanding better of our tools, libraries and framewo
 ## References and additional reading
 
 <dl>
-  <dt>
+  <dt><a href="http://haskell.cs.yale.edu/?post_type=publication&p=126">Domain Specific Languages</a></dt>
+  <dd>Paul Hudak's paper on Domain Specific Embedded Languages, and their benefits.</dd>
+  
+  <dt><a href="http://wiki.ecmascript.org/doku.php?id=harmony:quasis">ECMAScript 6's quasi proposal</a></dt>
+  <dd>The quasi-literals proposal for JavaScript.</dd>
+  
+  <dt><a href="http://js-quasis-libraries-and-repl.googlecode.com/svn/trunk/safetemplate.html">Using type inference to make web templates robust against XSS</a></dt>
+  <dd>Mike Samuel and Prateek Saxena's paper on how type inferencing can be used with quasi-literals in ECMAScript 6 to provide context-sensitive automatic handling of pieces from different languages being composed.</dd>
+  
+  <dt><a href="http://www.yesodweb.com/book/shakespearean-templates">The Shakesperean Templates</a></dt>
+  <dd>A description of the problems that the type-safe embedded DSLs Julius (JS), Cassius (CSS), and Hamlet (HTML) solve in Haskell and the Yesod web framework.</dd>
+  
+  <dt><a href="http://www.vpri.org/pdf/tr2008003_experimenting.pdf">OMeta: Experimenting With Programming Languages</a></dt>
+  <dd>Alessandro Warth's dissertation on OMeta, a parsing expression generator that aims to make it easier to prototype and write parsers for programming languages. A similar approach could be used in JavaScript to make the perceived difficult of dealing with structured data (both acquiring and transforming) easier.</dd>
+  
+  <dt><a href="http://www.cs.utexas.edu/~wcook/Drafts/2008/gel.pdf">GEL: A Generic Extensible Language</a></dt>
+  <dd>William R. Cook and Jose Falcon's paper on GEL. A language devised to create composable domain specific languages. An implementation of GEL could provide a standard way of writing new Domain Specific Languages on top of the quasi-literals in ECMAScript 6, making it simple to encode languages with rich syntax without complicated parsers.</dd>
 </dl>
-
-
-
-
-
-
 
 
 ## Footnotes
