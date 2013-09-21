@@ -1,7 +1,7 @@
 ---
 published: false
 layout: post
-snip: "With great powers, comes great responsibilities."
+snip: "Or “Handlebars and Mustache are just naïve String concatenation!”"
 ---
 
 > My girlfriend told me to get a life,  
