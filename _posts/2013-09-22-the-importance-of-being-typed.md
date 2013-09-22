@@ -1,7 +1,7 @@
 ---
-published: false
+published: true
 layout: post
-snip: "Or “Handlebars and Mustache are just naïve String concatenation!”"
+snip: "Or “Handlebars and Mustache are just naive String concatenation!”"
 ---
 
 > My girlfriend told me to get a life,  
@@ -13,20 +13,27 @@ snip: "Or “Handlebars and Mustache are just naïve String concatenation!”"
 >  
 > — Oasis, The Importance of Being Idle
 
-Logic-less HTML templating engines are quite the buzz these days, for they allow the programmer to specify their HTML declaratively, forces them to separate logic from presentation, and saves them from all the problems that could happen when naïvely concatenating Strings for The Great Good™... or do they?
+[Django][], [Jinja][], [Liquid][], [Handlebars][], [Mustache][], etc, are not made for HTML templating. There are a myriad of problems with the approach that such popular templating engines take when it comes down to handling structured formats, all of which are directly related to SQL Injection, XSS attacks and even [a recent security issue with Express.js][express-bug].
 
-There are a myriad of problems with the approach that popular templating engines, such as [Handlebars][] or [Mustache][], take when it comes down to handling structured formats like HTML. They're directly related to SQL Injection, XSS attacks and even [a recent security issue with Express.js][express-bug].
+See anything wrong with the following template?
 
-These problems arise exactly from the use of: naïvely concatenating Strings — exactly what we'd like to avoid! Sounds insane?! Smells like bullshit?! Well, stick with me!
+{% highlight html %}
+<div>{⁣{ yourHTML }⁣}</div> :)
+{% endhighlight %}
+
+No? Well, what if I told you that this snippet is nothing more than naive String concatenation? Sounds insane?! Smells like bullshit?! Well, stick with me!
 
 TL;DR:
 
-  - **DO NOT** be lazy (as far as parsing & generating structured data goes);
-  - **DO NOT** use regular expressions to parse structured data;
-  - **DO NOT** use naïve String concatenation (or *Clueless* templating engines) to generate structured data;
-  - **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Enlive][], [Hiccup][], [JSONML][], [Hamlet][], [React][], ...);
-  - ES6's quasi-literals can make things easier, as long as we don't use them for String interpolation!
+ -  **DO NOT** be lazy (as far as parsing & generating structured data goes);
+ -  **DO NOT** use regular expressions to parse structured data;
+ -  **DO NOT** use naive String concatenation (or *Clueless* templating engines) to generate structured data;
+ -  **DO** use templating engines that aid you with composition and early errors by acknowledging the kind of data you're working with and its rules (e.g.: [Enlive][], [Hiccup][], [JSONML][], [Hamlet][], [React][], ...);
+ -  ES6's quasi-literals can make things easier, as long as we don't use them for String interpolation!
 
+[Jinja]: http://jinja.pocoo.org/docs/
+[Django]: https://www.djangoproject.com/
+[Liquid]: http://liquidmarkup.org/
 [Handlebars]: http://handlebarsjs.com/
 [Mustache]: http://mustache.github.io/
 [express-bug]: https://github.com/senchalabs/connect/issues/831
@@ -45,7 +52,7 @@ This problem is not new, it dates back from the early days of Computer Science, 
  1.  Store data in flat text files.
  2.  Make every program a filter (receive a Stream of text as input, output a Stream of text).
 
-Since people have been encouraged to store data in flat text files, which disregard any structure that the data might have had, people are forced to continuously try to make sense of rich, structured data by hacking buggy parsers with Regular Expressions, and then naïvely concatenate everything back up so that the next buggy parser can take a swing at it.
+Since people have been encouraged to store data in flat text files, which disregard any structure that the data might have had, people are forced to continuously try to make sense of rich, structured data by hacking buggy parsers with Regular Expressions, and then naively concatenate everything back up so that the next buggy parser can take a swing at it.
 
 But hey, it's best when data can be read by humans, right? Unfortunately, when you need to communicate between two processes in a computer, *"data that can be read by humans"* is not the best way to do this. Enter the **structured format gang** (XML, JSON & friends). These are simple formats with a few rules that describe how the data is encoded and how the computer can get that information — in other words, it avoids buggy parsers, because now we can write just one nice and robust parser and use whenever we need to parse that format!
 
@@ -55,18 +62,22 @@ Okay, but what does this all have to do with templating engines?
 
 Well, me dears, while we most certainly realised we needed to use robust parsers to extract data from structured formats, most people still haven't realised that they *must* also use serialisers that can write data in a structured format. This led to things like these:
 
-    db.query("SELECT * FROM users WHERE name=\"" + user.name + "\".");
+{% highlight js %}
+db.query("SELECT * FROM users WHERE name=\"" + user.name + "\".");
+{% endhighlight %}
     
 Or its close cousin:
 
-	shell_execute("sudo adduser '" + user.name + "' 'webuser'")
+{% highlight js %}
+shell_execute("sudo adduser '" + user.name + "' 'webuser'")
+{% endhighlight %}
     
 But oh, silly me. Of course this is *wrong*, I just forgot to escape **user.name**, how could I **ever** do something as horrible as this?! I should just escape the data and, really, I need to stop coding so late in the morning... right y'all?
 
 
 ## It's not about escaping!
 
-Oh, but wait, I'm obviously missing something important here. "**Handlebars and Mustache are for HTML, you dumb! They'll escape stuff automatically for you!**" But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
+Oh, but wait, I'm obviously missing something important here. **"Handlebars and Mustache are for HTML, you dumb! They'll escape stuff automatically for you!"** But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
 
 There **is** a more fundamental issue that we're kind of missing here: we're just repeating the same mistakes of the past by writing buggy String concatenation, and buggy Regular Expression-based parsers. Of course we can make this all work, people did back in the days. That we can make it work **is not the problem**, the problem is that **no one will tell us when it doesn't work**. Or, in other words, it's just too easy to forget to escape a little piece of data and have [Little Bob Tables throw the work of your whole life into the void][bob-tables] — and that's when you'll learn that something "didn't work".
 
@@ -74,33 +85,45 @@ But Handlebars and Mustache will escape things automatically, so that solves all
 
 So, let's suppose you have a piece of HTML that was generated from another process, that you know to be safe (it plays correctly by the rules of HTML), and you want to embed in another template:
 
-	<div>{{ yourHTML }}</div> :)
+{% highlight html %}
+<div>{⁣{ yourHTML }⁣}</div> :)
+{% endhighlight %}
     
 The previous template is no good, because now all of the `<` characters will be replaced by `&lt;` and the final thing will mean something else entirely. But Handlebars allows one to include any HTML verbatim in another template by using the "triple-stashes":
 
-	<div>{{{ yourHTML }}}</div> :)
+{% highlight html %}
+<div>{⁣{⁣{ yourHTML }⁣}⁣}</div> :)
+{% endhighlight %}
     
 Oh, now your HTML works beautifully, and the meaning is preserved... or is it? Imagine you have the following templates:
 
-	yourHTML:
-    <noscript>This website requires JavaScript
-    
-    main:
-    <div>{{{ yourHTML }}}</div> :)
+{% highlight html %}
+yourHTML:
+<noscript>This website requires JavaScript
+        
+main:
+<div>{⁣{⁣{ yourHTML }⁣}⁣}</div> :)
+{% endhighlight %}
     
 You might question the validity of the first snippet, but it's a perfectly valid HTML snippet on its own right, since the HTML format is supposed to be forgiving — in fact, code like this is in some production sites out there on the wild internets.
 
 The problem here is that, while both snippets are valid on their own right, the result of composing both is not the straight-forward thing that you would expect:
 
-	<div><noscript>This website requires JavaScript</noscript></div> :)
+{% highlight html %}
+<div><noscript>This website requires JavaScript</noscript></div> :)
+{% endhighlight %}
     
 But rather something monstruous:
 
-	<div><noscript>This website requires JavaScript</div> :)
+{% highlight html %}
+<div><noscript>This website requires JavaScript</div> :)
+{% endhighlight %}
     
 Which is interpreted by the HTML parser as the following, effectively changing the meaning that we intended!
 
-    <div><noscript>This website requires JavaScript&lt;/div&gt; :)</noscript></div>
+{% highlight html %}
+<div><noscript>This website requires JavaScript&lt;/div&gt; :)</noscript></div>
+{% endhighlight %}
 
 [bob-tables]: http://xkcd.com/327/
 
@@ -128,69 +151,79 @@ Most of the problem here lies on how people perceive Strings to be an "easy" sol
 
 The thing is: we should start writing tools that makes people *feel* that working with structured data using proper structures is just as easy (or easier). And better yet, it's much safer. Unfortunately, JavaScript is not the best language to encode DSELs (domain specific embedded languages), as Lisp or Haskell, and the tools to do this aren't *quite* there yet, as are the tools for working with Strings. This is a fault of the language, but one that we can kind of easily circumvent, and we should strive for[²](#fn2).
 
-For instance, let's suppose one wants to generate an SQL query. Instead of the naïve String-based approach, they could encode commands and parameters as objects or functions, and compose them from there. The [Korma][] library in Clojure takes a similar approach. The following is an oversimplification in JavaScript:
+For instance, let's suppose one wants to generate an SQL query. Instead of the naive String-based approach, they could encode commands and parameters as objects or functions, and compose them from there. The [Korma][] library in Clojure takes a similar approach. The following is an oversimplification in JavaScript:
 
 [Korma]: http://sqlkorma.com/
 
-	//+ SELECT :: ([Name], Name) → [SQL]
-	function SELECT(fields, table) {
-    	return [ SQLCommand("SELECT")
-        	   , fields.map(FieldName)
-               , SQLCommand("FROM")
-               , Name(table) ]
-    }
-    
-    //+ SQLCommand :: String → Command
-    //+ FieldName :: String → Field
-    //+ Name :: String → Name
+{% highlight js %}
+//+ SELECT :: ([Name], Name) → [SQL]
+function SELECT(fields, table) {
+    return [ SQLCommand("SELECT")
+           , fields.map(FieldName)
+           , SQLCommand("FROM")
+           , Name(table) ]
+}
 
-	var fields = ["id", "user"]
-    var table = "Robert'; DROP TABLE --"
-    runSql(SELECT(fields, table)).forEach(displayUser)
-    
-Contrasting with the usage for the naïve approach, the usage of a safe approach that acknowledges the structure of SQL, and enforces *context-sensitive* proper composition (therefore eliminating any errors resulting from the need of escaping data) is just as easy as:
+//+ SQLCommand :: String → Command
+//+ FieldName :: String → Field
+//+ Name :: String → Name
 
-	runSql("SELECT {fields} FROM {table}").forEach(displayUser)
+var fields = ["id", "user"]
+var table = "Robert'; DROP TABLE --"
+runSql(SELECT(fields, table)).forEach(displayUser)
+{% endhighlight %}    
+
+Contrasting with the usage for the naive approach, the usage of a safe approach that acknowledges the structure of SQL, and enforces *context-sensitive* proper composition (therefore eliminating any errors resulting from the need of escaping data) is just as easy as:
+
+{% highlight js %}
+runSql("SELECT {fields} FROM {table}").forEach(displayUser)
+{% endhighlight %}
 
 With the added advantages of never needing to sanitise inputs, or being able to write an improper SQL query. A similar claim could be made for an HTML templating engine that supports structured templates:
 
-	Html(
-    	Head(
-        	Title(page.title),
-            Meta({ charset: "utf-8" })
-        ), Body(
-        	Section({ classes: ["main"] }, page.content),
-            parseHtml(page.arbitraryHTML),
-        )
+{% highlight js %}
+Html(
+    Head(
+        Title(page.title),
+        Meta({ charset: "utf-8" })
+    ), Body(
+        Section({ classes: ["main"] }, page.content),
+        parseHtml(page.arbitraryHTML),
     )
+)
+{% endhighlight %}
   
 Where, `page.title`, `page.content` and `page.arbitraryHTML` will be properly handled to fit **in the context that they appear**, avoiding any composition errors, or throwing an early error if any of these components violate the rules of HTML and breaks the original intent of the code.
         
 
 ## The future (in JavaScript)
 
-ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to Lisp quasi-quotation than naïve String interpolation in languages like Ruby, CoffeeScript or PHP. And this is a *real good thing*, because in the future we'll be able to embed all sorts of amazing DSLs in JavaScript, maintaining all of the composition referred to above. This means that your HTML templating would look like this:
+ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to Lisp quasi-quotation than naive String interpolation in languages like Ruby, CoffeeScript or PHP. And this is a *real good thing*, because in the future we'll be able to embed all sorts of amazing DSLs in JavaScript, maintaining all of the composition referred to above. This means that your HTML templating would look like this:
 
-	html`<html>
-    	   <head><title>${page.title}</title>
-                 <meta charset="utf-8"></head>
-           <body>
-             <section class="main">${page.content}</section>
-             ${parseHtml(page.arbitraryHTML)}
-           </body>
-         </html>`
+{% highlight html %}
+html`<html>
+       <head><title>${page.title}</title>
+             <meta charset="utf-8"></head>
+       <body>
+         <section class="main">${page.content}</section>
+         ${parseHtml(page.arbitraryHTML)}
+       </body>
+     </html>`
+{% endhighlight %}         
          
-Now, this *does* look easy, and it does look like your usual String interpolation in Ruby or PHP, doesn't it? So, what's the trick? How will this not be just one more naïve String concatenation approach that I've argued against since the beginning of the article?
+Now, this *does* look easy, and it does look like your usual String interpolation in Ruby or PHP, doesn't it? So, what's the trick? How will this not be just one more naive String concatenation approach that I've argued against since the beginning of the article?
 
 The sad news: **ECMAScript 6's quasi-literals make no guarantee of such.** This means that, surely, that code snippet could easily do plain String concatenation. The good news is that it doesn't **need** to be clueless. The reason is that, unlike Lisp's quasi-quotation, ECMAScript 6's quasi-literals are intended to be generic and as such they make no assumptions about the underlying format of the contents of the literals — your function is supposed to provide that.
 
 The above snippet could be thought of as (and this is a simplified view deviating a little from the spec):
 
-	html([ "<html><head><title>", 0
-         , "</title><meta charset=\"utf-8\"><body><section class=\"main\">", 1,
-         , "</section>", 2,
-         , "</body></html>"
-         ], "Title", "Content", parseHtml("..."))
+{% highlight js %}
+html([ "<html><head><title>", 0
+     , "</title><meta charset=\"utf-8\"><body><section class=\"main\">", 1,
+     , "</section>", 2,
+     , "</body></html>"
+     ], "Title", "Content", parseHtml("..."))
+{% endhighlight %}
          
 It's now the job of the `html` function to parse the literal parts and substitute the varying parts appropriately, maintaining the composition rules of the underlying language — which means verifying the arbitraryHTML to see if it's valid, and entity encoding the other values. So, as a start, **it's a freaking awesome thing!**
 
@@ -207,21 +240,26 @@ Having no standard and simple way of writing parsers in the language also contri
 
 For example, this would be a simplified HTML parser in [OMeta/JS][], a super-set of JavaScript:
 
-	ometa HTML <: Parser {
-        tagChar = char:c ?(/a-zA-Z/.test(c)) -> c,
-        tagName = tagChar*:cs -> [ 'id', cs.join('') ],
-    	tag     = '<' tagName:name '>' node*:ns '<' '/' tagName:n '>' ?(n === name) -> [ 'tag', name, ns ],
-        entity  = char:c ?(c != '<') -> c,
-        text    = entity*:cs -> [ 'text', cs.join('') ],
-        node    = tag | text
-        html    = node*
-    }
+{% highlight js %}
+ometa HTML <: Parser {
+    tagChar = char:c ?(/a-zA-Z/.test(c)) -> c,
+    tagName = tagChar*:cs -> [ 'id', cs.join('') ],
+    tag     = '<' tagName:name '>' node*:ns '<' '/' tagName:n '>' 
+              ?(n === name) -> [ 'tag', name, ns ],
+    entity  = char:c ?(c != '<') -> c,
+    text    = entity*:cs -> [ 'text', cs.join('') ],
+    node    = tag | text
+    html    = node*
+}
+{% endhighlight %}
     
 Parsing some text like: `<b><i>Some text</i></b>` would yield the following AST (abstract syntax tree):
 
-	[['tag', ['id', 'b'],
-      ['tag', ['id', 'i'],
-       ['text', 'Some text']]]]
+{% highlight js %}
+[['tag', ['id', 'b'],
+  ['tag', ['id', 'i'],
+   ['text', 'Some text']]]]
+{% endhighlight %}
        
 While parsing an incorrect HTML like: `<b><i>Some text</x>` would give you a parsing error. 
 
@@ -245,6 +283,9 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 <dl>
   <dt><a href="https://github.com/weavejester/hiccup">Hiccup</a></dt>
   <dd>A widely-used library for generating HTML from Vector data structures in Clojure.</dd>
+  
+  <dt><a href="http://jade-lang.com/">Jade</a></dt>
+  <dd>A templating engine that supports structural mixin functions for composition. Cheating by mixing arbitrary HTML is possible and still unsafe, but it's also awkward enough so that it would hardly be the norm.</dd>
   
   <dt><a href="https://github.com/Raynos/jsonml-stringify">JSONML</a></dt>
   <dd>Rayno's take on using Array data structures to encode structured formats in JavaScript. Has extensible formats for serialisation.</dd>
@@ -289,9 +330,9 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 ## Footnotes
 
 <blockquote>
-<a name="fn1"></a>
+<a name="fn1">&nbsp;</a>
 <p>¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.</p>
 
-<a name="fn2"></a>
+<a name="fn2">&nbsp;</a>
 <p>²: <a href="http://wiki.ecmascript.org/doku.php?id=harmony:quasis">Quasi-literals</a> in Harmony are supposed to fix this, but it remains to be seen if they'll be used correctly due to the current mindset with regards to working with structured data.</p>
 </blockquote>
