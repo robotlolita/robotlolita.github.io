@@ -324,8 +324,14 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
   
   <dt><a href="http://www.cs.utexas.edu/~wcook/Drafts/2008/gel.pdf">GEL: A Generic Extensible Language</a></dt>
   <dd>William R. Cook and Jose Falcon's paper on GEL. A language devised to create composable domain specific languages. An implementation of GEL could provide a standard way of writing new Domain Specific Languages on top of the quasi-literals in ECMAScript 6, making it simple to encode languages with rich syntax without complicated parsers.</dd>
+  
+  <dt><a href="http://www.youtube.com/watch?v=fYjO5pIY1mY">Frontend Security at Frontend Conf 2013, Zürich</a></dt>
+  <dd>A talk by Mike West covering XSS attacks, their relationship with unstructured templating engines and ways to mitigate the problems using Content Security Policy.</dd>
 </dl>
 
+## Acknowledgements
+
+ -  Mike West's talk was referred by Michael Lancaster over a discussion on Facebook, and I thought it would be relevant to link as an additional resource ;P
 
 ## Footnotes
 
