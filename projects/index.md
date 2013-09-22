@@ -28,37 +28,37 @@ Planned features include shrinking and random-program generation.
 
 ## Language primitives
 
-### [Boo](https://github.com/killdream/boo)
+#### [Boo](https://github.com/killdream/boo)
 
 A library that provides better prototypical object orientation
 primitives for JavaScript, including `clone`, `extend` and `merge`.
 
 
-### [Athena](https://github.com/killdream/athena)
+#### [Athena](https://github.com/killdream/athena)
 
 A library that provides common functional primitives missing in
 the JavaScript language, like `curry`, `partial`, etc.
 
 
-### [Polygamous](https://github.com/killdream/polygamous)
+#### [Polygamous](https://github.com/killdream/polygamous)
 
 A library that implements Clojure-style multi-methods in
 JavaScript. Clojure's multi-methods use a limited form of
 predicate dispatching.
 
 
-### [Shoutout](https://github.com/killdream/shoutout)
+#### [Shoutout](https://github.com/killdream/shoutout)
 
 A library that implements simple and type-safe events in JavaScript.
 
 
-### [Futurism](https://github.com/killdream/futurism)
+#### [Futurism](https://github.com/killdream/futurism)
 
 A library that implements fast monadic promises conforming to the
 Fantasy-Land specifications.
 
 
-### [Lazysex](https://github.com/killdream/lazysex)
+#### [Lazysex](https://github.com/killdream/lazysex)
 
 A library that implements monadic lazy streams for JavaScript,
 influenced by both Haskell and Scala.
@@ -67,17 +67,17 @@ influenced by both Haskell and Scala.
 
 ## Node utilities
 
-### [FFS](https://github.com/killdream/ffs)
+#### [FFS](https://github.com/killdream/ffs)
 
 A higher-level file system library that uses promises for asynchronous operations.
 
 
-### [Noisyo](https://github.com/killdream/noisyo)
+#### [Noisyo](https://github.com/killdream/noisyo)
 
 A library for making the work of reading from and writing to streams asynchronously easier.
 
 
-### [Seashell](https://github.com/killdream/seashell)
+#### [Seashell](https://github.com/killdream/seashell)
 
 An Domain-Specific Embedded Language for dealing with executing and composing shell processes.
 
@@ -85,12 +85,12 @@ An Domain-Specific Embedded Language for dealing with executing and composing sh
 
 ## DOM utilities
 
-### [Dominatrix](https://github.com/killdream/dominatrix)
+#### [Dominatrix](https://github.com/killdream/dominatrix)
 
 A structured templating library for HTML in the Browser, using proper DOM objects.
 
 
-### [Domina](https://github.com/killdream/domina)
+#### [Domina](https://github.com/killdream/domina)
 
 A functional library for making the task of manipulating collections of DOM elements simpler.
 
