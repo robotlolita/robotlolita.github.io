@@ -124,9 +124,9 @@ Some people, when confronted with the word **"type"** will shy away and say that
 
 So, templating engines like Handlebars, Mustache, etc. are clueless, in that they don't acknowledge the rules and structure of the data they're working with — it's just plain text. This makes them a bad choice for generating data such as HTML, XML or JSON. A smart templating engine will acknowledge these things, and not only help you with escaping data, but warn you (loudly) when any kind of error happens!
 
-Most of the problem here lies on how people perceive Strings to be an "easy" solution for anything, and they just take the path of least friction — which is working within a structured world without any of the structure. This is possibly PERL and C-family language's fault, given that the LISP family has been working with structured data using, well, structured data since the beginning of times.
+Most of the problem here lies on how people perceive Strings to be an "easy" solution for anything, and they just take the path of least resistance — which is working within a structured world without any of the structure. This is possibly PERL and C-family languages' fault, given that the LISP family has been working with structured data using, well, structured data since the beginning of times.
 
-The thing is: we should come to a format that makes people *feel* that working with structured data using proper structures is just as easy. And better yet, it's much safer. Unfortunately, JavaScript is not the best language to encode EDSLs (embedded domain specific language), as Lisp or Haskell, and the tools to do this aren't "quite" there yet, as are the tools for working with Strings. This is a fault of the language, but one that we can kind of easily circumvent, and we should strive for[²](#fn2).
+The thing is: we should start writing tools that makes people *feel* that working with structured data using proper structures is just as easy (or easier). And better yet, it's much safer. Unfortunately, JavaScript is not the best language to encode DSELs (domain specific embedded languages), as Lisp or Haskell, and the tools to do this aren't *quite* there yet, as are the tools for working with Strings. This is a fault of the language, but one that we can kind of easily circumvent, and we should strive for[²](#fn2).
 
 For instance, let's suppose one wants to generate an SQL query. Instead of the naïve String-based approach, they could encode commands and parameters as objects or functions, and compose them from there. The [Korma][] library in Clojure takes a similar approach. The following is an oversimplification in JavaScript:
 
@@ -148,11 +148,11 @@ For instance, let's suppose one wants to generate an SQL query. Instead of the n
     var table = "Robert'; DROP TABLE --"
     runSql(SELECT(fields, table)).forEach(displayUser)
     
-Contrasting with the usage for the naïve approach, the usage of a safe approach that acknowledges the structure of SQL, and enforces proper composition (therefore eliminating any errors resulting from the need of escaping data) is just as easy:
+Contrasting with the usage for the naïve approach, the usage of a safe approach that acknowledges the structure of SQL, and enforces *context-sensitive* proper composition (therefore eliminating any errors resulting from the need of escaping data) is just as easy as:
 
 	runSql("SELECT {fields} FROM {table}").forEach(displayUser)
 
-With the added advantages of never being able to write an improper SQL query, or one where you forgot to sanitise an input. A similar claim could be made for an HTML templating engine that supports structured templates:
+With the added advantages of never needing to sanitise inputs, or being able to write an improper SQL query. A similar claim could be made for an HTML templating engine that supports structured templates:
 
 	Html(
     	Head(
@@ -190,22 +190,20 @@ The above snippet could be thought of as (and this is a simplified view deviatin
          , "</title><meta charset=\"utf-8\"><body><section class=\"main\">", 1,
          , "</section>", 2,
          , "</body></html>"
-         ], { page: { title: "..."
-                    , content: "..."
-                    , arbitraryHtml: parseHtml("...") }})
+         ], "Title", "Content", parseHtml("..."))
          
 It's now the job of the `html` function to parse the literal parts and substitute the varying parts appropriately, maintaining the composition rules of the underlying language — which means verifying the arbitraryHTML to see if it's valid, and entity encoding the other values. So, as a start, **it's a freaking awesome thing!**
 
 
 ## Parsing is still hard (ouch!)
 
-I won't get in much [details on parsing theory, techniques and other stuff][parsing], since [people did that already][parsing]. However there is a problem when most people aren't exposed to a primer on parsing and interpretation techniques that they can actually use when they have to deal with different formats of data, or programming languages. Those two topics become even more essential when you work on top of a platform that needs to bring together so many different languages at the same time, like The Web.
+I won't get into the [gory details of parsing theory, techniques and other stuff][parsing], since [people did that already][parsing]. However there is a problem when most people aren't exposed to a primer on parsing and interpretation techniques that they can actually use when they have to deal with different formats of data, or programming languages. Those two topics become even more essential when you work on top of a platform that needs to bring together so many different languages at the same time, like The Web.
 
-This lack of basic knowledge in programming languages, the mindset that "Strings are okay" for structured formats, the perception people have that parsing and interpretation are *"so hard only geniuses can do it"*, and the fact that ECMAScript 6's quasis are too generic to put the burden of parsing on the library authors (something you don't have in Lisps).
+This lack of basic knowledge in programming languages, the mindset that "Strings are okay" for structured formats, the perception people have that parsing and interpretation are *"so hard only geniuses can do it"*, and the fact that ECMAScript 6's quasis are too generic to put the burden of parsing on the library authors (something you don't have in Lisps) are all things that contribute to the possible misuses of quasi-literals.
 
-While [TC39 definitely acknowledges the problem and is trying to fix them for the common cases][quasi-ti], everything mentioned contributes to possible misuses of quasi-literals for cases that deviate a little from that, like HTTP headers, or building shell commands, for example.
+Of course, [TC39 definitely acknowledges the problem and is trying to fix them for the common cases][quasi-ti], but we could still see some terrible misuses of quasi-literals for cases that deviate a little from that, like HTTP headers, or building shell commands, for example.
 
-Having no standard and simple way of writing parsers in the language also contributes for this. Specially since you can't easily bend JavaScript to make it more suitable for some of the rich EDSLs that could make expressing parsers easy, as you have in Haskell or Lisps — quasis might fix that, however. Parser combinators currently suffer considerably in expressiveness in the language, and PEGs often either use a String to encode the parser or provide a super-set of the JavaScript language.
+Having no standard and simple way of writing parsers in the language also contributes for this. Specially since you can't easily bend JavaScript to make it more suitable for some of the rich DSELs that could make expressing parsers easy, as you have in Haskell or Lisps — quasis might fix that, however. Parser combinators currently suffer considerably in expressiveness in the language, and PEGs often either use a String to encode the parser (which is often awkward, specially in the presence of semantic predicates) or provide a full compiler for a super-set of the JavaScript language.
 
 For example, this would be a simplified HTML parser in [OMeta/JS][], a super-set of JavaScript:
 
@@ -233,13 +231,13 @@ While parsing an incorrect HTML like: `<b><i>Some text</x>` would give you a par
 
 ## Conclusion
 
-We need to start using smart templates, which take into account the language they're working with, since this is the only sane and safe way to work with this data. However, the programmer mindset is a major issue, in all of the problems outlined in this post. We've been taught how to work with Strings, we've been given tools to work with Strings, but we're working with data that just don't fit what the String type is supposed to hold.
+We need to start using smart templating engines, which take into account the language they're working with, since this is the only sane and safe way to work with this data. However, the programmer mindset is a major issue, in all of the problems outlined in this post. We've been taught how to work with Strings, we've been given tools to work with Strings, but we're working with data that just don't fit what the String type is supposed to hold.
 
 Lisps are far better in this aspect because the internal structures, values and composition operators are all defined on top of S-expressions, so composition between things is easier. There's no reason we shouldn't learn from the Lisp crowd and start working with structured data in a structured format, however.
 
-There's lots of things to be invented for the future of ECMAScript, specially in light of things like quasi-literals. We need simpler, standard ways to work with, and compose ASTs if we want to change how people perceive the difficult of working with structured data and EDSLs. 
+There's lots of things to be invented for the future of ECMAScript, specially in light of things like quasi-literals. We need simpler, standard ways to work with, and compose ASTs if we want to change how people perceive the difficulty of working with structured data and DSELs. 
 
-But until then, we can keep demanding better of our tools, libraries and frameworks!
+But until then, we can keep demanding better of our tools, libraries, frameworks, and programming languages!
 
 
 ## Recommended Libraries
