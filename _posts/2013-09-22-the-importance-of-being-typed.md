@@ -290,8 +290,8 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 
 <blockquote>
 <a name="fn1"></a>
-¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.
+<p>¹: type system and types are primarily about formal proofs. But the notion of types (as a set of things) also serve as a great design and composition tool, because it allows one to define constraints on how things should fit together. Think about Lego, it wasn't just by chance that each piece had a particular "interface" for being combined with another piece.</p>
 
 <a name="fn2"></a>
-²: <a href="http://wiki.ecmascript.org/doku.php?id=harmony:quasis">Quasi-literals</a> in Harmony are supposed to fix this, but it remains to be seen if they'll be used correctly due to the current mindset with regards to working with structured data.
+<p>²: <a href="http://wiki.ecmascript.org/doku.php?id=harmony:quasis">Quasi-literals</a> in Harmony are supposed to fix this, but it remains to be seen if they'll be used correctly due to the current mindset with regards to working with structured data.</p>
 </blockquote>
