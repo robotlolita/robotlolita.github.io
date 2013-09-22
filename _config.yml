@@ -6,3 +6,5 @@ navigation:
   url: /index.html
 - text: About
   url: /about/index.html
+- text: Hacks
+  url: /projects/index.html
