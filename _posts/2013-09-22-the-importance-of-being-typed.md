@@ -250,7 +250,7 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
   <dd>Rayno's take on using Array data structures to encode structured formats in JavaScript. Has extensible formats for serialisation.</dd>
   
   <dt><a href="https://github.com/killdream/dominatrix">Dominatrix</a></dt>
-  <dd>My take on HTML templating on the Browser side. Uses the DOM for creating elements and lets the Browser deal with all the quirks. It's being used in production right now, although some attribute handling could be done better.</dd>
+  <dd>My take on HTML templating on the Browser side. Uses the DOM for creating elements and lets the Browser deal with all the quirks. It's being used in production right now, although some of the attribute handling stuff could be better.</dd>
   
   <dt><a href="http://hackage.haskell.org/package/hamlet-1.1.7">Hamlet</a></dt>
   <dd>A member of Haskell's (and the Yesod web framework) Shakesperean Templates. Hamlet is a EDSL for writing HTML, which quite reminds the approach shown above in ECMAScript 6's quasi-literals, but with type guarantees. Other libraries include Cassius (CSS EDSL) and Julius (JavaScript EDSL).</dd>
