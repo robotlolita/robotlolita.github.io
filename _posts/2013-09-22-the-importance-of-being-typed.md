@@ -138,9 +138,9 @@ The problem is even worse when you need to work with data that comes from entire
 
 But hey... what if we had types?
 
-Some people, when confronted with the word **"type"** will shy away and say that they have tests, which are just as good. I'll steal [Domenic's][] words here and say that those people are *Missing The Point Of Types®*. It's not really about proofs[¹](#fn1), it's a composition tool! And since JavaScript is a dynamic language, we can instead enforce the composition rules at the *Value* level. In other words, we should use rich objects to represent the structure, rather than plain strings.
+Some people, when confronted with the word **"type"** will shy away and say that they have tests, which are just as good. I'll steal [Domenic's][domenic] words here and say that those people are *Missing The Point Of Types®*. It's not really about proofs[¹](#fn1), it's a composition tool! And since JavaScript is a dynamic language, we can instead enforce the composition rules at the *Value* level. In other words, we should use rich objects to represent the structure, rather than plain strings.
 
-[Domenic's]: http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/
+[domenic]: http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/
 
 
 ## From clueless to smart templates
@@ -307,7 +307,7 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 ## References and additional reading
 
 <dl>
-  <dt><a href="http://haskell.cs.yale.edu/?post_type=publication&p=126">Domain Specific Languages</a></dt>
+  <dt><a href="http://haskell.cs.yale.edu/?post_type=publication&amp;p=126">Domain Specific Languages</a></dt>
   <dd>Paul Hudak's paper on Domain Specific Embedded Languages, and their benefits.</dd>
   
   <dt><a href="http://wiki.ecmascript.org/doku.php?id=harmony:quasis">ECMAScript 6's quasi proposal</a></dt>
