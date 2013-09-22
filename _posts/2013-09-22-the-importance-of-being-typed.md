@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 layout: post
 snip: "Or “Handlebars and Mustache are just naïve String concatenation!”"
 ---
