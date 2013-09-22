@@ -243,7 +243,7 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 ## Recommended Libraries
 
 <dl>
-  <dt><a href="https://github.com/weavejester/hiccup">Clojure's Hiccup</a></dt>
+  <dt><a href="https://github.com/weavejester/hiccup">Hiccup</a></dt>
   <dd>A widely-used library for generating HTML from Vector data structures in Clojure.</dd>
   
   <dt><a href="https://github.com/Raynos/jsonml-stringify">JSONML</a></dt>
