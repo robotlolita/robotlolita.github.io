@@ -15,7 +15,7 @@ Current platforms include Node and all Browser environments, and it can
 be easily integrated with Travis-CI and Testling CI.
 
 
-### [Claire](https://github.com/killdream/claire)
+### [Claire](https://github.com/hifivejs/claire)
 
 A property-based (generative) testing library that can generate test
 cases for you. It's highly influenced by both Haskell's QuickCheck
@@ -24,6 +24,13 @@ rules and semantics.
 
 Planned features include shrinking and random-program generation.
 
+
+### [Alright](https://github.com/hifivejs/alright)
+
+An straight-forward assertion library with no verbosity, while
+still managing to be highly extensible. Uses macro expansions
+to give you meaningful messages for `alright(x === y)` in every
+JS platform!
 
 
 ## Language primitives
