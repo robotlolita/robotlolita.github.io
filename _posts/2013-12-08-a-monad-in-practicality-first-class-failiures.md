@@ -2,7 +2,7 @@
 layout: post
 title: "A Monad in Practicality: First-Class Failures"
 snip:  How monads help you to deal with failures in a sane way
-published: true
+published: false
 ---
 
 There are [plenty of tutorials][] [on what][] [monads are][] out there, some
@@ -383,7 +383,9 @@ as well.
 {% highlight js %}
 // String -> Either([String, Error], Array(String))
 function readAll(path) {
-  return fs.list(path).reduce(zip2M, Right([]))
+  return fs.list(path).reduce(function(monadA, filename) {
+    return zip2M(monadA, read(path + '/' + filename))
+  }, Right([]))
 }
 
 // Monad(a), Monad(b) -> Monad([a, b])
@@ -475,8 +477,24 @@ filterContainingWord('monad', readAll('~/texts')).chain(function(texts) {
 {% endhighlight %}
 
 
-
 ### 2.3. Sometimes You Fail More Than Once
+
+One of the problems with sequencing operations with the monadic `chain`
+operation is that, as we've seen with the `Either` monad, they're a fail-fast
+path, which means that the whole sequence of actions is abruptly finished with
+a failure in case any of the actions fail. Sometimes, however, you don't want
+to sequence things in this fashion, but rather aggregate all of the failures
+and propagate them. A common use case for this is validating inputs, which is
+why our next monad is the `Validation` monad.
+
+A `Validation` monad is almost exactly the same as the `Either` monad, with two
+differences: it has a vocabulary aimed towards error handling, `Success` and
+`Failure`, rather than the generalised disjunction tags `Left` and `Right` in
+the `Either` monad; and it can aggregate and propagate all of the failures
+through the `Applicative Functor` interface.
+
+
+
 
 ## 3. Composing Computations
 
