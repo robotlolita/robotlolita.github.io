@@ -41,9 +41,11 @@ to use exceptions, JavaScript handles this through the `try ... catch`
 statement and `Error` objects, similar to other mainstream programming
 languages, like Java, Python and Ruby.
 
-While I will not argue that exceptions don't have their place (all the more
-because my reading on the subject is somewhat lacking), most of the common uses
-of them in mainstream programming has a handful of problems:
+While I can not argue about all approaches of exception handling, since my
+reading on the subject is somwehat lacking (not having looked at Conditions,
+for example), most of the common uses in mainstream programming have a handful
+of associated problems:
+
 
 #### Non locality
 
