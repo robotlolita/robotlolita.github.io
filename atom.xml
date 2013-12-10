@@ -8,7 +8,7 @@ layout: nil
  <link href="http://killdream.github.io/atom.xml" rel="self"/>
  <link href="http://killdream.github.io/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
- <id>http://killdream.github.io/</id>
+ <id>http://robotlolita.github.io/</id>
  <author>
    <name>Quildreen Motta</name>
  </author>
@@ -18,7 +18,7 @@ layout: nil
    <title>{{ post.title }}</title>
    <link href="http://killdream.github.io{{ post.url }}"/>
    <updated>{{ post.date | date_to_xmlschema }}</updated>
-   <id>http://killdream.github.io{{ post.id }}</id>
+   <id>http://robotlolita.github.io{{ post.id }}</id>
    <content type="html">{{ post.content | xml_escape }}</content>
  </entry>
  {% endfor %}
