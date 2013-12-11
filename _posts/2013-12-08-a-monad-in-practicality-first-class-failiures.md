@@ -555,15 +555,17 @@ monad is the `Validation` monad.
 A `Validation` monad is almost exactly the same as the `Either` monad, with two
 differences: it has a vocabulary aimed towards error handling, with the
 `Success` and `Failure` constructors, rather than the generalised disjunction
-tags `Left` and `Right` in the `Either` monad; and it can aggregate and
-propagate all of the failures through the `Applicative Functor` interface. Now,
+tags `Left` and `Right` in the `Either` monad; and it can propagate an aggregation
+of all failures through the `Applicative Functor` interface. Now,
 Applicative Functors are not something I'll go in much detail in this article,
 but for the purposes of this article you can think about them as a list where
 every element is a function, with a `map` operation that, instead of mapping a
-function over the list, you map the list of functions over an element or list
-of elements.
+function over the list, you apply (thus, applicative) the list of functions
+to an element or list of elements.
 
-
+But let's leave the theory aside for a second and talk about a scenario where
+this monad is useful: you have a sign up form where the user might provide a
+username and password.
 
 
 
