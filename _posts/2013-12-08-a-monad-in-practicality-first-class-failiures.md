@@ -572,9 +572,9 @@ and fail, correct and fail. It's much better to report everything upfront.
 
 For this scenario, we'll have the following rules:
 
-  - Usernames should contain only numbers and letters.
-  - Passwords should be at least 6 characters long.
-  - Passwords must contain at least one special character.
+ * Usernames should contain only numbers and letters. 
+ * Passwords should be at least 6 characters long.
+ * Passwords must contain at least one special character.
 
 And to make things simpler, each of these rules will be encoded as a separate
 function, that returns a Validation monad depending on whether the input passes
