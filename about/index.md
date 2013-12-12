@@ -13,9 +13,7 @@ teaching, Node.js, designing, fashioning, trolling, and other "ing"s.</p>
 
 
 I'm a **front-end developer** and **minimalist designer** based in Belo
-Horizonte/Brazil. It also looks like my name is some weird stuff along the
-lines of Quildreen Motta, but most people know me on the great interwebs as
-Sorella [\[1\]](#fn-1).
+Horizonte/Brazil. Most people know me on the great interwebs as Sorella [\[1\]](#fn-1).
 
 My passions include the design and implementation of programming languages and
 promoting The Open Web — but I also have interests in interactive storytelling,
