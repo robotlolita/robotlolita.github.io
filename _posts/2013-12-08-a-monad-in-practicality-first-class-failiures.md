@@ -565,8 +565,174 @@ to an element or list of elements.
 
 But let's leave the theory aside for a second and talk about a scenario where
 this monad is useful: you have a sign up form where the user might provide a
-username and password.
+username and password, and this information should comply with a few rules. In
+this case, it would be rather annoying to have the user try signing up, then
+failing on the first failure, having the user correct that one and try again,
+and fail, correct and fail. It's much better to report everything upfront.
 
+For this scenario, we'll have the following rules:
+
+  - Usernames should contain only numbers and letters.
+  - Passwords should be at least 6 characters long.
+  - Passwords must contain at least one special character.
+
+And to make things simpler, each of these rules will be encoded as a separate
+function, that returns a Validation monad depending on whether the input passes
+the rule or not:
+
+{% highlight js %}
+var Validation = require('monads.validation')
+var Success = Validation.Success
+var Failure = Validation.Failure
+
+// String -> Validation(Error, String)
+function isNameValid(name) {
+  return /^[\d\w]+$/.test(name)?
+           Success(name)
+  :      /* otherwise */
+           Failure(new Error('Username can\'t be empty.'))
+}
+
+// String -> Validation(Error, String)
+function isPasswordLongEnough(password) {
+  return password.length > 6?
+           Success(password)
+  :      /* otherwise */
+           Failure(new Error('Password have to be at '
+                            +'least 6 characters long.'))
+}
+
+// String -> Validation(Error, String)
+function isPasswordStrongEnough(password) {
+  return /[\W]/.test(password)?
+           Success(password)
+  :      /* otherwise */
+           Failure(new Error('Password must contain at '
+                            +'least one special character.'))
+{% endhighlight %}
+
+And we can verify that our functions work, and provide us the correct results
+for whatever inputs we throw at them:
+
+{% highlight js %}
+isNameValid("")
+// => Failure(Error: Username can't be empty.)
+isNameValid("robotlolita")
+// => Success(robotlolita)
+isPasswordLongEnough("robot")
+// => Failure(Error: Password have to be at least 6 characters long.)
+isPasswordLongEnough("rosesarered")
+// => Success(rosesarered)
+isPasswordStrongEnough("rosesarered")
+// => Failure(Error: Password must contain at least one special character.)
+isPasswordStrongEnough("roses.are.red")
+// => Success(roses.are.red)
+{% endhighlight %}
+
+Now, this is not much interesting. We could have done the very same with, say,
+the `Either` monad. The interesting part is when we start combining these
+things and aggregating the failures, rather than failing at the first thing
+that isn't correct. So, for example, a password needs to attend two different
+conditions to be correct, and we would like the user to know all the things
+they need to fix up when things don't go the way we expect.
+
+As previously mentioned, the `Validation` monad exposes the `ap` method which
+can be used to aggregate failures. If either of the operands for the `ap`
+method contain a validation error, then the error is propagated, just like in
+the monad. But if both sides contain a validation error, then both errors are
+combined using a semigroup — another algebraic structure which allows one to
+combine things. Lists are fairly straight-forward semigroups, so we'll just use
+them here.
+
+{% highlight js %}
+// String -> Validation(Array(Error), String)
+function isPasswordValid(password) {
+  return [isPasswordLongEnough(password), isPasswordStrongEnough(password)]
+         .map(function(a){ return a.leftMap(liftNel) })
+         .reduce( function(a, b){ return a.ap(b) }, Success(tuple2))
+         .map(constant(password))
+}
+
+// a -> [a]
+function liftNel(a) {
+  return [a]
+}
+
+// a -> b -> [a, b]
+function tuple2(a) { return function(b) {
+  return [a, b]
+}}
+
+// a -> b -> a
+function constant(a) { return function(b) {
+  return a
+}}
+
+isPasswordValid("robot")
+// => Failure([
+//      Error: Password have to be at least 6 characters long.,
+//      Error: Password must contain at least one special character.
+//    ])
+isPasswordValid("rosesarered")
+// => Failure(Error: Password must contain at least one special character.)
+isPasswordValid("roses.are.red")
+// => Success(roses.are.red)
+
+{% endhighlight %}
+
+And now checking whether passwords are valid in regards of their length and
+strength works, but... that wasn't exactly quite "straight-forward," right?
+Luckily for us we can abstract this all away (and ideally it would be all
+provided by a nice library, anyways):
+
+{% highlight js %}
+// We can generalise our tuple2 to work with any number of
+// values we need to feed into the tuple:
+//
+// Int -> a1 -> a2 -> ... -> aN -> [a1, a2, ..., aN]
+function tupleN(n) {
+  return function tupleN_(as, n) { return function(a) {
+    return n === 1?         as.concat(a)
+    :      /* otherwise */  tupleN_(as.concat(a), n - 1)
+  }}([], n)
+}
+
+// Array(Validation(Error, a)) -> Validation(Array(Error), Array(a))
+function aggregate(validations) {
+  return validations.map(function(a){ return a.leftMap(liftNel) })
+                    .reduce(function(a, b) {
+                              return a.ap(b)
+                            }, Success(tupleN(validations.length)))
+}
+{% endhighlight %}
+
+And finally, derive our new `isPasswordValid` and `isAccountValid` functions
+from this `aggregate` combinator:
+
+{% highlight js %}
+// String -> Validation(Array(Error), String)
+function isPasswordValid(password) {
+  return aggregate([ isPasswordLongEnough(password)
+                   , isPasswordStrongEnough(password)])
+         .map(constant(password))
+}
+
+// String, String -> Validation(Array(Error), [String, String])
+function isAccountValid(name, password) {
+  return aggregate([isNameValid(name), isPasswordValid(password)])
+}
+
+isAccountValid("", "")
+// => Failure([
+//      Error: Username can't be empty.,
+//      Error: Password have to be at least 6 characters long.,
+//      Error: Password must contain at least one special character.
+//    ])
+isAccountValid("someone", "password")
+// => Failure(Error: Password must contain at least one special character.)
+isAccountValid("robotlolita", "roses.are.red")
+// => Success(robotlolita,roses.are.red)
+{% endhighlight %}
 
 
 ## 3. Composing Computations
