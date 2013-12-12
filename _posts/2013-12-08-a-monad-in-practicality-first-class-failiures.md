@@ -2,7 +2,7 @@
 layout: post
 title: "A Monad in Practicality: First-Class Failures"
 snip:  How monads help you to deal with failures in a sane way
-published: false
+published: true
 ---
 
 There are [plenty of tutorials][] [on what][] [monads are][] out there, some
@@ -413,7 +413,7 @@ And abusing the fact that the `+` operator in JavaScript can be used for either
 concatenating Strings or arithmetic addition, we've already got a function to
 sum 2 numbers in a monad:
 
-{% highlight %}
+{% highlight js %}
 var add = concatenate // A little abuse of JavaScript's operator semantics :P
 
 add(divide(4, 2), divide(9, 3)) // Right(5)
