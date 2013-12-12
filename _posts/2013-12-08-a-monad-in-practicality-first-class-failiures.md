@@ -38,10 +38,9 @@ computation.
     3. [You Either Succeed, or You Fail](#23_you_either_succeed_or_you_fail)
     4. [Interlude: Recovering From Failures](#24_interlude_recovering_from_failures)
     5. [Sometimes You Fail More Than Once](#25_sometimes_you_fail_more_than_once)
- 3. [Composing Computations](#3_composing_computations)
- 4. [Abstracting Computations](#4_abstracting_computations)
- 5. [Conclusion](#5_conclusion)
- 6. [References and Additional Reading](#6_references_and_additional_reading)
+ 3. [Abstracting Computations](#3_abstracting_computations)
+ 4. [Conclusion](#4_conclusion)
+ 5. [References and Additional Reading](#5_references_and_additional_reading)
 
 
 ## 1. Introduction
@@ -120,9 +119,9 @@ JavaScript.
 But what's a monad? A monad is a wrapper for some computational context, which
 satisfies certain algebraic laws, and provides you a single operation to create
 a new monad by transforming the computational context from another monad. But
-don't worry if you don't get this now, monads are intentionally abstract — so
-we can generalise everything! Which is why we'll instead look at specific types
-of monads in this article.
+don't worry if you don't get this now, monads are an intentionally abstract
+interface, so we can generalise everything! Which is why we'll instead look at
+specific types of monads in this article.
 
 
 [Maybe]: https://github.com/folktale/monads.maybe
@@ -731,10 +730,159 @@ isAccountValid("robotlolita", "roses.are.red")
 {% endhighlight %}
 
 
-## 3. Composing Computations
+## 3. Abstracting Computations
 
-## 4. Abstracting Computations
+So far monads have been proven to be a fairly reliable way to deal with
+failures, even allowing one to easily aggregate errors in computations with the
+Validation monad. But the way they were dealt with in this article brought
+about quite a lot of syntactical noise, and we've had to define our own
+combinators every time we wanted to work with them in a slightly higher level.
 
-## 5. Conclusion
+The good thing about using monads is that *we* don't need to care much about
+writing our own combinators. If anyone has written a combinator for a monad
+operation, you can use it with any monad whatsoever! We can even give a
+particular monad characteristics of another monad, using monad transformers, so
+that we could, for example, deal with a Monad(Array(a)) using the array methods
+directly on the wrapped value, regardless of the monad that has the array.
+
+While the [Fantasy Land][] specification is still young, and there aren't as
+many combinator and abstraction libraries as in Haskell, there are a few
+libraries that provides the common combinators from Haskell's
+Control.Applicative, and some monad transformers. Ideally, you would just
+require the abstractions you need and get done with your work with the least
+amount of code and complexity possible.
+
+For example, if you have a list of monads and wants to sequence all of them,
+but you don't want to lose yourself in a `chain` callback hell, just use the
+`sequence` operation on monads, which gives you a list with all the results of
+a sequence, regardless of which monad they come from — so you can even mix
+asynchronous and synchronous operations without having to do any work at all
+(the same can't be said about Promises/A+ promise combinators, since they're
+specific to Promises/A+):
+
+{% highlight js %}
+// This will give you a Future of an array of results
+// And the actions will be performed sequentially.
+sequence(Future, [doA(), doB(), doC(), doD(), doE()])
+  .chain(function(results) {
+    console.log(results.join('\n'))
+  })
+{% endhighlight %}
+
+
+
+## 4. Conclusion
+
+Even though the [Fantasy Land][] specification for algebraic computations in
+JavaScript is still young, we can already get a lot out of it for free. More
+so, with monads and applicative functors we can easily model any sort of
+computational failure that we can recover from, without making our program flow
+difficult, and without losing our ability to compose those computations
+easily.
+
+
+## 5. Libraries
+
+You can find implementations of the monads discussed in this article under the
+[folktale](https://github.com/folktale) organisation on Github. Bryan et al
+also provide their own implementations of common monads on the
+[fantasyland](https://github.com/fantasyland) organisation on Github. And you
+can look for several other implementations of algebraic libraries that are
+compatible with the Fantasy Land specification
+[searching for "fantasy-land" on NPM](https://npmjs.org/search?q=fantasy-land).
+
+Below I list some of my implementations for the `Maybe`, `Either` and
+`Validation` monads, and a few combinator libraries:
+
+<dl>
+  <dt><a href="https://github.com/folktale/monads.maybe">Maybe</a></dt>
+  <dd>My implementation of the Maybe monad</dd>
+
+  <dt><a href="https://github.com/folktale/monads.either">Either</a></dt>
+  <dd>My implementation of the Either monad</dd>
+  
+  <dt><a
+  href="https://github.com/folktale/monads.validation">Validation</a></dt>
+  <dd>My implementation of the Validation monad</dd>
+
+  <dt><a
+  href="https://github.com/folktale/control.monads">Control.Monads</a></dt>
+  <dd>My (still experimental) port of Haskell's
+  [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html)
+  package, which provides common combinators and operations to work with monads
+  in a higher level.</dd>
+  
+  <dt><a href="https://github.com/quarterto/fantasy-arrayt">Fantasy
+  ArrayT</a></dt>
+  <dd>A monad transformer for monads containing JavaScript arrays.</dd>
+  
+  <dt><a href="https://github.com/fantasyland/fantasy-combinators">Fantasy
+  Combinators</a></dt>
+  <dd>A library providing common functional combinators — like compose,
+  constant, flip, etc.</dd>
+</dl>
+
 
 ## 6. References and Additional Reading
+
+<dl>
+  <dt><a href="http://www.cwru.edu/artsci/math/wells/pub/ttt.html">Toposes,
+  Triples and Theories, by M. Barr and C. Wells</a></dt>
+  <dd>You don't need to have a PhD in Category Theory to understand Monads,
+  Functors and friends, but having an understanding of the basics in Category
+  Theory really helps. M. Barr and C. Wells's book provides a fairly detailed
+  description of the subject, and it's freely available online, although I have
+  not finished reading the whole book yet.</dd>
+  
+  <dt><a href="http://www.haskell.org/haskellwiki/Category_theory">Haskell
+  Wiki on Category Theory</a></dt>
+  <dd>The Haskell Wiki page on Category Theory lists several resources that may
+  help you to understand the concepts and foundations. Some of them are written
+  with Haskell programmers in mind, some are purely mathematical and don't
+  assume any previous knowledge in either Haskell or Category Theory.</dd>
+
+  <dt><a
+  href="http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare">Null
+  References: The Billion Dollar Mistake, by Tony Hoare</a></dt>
+  <dd>Tony Hoare, who introduced Null references in the ALGOL programming
+  language (and the Communicating Sequential Processes formalism, which is the
+  basis for Go's concurrency mechanisms), talks about the issues of null
+  references and how he consider the decision to be his "billion-dollar
+  mistake."</dd>
+
+  <dt><a href="https://github.com/scalaz/scalaz">Scalaz</a></dt>
+  <dd>Scalaz is a library providing purely functional data structures for
+  functional programming. Most of my decisions for the APIs of my monadic
+  structures are directly influenced by Scalaz's API.</dd>
+
+  <dt><a
+  href="http://learnyouahaskell.com/functors-applicative-functors-and-monoids">Functor,
+  Applicative Functors and Monoids chapter in LYAH</a></dt>
+  <dd>The Learn You A Haskell for Great Good! book has a fairly nice
+  introduction to Functors, Applicative Functors, Monoids, and later on Monads
+  and some other algebraic structures (like Zippers).</dd>
+
+  <dt><a
+  href="http://channel9.msdn.com/Shows/Going+Deep/Brian-Beckman-Dont-fear-the-Monads">Brian
+  Beckman: Don't Fear The Monad</a></dt>
+  <dd>Brian explains how the concept of a monad are already familiar for many
+  programmers, by starting with functions, and generalising from monoids to
+  monads. While this will not tell you how to use monads, and what they're good
+  for, it'll certainly allow you to reason better about how everything fits
+  together.</dd>
+  
+  <dt><a href="https://github.com/fantasyland/fantasy-land">Fantasy Land
+  Specification</a></dt>
+  <dd>The Fantasy Land specification that all monads in JavaScript should
+  follow to allow interoperability and abstractions to be written and shared by
+  everyone, for maximum DRY.</dd>
+  
+  <dt><a
+  href="http://applicative-errors-scala.googlecode.com/svn/artifacts/0.6/pdf/index.pdf">Applicative
+  Programming, Disjoint Unions, Semigroups and Non-breaking Error
+  Handling</a></dt>
+  <dd><a href="https://twitter.com/dibblego">Tony Morris</a> provides an
+  explanation of how Applicative Functors for a Disjoint Union (the Either
+  monad) can be used to aggregate failures and sequencing computations without
+  a fail-fast path, in Scala.</dd>
+</dl>
