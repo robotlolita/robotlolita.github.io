@@ -780,6 +780,10 @@ computational failure that we can recover from, without making our program flow
 difficult, and without losing our ability to compose those computations
 easily.
 
+You can check out the example implementation of the things discussed in this
+article on
+[this github repository](https://github.com/robotlolita/monads-as-first-class-failures).
+
 
 ## 5. Libraries
 
