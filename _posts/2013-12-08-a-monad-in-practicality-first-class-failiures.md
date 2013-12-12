@@ -34,9 +34,10 @@ computation.
  1. [Introduction](#1_introduction)
  2. [Modelling Errors](#2_modelling_errors)
     1. [Maybe Things Don't Work](#21_maybe_things_dont_work)
-    2. [Interlude: chain](#22_interlude_chain)
+    2. [Interlude: `chain`-ing monads](#22_interlude_chaining_monads)
     3. [You Either Succeed, or You Fail](#23_you_either_succeed_or_you_fail)
-    4. [Sometimes You Fail More Than Once](#24_sometimes_you_fail_more_than_once)
+    4. [Interlude: Recovering From Failures](#24_interlude_recovering_from_failures)
+    5. [Sometimes You Fail More Than Once](#25_sometimes_you_fail_more_than_once)
  3. [Composing Computations](#3_composing_computations)
  4. [Abstracting Computations](#4_abstracting_computations)
  5. [Conclusion](#5_conclusion)
@@ -585,30 +586,30 @@ var Validation = require('monads.validation')
 var Success = Validation.Success
 var Failure = Validation.Failure
 
-// String -> Validation(Error, String)
+// String -> Validation([Error], String)
 function isNameValid(name) {
   return /^[\d\w]+$/.test(name)?
            Success(name)
   :      /* otherwise */
-           Failure(new Error('Username can\'t be empty.'))
+           Failure([new Error('Username can\'t be empty.')])
 }
 
-// String -> Validation(Error, String)
+// String -> Validation([Error], String)
 function isPasswordLongEnough(password) {
   return password.length > 6?
            Success(password)
   :      /* otherwise */
-           Failure(new Error('Password have to be at '
-                            +'least 6 characters long.'))
+           Failure([new Error('Password have to be at '
+                             +'least 6 characters long.')])
 }
 
-// String -> Validation(Error, String)
+// String -> Validation([Error], String)
 function isPasswordStrongEnough(password) {
   return /[\W]/.test(password)?
            Success(password)
   :      /* otherwise */
-           Failure(new Error('Password must contain at '
-                            +'least one special character.'))
+           Failure(new Error(['Password must contain at '
+                             +'least one special character.']))
 {% endhighlight %}
 
 And we can verify that our functions work, and provide us the correct results
@@ -616,15 +617,15 @@ for whatever inputs we throw at them:
 
 {% highlight js %}
 isNameValid("")
-// => Failure(Error: Username can't be empty.)
+// => Failure([Error: Username can't be empty.])
 isNameValid("robotlolita")
 // => Success(robotlolita)
 isPasswordLongEnough("robot")
-// => Failure(Error: Password have to be at least 6 characters long.)
+// => Failure([Error: Password have to be at least 6 characters long.])
 isPasswordLongEnough("rosesarered")
 // => Success(rosesarered)
 isPasswordStrongEnough("rosesarered")
-// => Failure(Error: Password must contain at least one special character.)
+// => Failure([Error: Password must contain at least one special character.])
 isPasswordStrongEnough("roses.are.red")
 // => Success(roses.are.red)
 {% endhighlight %}
@@ -644,29 +645,25 @@ combined using a semigroup — another algebraic structure which allows one to
 combine things. Lists are fairly straight-forward semigroups, so we'll just use
 them here.
 
+If both validations contain a success value, then the usual `Applicative
+Functor` rules apply, and the first validation is expected to have a function
+that will get applied to the second applicative. Our validations contain
+strings, however, so we can't just apply a string to another string and expect
+anything sensible to happen. Instead what we can do is to start with a
+validation that contains a function that captures each value of the subsequent
+functions and returns a new function at each application: closures to the
+rescue!
+
 {% highlight js %}
 // String -> Validation(Array(Error), String)
 function isPasswordValid(password) {
-  return [isPasswordLongEnough(password), isPasswordStrongEnough(password)]
-         .map(function(a){ return a.leftMap(liftNel) })
-         .reduce( function(a, b){ return a.ap(b) }, Success(tuple2))
-         .map(constant(password))
+  return Success(function(a) {
+           return function(b) {
+             return password
+           }
+         }).ap(isPasswordLongEnough(password))
+           .ap(isPasswordStrongEnough(password))
 }
-
-// a -> [a]
-function liftNel(a) {
-  return [a]
-}
-
-// a -> b -> [a, b]
-function tuple2(a) { return function(b) {
-  return [a, b]
-}}
-
-// a -> b -> a
-function constant(a) { return function(b) {
-  return a
-}}
 
 isPasswordValid("robot")
 // => Failure([
@@ -674,35 +671,32 @@ isPasswordValid("robot")
 //      Error: Password must contain at least one special character.
 //    ])
 isPasswordValid("rosesarered")
-// => Failure(Error: Password must contain at least one special character.)
+// => Failure([Error: Password must contain at least one special character.])
 isPasswordValid("roses.are.red")
 // => Success(roses.are.red)
 
 {% endhighlight %}
 
-And now checking whether passwords are valid in regards of their length and
-strength works, but... that wasn't exactly quite "straight-forward," right?
-Luckily for us we can abstract this all away (and ideally it would be all
-provided by a nice library, anyways):
+But it's so tedious to define functions in this way, specially given the
+syntactical burden of function definitions in JavaScript. So, can we abstract
+all this cruft away? Wouldn't it be so much better to just pass in `function(a,
+b){ ... }`? Oh, but there's a concept in functional programming that allows us
+to do exactly this: currying.
+
+So, currying is the act of transforming a function that takes multiple
+arguments at once, in a function that takes each argument one at a time, so if
+we say: `curry(2, function(a, b){ return a + b })` we're really saying:
+`function(a){ return function(b){ return a + b }}`. So, let's define curry as
+one of our abstraction overlords:
 
 {% highlight js %}
-// We can generalise our tuple2 to work with any number of
-// values we need to feed into the tuple:
-//
-// Int -> a1 -> a2 -> ... -> aN -> [a1, a2, ..., aN]
-function tupleN(n) {
-  return function tupleN_(as, n) { return function(a) {
-    return n === 1?         as.concat(a)
-    :      /* otherwise */  tupleN_(as.concat(a), n - 1)
-  }}([], n)
-}
-
-// Array(Validation(Error, a)) -> Validation(Array(Error), Array(a))
-function aggregate(validations) {
-  return validations.map(function(a){ return a.leftMap(liftNel) })
-                    .reduce(function(a, b) {
-                              return a.ap(b)
-                            }, Success(tupleN(validations.length)))
+// Int, (a1, a2, ..., aN -> b) -> a1 -> a2 -> ... -> aN -> b
+function curryN(n, f){
+  return function _curryN(as) { return function() {
+    var args = as.concat([].slice.call(arguments))
+    return args.length < n?  _curryN(args)
+    :      /* otherwise */   f.apply(null, args)
+  }}([])
 }
 {% endhighlight %}
 
@@ -712,14 +706,16 @@ from this `aggregate` combinator:
 {% highlight js %}
 // String -> Validation(Array(Error), String)
 function isPasswordValid(password) {
-  return aggregate([ isPasswordLongEnough(password)
-                   , isPasswordStrongEnough(password)])
-         .map(constant(password))
+  return Success(curryN(2, function(){ return password }))
+           .ap(isPasswordLongEnough(password))
+           .ap(isPasswordStrongEnough(password))
 }
 
 // String, String -> Validation(Array(Error), [String, String])
 function isAccountValid(name, password) {
-  return aggregate([isNameValid(name), isPasswordValid(password)])
+  return Success(curryN(2, function(a, b){ return [a, b] }))
+           .ap(isNameValid(name))
+           .ap(isPasswordValid(name))
 }
 
 isAccountValid("", "")
