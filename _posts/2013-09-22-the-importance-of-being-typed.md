@@ -46,15 +46,15 @@ TL;DR:
 
 ## Table of Contents
 
-  1. [An Introduction to the problem](#1_an_introduction_to_the_problem)
-  2. [It's not about escaping!](#2_its_not_about_escaping)
-  3. [Types to the rescue](#3_types_to_the_rescue)
-  4. [From clueless to smart templates](#4_from_clueless_to_smart_templates)
-  5. [The future (in JavaScript)](#5_the_future_in_javascript)
-  6. [Parsing is still hard (ouch!)](#6_parsing_is_still_hard_ouch)
-  7. [Conclusion](#7_conclusion)
-  8. [Recommended libraries](#8_recommended_libraries)
-  9. [References and additional reading](#9_references_and_additional_reading)
+   1. [An Introduction to the problem](#1_an_introduction_to_the_problem)
+   2. [It's not about escaping!](#2_its_not_about_escaping)
+   3. [Types to the rescue](#3_types_to_the_rescue)
+   4. [From clueless to smart templates](#4_from_clueless_to_smart_templates)
+   5. [The future (in JavaScript)](#5_the_future_in_javascript)
+   6. [Parsing is still hard (ouch!)](#6_parsing_is_still_hard_ouch)
+   7. [Conclusion](#7_conclusion)
+   8. [Recommended libraries](#8_recommended_libraries)
+   9. [References and additional reading](#9_references_and_additional_reading)
 
 
 ## 1. An introduction to the problem
