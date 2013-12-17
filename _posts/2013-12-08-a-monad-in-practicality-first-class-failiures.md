@@ -41,7 +41,8 @@ computation.
     5. [Sometimes You Fail More Than Once](#25_sometimes_you_fail_more_than_once)
  3. [Abstracting Computations](#3_abstracting_computations)
  4. [Conclusion](#4_conclusion)
- 5. [References and Additional Reading](#5_references_and_additional_reading)
+ 5. [Libraries](#5_libraries)
+ 6. [References and Additional Reading](#6_references_and_additional_reading)
 
 
 ## 1. Introduction
