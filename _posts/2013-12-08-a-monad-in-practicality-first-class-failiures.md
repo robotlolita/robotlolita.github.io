@@ -895,7 +895,7 @@ the `Validation` applicative functor, and a few combinator libraries:
 
 ## 7. Changes and Acknowledgements
 
-- **16th December, 2013**: Clarified that `Validation` is not a monad, but just an
+- **16th December, 2013**: Changed the article to point out that `Validation` is not a monad, but just an
 Applicative functor, since you can't provide a true monad instance for it, as per
 Tony Morris, Bryan McKenna and Mauricio Scheffer clarifications. More information
 regarding the problem can be found [in this Github issue](https://github.com/folktale/applicatives.validation/issues/1), and [in this thread on Scalaz's discussion group](https://groups.google.com/d/msg/scalaz/IWuHC0nlVws/3fGjpFN9tdMJ).
