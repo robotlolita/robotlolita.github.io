@@ -17,7 +17,7 @@ In this article I'm going to show some of the reasoning about optimising program
  2. [An objective analysis of jQuery's problems]
  3. [The essence of jQuery: what makes it good?]
  4. [Separating concerns into orthogonal concepts]
- 5. [Managing complexity through composition]
+ 5. [Managing complexity through predictability]
  6. [Achieving performance through purity]
  7. [Flexibility by way of abstractions and higher-order programming]
  8. [Verifying the properties of our work]
