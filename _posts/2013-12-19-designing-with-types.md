@@ -24,6 +24,7 @@ In this article I'm going to show some of the reasoning about optimising program
  9. [Conclusion]
  10. [References and Additional Reading]
 
+
 ## 1. Introduction
 
 Most JavaScript programmers who have to work with the DOM end up, sooner or later, falling in love with jQuery. Not exactly because it is a great library, but it does get the job done, has lots of extensions, and keeps out of your way... until it doesn't. While the library can easily fill in the simple cases, it quickly becomes unwieldy for more complex situations, where you would hope to abstract some of the problems away in order to keep the maintainability of your code base at a sane level. There are also performance problems once you start demanding more from the library, and you end up having to perform some fairly dirty tricks to keep things fast enough.
@@ -35,5 +36,8 @@ An objective analysis of jQuery is in order to present its problems (Section 2) 
 For analysing performance (Section 6), we start with a high level description of the general process of JIT optimisations, the common analysis performed and the transformations applied based on such analysis, and conjecture that type predictability is a good starting point for pursuing better performance optimisations from the JIT compiler.
 
 And before concluding, we present higher-order programming and common abstractions facilities in functional programming as a way to add flexibility to our library (Section 7), and provide evidences that the final piece matches the properties we are interested in (Section 8).
+
+
+## 2. An objective analysis of jQuery's problems
 
 
