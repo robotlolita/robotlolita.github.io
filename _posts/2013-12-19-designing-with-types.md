@@ -30,7 +30,7 @@ Most JavaScript programmers who have to work with the DOM end up, sooner or late
 
 But it doesn't have to be this way. Would we be able to redesign jQuery so that it's fast, easy to use, scales to cover the complex cases in a maintainable way, and still manages to be performant? By providing insights on the design of libraries for JIT'ing VMs, and people, this article tries to provide an answer to that question.
 
-An objective analysis of jQuery is in order to present its problems (Section 2) and the values the library (Section 3) has. With this analysis, we separe the concerns of the library in orthogonal concepts (Section 4), which will aid both the simplicity, ease of use, and the managing of complexity, by providing common combinators to bring different concepts together (Section 5).
+An objective analysis of jQuery is in order to present its problems (Section 2) and the values the library has (Section 3). With this analysis, we separe the concerns of the library in orthogonal concepts (Section 4), which will aid both the simplicity, ease of use, and the managing of complexity, by providing common combinators to bring different concepts together (Section 5).
 
 For analysing performance (Section 6), we start with a high level description of the general process of JIT optimisations, the common analysis performed and the transformations applied based on such analysis, and conjecture that type predictability is a good starting point for pursuing better performance optimisations from the JIT compiler.
 
