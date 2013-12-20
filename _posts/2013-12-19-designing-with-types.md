@@ -40,4 +40,11 @@ And before concluding, we present higher-order programming and common abstractio
 
 ## 2. An objective analysis of jQuery's problems
 
+jQuery poses itself as a DOM abstraction library, although it does much more than this. It provides primitives for interacting with asynchronous I/O over the HTTP protocol, it's own (non-standard) implementation of promises, a fallback CSS selector engine, primitives for visually animated effects, a fallback implementation of event handling with support for delegated events, a way to associate arbitrary data with DOM elements, and a whole lot of utilities that are hardly related to each other (String predicates, collection transformation, type checking, partial application, etc.)
+
+
+
+
+
+
 
