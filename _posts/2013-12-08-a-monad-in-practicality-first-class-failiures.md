@@ -716,7 +716,7 @@ function isPasswordValid(password) {
 function isAccountValid(name, password) {
   return Success(curryN(2, function(a, b){ return [a, b] }))
            .ap(isNameValid(name))
-           .ap(isPasswordValid(name))
+           .ap(isPasswordValid(password))
 }
 
 isAccountValid("", "")
