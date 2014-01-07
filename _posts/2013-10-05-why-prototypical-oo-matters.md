@@ -57,6 +57,13 @@ object-oriented language, it's only logical that functional languages would
 later incorporate more common idioms from object-orientation, modules being
 the most obvious one.
 
+Notwithstanding, mainstream formulation of object orientation poses
+considerable limits to expressiveness, extensibility, and modularity, in
+comparison with newer formulations, such as prototypes. This is specially
+true in statically typed languages, and worsened by the use of nominal
+typing, which strays from the definition that objects should be defined
+by what they do, rather than their names.
+
 
 
 
