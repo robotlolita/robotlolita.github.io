@@ -22,7 +22,7 @@ thoroughly.
 As it is to be expected, this article is heavily influenced by Hughes' classic
 [Why Functional Programming Matters](http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html),
 and the papers on the [Self](http://selflanguage.org/) programming language,
-the language that started it all.
+which that started it all.
 
 
 ## Definitions
@@ -33,7 +33,7 @@ Orientation" in this article according to
 [William Cook's definition](http://wcook.blogspot.com.br/2012/07/proposal-for-simplified-modern.html),
 which describes *objects* as first-class entities of dynamically dispatched
 behaviour, where behaviour is a collection of named operations. *Object
-Orientated* (OO) is a term that describes languages supporting the dynamic
+Oriented* (OO) is a term that describes languages supporting the dynamic
 creation and use of objects.
 
 Additionally I use *object oriented* to refer to a programming philosophy
