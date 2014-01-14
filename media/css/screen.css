@@ -1614,3 +1614,50 @@ a:hover {
   margin-bottom: 1.5em;
   line-height: 1.3em;
 }
+@media screen and (max-width: 1200px) {
+  #header #logo,
+  #header #top-navigation {
+    display: block;
+    float: none;
+    width: auto;
+    margin: 0;
+  }
+  #header #top-navigation ul {
+    text-align: left;
+    line-height: 100%;
+    margin: 1em 0 0 0;
+  }
+  #header #top-navigation ul a {
+    display: inline-block;
+    text-align: center;
+    width: 180px;
+    padding: 0;
+    height: 2.5em;
+    line-height: 2.5em;
+  }
+}
+@media screen and (max-width: 600px) {
+  #header #logo h1 {
+    margin-left: 0;
+    text-align: center;
+  }
+  #header #logo h1 em {
+    margin-left: 0;
+  }
+  #header #top-navigation ul li,
+  #header #top-navigation ul a {
+    display: block;
+  }
+  #header #top-navigation ul a {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 960px) {
+  #content #content-wrapper .highlight {
+    margin: 0 0 2em 0;
+    border: none;
+  }
+  #content #content-wrapper .highlight pre {
+    white-space: pre-wrap;
+  }
+}

@@ -10,11 +10,6 @@ jsk-base-font-size = 16px
 jsk-base-colour = #424242
 link-colour = #70b1ef
 
-// Noto Sans
-// ABeeZee
-// Monda
-// Open Sans
-
 @import "nib"
 global-reset()
 
@@ -245,3 +240,49 @@ a:hover
     margin-bottom: 1.5em
     line-height: 1.3em
 
+
+@media screen and (max-width: 1200px)
+  #header
+    #logo, #top-navigation
+      display: block
+      float: none
+      width: auto
+      margin: 0
+
+    #top-navigation ul
+      text-align: left
+      line-height: 100%
+      margin: 1em 0 0 0
+
+      a
+        display: inline-block
+        text-align: center
+        width: 180px
+        padding: 0
+        height: 2.5em
+        line-height: 2.5em
+        
+        
+@media screen and (max-width: 600px)
+  #header
+    #logo h1
+      margin-left: 0
+      text-align: center
+
+      em
+        margin-left: 0
+
+    #top-navigation ul
+      li, a
+        display: block
+      a
+        width: 100%
+        
+@media screen and (max-width: 960px)
+  #content #content-wrapper
+    .highlight
+      margin: 0 0 2em 0
+      border: none
+
+      pre
+        white-space: pre-wrap
