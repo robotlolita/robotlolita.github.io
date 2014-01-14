@@ -43,7 +43,21 @@ TL;DR:
 [React]: http://facebook.github.io/react/
 [Enlive]: https://github.com/cgrand/enlive
 
-## An introduction to the problem
+
+## Table of Contents
+
+ 1. [An Introduction to the problem](#1_an_introduction_to_the_problem)
+ 2. [It's not about escaping!](#2_its_not_about_escaping)
+ 3. [Types to the rescue](#3_types_to_the_rescue)
+ 4. [From clueless to smart templates](#4_from_clueless_to_smart_templates)
+ 5. [The future (in JavaScript)](#5_the_future_in_javascript)
+ 6. [Parsing is still hard (ouch!)](#6_parsing_is_still_hard_ouch)
+ 7. [Conclusion](#7_conclusion)
+ 8. [Recommended libraries](#8_recommended_libraries)
+ 9. [References and additional reading](#9_references_and_additional_reading)
+
+
+## 1. An introduction to the problem
 
 This problem is not new, it dates back from the early days of Computer Science, for as long as String types existed, and possibly intensified and made wide-spread due to PERL and the lovely [Unix philosophy][unix]. In essence, we can trace back the culprits to these two maxims:
 
@@ -75,7 +89,7 @@ shell_execute("sudo adduser '" + user.name + "' 'webuser'")
 But oh, silly me. Of course this is *wrong*, I just forgot to escape **user.name**, how could I **ever** do something as horrible as this?! I should just escape the data and, really, I need to stop coding so late in the morning... right y'all?
 
 
-## It's not about escaping!
+## 2. It's not about escaping!
 
 Oh, but wait, I'm obviously missing something important here. **"Handlebars and Mustache are for HTML, you dumb! They'll escape stuff automatically for you!"** But of course, how could I forget this, Handlebars and Mustache have been written with HTML in mind, and SQL/Shell injections are a whole different beast, and totally a solved problem... or is it?
 
@@ -128,7 +142,7 @@ Which is interpreted by the HTML parser as the following, effectively changing t
 [bob-tables]: http://xkcd.com/327/
 
 
-## Types to the rescue
+## 3. Types to the rescue
 
 As I said, the problem is not that one of the snippets doesn't have a matching close tag — they're both **perfectly valid** according to HTML rules. The problem is that Handlebars, plain and simply, can't handle HTML. Instead, Handlebars will just stitch several Strings together and escape Strings that are supposed to be used as text, nothing else. Nothing wrong with that approach, of course, but it only works well for things that are plain text, and hell breaks loose as soon as you try to use it for structured things and arbitrarily compose these different structures.
 
@@ -143,7 +157,7 @@ Some people, when confronted with the word **"type"** will shy away and say that
 [domenic]: http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/
 
 
-## From clueless to smart templates
+## 4. From clueless to smart templates
 
 So, templating engines like Handlebars, Mustache, etc. are clueless, in that they don't acknowledge the rules and structure of the data they're working with — it's just plain text. This makes them a bad choice for generating data such as HTML, XML or JSON. A smart templating engine will acknowledge these things, and not only help you with escaping data, but warn you (loudly) when any kind of error happens!
 
@@ -196,7 +210,7 @@ Html(
 Where, `page.title`, `page.content` and `page.arbitraryHTML` will be properly handled to fit **in the context that they appear**, avoiding any composition errors, or throwing an early error if any of these components violate the rules of HTML and breaks the original intent of the code.
         
 
-## The future (in JavaScript)
+## 5. The future (in JavaScript)
 
 ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to Lisp quasi-quotation than naive String interpolation in languages like Ruby, CoffeeScript or PHP. And this is a *real good thing*, because in the future we'll be able to embed all sorts of amazing DSLs in JavaScript, maintaining all of the composition referred to above. This means that your HTML templating would look like this:
 
@@ -228,7 +242,7 @@ html([ "<html><head><title>", 0
 It's now the job of the `html` function to parse the literal parts and substitute the varying parts appropriately, maintaining the composition rules of the underlying language — which means verifying the arbitraryHTML to see if it's valid, and entity encoding the other values. So, as a start, **it's a freaking awesome thing!**
 
 
-## Parsing is still hard (ouch!)
+## 6. Parsing is still hard (ouch!)
 
 I won't get into the [gory details of parsing theory, techniques and other stuff][parsing], since [people did that already][parsing]. However there is a problem when most people aren't exposed to a primer on parsing and interpretation techniques that they can actually use when they have to deal with different formats of data, or programming languages. Those two topics become even more essential when you work on top of a platform that needs to bring together so many different languages at the same time, like The Web.
 
@@ -267,7 +281,7 @@ While parsing an incorrect HTML like: `<b><i>Some text</x>` would give you a par
 [quasi-ti]: http://js-quasis-libraries-and-repl.googlecode.com/svn/trunk/safetemplate.html      
 [OMeta/JS]: http://www.tinlizzie.org/ometa/
 
-## Conclusion
+## 7. Conclusion
 
 We need to start using smart templating engines, which take into account the language they're working with, since this is the only sane and safe way to work with this data. However, the programmer mindset is a major issue, in all of the problems outlined in this post. We've been taught how to work with Strings, we've been given tools to work with Strings, but we're working with data that just don't fit what the String type is supposed to hold.
 
@@ -278,7 +292,7 @@ There's lots of things to be invented for the future of ECMAScript, specially in
 But until then, we can keep demanding better of our tools, libraries, frameworks, and programming languages!
 
 
-## Recommended Libraries
+## 8. Recommended Libraries
 
 <dl>
   <dt><a href="https://github.com/weavejester/hiccup">Hiccup</a></dt>
@@ -304,7 +318,7 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 </dl>
 
 
-## References and additional reading
+## 9. References and additional reading
 
 <dl>
   <dt><a href="http://haskell.cs.yale.edu/?post_type=publication&amp;p=126">Domain Specific Languages</a></dt>

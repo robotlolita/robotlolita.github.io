@@ -18,8 +18,9 @@ of the failures, and shows how these cases can be modelled in terms of the
 `Either` monad to achieve the same goals of the core exception handling
 functionality, but without the problems (e.g.: lack of compositionality,
 non-locality) associated with the `try ... catch` mechanism. Finally, it
-concludes with a variation of the `Either` monad called `Validation`, which can
-be used for aggregating failures in scenarios like schema validation, and how
+concludes with a variation of the `Either` monad called `Validation` (which is
+an applicative functor, rather than a monad), that can be used for aggregating
+failures in scenarios like schema validation, and how
 to write and compose abstract operations that can manipulate any monadic
 computation.
 
@@ -40,7 +41,8 @@ computation.
     5. [Sometimes You Fail More Than Once](#25_sometimes_you_fail_more_than_once)
  3. [Abstracting Computations](#3_abstracting_computations)
  4. [Conclusion](#4_conclusion)
- 5. [References and Additional Reading](#5_references_and_additional_reading)
+ 5. [Libraries](#5_libraries)
+ 6. [References and Additional Reading](#6_references_and_additional_reading)
 
 
 ## 1. Introduction
@@ -109,7 +111,7 @@ failures that **can be recovered from**, in some way, programmatically. There's
 no way to recover from a dead HDD, for example, thus your program should just
 fail as fast as possible in these cases.
 
-This article describes how the [Maybe][], [Either][] and [Validation][] monads
+This article describes how the [Maybe][], [Either][] monads and the [Validation][] applicative functor
 provide the necessary framework for modelling these kinds of computations and,
 more importantly, composing and abstracting over them, without impairing
 reasoning about the code. To do so, we use objects that follow the laws of
@@ -126,7 +128,7 @@ specific types of monads in this article.
 
 [Maybe]: https://github.com/folktale/monads.maybe
 [Either]: https://github.com/folktale/monads.either
-[Validation]: https://github.com/folktale/monads.validation
+[Validation]: https://github.com/folktale/applicatives.validation
 [Fantasy Land]: https://github.com/fantasyland/fantasy-land
 
 ## 2. Modelling Errors
@@ -550,9 +552,9 @@ means that the whole sequence of actions is abruptly finished with a failure in
 case *any* of the actions fail. Sometimes, however, you don't want to sequence
 things in this fashion, but rather aggregate all of the failures and propagate
 them. A common use case for this is validating inputs, which is why our next
-monad is the `Validation` monad.
+algebraic structure is the `Validation` applicative functor.
 
-A `Validation` monad is almost exactly the same as the `Either` monad, with two
+A `Validation` applicative is almost exactly the same as the `Either` monad, with two
 differences: it has a vocabulary aimed towards error handling, with the
 `Success` and `Failure` constructors, rather than the generalised disjunction
 tags `Left` and `Right` in the `Either` monad; and it can propagate an aggregation
@@ -564,7 +566,7 @@ function over the list, you apply (thus, applicative) the list of functions
 to an element or list of elements.
 
 But let's leave the theory aside for a second and talk about a scenario where
-this monad is useful: you have a sign up form where the user might provide a
+this algebraic structure is useful: you have a sign up form where the user might provide a
 username and password, and this information should comply with a few rules. In
 this case, it would be rather annoying to have the user try signing up, then
 failing on the first failure, having the user correct that one and try again,
@@ -581,7 +583,7 @@ function, that returns a Validation monad depending on whether the input passes
 the rule or not:
 
 {% highlight js %}
-var Validation = require('monads.validation')
+var Validation = require('applicatives.validation')
 var Success = Validation.Success
 var Failure = Validation.Failure
 
@@ -636,7 +638,7 @@ that isn't correct. So, for example, a password needs to attend two different
 conditions to be correct, and we would like the user to know all the things
 they need to fix up when things don't go the way we expect.
 
-As previously mentioned, the `Validation` monad exposes the `ap` method which
+As previously mentioned, the `Validation` applicative functor exposes the `ap` method which
 can be used to aggregate failures. If either of the operands for the `ap`
 method contain a validation error, then the error is propagated, just like in
 the monad. But if both sides contain a validation error, then both errors are
@@ -714,7 +716,7 @@ function isPasswordValid(password) {
 function isAccountValid(name, password) {
   return Success(curryN(2, function(a, b){ return [a, b] }))
            .ap(isNameValid(name))
-           .ap(isPasswordValid(name))
+           .ap(isPasswordValid(password))
 }
 
 isAccountValid("", "")
@@ -732,13 +734,13 @@ isAccountValid("robotlolita", "roses.are.red")
 
 ## 3. Abstracting Computations
 
-So far monads have been proven to be a fairly reliable way to deal with
+So far monads (and applicatives) have been proven to be a fairly reliable way to deal with
 failures, even allowing one to easily aggregate errors in computations with the
-Validation monad. But the way they were dealt with in this article brought
+Validation applicative functor. But the way they were dealt with in this article brought
 about quite a lot of syntactical noise, and we've had to define our own
 combinators every time we wanted to work with them in a slightly higher level.
 
-The good thing about using monads is that *we* don't need to care much about
+The good thing about using monads (and other algebraic structures) is that *we* don't need to care much about
 writing our own combinators. If anyone has written a combinator for a monad
 operation, you can use it with any monad whatsoever! We can even give a
 particular monad characteristics of another monad, using monad transformers, so
@@ -795,8 +797,8 @@ can look for several other implementations of algebraic libraries that are
 compatible with the Fantasy Land specification
 [searching for "fantasy-land" on NPM](https://npmjs.org/search?q=fantasy-land).
 
-Below I list some of my implementations for the `Maybe`, `Either` and
-`Validation` monads, and a few combinator libraries:
+Below I list some of my implementations for the `Maybe` and `Either` monads, and
+the `Validation` applicative functor, and a few combinator libraries:
 
 <dl>
   <dt><a href="https://github.com/folktale/monads.maybe">Maybe</a></dt>
@@ -806,8 +808,8 @@ Below I list some of my implementations for the `Maybe`, `Either` and
   <dd>My implementation of the Either monad</dd>
   
   <dt><a
-  href="https://github.com/folktale/monads.validation">Validation</a></dt>
-  <dd>My implementation of the Validation monad</dd>
+  href="https://github.com/folktale/applicatives.validation">Validation</a></dt>
+  <dd>My implementation of the Validation applicative functor</dd>
 
   <dt><a
   href="https://github.com/folktale/control.monads">Control.Monads</a></dt>
@@ -890,3 +892,11 @@ Below I list some of my implementations for the `Maybe`, `Either` and
   monad) can be used to aggregate failures and sequencing computations without
   a fail-fast path, in Scala.</dd>
 </dl>
+
+
+## 7. Changes and Acknowledgements
+
+- **16th December, 2013**: Changed the article to point out that `Validation` is not a monad, but just an
+Applicative functor, since you can't provide a true monad instance for it, as per
+Tony Morris, Bryan McKenna and Mauricio Scheffer clarifications. More information
+regarding the problem can be found [in this Github issue](https://github.com/folktale/applicatives.validation/issues/1), and [in this thread on Scalaz's discussion group](https://groups.google.com/d/msg/scalaz/IWuHC0nlVws/3fGjpFN9tdMJ).
