@@ -30,3 +30,20 @@ Stick with me!
 # Table of Contents
  *  TOC
 {:toc}
+
+
+## Introduction
+## What's modularity
+## The social aspect of modularity
+## Packages, Distributability and Dependency Hell
+## Conclusion
+## References
+
+[Backpack: Retrofitting Haskell With Interfaces](http://plv.mpi-sws.org/backpack/)
+: Scott, Simon PJ, Derek and Simon Marlow's paper retrofitting modules in Haskell (whose current module system only supports namespacing management), and the possibilities this opens up for fixing package managers such as Cabal.
+
+[Modules as Objects in Newspeak](http://bracha.org/newspeak-modules.pdf)
+: Bracha, Peter, et al's paper on Newspeak's modularity system, which supports full-on capability security model, first-class modules and mutually recursive modules.
+
+[The Programming Language Jigsaw: Mixins, Modularity, and Multiple Inheritance](http://content.lib.utah.edu/utils/getfile/collection/uspace/id/4356/filename/4228.pdf)
+: Bracha's dissertation on the Jigsaw framework, for providing modularity for programming languages in terms of mixins and inheritance operators.
