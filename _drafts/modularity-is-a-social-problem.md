@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  Modularity Is A Social Problem, Too
-snip:   What's modularity? How is it a social problem? How Harmonia fixes it?
+title:  Modularity Is A Social Problem
+snip:   How is modularity a social problem, and how Harmonia lessens it
 ---
 
 Use numbered headers: True
