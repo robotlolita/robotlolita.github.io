@@ -1,5 +1,4 @@
 ---
-published: false
 layout: post
 title:  Modularity Is A Social Problem, Too
 snip:   What's modularity? How is it a social problem? How Harmonia fixes it?
