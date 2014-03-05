@@ -1614,6 +1614,9 @@ a:hover {
   margin-bottom: 1.5em;
   line-height: 1.3em;
 }
+#post .twitter-tweet {
+  margin: 10px auto !important;
+}
 @media screen and (max-width: 1200px) {
   #header #logo,
   #header #top-navigation {

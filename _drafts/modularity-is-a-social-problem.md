@@ -8,21 +8,25 @@ Use numbered headers: True
 
 <!-- * * * -->
 
-Modularity is one of the big problems we, language designers, try to solve in programming languages.
-There is this beautiful ideal where you would write programs by just putting small pieces together
-and things would Just Work™. Sadly, reality is a lot more harsh, and modularity and composition are
-neither simple, nor easy, and things get worse as you stray from the trivial use cases.
+Modularity is one of the big problems we, language designers, try to solve in
+programming languages.  There is this beautiful ideal where you would write
+programs by just putting small pieces together and things would Just
+Work™. Sadly, reality is a lot more harsh, and modularity and composition are
+neither simple, nor easy, and things get worse as you stray from the trivial
+use cases.
 
-Even Haskell, a language that's praised for its modular and compositional approach still has plenty
-of pain points around the corners (whenever effects are involved), and in its module construct.
-Things get worse as you consider modularity in a larger, social context, which packages and
-package managers were supposed to fix, but never got anywhere close to that. Package management
-and modularity is a hard problem, and it is a hard problem because it's largely a **social**
-problem. It's about people and interactions, just as it is about technology.
+Even Haskell, a language that's praised for its modular and compositional
+approach still has plenty of pain points around the corners (whenever effects
+are involved), and in its module construct.  Things get worse as you consider
+modularity in a larger, social context, which packages and package managers
+were supposed to fix, but never got anywhere close to that. Package management
+and modularity is a hard problem, and it is a hard problem because it's largely
+a **social** problem. It's about people and interactions, just as it is about
+technology.
 
-There is some research that acknowledges such problems, and proposes solutions to them. In this
-article I'll walk you through how I'm lessening these problems in my new programming language: Harmonia.
-Stick with me!
+There is some research that acknowledges such problems, and proposes solutions
+to them. In this article I'll walk you through how I'm lessening these problems
+in my new programming language: Harmonia.  Stick with me!
 
 
 
@@ -33,8 +37,13 @@ Stick with me!
 
 ## Introduction
 ## What's modularity
+
 ## The social aspect of modularity
-## Packages, Distributability and Dependency Hell
+Trust, interfaces
+## Types as compositional contracts
+## Global scope is anti-modular
+## Packages, distributability and Dependency Hell
+## 
 ## Conclusion
 ## References
 
@@ -46,3 +55,19 @@ Stick with me!
 
 [The Programming Language Jigsaw: Mixins, Modularity, and Multiple Inheritance](http://content.lib.utah.edu/utils/getfile/collection/uspace/id/4356/filename/4228.pdf)
 : Bracha's dissertation on the Jigsaw framework, for providing modularity for programming languages in terms of mixins and inheritance operators.
+
+[Traits - Composing Classes from Behavioral Building Blocks]()
+: Nathanel Schärli's paper on Traits, a system that allows safe and reasonable sharing of functionality between multiple implementations. Traits operators are great for conflict resolution in modular applications.
+
+[Why Functional Programming Matters]()
+: John Hughes' paper provides good insights on the emphasis functional languages have on modularity and composition to manage complexity.
+
+[F-ing Modules]()
+: Andreas, Claudio and Derek's paper formalises ML modules. ML modules provide powerful foundations for modular programming, despite some shortcomings Bracha points in the Newspeak paper.
+
+[Nix: A Safe and Policy-Free System for Software Deployment]()
+: Eelco Dolstra, Eelco Visser, and Merijn de Jonge present Nix, a purely functional package manager that solves the problems of conflicting dependencies.
+
+
+
+
