@@ -104,28 +104,28 @@ letting the language semantics define where the control goes after the function
 has the value, we explicitly pass the next computation (or *current
 continuation*, or *callback*) to the function we're calling. So, this:
 
-```js
+{% highlight js %}
 function add(a, b) {
   return a + b
 }
-```
+{% endhighlight %}
 
 Becomes this:
 
-```js
+{% highlight js %}
 function add(a, b, continuation) {
   continuation(a + b)
 }
-```
+{% endhighlight %}
 
 Or, to make the duality even more obvious, if you pretend that `return` isn't a
 keyword:
 
-```js
+{% highlight js %}
 function add(a, b, return) {
   return(a + b)
 }
-```
+{% endhighlight %}
 
 If you consider `return` to be an internal function that knows where to move
 the flow of execution in your program, then a *continuation* just makes that
@@ -138,7 +138,7 @@ execute before the previous one, or that calls to such computations will be
 thread-safe. In a language with continuations, these concerns are shifted from
 the compiler or interpreter, to each computation.
 
-```js
+{% highlight js %}
 // Since these are functions in CPS style, there's no guarantees about
 // which of these operations will be executed first.
 add(1, 2, print)
@@ -150,7 +150,7 @@ add(5, 6, print)
 add(1, 2, function(result) {
   add(result, 3, print)  // this will always execute after 1 + 2
 })
-```
+{% endhighlight %}
 
 With computations following the Continuation-Passing style, it's pretty
 straight-forward to write a program that uses non-blocking
@@ -159,7 +159,7 @@ execution, CPS does not magically transform a blocking computation into a
 non-blocking one. Instead, the computation needs to explicitly execute the
 blocking work on a separate thread:
 
-```js
+{% highlight js %}
 function read(pathname, continuation) {
   // Here we use a primitive that's not present in most JavaScript
   // implementations. It creates a new thread, and executes some
@@ -177,7 +177,7 @@ function read(pathname, continuation) {
     Thread.main.schedule(function(){ continuation(contents) })
   })
 }
-```
+{% endhighlight %}
 
 Lastly, since Continuation-Passing style forgoes the language's own
 control-flow semantics to provide the basis for an expressive,
@@ -191,7 +191,7 @@ model, somewhat similar to Shell's error handling, where all continuations take
 not just the result of the computation, but also any error that might have
 occurred. In this model, the previous computation would be written as:
 
-```js
+{% highlight js %}
 function read(pathname, continuation) {
   Thread.spawn(function() {
     try {
@@ -209,7 +209,7 @@ read('/foo/bar', function(error, contents) {
   if (error)  handleError(error)
   else        handleContents(contents)
 })
-```
+{% endhighlight %}
 
 
 ## A lightning introduction to monads
