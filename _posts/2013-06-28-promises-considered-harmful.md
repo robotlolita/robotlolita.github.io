@@ -369,7 +369,7 @@ Fantasy Promises, despite it being straight-forward to do so.
 Still, it's always nice to know the trade-offs of using something or
 another with some data.
 
-
+{% raw %}
 <script type="text/javascript" src="https://www.google.com/jsapi">
 </script>
 <script type="text/javascript">
@@ -408,3 +408,4 @@ void function() {
 
 }()
 </script>
+{% endraw %}
