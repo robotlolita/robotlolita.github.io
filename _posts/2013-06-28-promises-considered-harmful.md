@@ -370,9 +370,9 @@ Still, it's always nice to know the trade-offs of using something or
 another with some data.
 
 {% raw %}
-<script type="text/javascript" src="https://www.google.com/jsapi">
-</script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
+// 
 void function() {
   var g    = google
   var $    = document.querySelector.bind(document)
