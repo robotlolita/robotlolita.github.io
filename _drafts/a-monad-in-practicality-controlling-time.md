@@ -12,7 +12,7 @@ Concurrency is quite a big deal, specially these days where everything must be
 “web scale.” There are several models of concurrency, each with their own pros
 and cons, in this article I present a composable alternative to the widespread
 non-blocking model of concurrency, which generally uses
-[Continuation-Passing style](cps), where each computation accepts a
+[Continuation-Passing style][cps], where each computation accepts a
 “continuation” or “callback,” instead of returning the result of the
 computation to the caller.
 
@@ -212,10 +212,310 @@ read('/foo/bar', function(error, contents) {
 {% endhighlight %}
 
 
-## A lightning introduction to monads
 ## Futures as placeholders for eventual values
+
+While Continuation-Passing style is definitely an interesting start for
+building your own control-flow structures, it's too low level for us to work
+with directly in JavaScript, whose primitives are not written in terms of
+continuations. As such, we would prefer a more abstract way of dealing with
+non-blocking computations, such that we're able to compose them with our
+regular synchronous computations using the primitives we've already got!
+
+For this to work, our asynchronous functions need to be able to return a value,
+but we don't want them to block until they've figured out what the value should
+be, and they can't return the value before they've figured out what it should
+be! ...or can't they? Well, enter the concept of *futures*. A Future represents
+the eventual result of an asynchronous computation, such that a it may return
+a useful value to the caller and fill in the details later.
+
+In other words, instead of writing this:
+
+{% highlight js %}
+function read(pathname, continuation) {
+  ...
+}
+
+read('/foo/bar', function(error, contents) { ... })
+{% endhighlight %}
+
+We can write this:
+
+{% highlight js %}
+function read(pathname) {
+  ...
+}
+
+var contentsF = read('/foo/bar')
+{% endhighlight %}
+
+So far, just by using futures we've managed to exchange the explicit passing of
+continuations our code is already looking like it used to. Functions return
+values. We can assign those values to variables. BAM. Everything is right, uh?
+But what happens when we try to use those values? Well, it depends on how you
+implement them. In multiple-threaded environments, reading from a future will
+usually block the current thread until some other thread fills in the
+value.
+
+While composable, a naïve implementation of blocking futures poses the same
+problems as regular blocking computations. Furthermore, this doesn't work in a
+single-threaded environment. If we combine our concrete representation of
+future values with the Continuation-Passing style, we get part of the
+compositionality benefits, without having to deal with the blocking
+problem. Plus, it works great in a single-threaded environment.
+
+One of the simplest implementations of future would be to just return a
+function whose only parameter is a continuation:
+
+{% highlight js %}
+function read(pathname) {
+  return function(continuation) {
+    ...
+  }
+}
+
+var contentsF = read('/foo/bar')
+contentsF(function(error, contents) {
+  if (error)  handleError(error)
+  else        handleContents(contents)
+})
+{% endhighlight %}
+
+
+## A monadic formulation of futures
+
+Albeit the previous example of implementation was simple and usable, in
+JavaScript we can benefit much more from a slightly different implementation:
+one where our future forms a [monad][]. To this end, we'll need to create an
+object that fulfils the interface described in the [fantasy land][]
+specification. And why would we do that? Well, by doing this simple thing we
+get a lot of abstractions for free! (and we get nice properties for reasoning
+about our programs too).
+
+> If you're not familiar with the concepts of Category Theory, or have never
+> heard the term *monad* before, don't worry, **monads are just monoids in a
+> category of endofunctors,** or rather, **a monad is a functor together with
+> two natural transformations**. You could even say that **a FuzzyWuzzy is
+> just a Vogon in the centre of Megabrantis Cluster!**
+>
+> In other words, it doesn't matter to you, the programmer, what a *monad*
+> is. In fact, for the rest of this article you can replace any occurrence of
+> *monad* by whichever word you like the most. If you're interested in knowing
+> all about monads, go read
+> [Phil Wadler's "Monads For Functional Programming"][monad] paper.
+
+Moving on, to make our future a monad, we need to implement two methods:
+
+ -  `of(a) → Future(a)`: creates a future holding anything (including other
+    monads).
+    
+ -  `chain(a → Future(b)) → Future(b)`: transforms the value inside a monad
+    into another monad of the same type.
+
+Furthermore, to ensure that we can compose cleanly all of the different things
+that implement this interface, there are some rules that everyone needs to play
+by. With this we can compose all the different types of monads in complex ways,
+and be sure that we can understand and have guarantees about what will
+happen. The rules are (where `m` is an instance of the future):
+
+ -  Associativity: `m.chain(f).chain(g)` should be equivalent to `m.chain(x => f(x).chain(g))`;
+ -  Left identity: `m.of(a).chain(f)` should be equivalent to `f(a)`;
+ -  Right identity: `m.chain(m.of)` should be equivalent to `m`.
+
+And that's all it takes for something to be fulfil the monad interface. The
+only difference to an interface in a language like Java is that besides the
+type constraints we also have these *laws* that dictate how this object needs
+to behave in certain circumstances. I'll leave the implementation of such
+object as an exercise to the reader, and use my [data.future][] implementation
+for the rest of this article.
+
+
+
+[monad]: http://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf
+[fantasy land]: https://github.com/fantasyland/fantasy-land
+
 ## The composition of futures
-## Parallelism and non-determinism
+
+With monadic futures, our now widely-used example becomes:
+
+{% highlight js %}
+function read(pathname) {
+  return new Future(function(reject, resolve) {
+    ...
+  })
+}
+
+var contentsF = read('/foo/bar')
+contentsF.chain(handleContents).orElse(handleError)
+{% endhighlight %}
+
+> **Note**: the referred future implementation is pure, as such `chain` does
+> not run the computation, but returns a description of the computation that
+> should be performed. To run the computation you must invoke the
+> `fork(errorHandler, successHandler)` method. Check out
+> [Runar's talk on Purely Functional I/O][pure-io] to understand why this
+> matters.
+
+Again, like Continuation-Passing style computations, the value of `contentsF`
+is not dependent on the order in which our source code is arranged. This
+disentangles computations and time, which are so usually coupled in an
+imperative language. Therefore, it doesn't matter which order you arrange your
+source code, the results must be the same:
+
+{% highlight js %}
+var a = read('/foo')
+var b = read('/bar')
+
+// is the same as
+var b = read('/bar')
+var a = read('/foo')
+{% endhighlight %}
+
+Of course, the example above would also yield the same value in a pure
+imperative program. But this formulation of futures force you not to rely on
+the implicit ordering of your source code, because there's no way to know when
+each value will be available. So, the following program is automatically
+excluded, and with it a class of complexities:
+
+{% highlight js %}
+var a = read('/foo')
+var b = a + read('/bar')  // can't access `a` yet.
+{% endhighlight %}
+
+If one needs to access the value of a future, they need to do so explicitly by
+invoking the `chain` method and providing a computation to run once the value
+is made available. In essence, futures force you to give up on the implicit
+dependency on time (and source order), and buy into explicit dependency on
+actual values.
+
+Furthermore, the existence of different methods for sequencing successful and
+erroneous values, together with the monad semantics, allow us to short-circuit
+computations that we can't perform, and automatically propagate the errors back
+up to the caller, similar to what a `try/catch` construct would do for
+synchronous code. In fact, one of the advantages of monads over plain
+functions/continuations is the ability to ignore some of the painful
+explicitness of functional programming sometimes.
+
+
+{% highlight js %}
+function divide(a, b) {
+  return new Future(function(reject, resolve) {
+                      if (b === 0)  reject(new Error('Division by 0'))
+                      else          resolve(a / b) })
+}
+
+function reject(a) {
+  return new Future(function(reject, resolve) {
+                      reject(a) })
+}
+
+function resolve(a) {
+  return new Future(function(reject, resolve) {
+                      resolve(a) })
+}
+
+var aF = divide(9, 3)
+// => Future(_, 3)
+var bF = divide(2, 1)
+// => Future(_, 2)
+var cF = aF.chain(function(a) {
+                    return bF.chain(function(b) {
+                                      return resolve(aF + bF) })})
+// => Future(_, 5)
+var dF = aF.chain(function(a) {
+                    return divide(a, 0).chain(function(b) {
+                                                return resolve(a + b) })})
+// => Future(Error('Division by 0'), _)
+var eF = dF.orElse(function(error) {
+                     return reject(new Error('boo')) })
+// => Future(Error('boo'), _)
+{% endhighlight %}
+
+> **Note**: both `chain` and `orElse` are used to sequence asynchronous
+> computations, as such they are not the best fit for running synchronous
+> computations in the value the future holds. Using `map` and `rejectedMap`,
+> you could make these cases much simpler. E.g.:
+>
+>     dF.rejectedMap(function(e){ return new Error('boo') })
+
+[pure-io]: http://www.infoq.com/presentations/io-functional-side-effects
+
+## Common abstractions
+
+Good, we can compose computations, but working with anything has become
+incredibly bothersome. Some of this is due to JavaScript's verbosity in
+function declarations, some is due to limitations in abstraction power. Either
+way, we can lessen the burden by taking advantage of the monadic abstraction
+and functional combinators.
+
+For example, suppose that we need to concatenate two files we've read from the
+disk, but the contents of those files are inside a future. The usual way to go
+about it would be to nest the chain calls in different closures:
+
+{% highlight js %}
+var aF = read('/foo')
+var bF = read('/bar')
+var cF = aF.chain(function(a) {
+                    return bF.chain(function(b) {
+                                      return resolve(a + b) })})
+{% endhighlight %}
+
+But since this is a common pattern, we could easily write a combinator that
+abstracts over this:
+
+{% highlight js %}
+function chain2(aM, bM, f) {
+  return aM.chain(function(a) {
+                    return bM.chain(function(b) {
+                                      return new Future(function(_, resolve) {
+                                                          resolve(f(a, b)) })})})
+}
+
+var aF = read('/foo')
+var bF = read('/bar')
+chain2(aF, bF, function(a, b){ return a + b })
+{% endhighlight %}
+
+In fact, this pattern is **so** common, that people have already written this
+combinator for us, and by having our future form a monad we can use it for
+free. The combinator is called `liftM`, and as you can guess, it takes some
+monads and a regular function, and makes this function work on the values of
+those monads.
+
+By currying this `liftM` combinator, and using the `flip` combinator, we can
+easily use function composition for working with monads:
+
+{% highlight js %}
+// Promotes an unary function to a function on monads
+var liftM = curry(function(aM, f) {
+                    return aM.chain(function(a) {
+                                      return aM.of(f(a)) })})
+
+// Promotes a binary function to a function on monads
+var liftM2 = curry(function(aM, bM, f) {
+                     return aM.chain(function(a) {
+                                       return bM.chain(function(b) {
+                                                         return bM.of(f(a, b)) })})})
+
+// Inverts the argument order for a binary function
+var flip = curry(function(f, a, b) {
+                   return f(b, a) })
+
+// Now we can use `liftM`, partial application and the `flip` combinator to
+// easily promote any regular function into functions on monads:
+function toUpper(a) {
+  return a.toUpperCase()
+}
+var toUpperM = flip(liftM)(toUpper)
+toUpperM('foo') // => 'FOO'
+
+var readAsUpperM = compose(toUpperM, read)
+readAsUpper('/foo/bar')
+{% endhighlight %}
+
+
+
+
+## Ad-hoc parallelism and non-determinism
 ## Syntactical composition with co-monads
 ## Conclusion
 ## Libraries
