@@ -111,28 +111,28 @@ after the function has the value, we explicitly pass the next
 computation (or *current continuation*, or *callback*) to the function
 we're calling. So, this:
 
-{% highlight js %}
+```js
 function add(a, b) {
   return a + b
 }
-{% endhighlight %}
+```
 
 Becomes this:
 
-{% highlight js %}
+```js
 function add(a, b, continuation) {
   continuation(a + b)
 }
-{% endhighlight %}
+```
 
 Or, to make the duality even more obvious, if you pretend that `return`
 isn't a keyword:
 
-{% highlight js %}
+```js
 function add(a, b, return) {
   return(a + b)
 }
-{% endhighlight %}
+```
 
 If you consider `return` to be an internal function that knows where to
 move the flow of execution in your program, then a *continuation* just
@@ -146,7 +146,7 @@ that calls to such computations will be thread-safe. In a language with
 continuations, these concerns are shifted from the compiler or
 interpreter, to each computation.
 
-{% highlight js %}
+```js
 // Since these are functions in CPS style, there's no guarantees about
 // which of these operations will be executed first.
 add(1, 2, print)
@@ -158,7 +158,7 @@ add(5, 6, print)
 add(1, 2, function(result) {
   add(result, 3, print)  // this will always execute after 1 + 2
 })
-{% endhighlight %}
+```
 
 With computations following the Continuation-Passing style, it's pretty
 straight-forward to write a program that uses non-blocking
@@ -167,7 +167,7 @@ synchronous execution, CPS does not magically transform a blocking
 computation into a non-blocking one. Instead, the computation needs to
 explicitly execute the blocking work on a separate thread:
 
-{% highlight js %}
+```js
 function read(pathname, continuation) {
   // Here we use a primitive that's not present in most JavaScript
   // implementations. It creates a new thread, and executes some
@@ -185,7 +185,7 @@ function read(pathname, continuation) {
     Thread.main.schedule(function(){ continuation(contents) })
   })
 }
-{% endhighlight %}
+```
 
 Lastly, since Continuation-Passing style forgoes the language's own
 control-flow semantics to provide the basis for an expressive,
@@ -200,7 +200,7 @@ continuations take not just the result of the computation, but also any
 error that might have occurred. In this model, the previous computation
 would be written as:
 
-{% highlight js %}
+```js
 function read(pathname, continuation) {
   Thread.spawn(function() {
     try {
@@ -218,7 +218,7 @@ read('/foo/bar', function(error, contents) {
   if (error)  handleError(error)
   else        handleContents(contents)
 })
-{% endhighlight %}
+```
 
 
 ## Futures as placeholders for eventual values
@@ -241,23 +241,23 @@ fill in the details later.
 
 In other words, instead of writing this:
 
-{% highlight js %}
+```js
 function read(pathname, continuation) {
   ...
 }
 
 read('/foo/bar', function(error, contents) { ... })
-{% endhighlight %}
+```
 
 We can write this:
 
-{% highlight js %}
+```js
 function read(pathname) {
   ...
 }
 
 var contentsF = read('/foo/bar')
-{% endhighlight %}
+```
 
 So far, just by using futures we've managed to exchange the explicit
 passing of continuations our code is already looking like it used
@@ -278,7 +278,7 @@ single-threaded environment.
 One of the simplest implementations of future would be to just return a
 function whose only parameter is a continuation:
 
-{% highlight js %}
+```js
 function read(pathname) {
   return function(continuation) {
     ...
@@ -290,7 +290,7 @@ contentsF(function(error, contents) {
   if (error)  handleError(error)
   else        handleContents(contents)
 })
-{% endhighlight %}
+```
 
 
 ## A monadic formulation of futures
@@ -351,7 +351,7 @@ and use my [data.future][] implementation for the rest of this article.
 
 With monadic futures, our now widely-used example becomes:
 
-{% highlight js %}
+```js
 function read(pathname) {
   return new Future(function(reject, resolve) {
     ...
@@ -360,7 +360,7 @@ function read(pathname) {
 
 var contentsF = read('/foo/bar')
 contentsF.chain(handleContents).orElse(handleError)
-{% endhighlight %}
+```
 
 > **Note**: the referred future implementation is pure, as such `chain`
 > does not run the computation, but returns a description of the
@@ -375,14 +375,14 @@ arranged. This disentangles computations and time, which are so usually
 coupled in an imperative language. Therefore, it doesn't matter which
 order you arrange your source code, the results must be the same:
 
-{% highlight js %}
+```js
 var a = read('/foo')
 var b = read('/bar')
 
 // is the same as
 var b = read('/bar')
 var a = read('/foo')
-{% endhighlight %}
+```
 
 Of course, the example above would also yield the same value in a pure
 imperative program. But this formulation of futures force you not to
@@ -390,10 +390,10 @@ rely on the implicit ordering of your source code, because there's no
 way to know when each value will be available. So, the following program
 is automatically excluded, and with it a class of complexities:
 
-{% highlight js %}
+```js
 var a = read('/foo')
 var b = a + read('/bar')  // can't access `a` yet.
-{% endhighlight %}
+```
 
 If one needs to access the value of a future, they need to do so
 explicitly by invoking the `chain` method and providing a computation to
@@ -411,7 +411,7 @@ ability to ignore some of the painful explicitness of functional
 programming sometimes.
 
 
-{% highlight js %}
+```js
 function divide(a, b) {
   return new Future(function(reject, resolve) {
                       if (b === 0)  reject(new Error('Division by 0'))
@@ -443,7 +443,7 @@ var dF = aF.chain(function(a) {
 var eF = dF.orElse(function(error) {
                      return reject(new Error('boo')) })
 // => Future(Error('boo'), _)
-{% endhighlight %}
+```
 
 > **Note**: both `chain` and `orElse` are used to sequence asynchronous
 > computations, as such they are not the best fit for running
@@ -467,18 +467,18 @@ from the disk, but the contents of those files are inside a future. The
 usual way to go about it would be to nest the `chain` calls in different
 closures:
 
-{% highlight js %}
+```js
 var aF = read('/foo')
 var bF = read('/bar')
 var cF = aF.chain(function(a) {
                     return bF.chain(function(b) {
                                       return resolve(a + b) })})
-{% endhighlight %}
+```
 
 But since this is a common pattern, we could easily write a combinator
 that abstracts over this:
 
-{% highlight js %}
+```js
 function chain2(aM, bM, f) {
   return aM.chain(function(a) {
                     return bM.chain(function(b) {
@@ -489,7 +489,7 @@ function chain2(aM, bM, f) {
 var aF = read('/foo')
 var bF = read('/bar')
 chain2(aF, bF, function(a, b){ return a + b })
-{% endhighlight %}
+```
 
 In fact, this pattern is **so** common that people have already written
 this combinator for us, and by having our future form a monad we can use
@@ -500,7 +500,7 @@ work on the values of those monads.
 By currying this `liftM` combinator, and using the `flip` combinator, we
 can easily use function composition for working with monads:
 
-{% highlight js %}
+```js
 // Promotes an unary function to a function on monads
 var liftM = curry(function(aM, f) {
                     return aM.chain(function(a) {
@@ -526,7 +526,7 @@ toUpperM('foo') // => 'FOO'
 
 var readAsUpperM = compose(toUpperM, read)
 readAsUpper('/foo/bar')
-{% endhighlight %}
+```
 
 Great! Now we can even use function composition with any function that
 works on monadic futures. However, defining these `liftMN` combinators
@@ -537,7 +537,7 @@ had a function that takes a list of monads, and returns a monad
 containing the list of values inside those monads. With this, we could
 use a single `chain` call to get to all of the values at once!
 
-{% highlight js %}
+```js
 function all(futures) {
   return futures.reduce(function(resultM, xM) {
                           xM.chain(function(x) {
@@ -556,7 +556,7 @@ var dM = read('/qux')
 var concatenatedM = liftM( all([aM, bM, cM, dM])
                          , function(xs) {
                              return xs.join('\n') })
-{% endhighlight %}
+```
 
 In fact, this pattern is **so** common that people have already written
 this combinator for us, and by having our future form a monad we can use
@@ -566,7 +566,7 @@ is so interesting. You get a lot of free lunch! Anyway, the combinator
 this time is called `sequence`, it takes in a list of monads, and
 returns a monad of a list of their values.
 
-{% highlight js %}
+```js
 // Evaluates each action in sequence (left to right), and
 // collects the results.
 //
@@ -583,7 +583,7 @@ function sequence(m, ms) {
 var concatenatedM = liftM( all(Future, [aM, bM, cM, dM])
                          , function(xs) {
                              return xs.join('\n') })
-{% endhighlight %}
+```
 
 There are a whole lot of combinators that you can use directly with your
 monadic futures (and any other data structure that forms a monad), to
@@ -611,14 +611,14 @@ action can be only performed once the previous action has finished
 executing. In other words, we've got a weird way of writing the
 following blocking program:
 
-{% highlight js %}
+```js
 var a = read('/foo')
 var b = read('/bar')
 var c = read('/baz')
 var d = read('/qux')
 
 var concatenated = [a, b, c, d].join('\n')
-{% endhighlight %}
+```
 
 Granted we can still get the concurrency benefits from actions that are
 not related in any way, but sometimes this is not enough. We also want
@@ -640,7 +640,7 @@ time, each in its own computational context (e.g.: a thread), and merge
 the results back in the main thread, fulfilling the future with the
 result.
 
-{% highlight js %}
+```js
 // [Future a b] -> Future a [b]
 function parallel(futures) {
   return new Future(function(reject, resolve) {
@@ -664,7 +664,7 @@ function parallel(futures) {
                                          resolved = true
                                          resolve(result) }})}})
 }
-{% endhighlight %}
+```
 
 With this, you can use `sequence` and `parallel` interchangeably,
 depending on whether you want something to be resolved in parallel or
@@ -693,7 +693,7 @@ this is to write a `timeout` function that takes the amount of time to
 wait before considering the action dead, and the action (future)
 itself. And it's relatively easy to come up with this:
 
-{% highlight js %}
+```js
 function timeout(time, future) {
   return new Future(function(reject, resolve) {
                       var resolved = false
@@ -712,7 +712,7 @@ function timeout(time, future) {
                                    resolved = true
                                    reject(new Error('Timeouted.')) })})
 }
-{% endhighlight %}
+```
 
 Not entirely bad, although some of those computations could definitely
 be abstracted over, but let's just keep this rough idea of
@@ -736,7 +736,7 @@ as [communicating sequential processes][], and may be called `alternative`
 or `select`. The implementation is very close to what we have in
 `timeout`... but simpler!
 
-{% highlight js %}
+```js
 function nondeterministicChoice(futures) {
   return new Future(function(reject, resolve) {
                       var resolved = false
@@ -751,7 +751,7 @@ function nondeterministicChoice(futures) {
                         resolved = true
                         f(a) }})
 }
-{% endhighlight %}
+```
 
 Now we're able to start all actions in parallel and get a hold of the
 first one who completes (either by succeeding or failing), but how does
@@ -760,7 +760,7 @@ this help us with the `timeout` issue? Well, if you think about it,
 a given amount of time. Thus, we can go really high-level with our new
 operation:
 
-{% highlight js %}
+```js
 function timeout(ms) {
   return new Future(function(reject, resolve) {
                       setTimeout( function() {
@@ -772,7 +772,7 @@ var imageF = nondeterministicChoice([load(server1), load(server2), load(server3)
 nondeterministicChoice([imageF, timeout(10e3)])
   .chain(function(image) { ... })
   .orElse(function(error){ ... })
-{% endhighlight %}
+```
 
 Notice that once again we can easily change this operation by either
 `parallel` or `sequence`, without changing much of the rest of the
