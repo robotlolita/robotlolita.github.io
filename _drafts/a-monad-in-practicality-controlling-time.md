@@ -69,15 +69,15 @@ which includes [delimited continuations][] and
 [communicating sequential processes][], Futures are by far the cheapest
 implementation in most languages, since they don't require additional
 language support besides threads **or** higher-order functions. The
-simple implementation of futures allows asynchronous computations to be
+simple implementation of Futures allows asynchronous computations to be
 composed just as synchronous computations can be. However, co-monadic
-futures are a necessary extension to integrate these computations with
+Futures are a necessary extension to integrate these computations with
 the language's syntactic structure — this concept is the basis for
 [C#'s async/await semantics][async-await].
 
 This article is intended as a general introduction to the concept of
 Futures, and how they change the possibilities of composing asynchronous
-computations (IOW, how to think with futures), as well as a description
+computations (IOW, how to think with Futures), as well as a description
 of its practical usage in JavaScript using
 [my implementation of monadic Futures][data.future], therefore most of
 the article assumes familiarity with the JavaScript language, although
@@ -89,18 +89,18 @@ programming just fine.
 [async-await]: http://research.microsoft.com/en-us/um/people/gmb/papers/cs5full.pdf
 [data.future]: https://github.com/folktale/data.future
 
-## The conception of futures
+## The conception of Futures
 
 ### Non-blocking computations and CPS
 
 JavaScript is a strict language, with sequential evaluation
 semantics. That is, if you have a source code in the form of:
 
-```js
+{% highlight js %}
 doX()
 doY()
 doZ()
-```
+{% endhighlight %}
 
 Then each action can only start running after the previous actions have
 fully finished running. This form of computation is simple, but
@@ -137,31 +137,31 @@ after the function has the value, we explicitly pass the next
 computation (or *current continuation*, or *callback*) to the function
 we're calling. So, this:
 
-```js
+{% highlight js %}
 //:: (a, a) -> a
 function add(a, b) {
   return a + b
 }
-```
+{% endhighlight %}
 
 Becomes this:
 
-```js
+{% highlight js %}
 //:: (a, a, (a -> Void)) -> Void
 function add(a, b, continuation) {
   continuation(a + b)
 }
-```
+{% endhighlight %}
 
 To make the relationship between the two even more obvious, you can
 pretend that `return` isn't a magical keyword:
 
-```js
+{% highlight js %}
 //:: (a, a, (a -> Void)) -> Void
 function add(a, b, return) {
   return(a + b)
 }
-```
+{% endhighlight %}
 
 If you consider `return` to be an internal function that knows where to
 move the flow of execution in your program, then a *continuation* just
@@ -176,7 +176,7 @@ continuations, these concerns are shifted from the compiler or
 interpreter, to each computation and the programmer must be always aware
 of them.
 
-```js
+{% highlight js %}
 // Since these are functions in CPS style, there's no guarantees about
 // which of these operations will be executed first.
 add(1, 2, print)
@@ -188,7 +188,7 @@ add(5, 6, print)
 add(1, 2, function(result) {
   add(result, 3, print)  // this will always execute after 1 + 2
 })
-```
+{% endhighlight %}
 
 With computations following the Continuation-Passing style, it's pretty
 straight-forward to write a program that uses non-blocking
@@ -197,7 +197,7 @@ synchronous execution, CPS does not magically transform a blocking
 computation into a non-blocking one. Instead, one needs to explicitly
 execute the blocking computation on a separate thread:
 
-```js
+{% highlight js %}
 //:: (String, (String -> Void)) -> Void
 function read(pathname, continuation) {
   // Here we use a primitive that's not present in most JavaScript
@@ -216,7 +216,7 @@ function read(pathname, continuation) {
     Thread.main.schedule(function(){ continuation(contents) })
   })
 }
-```
+{% endhighlight %}
 
 Lastly, since Continuation-Passing style forgoes the language's own
 control-flow semantics to provide the basis for an expressive,
@@ -231,7 +231,7 @@ continuations take not just the result of the computation, but also any
 error that might have occurred. In this model, the previous computation
 would be written as:
 
-```js
+{% highlight js %}
 //:: (String, (Error?, String -> Void)) -> Void
 function read(pathname, continuation) {
   Thread.spawn(function() {
@@ -250,7 +250,7 @@ read('/foo/bar', function(error, contents) {
   if (error)  handleError(error)
   else        handleContents(contents)
 })
-```
+{% endhighlight %}
 
 ### Futures as placeholders for eventual values
 
@@ -272,46 +272,46 @@ fill in the details later.
 
 In other words, instead of writing this:
 
-```js
+{% highlight js %}
 //:: (String -> (Error?, String -> Void)) -> Void
 function read(pathname, continuation) {
   ...
 }
 
 read('/foo/bar', function(error, contents) { ... })
-```
+{% endhighlight %}
 
 We can write this:
 
-```js
+{% highlight js %}
 //:: String -> (Error?, String -> Void)
 function read(pathname) {
   ...
 }
 
 var contentsF = read('/foo/bar')
-```
+{% endhighlight %}
 
 So far, just by using Futures we've managed to drop the explicit passing
 of continuations, and our code is already looking like it used
 to. Functions return values. We can assign those values to
 variables. BAM. Everything is right, uh?  But what happens when we try
 to use those values? Well, it depends on how you implement them. In
-the classical formulations, reading from a future will usually block
+the classical formulations, reading from a Future will usually block
 the current thread until some other thread fills in the value.
 
-While composable, a naïve implementation of blocking futures poses the
+While composable, a naïve implementation of blocking Futures poses the
 same problems as regular blocking computations. Furthermore, this
 doesn't work in a single-threaded environment. If we combine our
-concrete representation of future values with the Continuation-Passing
+concrete representation of Future values with the Continuation-Passing
 style, we get part of the compositionality benefits, without having to
 deal with the blocking problem. Plus, it works great in a
 single-threaded environment.
 
-One of the simplest implementations of future would be to just return a
+One of the simplest implementations of Future would be to just return a
 function whose only parameter is a continuation:
 
-```js
+{% highlight js %}
 //:: String -> (Error?, String -> Void)
 function read(pathname) {
   return function(continuation) {
@@ -324,11 +324,11 @@ contentsF(function(error, contents) {
   if (error)  handleError(error)
   else        handleContents(contents)
 })
-```
+{% endhighlight %}
 
-## How Futures form monads
+## Why monadic Futures matter
 
-### A monadic formulation of futures
+### A monadic formulation of Futures
 
 Albeit the previous example of implementation was simple and usable, in
 JavaScript we can benefit much more from a slightly different
@@ -381,11 +381,11 @@ and use my [data.future][] implementation for the rest of this article.
 [fantasy land]: https://github.com/fantasyland/fantasy-land
 
 
-### The composition of futures
+### The composition of Futures
 
-With monadic futures, our now widely-used example becomes:
+With monadic Futures, our now widely-used example becomes:
 
-```js
+{% highlight js %}
 //:: String -> Future<Error, String>
 function read(pathname) {
   return new Future(function(reject, resolve) {
@@ -395,9 +395,9 @@ function read(pathname) {
 
 var contentsF = read('/foo/bar')
 contentsF.chain(handleContents).orElse(handleError)
-```
+{% endhighlight %}
 
-> **Note**: the referred future implementation is pure, as such `chain`
+> **Note**: the referred Future implementation is pure, as such `chain`
 > does not run the computation, but returns a description of the
 > computation that should be performed. To run the computation you must
 > invoke the `fork(errorHandler, successHandler)` method. Check out
@@ -410,26 +410,26 @@ arranged. This disentangles computations and time, which are so usually
 coupled in an imperative language. Therefore, it doesn't matter which
 order you arrange your source code, the results must be the same:
 
-```js
+{% highlight js %}
 var a = read('/foo')
 var b = read('/bar')
 
 // is the same as
 var b = read('/bar')
 var a = read('/foo')
-```
+{% endhighlight %}
 
 Of course, the example above would also yield the same value in a pure
-imperative program. But this formulation of futures force you not to
+imperative program. But this formulation of Futures force you not to
 rely on the implicit ordering of your source code, because there's no
 way to know when each value will be available. So, the following program
 is automatically excluded, taking down with it a whole class of
 complexities:
 
-```js
+{% highlight js %}
 var a = read('/foo')
 var b = a + read('/bar')  // can't access `a` yet.
-```
+{% endhighlight %}
 
 If one needs to access the value of a Future, they need to do so
 explicitly by invoking the `chain` method and providing a computation to
@@ -447,7 +447,7 @@ ability to ignore some of the painful explicitness of functional
 programming sometimes.
 
 
-```js
+{% highlight js %}
 //:: (Number, Number) -> Future<Error, Number>
 function divide(a, b) {
   return new Future(function(reject, resolve) {
@@ -482,11 +482,11 @@ var dF = aF.chain(function(a) {
 var eF = dF.orElse(function(error) {
                      return reject(new Error('boo')) })
 // => Future(Error('boo'), _)
-```
+{% endhighlight %}
 
 > **Note**: both `chain` and `orElse` are used to sequence asynchronous
 > computations, as such they are not the best fit for running
-> synchronous computations in the value the future holds. Using `map`
+> synchronous computations in the value the Future holds. Using `map`
 > and `rejectedMap`, you could make these cases much simpler. E.g.:
 >
 >     dF.rejectedMap(function(e){ return new Error('boo') })
@@ -507,19 +507,19 @@ from the disk, but the contents of those files are inside a Future. The
 usual way to go about it would be to nest the `chain` calls in different
 closures in order to capture the intermediate values:
 
-```js
+{% highlight js %}
 var aF = read('/foo')
 var bF = read('/bar')
 var cF = aF.chain(function(a) {
                     return bF.chain(function(b) {
                                       return resolve(a + b) })})
-```
+{% endhighlight %}
 
 But since this is a common pattern, we could easily write a combinator
 that abstracts over this. Let's call it `chain2`, since it chains two
 different Futures:
 
-```js
+{% highlight js %}
 function chain2(aM, bM, f) {
   return aM.chain(function(a) {
                     return bM.chain(function(b) {
@@ -530,7 +530,7 @@ function chain2(aM, bM, f) {
 var aF = read('/foo')
 var bF = read('/bar')
 chain2(aF, bF, function(a, b){ return a + b })
-```
+{% endhighlight %}
 
 Easy and neat, huh? In fact, this pattern is **so** common that people
 have already written this combinator for us, and by having our Future
@@ -542,7 +542,7 @@ monads.
 By currying this `liftM` combinator, and using the `flip` combinator, we
 can easily use function composition for working with monads:
 
-```js
+{% highlight js %}
 // Promotes an unary function to a function on monads
 //:: Monad<A> -> (A -> B) -> Monad<B>
 var liftM = curry(function(aM, f) {
@@ -575,10 +575,10 @@ toUpperM('foo') // => 'FOO'
 //:: String -> Monad<String>
 var readAsUpperM = compose(toUpperM, read)
 readAsUpper('/foo/bar')
-```
+{% endhighlight %}
 
 Great! Now we can even use function composition with any function that
-works on monadic futures. However, defining these `liftMN` combinators
+works on monadic Futures. However, defining these `liftMN` combinators
 is such a pain that I can't imagine ever defining `liftM3`, let alone
 `liftM10`. But see, there's a common pattern in these operations. And
 where there's a pattern, there's room for abstractions. So, what if we
@@ -586,7 +586,7 @@ had a function that takes a list of monads, and returns a monad
 containing the list of values inside those monads. With this, we could
 use a single `chain` call to get to all of the values at once!
 
-```js
+{% highlight js %}
 //:: [Future<A, B>] -> Future<A, [B]>
 function all(futures) {
   return futures.reduce(function(resultM, xM) {
@@ -597,7 +597,7 @@ function all(futures) {
                        , Future.of([]))
 }
 
-// Now we can use this to resolve all futures at once!
+// Now we can use this to resolve all Futures at once!
 var aM = read('/foo')
 var bM = read('/bar')
 var cM = read('/baz')
@@ -606,7 +606,7 @@ var dM = read('/qux')
 var concatenatedM = liftM( all([aM, bM, cM, dM])
                          , function(xs) {
                              return xs.join('\n') })
-```
+{% endhighlight %}
 
 In fact, this pattern is **so** common that people have already written
 this combinator for us, and by having our Future form a monad we can use
@@ -616,7 +616,7 @@ is so interesting. You get a lot of free lunch! Anyway, the combinator
 this time is called `sequence`, it takes in a list of monads, and
 returns a monad of a list of their values.
 
-```js
+{% highlight js %}
 // Evaluates each action in sequence (left to right), and
 // collects the results.
 //
@@ -633,7 +633,7 @@ function sequence(m, ms) {
 var concatenatedM = liftM( all(Future, [aM, bM, cM, dM])
                          , function(xs) {
                              return xs.join('\n') })
-```
+{% endhighlight %}
 
 There are a whole lot of combinators that you can use directly with your
 monadic Futures (and any other data structure that forms a monad), to
@@ -656,44 +656,44 @@ monads and we can just use them for free. Even dealing with different
 operations becomes easy with the `sequence` combinator... but there lies
 a big problem.
 
-As I mentioned before, monad semantics are inherently sequential, and by
+As I mentioned before, monadic semantics are inherently sequential, and by
 looking at the implementation for `sequence` you can see why this is a
 big problem when we want to make the most out of concurrency: each
 action can be only performed once the previous action has finished
 executing. In other words, we've got a weird way of writing the
 following blocking program:
 
-```js
+{% highlight js %}
 var a = read('/foo')
 var b = read('/bar')
 var c = read('/baz')
 var d = read('/qux')
 
 var concatenated = [a, b, c, d].join('\n')
-```
+{% endhighlight %}
 
 Granted we can still get the concurrency benefits from actions that are
 not related in any way, but sometimes this is not enough. We also want
 to make the most out of actions that aren't related, but all of which
-are converge into another action. In other words, we need to be able to
-resolve Futures in parallel. Unfortunately, we can't do this with
-monads, which means that the `chain` method is entirely ruled out.
+converge into another action. Therefore, we need to be able to resolve
+Futures in parallel. Unfortunately, we can't do this with monads, which
+means that the `chain` method is entirely ruled out.
 
 There are other formalisms (e.g.: a Future that also forms an
 Applicative) for which we can easily derive these parallel resolutions,
 and get other benefits from improved reasoning and generic
 abstraction. But it's such a long topic that I'll cover them in a follow
-up post. For now, we'll see how we can “cheat” the monadic future in
+up post. For now, we'll see how we can “cheat” the monadic Future in
 order to get parallel resolution (albeit in an ad-hoc manner) without
 giving up on all the benefits we've got.
 
 The idea is that we start all of the monadic computations at the same
 time, each in its own computational context (e.g.: a thread), and merge
-the results back in the main thread, fulfilling the future with the
+the results back in the main thread, fulfilling the Future with the
 result.
 
-```js
-// [Future a b] -> Future a [b]
+{% highlight js %}
+//:: [Future<A, B>] -> Future<A, [B]>
 function parallel(futures) {
   return new Future(function(reject, resolve) {
                       var pending  = futures.length
@@ -716,7 +716,7 @@ function parallel(futures) {
                                          resolved = true
                                          resolve(result) }})}})
 }
-```
+{% endhighlight %}
 
 With this, you can use `sequence` and `parallel` interchangeably,
 depending on whether you want something to be resolved in parallel or
@@ -728,9 +728,11 @@ sequentially.
 Being able to choose whether we want to perform many actions
 sequentially or in parallel, using the very same code, provides a pretty
 good basis for writing concurrent programs easily. But we can do better
-by introducing a little of non-determinism. “Isn't non-determinism bad
-in a concurrent program?” you ask. It's something you usually want to
-avoid, indeed, but can be fairly useful in certain contexts.
+by introducing a little of non-determinism.
+
+“Isn't non-determinism bad in a concurrent program?” you ask. Well, it
+is something you usually want to avoid, indeed, but can be fairly useful
+in certain contexts.
 
 Consider the following scenario: you want to load an image out of an
 external server, but if the server takes too long to respond you don't
@@ -742,10 +744,11 @@ how would one go about solving this in a simple way?
 Once again monads won't help us since they're inherently sequential, so
 we'll need to *cheat*. Again. One of the ways we could go about solving
 this is to write a `timeout` function that takes the amount of time to
-wait before considering the action dead, and the action (future)
+wait before considering the action dead, and the action (Future)
 itself. And it's relatively easy to come up with this:
 
-```js
+{% highlight js %}
+//:: (Number, Future<A, B>) -> Future<A, B>
 function timeout(time, future) {
   return new Future(function(reject, resolve) {
                       var resolved = false
@@ -764,7 +767,7 @@ function timeout(time, future) {
                                    resolved = true
                                    reject(new Error('Timeouted.')) })})
 }
-```
+{% endhighlight %}
 
 Not entirely bad, although some of those computations could definitely
 be abstracted over, but let's just keep this rough idea of
@@ -778,17 +781,18 @@ servers. Of course, since all of these servers are still prone to
 unpredictable failures, we also need to account for the case where none
 of them respond in a timely fashion.
 
-Of course, we could just write a new fairly specific operation just for
-this occasion, but this is not the best way to go about this. If we stop
-to think about the problem a little, we'll see that this scenario is the
+We could just write a new fairly specific operation just for this
+occasion, but this is not the best way to go about this. If we stop to
+think about the problem a little, we'll see that this scenario is the
 same thing as the previous scenario, we just have more choices! Since
 they are the same, we should be able to write a generic operation for
 it. In fact, this operation already exists in some formal systems, such
-as [communicating sequential processes][], and may be called `alternative`
-or `select`. The implementation is very close to what we have in
-`timeout`... but simpler!
+as [communicating sequential processes][], and may be called
+`alternative` or `select`. The implementation is very close to what we
+have in `timeout`... but simpler!
 
-```js
+{% highlight js %}
+//:: [Future<A, B>] -> Future<A, B>
 function nondeterministicChoice(futures) {
   return new Future(function(reject, resolve) {
                       var resolved = false
@@ -803,16 +807,17 @@ function nondeterministicChoice(futures) {
                         resolved = true
                         f(a) }})
 }
-```
+{% endhighlight %}
 
 Now we're able to start all actions in parallel and get a hold of the
-first one who completes (either by succeeding or failing), but how does
+first one that completes (either by succeeding or failing). But how does
 this help us with the `timeout` issue? Well, if you think about it,
 `timeout` itself is just an "action," one that automatically fails after
 a given amount of time. Thus, we can go really high-level with our new
 operation (but there's a catch, and we'll talk about it later):
 
-```js
+{% highlight js %}
+//:: Number -> Future<Error, B>
 function timeout(ms) {
   return new Future(function(reject, resolve) {
                       setTimeout( function() {
@@ -824,24 +829,25 @@ var imageF = nondeterministicChoice([load(server1), load(server2), load(server3)
 nondeterministicChoice([imageF, timeout(10e3)])
   .chain(function(image) { ... })
   .orElse(function(error){ ... })
-```
+{% endhighlight %}
 
-Notice that once again we can easily change this operation by either
+Notice that once again we can easily switch out this operation by either
 `parallel` or `sequence`, without changing much of the rest of the
 code. In this case things require a little more of work since the type
 of the operation is different, but this does not affect unrelated code,
 which tends to be a problem when working with lower-level primitives for
-concurrency, like continuations or threads, directly.
+concurrency directly, like continuations or threads.
 
 
-### The case for purity
+### A note on purity, effects, and memoisation
 
 So, I did say that there's a catch to the way we modelled `timeout`
-above: it must **not** be memoised. That is, every time you *fork* the
-future, the action **must** run. Consider the following:
+above. We can never memoise it. That is, since `timeout` is an action
+(it represents an effect), everytime we run it, that effect must
+occur. Consider the following:
 
-```js
-//:: String -> Future(Error, Unit)
+{% highlight js %}
+//:: String -> Future<Error, Void>
 function print(text) {
   return new Future(function(reject, resolve) {
                       console.log(text)
@@ -851,7 +857,7 @@ function print(text) {
 //:: a -> a
 function id(a){ return a }
 
-//:: Future(a, b) -> Unit
+//:: Future<A, B> -> Unit
 function run(future) {
   future.fork(id, id)
 }
@@ -860,16 +866,150 @@ var hello = print('Hello, world')
 run(hello)
 // => 'Hello, world'
 run(hello)
-// => undefined
-```
+// => 'Hello, world'
+{% endhighlight %}
 
-When an action has effects, it can't be memoised, otherwise we don't
-have a description of the action anymore, only its result. This is
-something systems like [Promises/A+][] completely miss, mostly because
+If the Future was memoised, we would not get the second `"Hello, world"`
+because the Future would have already been resolved once! And this would
+break entirely any attempt of reasoning about our code. This is
+something systems like [Promises/A+][promises-aplus] completely miss, mostly because
 those systems are not interested in purity and compositionality.
 
+[promises-aplus]: http://promises-aplus.github.io/promises-spec/
 
 
 ## Conclusion
+
+So, we've seen that Futures are a simple concept that can be used for
+representing values we don't know yet, but will in the future. Just by
+doing this, we're able to get some of the lost compositionality of
+working with non-blocking computations, that happens with things like
+Continuation-Passing style.
+
+We've also seen that a Future can form a monad, and by doing so we have
+access to a number of abstractions for free. But monad semantics are
+inherently sequential, so we can't use monads as a basis for
+parallelism. Fortunately, we can "cheat" the system and provide specific
+operators for this that can easily replace the sequential resolution of
+monads (and vice-versa) when desirable.
+
+All in all, while this formulation already provides a lot of power for
+writing concurrent programs in an simple and composable way, this
+implementation still doesn't allow for them to compose with the
+syntactical constructs. Ideally, we would like to write the following,
+and let the library implementation take care of all the nasty details of
+concurrency for us:
+
+{% highlight js %}
+var contents = read('/foo/bar')
+if (contents.get().length != 0) { ... }
+{% endhighlight %}
+
+The good news is: **this is entirely possible**. The not so good news is
+that it's also a big topic and I haven't had the time to cover it in
+this blog post. To keep things focused (and publish moar), I've decided
+to split this article into three parts. This is the introduction of the
+concepts of Futures and how they form a monad. The next part explains
+the duality of Futures, and how co-monadic Futures give us the
+aforementioned syntactical composition. The last part goes on the
+generalised ways of achieving parallelism and concurrency with
+Applicative Functors.
+
+So, that's about it. I hope y'all are looking forward to the next
+articles in this series, eh! ♥
+
+
 ## Libraries
+
+<dl>
+  <dt><a href="https://github.com/folktale/data.future">Data.Future</a></dt>
+  <dd>My implementation of pure monadic futures</dd>
+
+  <dt><a href="https://github.com/folktale/control.monads">Control.Monads</a></dt>
+  <dd>A (still experimental) port of Haskell's Control.Monad package, which
+  provides common combinators and operations to work with monads in a higher
+  level.</dd>
+
+  <dt><a href="https://github.com/quarterto/fantasy-arrayt">Fantasy
+  ArrayT</a></dt>
+  <dd>A monad transformer for monads containing JavaScript arrays.</dd>
+  
+  <dt><a href="https://github.com/fantasyland/fantasy-combinators">Fantasy
+  Combinators</a></dt>
+  <dd>A library providing common functional combinators — like compose,
+  constant, flip, etc.</dd>
+
+  <dt><a href="https://github.com/folktale/control.async">Control.Async</a></dt>
+  <dd>An experimental library providing abstractions for asynchronous
+  operations on Futures. It's heavily influenced by Clojure's core.async</dd>
+</dl>
+
+
 ## References and additional reading
+
+<dl>
+  <dt><a href="http://www.cwru.edu/artsci/math/wells/pub/ttt.html">Toposes,
+  Triples and Theories, by M. Barr and C. Wells</a></dt>
+  <dd>You don't need to have a PhD in Category Theory to understand Monads,
+  Functors and friends, but having an understanding of the basics in Category
+  Theory really helps. M. Barr and C. Wells's book provides a fairly detailed
+  description of the subject, and it's freely available online, although I have
+  not finished reading the whole book yet.</dd>
+  
+  <dt><a href="http://www.haskell.org/haskellwiki/Category_theory">Haskell
+  Wiki on Category Theory</a></dt>
+  <dd>The Haskell Wiki page on Category Theory lists several resources that may
+  help you to understand the concepts and foundations. Some of them are written
+  with Haskell programmers in mind, some are purely mathematical and don't
+  assume any previous knowledge in either Haskell or Category Theory.</dd>
+
+  <dt><a href="https://github.com/fantasyland/fantasy-land">Fantasy Land
+  Specification</a></dt>
+  <dd>The Fantasy Land specification that all monads in JavaScript should
+  follow to allow interoperability and abstractions to be written and shared by
+  everyone, for maximum DRY.</dd>
+
+  <dt><a href="http://matt.might.net/articles/by-example-continuation-passing-style/">Matt
+  Might's Continuation-Passing style by example</a></dt>
+  <dd>Matt explains what continuations are using both Scheme and
+  JavaScript.</dd>
+
+  <dt><a href="http://www.infoq.com/presentations/clojure-core-async">Clojure
+  core.async talk by Rich Hickey</a></dt>
+  <dd>Rich Hickey discusses what motivated the design of
+  Clojure's <tt>core.async</tt> library, and how they provide a simple
+  framework for concurrency without giving up on compositionality. In
+  essence, <tt>core.async</tt> achieves the same as Futures, but is supported
+  by more mathematical formalism, and supports parallelism at the core.</dd>
+
+  <dt><a href="http://research.microsoft.com/en-us/um/people/gmb/papers/cs5full.pdf">Pause
+  'n' play: Formalizing asynchronous C♯</a></dt>
+  <dd>Erik Meijer, Mads Torgersen, et al formally describe
+  C♯'s <strong>async/await</strong> functionality, which is based on the
+  co-monadic <tt>Task&lt;T&gt;</tt> type.</dd>
+
+  <dt><a href="http://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf">Phil
+  Wadler's Monads For Functional Programming Paper</a></dt>
+  <dd>Wadler describes why monads are interesting for functional programming,
+  by showing how they simplify the (sometimes painful) explicitness of pure
+  computations.</dd>
+
+  <dt><a href="http://promises-aplus.github.io/promises-spec/">Promises/A+
+  specification</a></dt>
+  <dd>Promises/A+ is a specification for promises in JavaScript. ECMAScript 6
+  implements promises in a manner similar to that of the spec. There are
+  several problems with Promises/A+ from the point of view of simplicity, and
+  compositionality, some of which are addressed in
+  the <a href="http://robotlolita.github.io/2013/06/28/promises-considered-harmful.html">Promises/A+
+  considered harmful</a> article.</dd>
+</dl>
+
+  
+## Changes and Acknowledgements
+
+ -  Thanks to [Rúnar Óli](https://twitter.com/runarorama) and
+    [Brian McKenna](https://twitter.com/puffnfresh) for correcting some
+    mistakes in Category Theory over at Twitter. If you see any other mistake,
+    please let me know on the comments or
+    [@robotlolita on Twitter](https://twiter.com/robotlolita) and I'll try to fix it
+    ASAP :)
