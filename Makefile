@@ -6,11 +6,11 @@ stylus-paths		= -I node_modules/nib/lib -I node_modules/entypo-stylus -I node_mo
 
 css:
 	mkdir -p media/css
-	stylus $(stylus-paths) -o media/css media/stylus
+	$(stylus) $(stylus-paths) -o media/css media/stylus
 
 watch-css:
 	mkdir -p media/css
-	stylus $(stylus-paths) -w -o media/css media/stylus
+	$(stylus) $(stylus-paths) -w -o media/css media/stylus
 
 
 .PHONY: css watch-css

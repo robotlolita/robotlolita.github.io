@@ -12,17 +12,17 @@ Concurrency is quite a big deal, specially these days where everything
 must be “web scale.” There are several models of concurrency, each with
 their own pros and cons, in this article I present a composable
 alternative to the widespread non-blocking model of concurrency, which
-generally uses [Continuation-Passing style][cps], where each computation
+generally uses [Continuation-Passing style][cps] where each computation
 accepts a “continuation” or “callback,” instead of returning the result
 of the computation to the caller.
 
-However, in a language where some computations return a value to the
-caller, and some take a continuation as an argument, we can't really
-apply our well-established and general compositional operators, such as
+In a language where some computations return a value to the caller and
+some take a continuation as an argument, we can't really apply our
+well-established and general compositional operators, such as
 [function composition][], because the rules they rely on have been
-broken. This is why, in platforms like Node.js, code quickly descends
-into callback-hell and spaghetti of callsite-specific functionality — we
-lose all of the organisational patterns we are used to.
+broken. This is why quickly descends into callback-hell and spaghetti of
+callsite-specific functionality — we lose all of the organisational
+patterns we are used to.
 
 None the less, it is possible for a non-blocking function to return the
 result to its caller **even thought it still doesn't know what the
@@ -30,20 +30,17 @@ result is**! This really old concept (which appeared around 1976) is
 sometimes called *promise*, *future*, *delay*, or *eventual*, depending
 on your library and programming language.
 
-In this blog post I'll describe what a *future* value is, how it forms a
-monad, what are the benefits of a *future* forming a monad, and how they
+In this blog post I'll describe what a Future value is, how it forms a
+monad, what are the benefits of a Future forming a monad, and how they
 may be used for abstracting over the concurrency problem in a composable
 way.
 
 > **Note**: Previous knowledge of monads or category theory are not
-> necessary to read this blog post, even though this article builds upon
-> my [previous article on monads in JavaScript][failures]. Some
-> knowledge of JavaScript is necessary, however.
+> necessary to read this blog post. Some knowledge of JavaScript is
+> necessary, however.
 
 [cps]: http://matt.might.net/articles/by-example-continuation-passing-style/
 [function composition]: http://en.wikipedia.org/wiki/Function_composition
-[failures]: http://robotlolita.github.io/2013/12/08/a-monad-in-practicality-first-class-failiures.html
-
 
 
 # Table of Contents
@@ -52,38 +49,37 @@ way.
 
 ## Introduction
 
-Non-blocking concurrency is all the hype these days, specially with
-platforms such as Node.js, which are focused on I/O bound applications,
-a perfect fit for this form of concurrency. Unfortunately, most of these
-platforms don't provide good primitives for working with this form of
-concurrency, as is the case with Node, where people must rely on naïve
-Continuation-Passing style to schedule some actions to occur after other
-actions.
+Non-blocking concurrency is all the hype these days. Platforms focused
+on I/O bound applications such as Node.js are a perfect fit for this
+form of concurrency. Unfortunately, most of these platforms don't
+provide good primitives for working with concurrency efficiently, as is
+the case with Node, and people must rely on naïve low-level primitives,
+such as Continuation-Passing style, to control the and optimise the
+execution of each action.
 
-As previously discussed, this naïve use of *callbacks* leads to
-operations that can not be composed with the primitives we already use
-for composing synchronous computations, such as function
-composition. More so, in languages like JavaScript, these asynchronous
-operations can't be integrated with the usual syntactic control-flow
-structures, such as conditional branching, loop constructions, or
-exception handling.
+This naïve use of *callbacks* leads to operations that can not be
+composed with the primitives we already use for synchronous
+computations, such as function composition. More so, in languages like
+JavaScript, these asynchronous operations can't be integrated with the
+usual syntactic control-flow structures, such as conditional branching,
+loop constructions, or exception handling.
 
 Although there are different alternatives for this problem, some of
 which includes [delimited continuations][] and
-[communicating sequential processes][], *futures* are by far the
-cheapest implementation in most languages, since they don't require
-additional language support besides threads **or** higher-order
-functions. A naïve implementation of futures allows asynchronous
-computations to be composed just as synchronous computations can
-be. However, co-monadic futures are a necessary extension to integrate
-these computations with the language's syntactic structure — such a
-concept is the basis for [C#'s async/await semantics][async-await].
+[communicating sequential processes][], Futures are by far the cheapest
+implementation in most languages, since they don't require additional
+language support besides threads **or** higher-order functions. The
+simple implementation of futures allows asynchronous computations to be
+composed just as synchronous computations can be. However, co-monadic
+futures are a necessary extension to integrate these computations with
+the language's syntactic structure — this concept is the basis for
+[C#'s async/await semantics][async-await].
 
 This article is intended as a general introduction to the concept of
 Futures, and how they change the possibilities of composing asynchronous
 computations (IOW, how to think with futures), as well as a description
 of its practical usage in JavaScript using
-[my implementation of monadic futures][data.future], therefore most of
+[my implementation of monadic Futures][data.future], therefore most of
 the article assumes familiarity with the JavaScript language, although
 you should be able to follow with an understanding of higher-order
 programming just fine.
@@ -96,13 +92,42 @@ programming just fine.
 
 ## Non-blocking computations and CPS
 
-In Node.js, non-blocking computations are expressed in terms of
-Continuation-Passing style, which is the simplest solution for a
-language supporting higher-order functions. You can easily invent this
-model of computation in these languages yourself if you live by the
-following maxim:
+JavaScript is a strict language, with sequential evaluation
+semantics. That is, if you have a source code in the form of:
 
-> **No function should ever return to its caller.**
+```js
+doX()
+doY()
+doZ()
+```
+
+Then each action can only start running after the previous actions have
+fully finished running. This form of computation is simple, but
+inefficient with all the current multi-core processors. The ideal
+scenario would be to run `doX`, `doY` and `doZ` in parallel, since no
+operation depends on the results of the previous operation.
+
+![Efficiency achieved with parallelism](http://robotlolita.github.io/files/2014/03/futures-01.png)
+
+The sequential scenario is definitely not good. We want something closer
+to the parallel scenario. That's where non-blocking computations
+(asynchronous concurrency) come in. They provide a simple-enough model
+for computation, and are really efficient dealing with I/O bound
+applications, since the mechanisms for running actions at the same time
+are cheaper.
+
+![Efficiency achieved with asynchronous](http://robotlolita.github.io/files/2014/03/futures-02.png)
+
+Node.js is one of the most prominent platforms where this form of
+concurrency is not only well-spread, but a premise of the platform
+itself! For handling these kinds of computations, Node.js encourages the
+use of Continuation-Passing style, which is the simplest solution that
+could possibly work for a language supporting higher-order functions. In
+fact, you can easily invent CPS yourself if you live by the following
+maxim: 
+
+> No function should ever return to its caller.
+{.highlight-paragraph}
 
 Now, if a function can't return a value, what are they even good for? Or
 rather, how do we use a function that can't return a value? Well,
@@ -125,8 +150,8 @@ function add(a, b, continuation) {
 }
 ```
 
-Or, to make the duality even more obvious, if you pretend that `return`
-isn't a keyword:
+To make the relationship between the two even more obvious, you can
+pretend that `return` isn't a magical keyword:
 
 ```js
 function add(a, b, return) {
@@ -136,15 +161,16 @@ function add(a, b, return) {
 
 If you consider `return` to be an internal function that knows where to
 move the flow of execution in your program, then a *continuation* just
-makes that function explicit. But just by doing so it gives us so much
-more power, because now we're not bound to the control flow semantics of
-our language anymore, which allows a function taking a continuation to
-be either synchronous or asynchronous, needing no changes in the user of
+makes that function explicit. By doing so it gives us much more power,
+because now we're not bound to the control flow semantics of our
+language anymore and this allows a function taking a continuation to be
+either synchronous or asynchronous, needing no changes in the user of
 that code. On the other hand, we lose the guarantee that in a sequence
 of actions, each one will always execute before the previous one, or
-that calls to such computations will be thread-safe. In a language with
+that calls to such computations will be thread-safe. When using
 continuations, these concerns are shifted from the compiler or
-interpreter, to each computation.
+interpreter, to each computation and the programmer must be always aware
+of them.
 
 ```js
 // Since these are functions in CPS style, there's no guarantees about
@@ -164,8 +190,8 @@ With computations following the Continuation-Passing style, it's pretty
 straight-forward to write a program that uses non-blocking
 computations. However, given that JavaScript's semantics enforce
 synchronous execution, CPS does not magically transform a blocking
-computation into a non-blocking one. Instead, the computation needs to
-explicitly execute the blocking work on a separate thread:
+computation into a non-blocking one. Instead, one needs to explicitly
+execute the blocking computation on a separate thread:
 
 ```js
 function read(pathname, continuation) {
@@ -758,7 +784,7 @@ first one who completes (either by succeeding or failing), but how does
 this help us with the `timeout` issue? Well, if you think about it,
 `timeout` itself is just an "action," one that automatically fails after
 a given amount of time. Thus, we can go really high-level with our new
-operation:
+operation (but there's a catch, and we'll talk about it later):
 
 ```js
 function timeout(ms) {
@@ -784,9 +810,44 @@ concurrency, like continuations or threads, directly.
 
 ## Pure computations as a means of composing asynchronous actions
 
+So, I did say that there's a catch to the way we modelled `timeout`
+above: it must **not** be memoised. That is, every time you *fork* the
+future, the action **must** run. Consider the following:
+
+```js
+//:: String -> Future(Error, Unit)
+function print(text) {
+  return new Future(function(reject, resolve) {
+                      console.log(text)
+                      resolve() }
+}
+
+//:: a -> a
+function id(a){ return a }
+
+//:: Future(a, b) -> Unit
+function run(future) {
+  future.fork(id, id)
+}
+
+var hello = print('Hello, world')
+run(hello)
+// => 'Hello, world'
+run(hello)
+// => undefined
+```
+
+When an action has effects, it can't be memoised, otherwise we don't
+have a description of the action anymore, only its result. This is
+something systems like [Promises/A+][] completely miss, mostly because
+those systems are not interested in purity and compositionality.
 
 
 ## Syntactical composition with co-monads
+
+
+
+
 ## Conclusion
 ## Libraries
 ## References and additional reading

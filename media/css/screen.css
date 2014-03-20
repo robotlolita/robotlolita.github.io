@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Droid+Serif|Montserrat");
+@import url("http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic|Montserrat|Lora:400italic");
 html,
 body,
 div,
@@ -1616,6 +1616,16 @@ a:hover {
 }
 #post .twitter-tweet {
   margin: 10px auto !important;
+}
+#post .highlight-paragraph {
+  font-style: italic;
+  font-size: 1.6em;
+  border: none;
+  padding: 0;
+  margin: 2em;
+  text-align: center;
+  color: #836953;
+  font-family: Lora;
 }
 @media screen and (max-width: 1200px) {
   #header #logo,
