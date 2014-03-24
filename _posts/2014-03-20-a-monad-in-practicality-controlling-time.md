@@ -570,7 +570,7 @@ function toUpper(a) {
 
 //:: Monad<String> -> Monad<String>
 var toUpperM = flip(liftM)(toUpper)
-toUpperM('foo') // => 'FOO'
+toUpperM(Future.of('foo')) // => 'FOO'
 
 //:: String -> Monad<String>
 var readAsUpperM = compose(toUpperM, read)
@@ -1006,6 +1006,8 @@ articles in this series, eh! ♥
 
   
 ## Changes and Acknowledgements
+
+ -  **24/03/2014**, fixed an incorrect example of `liftM`, as JuanManuel pointed out in the comments.
 
  -  Thanks to [Rúnar Óli](https://twitter.com/runarorama) and
     [Brian McKenna](https://twitter.com/puffnfresh) for correcting some
