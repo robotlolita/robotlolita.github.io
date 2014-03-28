@@ -20,9 +20,9 @@ In a language where some computations return a value to the caller and
 some take a continuation as an argument, we can't really apply our
 well-established and general compositional operators, such as
 [function composition][], because the rules they rely on have been
-broken. This is why quickly descends into callback-hell and spaghetti of
-callsite-specific functionality — we lose all of the organisational
-patterns we are used to.
+broken. This is why things may quickly descend into callback-hell
+and spaghetti of callsite-specific functionality — we lose all of
+the organisational patterns we are used to.
 
 None the less, it is possible for a non-blocking function to return the
 result to its caller **even thought it still doesn't know what the
@@ -570,7 +570,7 @@ function toUpper(a) {
 
 //:: Monad<String> -> Monad<String>
 var toUpperM = flip(liftM)(toUpper)
-toUpperM('foo') // => 'FOO'
+toUpperM(Future.of('foo')) // => 'FOO'
 
 //:: String -> Monad<String>
 var readAsUpperM = compose(toUpperM, read)
@@ -1006,6 +1006,8 @@ articles in this series, eh! ♥
 
   
 ## Changes and Acknowledgements
+
+ -  **24/03/2014**, fixed an incorrect example of `liftM`, as JuanManuel pointed out in the comments.
 
  -  Thanks to [Rúnar Óli](https://twitter.com/runarorama) and
     [Brian McKenna](https://twitter.com/puffnfresh) for correcting some
