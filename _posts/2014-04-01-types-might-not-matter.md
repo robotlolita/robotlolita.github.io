@@ -15,7 +15,7 @@ details of the known ways to achieve such, and end up considering that to be
 the one and only true way. Yes, I'm talking about the idolisation of static
 typing.
 
-I, too, was one of the people in the cult of Martin-Löf. One of the proponents
+I, too, was one of the people in the cult of Martin-Lof. One of the proponents
 of static typing above all. But not anymore. After watching so many talks by
 Gilad Bracha, such as
 [Deconstructing Functional Programming](http://www.infoq.com/presentations/functional-pros-cons),
@@ -56,7 +56,7 @@ and would have their composition enforced through types.
 However, there are other programming languages that, despite not having a
 static type system, are good at DSELs and composition. Newspeak is an example
 of such. In fact, for some purposes, Newspeak happens to be better at
-composition than Haskell! — theoretically, at least. I was thrilled to learn
+composition than Haskell! -- theoretically, at least. I was thrilled to learn
 more about them, and about how they solve the correctness-by-design problem. I
 describe my, surprising even for me, findings in this article.
 
@@ -134,7 +134,7 @@ mostImportant = sortBy (flip compare `on` weight)
 main = putStrLn $ show $ take 2 $ mostImportant things
 {% endhighlight %}
 
-As you can see, since all functions in Haskell are essentially `a → b`, you can
+As you can see, since all functions in Haskell are essentially `a -> b`, you can
 combine them in every which way syntactically. It's only the types that provide
 compositional constraints, and these are not visible, for example, at the call
 site (not in a text editor, at least). In contrast, Smalltalk languages provide
@@ -238,6 +238,6 @@ doesn't seem to be interested in.
   <dd>Gilad Bracha</dd>
 
   <dt><a
-  href="http://www.infoq.com/presentations/past-present-future-programming">Onward! — Does Thought Crime Pay?</a></dt>
+  href="http://www.infoq.com/presentations/past-present-future-programming">Onward! -- Does Thought Crime Pay?</a></dt>
   <dd>Gilad Bracha</dd>
 </dl>
