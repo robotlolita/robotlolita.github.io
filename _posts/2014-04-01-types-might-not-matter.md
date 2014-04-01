@@ -189,6 +189,7 @@ doesn't seem to be interested in.
 
 ## References and Additional Reading
 
+<!--
 <dl>
   <dt><a href="http://lucacardelli.name/Papers/TypeSystems.pdf">Type
   Systems</a></dt>
@@ -254,3 +255,4 @@ doesn't seem to be interested in.
   — Does Thought Crime Pay?</a></dt>
   <dd>Gilad Bracha</dd>
 </dl>
+-->
