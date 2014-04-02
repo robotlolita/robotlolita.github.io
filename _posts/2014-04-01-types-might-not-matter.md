@@ -185,6 +185,8 @@ like to try walking down the dynamic typing route with a powerful interactive
 development environment, which most of the functional programming community
 doesn't seem to be interested in.
 
+Oh, by the way, have a nice April's Fools :)
+
 
 
 ## References and Additional Reading
