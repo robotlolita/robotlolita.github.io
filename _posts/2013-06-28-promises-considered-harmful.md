@@ -27,8 +27,12 @@ is mostly serial and have many mixed-in synchronous operations. Other
 than that (and a few spec complexities), they are fairly cool for most
 cases.
 
+## Table of Contents
+ *  TOC
+{:toc}
 
-# What are promises?
+
+## 1 What are promises?
 
 So, what **are** promises, anyways? Well, promises are a way to
 represent future values. In laymen terms, this just means you can use
@@ -52,7 +56,7 @@ did a great job on that already. Instead, I'll focus on the advantages
 and disadvantages of the Promises/A+ specification here.
 
 
-# So... Promises/A+?
+## 2. So... Promises/A+?
 
 Promises/A+ is a specification for how promises in JavaScript should
 behave, so that we can treat asynchronous code in a similar fashion to
@@ -68,7 +72,7 @@ and we can build useful libraries that work on promises generically,
 rather than implementation A or B. In short, everyone wins.
 
 
-# Sources of complexity
+## 3. Sources of complexity
 
 Sadly, not everything is bright, sweet and cheerful in the Promises/A+
 land. There are a couple of problems with it that make Promises/A+ a
@@ -81,7 +85,7 @@ Promises/A+ proponents think it was necessary for Promises/A+ to do
 that.
 
 
-## Exception handling
+### 3.1. Exception handling
 
 The first big problem with Promises/A+ is how it decides to provide
 asynchronous exception handling: wrapping every asynchronous call in an
@@ -171,7 +175,7 @@ var record = makeDbCall()
 {% endhighlight %}
 
 
-## Thenable assimilation
+### 3.2. Thenable assimilation
 
 This particular {mis,}feature of Promises/A+ has been the subject of
 several discussions, both in the Promises/A+ issues on Github and on the
@@ -189,7 +193,7 @@ type system in your head as you read your code.
 
 
 
-# Performance hits
+## 4. Performance hits
 
 So, big overview aside, let's get down to the part that matters in this
 blog post: what about Promises/A+ performance? Well, I should say that
@@ -250,7 +254,7 @@ v0.11.2 with the `--harmony-generators` flag, since the generators API
 changed a little in the v8 included in v0.11.3.
 
 
-## The worst case: serial computations
+### 4.1. The worst case: serial computations
 
 You've got a few operations that need to be done asynchronously, and
 some that are fairly fast so might be done synchronous. The problem is
@@ -302,7 +306,7 @@ application (`85 ops/sec × 14 ops/sec`).
 <div id="chart-worst-case-light-weight" style="height: 400px">&nbsp;</div>
 
 
-## The best case: concurrent computations
+### 4.2. The best case: concurrent computations
 
 Now, serial computations are horrible in a concurrent application
 anyways, so let's see a better scenario: concurrent computations. In
@@ -343,7 +347,7 @@ asynchronously, etc.
 <div id="chart-best-case" style="height: 400px">&nbsp;</div>
 
 
-# Conclusion
+## 5. Conclusion
 
 More abstractions are definitely a **nice thing**. They let you focus on
 what matters, and leave the details to be figured out by someone else

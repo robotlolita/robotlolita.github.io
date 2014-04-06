@@ -4,10 +4,6 @@ title:  "A Monad in Practicality: Controlling Time"
 snip:   How Monads help you compose asynchronous operations.
 ---
 
-Use numbered headers: True
-
-<!-- * * * -->
-
 Concurrency is quite a big deal, specially these days where everything
 must be “web scale.” There are several models of concurrency, each with
 their own pros and cons, in this article I present a composable
@@ -47,7 +43,8 @@ way.
  *  TOC
 {:toc}
 
-## Introduction
+
+## 1. Introduction
 
 Non-blocking concurrency is all the hype these days. Platforms focused
 on I/O bound applications such as Node.js are a perfect fit for this
@@ -89,9 +86,9 @@ programming just fine.
 [async-await]: http://research.microsoft.com/en-us/um/people/gmb/papers/cs5full.pdf
 [data.future]: https://github.com/folktale/data.future
 
-## The conception of Futures
+## 2. The conception of Futures
 
-### Non-blocking computations and CPS
+### 2.1. Non-blocking computations and CPS
 
 JavaScript is a strict language, with sequential evaluation
 semantics. That is, if you have a source code in the form of:
@@ -252,7 +249,8 @@ read('/foo/bar', function(error, contents) {
 })
 {% endhighlight %}
 
-### Futures as placeholders for eventual values
+
+### 2.2. Futures as placeholders for eventual values
 
 While Continuation-Passing style is definitely an interesting start for
 building your own control-flow structures, it's too low level for us to
@@ -326,9 +324,10 @@ contentsF(function(error, contents) {
 })
 {% endhighlight %}
 
-## Why monadic Futures matter
 
-### A monadic formulation of Futures
+## 3. Why monadic Futures matter
+
+### 3.1. A monadic formulation of Futures
 
 Albeit the previous example of implementation was simple and usable, in
 JavaScript we can benefit much more from a slightly different
@@ -381,7 +380,7 @@ and use my [data.future][] implementation for the rest of this article.
 [fantasy land]: https://github.com/fantasyland/fantasy-land
 
 
-### The composition of Futures
+### 3.2. The composition of Futures
 
 With monadic Futures, our now widely-used example becomes:
 
@@ -494,7 +493,7 @@ var eF = dF.orElse(function(error) {
 [pure-io]: http://www.infoq.com/presentations/io-functional-side-effects
 
 
-### Freeloading on monadic abstractions
+### 3.3. Freeloading on monadic abstractions
 
 Good, we can compose computations, but working with anything has become
 incredibly bothersome. Some of this is due to JavaScript's verbosity in
@@ -644,9 +643,9 @@ monadic combinators.
 [control.monad]: http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html
 
 
-## Specifics of Future-based concurrency
+## 4. Specifics of Future-based concurrency
 
-### Ad-hoc parallelism
+### 4.1. Ad-hoc parallelism
 
 So far we've seen that Futures can provide a way for us to compose
 computations with the combinators we're used to, such as function
@@ -723,7 +722,7 @@ depending on whether you want something to be resolved in parallel or
 sequentially.
 
 
-### Ad-hoc non-determinism
+### 4.2. Ad-hoc non-determinism
 
 Being able to choose whether we want to perform many actions
 sequentially or in parallel, using the very same code, provides a pretty
@@ -839,7 +838,7 @@ which tends to be a problem when working with lower-level primitives for
 concurrency directly, like continuations or threads.
 
 
-### A note on purity, effects, and memoisation
+### 4.3. A note on purity, effects, and memoisation
 
 So, I did say that there's a catch to the way we modelled `timeout`
 above. We can never memoise it. That is, since `timeout` is an action
@@ -878,7 +877,7 @@ those systems are not interested in purity and compositionality.
 [promises-aplus]: http://promises-aplus.github.io/promises-spec/
 
 
-## Conclusion
+## 5. Conclusion
 
 So, we've seen that Futures are a simple concept that can be used for
 representing values we don't know yet, but will in the future. Just by
@@ -919,7 +918,7 @@ So, that's about it. I hope y'all are looking forward to the next
 articles in this series, eh! ♥
 
 
-## Libraries
+## 6. Libraries
 
 <dl>
   <dt><a href="https://github.com/folktale/data.future">Data.Future</a></dt>
@@ -945,7 +944,7 @@ articles in this series, eh! ♥
 </dl>
 
 
-## References and additional reading
+## 7. References and additional reading
 
 <dl>
   <dt><a href="http://www.cwru.edu/artsci/math/wells/pub/ttt.html">Toposes,
@@ -1005,7 +1004,7 @@ articles in this series, eh! ♥
 </dl>
 
   
-## Changes and Acknowledgements
+## 8. Changes and Acknowledgements
 
  -  **24/03/2014**, fixed an incorrect example of `liftM`, as JuanManuel pointed out in the comments.
 

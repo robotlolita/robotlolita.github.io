@@ -14,7 +14,12 @@ TL;DR:
 - **Use Node modules**: it's a simple and expressive module system. And it gives you first-class parametric modules!
 
 
-## Introduction
+## Table of Contents
+ *  TOC
+{:toc}
+
+
+## 1. Introduction
 
 If you have ever read my blog, you'd know I'm a strong advocate of both the *Unix philosophy* and *functional programming*. They encourage you to write small, self-contained pieces of functionality and compose them together to build bigger things. Unfortunately, lots of people writing JavaScript are still dwelling in the dark ages when it comes down to modularising their applications. You see, there are still plenty of people that think that "The Module Pattern" is a good enough idea; it is not, however, it's just boilerplate that indicates the lack of proper tooling — and if you ever find yourself having boilerplate, you should be worrying about your tools not solving your problem, because *that's the first symptom of I Ain't Not Solving Ya Problem, Son*.
 
@@ -25,18 +30,18 @@ There have been plenty of module solutions over the time in JavaScript, the most
 
 The rest of this article is laid out as follows: in the first section I give a conceptual overview of namespacing and modules, in the second section there's an overview of all module solutions available for JavaScript, and a quick analysis of the pros-and-cons in each one. In the subsequent sections I present Node modules in more depth, then introduce the concepts of parametric modules. Then there's a whole section on package management and NPM. In the last section I introduce Browserify as a tool for using Node modules in non-Node.js environments. Finally, I give a kick-ass conclusion on all of this mess and point you to additional reading material.
 
-## Namespacing and Modules
+## 2. Namespacing and Modules
 
 Both namespaces and modules are important when developing any kind of application, but they also solve entirely different problems. Some people tend to think that namespaces give you modularity: they don't, they only solve name collision problems.
 
-### What's a namespace?
+### 2.1. What's a namespace?
 
 A namespace is something that holds a mapping from a particular name to a particular meaning. Some languages have different namespaces for different kinds of things (for example, the namespace used for functions is not the same as the one used for types, or variables, so a variable A is still different from a function A), some other languages (like JavaScript) just roll out with a single namespace for everything.
 
 Namespaces exist because we can only give things so many names before we run out of alternatives and start writing **SquareRoot2345**, as if we were trying to find an available username on Twitter. Not the best thing, you see.
 
 
-### What's a module?
+### 2.2. What's a module?
 
 A module provides a set of logically related functionality that fulfills a particular interface. So, for example, one could say that an object X that implements the interface Y is a module. Some languages, like Java or Clojure, don't give you modules, and instead just give you namespaces — Clojure's namespaces are first-class and expressive, though, unlike Java's.
 
@@ -48,7 +53,7 @@ For modularity, we want more. Basically, there are three things we look for in a
 
 To make it a little bit clearer, repeat after me **"Modules are not files. Modules are not files. Modules are not files!"**. The correlation of files and modules in most programming languages is just incidental, but modules are objects that provide a particular interface, a file is just a medium used to describe that and load it.
 
-### What's a "module loader"?
+### 2.3. What's a "module loader"?
 
 Since Modules are not files, but we more often than not use files to store them, we need something that'll evaluate a file and give us back a module. These things are often called *module loaders*. Not all languages have these, of course, but some do.
 
@@ -57,7 +62,7 @@ In Node.js, `require` is the module loader. In Python, `import` is the loader. I
 Module loaders are interesting because they allow one to dynamically reference a Module that is stored in any other medium. A medium could be a file, it could be the internets, it could be a database, a zip file, an image, or anything else.
 
 
-## Module solutions for JS
+## 3. Module solutions for JS
 
 It's actually interesting to see how many things the lack of module support baked right into the language has spawned. This is, in fact, one of the things that keep amazing me in Node.js: give people a really small core, but a rather expressive one, and they'll come up with their own creative solutions to solve problems X and Y, and these solutions will then compete to see which one solves the problem best.
 
@@ -65,7 +70,7 @@ Languages and platforms that are heavily batteries-included usually strive for "
 
 But look at JavaScript, it has evolved over the time and accumulated a handful of different solutions to this problem, from a handful of well-known players that do the job (AMD, CommonJS, Node modules), to silly ports of non-expressive module systems in other languages (Gjs), to the most-naïve-solution-that-could-possibly-work (Module pattern).
 
-### The no-module way
+### 3.1. The no-module way
 
 The worst thing you could ever do: not using modules, nor namespaces. Since JS only gives you a single namespace everywhere, name collisions are just waiting to bite you in the ass. Let's not mention that now you're going to have a hard time explaining to people how to play well with your code and get everything working. So, don't do this:
 
@@ -81,7 +86,7 @@ function randomInt(n) {
 /* ... */
 {% endhighlight %}
 
-### The "Hey let's give JS namespaces" crowd
+### 3.2. The "Hey let's give JS namespaces" crowd
 
 Then, there came the Java crowd. These are particularly annoying, because they're treating a symptom of not having modules nor multiple namespaces with... just giving a half-baked solution. Oh, the naïvety. Somehow, there are still people out there that believe that namespacing solves the same problems as modules do, but if you have been paying close attention to this article you already know they don't.
 
@@ -99,7 +104,7 @@ And, well, the madness goes on and on.
 
 In JavaScript, first-class namespacing can be emulated through objects, but they're still rather awkward to work with. We can't have a function run in a particular namespace, for example, as you'd be able to do in something like Io or Piccola. And ES5 strict just got rid of `with`, so you can't unpack a first-class namespace in the current scope — though the feature did cause way too many more problems than it was worth it. Tough luck. First-class namespaces are a *real nice thing*, unfortunately they don't solve modularity problems.
 
-### The Module Pattern
+### 3.3. The Module Pattern
 
 Moving on, the module pattern gives you... you guessed it: modules! Albeit a rather crude form of that. In the module pattern you use a function to get a new scope where you can hide implementation details, and then you return an object that provides the interface your module exposes.
 
@@ -117,7 +122,7 @@ var Queue = new function() {
 
 Now, `Queue` is properly isolated and exposes only the interface we need. Nice, but then it doesn't tell us which kind of dependencies `Queue` has, so while the module pattern is a start, it doesn't solve all our problems. We need our modules to specify their own dependencies, so we can have the module system assemble everything together for us.
 
-### Asynchronous Module Definition (AMD)
+### 3.4. Asynchronous Module Definition (AMD)
 
 AMD is a step in the right direction when it comes down to modules in JS, they give you both first-class modules **and** parametric modules (it should be noted that the CommonJS standard **does not** support straight-forward parametric modules — you can't export a function).
 
@@ -149,13 +154,13 @@ The major implementation of AMD in JavaScript is [Require.JS][], although there 
 Lazy and dynamic loading of modules, which are things AMD enable, are a nice thing to have, if your application ever needs to load more than 1MB of JavaScript — there are some kinds of applications that will just load a lot of new code over time, where it would be a nice fit. I'd still use a tool that converts from a simpler format to AMD, however.
 
 
-## Node modules (a superset of CommonJS modules)
+## 4. Node modules (a superset of CommonJS modules)
 
 The CommonJS modules defined by the standard just don't cut it. But Node modules are an improved implementation of CommonJS modules that give you first-class and straight forward parametric modules (as AMD does), with a simpler mapping of module identifiers to implementations. Plus, you get to use NPM for managing your dependencies, but we'll get there in a second.
 
 Unfortunately, the Node implementation is still a tad bit too complex, because it allows the use of plugins to transform modules before they are loaded, and allow one to omit file extensions, which are the trigger for plugins — [these two features combined are not a good thing, as acknowledged by Isaacs](https://github.com/joyent/node/issues/5430#issuecomment-17696415).
 
-### A quick conceptual overview
+### 4.1. A quick conceptual overview
 
 Node modules and its loader are conceptually easy, and relatively simple:
 
@@ -177,7 +182,7 @@ Node modules and its loader are conceptually easy, and relatively simple:
 
 Additionally, a module can be a part of a package. Packages encode a collection of modules along with their meta-data (dependencies, author, main module, binaries, etc). We'll talk about packages in depth once we visit NPM later in this article.
 
-### First-class modules
+### 4.2. First-class modules
 
 As mentioned before, Node modules are first-class. This means they're just a plain JavaScript object that you can store in variables and pass around. This is one of the most important steps for a good module system.
 
@@ -193,7 +198,7 @@ function hello(thing) {
 module.exports = hello
 {% endhighlight %}
 
-### Module loading
+### 4.3. Module loading
 
 Then, Node modules give you a way of resolving a module identifier to an actual module object. This is done by the first-class function `require`. This function takes in a String containing a module identifier, resolve the identifier to a JavaScript file, executes the file, then returns the object that it exports:
 
@@ -220,7 +225,7 @@ Module identifiers can also be the name of a module, for example `jquery` or `fo
 
 Node's module loading algorithm, while slightly complex (due to allowing one to omit extensions **and** allowing people to register transformers based on the file extension), is still pretty straight forward, and encourages people to have dependencies installed per-module, rather than globally, which avoids lots of versioning hell.
 
-### Parametric modules and delayed binding
+### 4.4. Parametric modules and delayed binding
 
 Last, but not least, Node modules allow straight-forward parametric modules, by making it possible for your module to be a closure. Parametric modules gives us the possibility of delaying implementation decisions, so you code your module using a particular interface, and when instantiating your module the user gives you the correct implementation of that. This is good for a handful of things, from shims, to modular and abstract DOM manipulation, to choosing performant implementations of X or Y.
 
@@ -255,7 +260,7 @@ var listSwap = require('swap')([1, 2]) // note the additional call for instantia
 listSwap() // => [2, 1]
 {% endhighlight %}
 
-### A real-world scenario
+### 4.5. A real-world scenario
 
 So, the above example was simple just to convey the basics of the applicability of parametric modules, but let's see a more real-world scenario. At the company I work for we've had to store some data in the session in a website, and we had to support old browsers that have no support to SessionStorage **and** we had to write a handful of services on top of that. What we did was to write a parametric module that expected a Storage-like interface, and instantiate it with the right implementation depending on the capabilities of the browser.
 
@@ -299,19 +304,19 @@ var printingSession = require('printing-session')(storage)
 As you see, all of the other modules are decoupled from the implementation details of how data is stored and retrieved, and they can just carry on with their business as usual. If we didn't have such straight-forward parametric modules (or worse, no parametric modules at all), we'd have to place the burden of such decisions within each high-level module, which clearly couldn't care less about the particulars of how data storage is performed.
 
 
-## One NPM to Rule Them All
+## 5. One NPM to Rule Them All
 
 Okay, cool, we have a way to load independent components in our applications and even swap in different implementations without breaking a sweat. Now there's one thing left: solving dependency hell. Once you start having lots of modules — and you should, because modules are awesome, and modules make your applications a fucking ton simpler, — you're eventually run into things like: "OH MY GOD I have to fetch this module, and then this, and on this one depends on this version of that one which depdends on that other version of OH FUCK THIS SHIT"
 
 Meet NPM, the guy who's going to do that job for you, so you can just keep your mind into coding awesome applications in JavaScript.
 
-### On Package management in general
+### 5.1. On Package management in general
 
 Package management is not a new idea, it goes back all the way down the story of computing. It's sad that even though we had a lot of time to improve on this area, some package managers still repeat lots of mistakes from the past.
 
 Package managers are, basically, tools that handle all the requirements of your application upfront, instead of you having to tell every user and every developer the requirements for running your application, and expecting them to search for those, download, install, configure, etc. A package manager will do all of that for free, so you can just jump into rocking on right away, any time you want.
 
-### How NPM works?
+### 5.2. How NPM works?
 
 NPM stores packages in a registry. Packages are a possible collection of modules along with their meta-data, which means every package knows who created it, which versions of Node it runs in, and which other packages (and their versions) are needed for it to properly work.
 
@@ -330,14 +335,14 @@ There's quite a bit more to these meta-data, though, so be sure to check out [NP
 Moving on, having NPM installed in your system means you can now declare that your module depends on X, Y and Z to work and just leave the job of fetching and configuring those for NPM, by running `npm install` at the root of your module directory. Then, once you've finished fiddling with your module and are ready to let the world know about it, you just `npm publish` it, and everyone else can install your module as easily as doing `npm install my-thingie`.
 
 
-## NPM and Node modules outside of Node-land
+## 6. NPM and Node modules outside of Node-land
 
 Alas, while NPM is a general tool for managing JavaScript dependencies, it uses Node-style modules (which are a superset of CommonJS modules), which your browser, and most other JavaScript environments don't quite understand. Amazed by the awesomeness of Node modules, and pulled by the desire of having the same amazing development experience in other platforms, people wrote tools to fix this. I'll talk about [Browserify][], by [substack][], here, but there are other tools that do similar things.
 
 [Browserify]: http://browserify.org/
 [substack]: https://github.com/substack
 
-### Limitations
+### 6.1. Limitations
 
 Let me start by saying a few words about the limitations of a tool like Browserify for Node modules: they work by performing optimistic static analysis on your modules and then generating one or more bundles that provide the necessary run-time for instantiating code objects. With Browserify, this means that you'll send down a single JavaScript file to your users, containing everything they need.
 
@@ -345,7 +350,7 @@ This also means that **we can't have conditionally bundled modules** in Browseri
 
 It also means that **most modules will just work**, as long as you don't use `require` as a first-class construct — you don't bind it to another variable and use that variable for loading modules, or pass an expression to `require`. We can not have first-class module loading with just optimistic static analysis, we'd need runtime support, but the trade-offs don't justify it most of the time.
 
-### Browserify means Node modules + NPM in the browser
+### 6.2. Browserify means Node modules + NPM in the browser
 
 The first thing you need to do to get browserify kicking up and running is:
 
@@ -369,7 +374,7 @@ $ browserify entry-module.js > bundle.js
 // THERE AM NO STEP 3
 {% endhighlight %}
 
-### Stand-alone modules
+### 6.3. Stand-alone modules
 
 Sometimes you need to share your modules with people who don't know the awesome world of Node modules yet, shame on them. Browserify allows you to generate stand-alone modules, which will include all dependencies, and can be used with AMD or the No-module approach:
 
@@ -395,7 +400,7 @@ define(['thing'], function(thing) {
 })
 {% endhighlight %}
 
-## Conclusion
+## 7. Conclusion
 
 Modularity is really important for developing large applications that you can actually maintain, and first-class parametric modules give you just the right tool for that. Anything less powerful than that and you're going to suffer badly to componentise everything sooner or later, sometimes people just put up with that and say "Oh, just use this boilerplate" or "Here, I just gave this pattern a name."
 
@@ -403,7 +408,7 @@ Patterns and boilerplates should not be what we, as developers, strive for. We s
 
 For now, I just hope you can go back to your projects and use these techniques to write even bigger and awesomer stuff :D
 
-## References and additional reading
+## 8. References and additional reading
 
 <dl>
   <dt><a href="http://2013.flatmap.no/spiewak.html">Living in a Post-Functional World</a></dt>

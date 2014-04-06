@@ -11,6 +11,10 @@ things* for my work.
 
 I mean, seriously :3
 
+## Table of Contents
+ *  TOC
+{:toc}
+
 
 ## GNU/Linux: Ubuntu 10.10
 

@@ -31,18 +31,8 @@ computation.
 
 
 ## Table of Contents
-
- 1. [Introduction](#1_introduction)
- 2. [Modelling Errors](#2_modelling_errors)
-    1. [Maybe Things Don't Work](#21_maybe_things_dont_work)
-    2. [Interlude: `chain`-ing monads](#22_interlude_chaining_monads)
-    3. [You Either Succeed, or You Fail](#23_you_either_succeed_or_you_fail)
-    4. [Interlude: Recovering From Failures](#24_interlude_recovering_from_failures)
-    5. [Sometimes You Fail More Than Once](#25_sometimes_you_fail_more_than_once)
- 3. [Abstracting Computations](#3_abstracting_computations)
- 4. [Conclusion](#4_conclusion)
- 5. [Libraries](#5_libraries)
- 6. [References and Additional Reading](#6_references_and_additional_reading)
+ *  TOC
+{:toc}
 
 
 ## 1. Introduction

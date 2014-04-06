@@ -4,10 +4,6 @@ title:  Types Might Not Matter!
 snip:   Or how I discovered a better way for correctness-by-design by not worrying.
 ---
 
-Use numbered headers: True
-
-<!-- * * * -->
-
 The functional programming community can be, sometimes, daunting. While we are
 pursuing noble goals, of an expressive computational model that can enforce
 correctness-by-design, more often than not we get too caught on the little
@@ -31,12 +27,12 @@ range of interesting properties become available for the language designer, in
 the quest to make the language safer and easier to use.
 
 
-# Table of Contents
+## Table of Contents
  *  TOC
 {:toc}
 
 
-## Introduction
+## 1. Introduction
 
 Harmonia is a programming language designed for writing domain specific
 embedded languages, and also happens to be a general purpose programming
@@ -61,7 +57,7 @@ more about them, and about how they solve the correctness-by-design problem. I
 describe my, surprising even for me, findings in this article.
 
 
-## Why correctness-by-design?
+## 2. Why correctness-by-design?
 
 One of the major goals of Harmonia is to be able to guide the user towards a
 correctness-by-design approach. This means that a program that is valid in the
@@ -97,7 +93,7 @@ with dependent types (or even a less rich kind of type system), it's possible
 to prove many valuable properties about a program. 
 
 
-## Types versus syntactical constraints
+## 3. Types versus syntactical constraints
 
 So, types are not the only thing we can use to enforce design constraints and
 get correctness-by-design, as shown by Smalltalk dialects. We can also use
@@ -169,7 +165,7 @@ curry/uncurry is lost, but the composition power for valid compositions is
 still maintained, which is what matters in the end.
 
 
-## Conclusion
+## 4. Conclusion
 
 Surely, if we were to consider only the development of programs using text
 editors and a compiler, types will give you a much faster feedback when you get
@@ -187,7 +183,7 @@ doesn't seem to be interested in.
 
 
 
-## References and Additional Reading
+## 5. References and Additional Reading
 
 <dl>
   <dt><a href="http://lucacardelli.name/Papers/TypeSystems.pdf">Type

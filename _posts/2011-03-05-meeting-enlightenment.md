@@ -17,8 +17,12 @@ So, here am I ranting about about the features of e17 that got me hooked, and
 *why* **you** *should give it a try*.
 
 
+## Table of Contents
+ *  TOC
+{:toc}
 
-## Why you should try it
+
+## 1. Why you should try it
 
 You probably heard elsewhere that enlightenment is lightweight and
 sparkles. But I don't think that is enough reason to switch to a Window
@@ -27,7 +31,7 @@ Manager — all the more when it hasn't seen a stable release yet.
 So, here's my little list of reasons:
 
 
-### Lightweight and FAST
+### 1.1. Lightweight and FAST
 
 I have a kinda old PC with an on-board graphic card, which means that not even
 OpenGL gets some love here, thus being lightweight is a must for me. Not only
@@ -46,7 +50,7 @@ any KDE application out there — I try to stay clear of them, by the way.
 
 
 
-### Fully configurable
+### 1.2. Fully configurable
 
 Which is one of the reasons I use Linux in the first place. I like configuring
 everything to fit my workflow, and Enlightenment lets me do so quite easily
@@ -72,7 +76,7 @@ adjustments and screen/modules. So any time I plug it in a different computer,
 I just have to select a suitable profile instead of reconfiguring everything.
 
 
-### Modularity
+### 1.3. Modularity
 
 Since Enlightenment is built up on a modular structure, you can choose exactly
 which features you use instead of wasting RAM on useless stuff. This also means
@@ -84,7 +88,7 @@ without having to worry about breaking the Window Manager — since you can
 always go back to your previous sane profile.
 
 
-### Shelves and Gadgets
+### 1.4. Shelves and Gadgets
 
 Metacity has `desklets` and `panels`, Enlightenment has `shelves` and
 `gadgets`. Gadgets are just small applications you can use on your desktop, and
@@ -108,7 +112,7 @@ available for windows or not.
 
 
 
-### Charmingly beautiful
+### 1.5. Charmingly beautiful
 
 Even if you don't have a powerful enough computer to run the compositing stuff
 (Enlightenment ships with Ecomorph, which is a port of Compiz), there are still
@@ -131,7 +135,7 @@ something that can be portrayed easily with images. You can have a go at some
 youtube videos, though.
 
 
-### Everything a few keystrokes away
+### 1.6. Everything a few keystrokes away
 
 I **loathe** going through *xyz* menus just to launch an application — I hate
 most menus, actually. Enlightenment comes with a nice QuickSilver-like launcher
@@ -149,7 +153,7 @@ other thing you want with a plugin. It's **really** handy (even for someone who
 almost uses Emacs as his OS).
 
 
-### Shortcuts for anything
+### 1.7. Shortcuts for anything
 
 Another thing that I dislike are mouses. I just can't get used to them and
 feel that they get too much on my way. Well, when using Enlightenment I
@@ -167,7 +171,7 @@ some actual useful stuff, so I guess you can get an idea of the
 awesomeness :3
 
 
-### Tiling
+### 1.8. Tiling
 
 I believe this is bundled in e17 in the Illume2, but since the Illume stuff
 is for embed and mobile systems, I haven't dig into this. Instead I use the
@@ -176,7 +180,7 @@ tiling module that's on the SVN.
 The module isn't perfect, but I don't have that many complaints against it.
 
 
-### Handling errors gracefully
+### 1.9. Handling errors gracefully
 
 Yes, the Enlightenment's window manager (e17) is still in pre-alpha, so it's
 not all **that** stable — although I've been using it for months now without
@@ -192,7 +196,7 @@ is affected, not your data. And it gracefully recovers itself to the previous
 state in less than a second, which is a pretty nice thing.
 
 
-## The drawbacks
+## 2. The drawbacks
 
 Yeah, Enlightenment is great and all, but it has its drawbacks. The worst issue
 is really stability. Not that it will crash each minute, but you're likely to
@@ -209,13 +213,13 @@ the features **I** need — even though the tiling isn't perfect — but they ma
 not cover well your use case.
 
 
-## Getting it up and running
+## 3. Getting it up and running
 
 There are quite some ways to try Enlightenment out now. You don't need to
 compile it out yourself if you don't want to, or are just to lazy to do so.
 
 
-### The easy way
+### 3.1. The easy way
 
 You can grab any Linux distro that comes with Enlightenment as their default
 Window Manager and run from the LiveCD or install it on a spare HDD partition
@@ -227,7 +231,7 @@ or a VM. Just get any of the following and try it away:
 - [Bodhi](http://bodhilinux.com/index.html) — Minimalist Ubuntu 10.04-based distro.
 
 
-### The hard way
+### 3.2. The hard way
 
 If you want to try your luck, you can grab the source from the SVN repository
 and compile it yourself...  Okay, it's not so hard, it just takes a little bit
@@ -238,7 +242,7 @@ these concepts should apply to any distro, bear in mind that I'm assuming an
 Ubuntu one as basis for package list and specific commands.
 
 
-####  Before installing
+#### 3.2.1. Before installing
 
 e17 depends on quite a few libraries and tools. The
 [SVN repository](http://svn.enlightenment.org) lists most of it, but depending
@@ -263,7 +267,7 @@ $ sudo apt-get install subversion gcc autoconf \
 {% endhighlight %}
 
 
-#### Building it
+#### 3.2.2. Building it
 
 You can just checkout from the svn repository and run `autogen.sh && make &&
 sudo make install` for every project. BUT THERE ARE BAZILLIONS OF THEM. To
@@ -299,7 +303,7 @@ you need.
 
 
 
-#### Setting the environment
+#### 3.2.3. Setting the environment
 
 If all goes well, you'll have enlightenment and its libraries (and perhaps a
 few extra modules too) fully installed on your system. If you've used a
@@ -316,7 +320,7 @@ $ source ~/.bashrc
 {% endhighlight %}
 
 
-#### Telling your OS to use e17
+#### 3.2.4. Telling your OS to use e17
 
 If you're using a Desktop Manager, you should probably look for how to add more
 sessions to it. If you just don't care about all that, you can set a simple
@@ -331,7 +335,7 @@ $ echo "exec `which enlightenment_start`" > ~/.xsession
 
 
 
-## Wrapping it up
+## 4. Wrapping it up
 
 As you can see, there's much more to Enlightenment than the "**lightweight**"
 or "**beauty at your fingertips**" stuff you hear everywhere, but most of the
