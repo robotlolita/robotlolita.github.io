@@ -11,7 +11,7 @@ details of the known ways to achieve such, and end up considering that to be
 the one and only true way. Yes, I'm talking about the idolisation of static
 typing.
 
-I, too, was one of the people in the cult of Martin-Löf. One of the proponents
+I, too, was one of the people in the cult of Martin-Lof. One of the proponents
 of static typing above all. But not anymore. After watching so many talks by
 Gilad Bracha, such as
 [Deconstructing Functional Programming](http://www.infoq.com/presentations/functional-pros-cons),
@@ -52,7 +52,7 @@ and would have their composition enforced through types.
 However, there are other programming languages that, despite not having a
 static type system, are good at DSELs and composition. Newspeak is an example
 of such. In fact, for some purposes, Newspeak happens to be better at
-composition than Haskell! — theoretically, at least. I was thrilled to learn
+composition than Haskell! -- theoretically, at least. I was thrilled to learn
 more about them, and about how they solve the correctness-by-design problem. I
 describe my, surprising even for me, findings in this article.
 
@@ -130,7 +130,7 @@ mostImportant = sortBy (flip compare `on` weight)
 main = putStrLn $ show $ take 2 $ mostImportant things
 {% endhighlight %}
 
-As you can see, since all functions in Haskell are essentially `a → b`, you can
+As you can see, since all functions in Haskell are essentially `a -> b`, you can
 combine them in every which way syntactically. It's only the types that provide
 compositional constraints, and these are not visible, for example, at the call
 site (not in a text editor, at least). In contrast, Smalltalk languages provide
@@ -181,31 +181,27 @@ like to try walking down the dynamic typing route with a powerful interactive
 development environment, which most of the functional programming community
 doesn't seem to be interested in.
 
+Oh, by the way, have a nice April's Fools :)
+
 
 
 ## 5. References and Additional Reading
 
 <dl>
-  <dt><a href="http://lucacardelli.name/Papers/TypeSystems.pdf">Type
-  Systems</a></dt>
+  <dt><a href="http://lucacardelli.name/Papers/TypeSystems.pdf">Type Systems</a></dt>
   <dd>Lucca Cardelli</dd>
 
-  <dt><a href="http://www.haskell.org/definition/haskell98-report.pdf">Haskell
-  98 Language and Libraries: The Revised Report</a></dt>
+  <dt><a href="http://www.haskell.org/definition/haskell98-report.pdf">Haskell 98 Language and Libraries: The Revised Report</a></dt>
   <dd>Simon Peyton Jones</dd>
 
-  <dt><a href="http://bracha.org/newspeak.pdf">The Newspeak Programming
-  Platform</a></dt>
+  <dt><a href="http://bracha.org/newspeak.pdf">The Newspeak Programming Platform</a></dt>
   <dd>Gilad Bracha, Peter Ahe, Vassili Bykov, Yaron Kashai, and Eliot Miranda</dd>
 
-  <dt><a href="http://bracha.org/newspeak-modules.pdf">Modules as Objects in
-  Newspeak</a></dt>
-  <dd>Gilad Bracha, Peter von der Ahé, Vassili Bykov, Yaron Kashai, William
-  Maddox, and Eliot Miranda</dd>
+  <dt><a href="http://bracha.org/newspeak-modules.pdf">Modules as Objects in Newspeak</a></dt>
+  <dd>Gilad Bracha, Peter von der Ahé, Vassili Bykov, Yaron Kashai, William Maddox, and Eliot Miranda</dd>
 
   <dt><a
-  href="http://www.schemeworkshop.org/2011/papers/Scholliers2011.pdf">Computational
-  Contracts</a></dt>
+  href="http://www.schemeworkshop.org/2011/papers/Scholliers2011.pdf">Computational Contracts</a></dt>
   <dd>Christophe Scholliers, Éric Tanter, and Wolfgang de Meuter</dd>
 
   <dt><a href="http://dl.acm.org/citation.cfm?id=2162141">Epigram: Practical
@@ -216,37 +212,30 @@ doesn't seem to be interested in.
   <dd>Andreas Rossberg, Claudio Russo, and Derek Dreyer</dd>
 
   <dt><a
-  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.39.6996">Types,
-  Abstraction, and Parametric Polymorphism, Part 2</a></dt>
+  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.39.6996">Types, Abstraction, and Parametric Polymorphism, Part 2</a></dt>
   <dd>QingMing Ma, and John C. Reynolds</dd>
 
   <dt><a
-  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.67.5276">A
-  theory of type polymorphism in programming</a></dt>
+  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.67.5276">A theory of type polymorphism in programming</a></dt>
   <dd>Robin Milner</dd>
 
   <dt><a
-  href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">Principal
-  type-schemes for functional programs</a></dt>
+  href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">Principal type-schemes for functional programs</a></dt>
   <dd>Luis Damas, and Robin Milner</dd>
 
   <dt><a
-  href="http://haskell.cs.yale.edu/wp-content/uploads/2011/01/DSEL-Little.pdf">Domain
-  Specific Languages</a></dt>
+  href="http://haskell.cs.yale.edu/wp-content/uploads/2011/01/DSEL-Little.pdf">Domain Specific Languages</a></dt>
   <dd>Paul Hudak</dd>
 
   <dt><a
-  href="http://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf">Why
-  Functional Programming Matters</a></dt>
+  href="http://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf">Why Functional Programming Matters</a></dt>
   <dd>John Hughes</dd>
 
   <dt><a
-  href="http://www.infoq.com/presentations/functional-pros-cons">Deconstructing
-  Functional Programming</a></dt>
+  href="http://www.infoq.com/presentations/functional-pros-cons">Deconstructing Functional Programming</a></dt>
   <dd>Gilad Bracha</dd>
 
   <dt><a
-  href="http://www.infoq.com/presentations/past-present-future-programming">Onward!
-  — Does Thought Crime Pay?</a></dt>
+  href="http://www.infoq.com/presentations/past-present-future-programming">Onward! -- Does Thought Crime Pay?</a></dt>
   <dd>Gilad Bracha</dd>
 </dl>
