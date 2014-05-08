@@ -629,7 +629,7 @@ function sequence(m, ms) {
                        , m.of([]))
 }
 
-var concatenatedM = liftM( all(Future, [aM, bM, cM, dM])
+var concatenatedM = liftM( sequence(Future, [aM, bM, cM, dM])
                          , function(xs) {
                              return xs.join('\n') })
 {% endhighlight %}
