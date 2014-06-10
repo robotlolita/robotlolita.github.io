@@ -19,7 +19,7 @@ I then
 [voiced my complaints about this](https://twitter.com/robotlolita/status/433042231021563905)
 which generated an interesting discussion. Of course I do agree that people
 need to be literate about computers, and that they should know how to talk to
-computers, the whole problem are us, programmers. We fail as a profession so
+computers. The whole problem are us, programmers. We fail as a profession so
 much, and end up blaming everyone else for *not getting how to play
 computers*, which **we** shouldn't even be doing to begin with!
 
@@ -125,10 +125,10 @@ a job for computers and your compiler.
 
 Other problems arise from the choice of programming languages to teach
 particular concepts, and the way such concepts are explained. Object
-Orientation is usually taught using languages that don't support this paradigm
-well, such as Java or C++. There are courses who don't even introduce people to
-simpler and more powerful concepts, such as generic programming and
-higher-order functions.
+Orientation is usually taught using languages that don't have a reasonable
+support for this computational model, such as Java or C++. There are courses
+who don't even introduce people to simpler and more powerful concepts, such as
+generic programming and higher-order functions.
 
 
 ## A better curriculum
@@ -139,6 +139,8 @@ one where simpler concepts are taught first, and complex concepts are taught
 much latter. Both [How To Design Programs](http://htdp.org/) and
 [Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)
 provide interesting curricula for introductory courses, 
+
+In any case, 
 
 ## Exploring computations
 <!-- How tools and immediate feedback can aid learning -->
