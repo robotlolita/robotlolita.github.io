@@ -115,8 +115,18 @@ is to just encode this reasoning directly.
 
 The most direct way of solving this problem is through branching, where
 different operations get selected depending on a certain logical
-condition. Below are
+condition.
 
+<ul class="tabs">
+  <li><a href="#javascript" class="active">JavaScript</a></li>
+  <li><a href="#java">Java</a></li>
+  <li><a href="#python">Python</a></li>
+  <li><a href="#scala">Scala</a></li>
+  <li><a href="#clojure">Clojure</a></li>
+  <li><a href="#haskell">Haskell</a></li>
+</ul>
+<div class="tab-contents">
+  <div data-language="javascript" class="active">
 {% highlight js %}
 function save(page) {
   if (title.trim() !== '') {
@@ -138,6 +148,63 @@ function save(page) {
   }
 }
 {% endhighlight %}
+  </div>
+  <div data-language="java">
+{% highlight java %}
+public void save(Page page) {
+  if (title.trim().equals("")) {
+    if (content.trim().equals("")) {
+      if (publishOn.after(new Date()) || publishOn.equals(new Date())) {
+        if (expireOn.after(publishOn) || expireOn.equals(publishOn)) {
+          storeInDatabase(page)
+        } else {
+          print("The expiration date should be greater than the publish date.")
+        }
+      } else {
+        print("The publish date should be at least today.")
+      }
+    } else {
+      print("The content of the page can't be empty.")
+    }
+  } else {
+    print("The title of the page can't be empty.")
+  }
+}
+{% endhighlight %}
+  </div>
+  <div data-language="python">
+{% highlight python %}
+from datetime import date
+
+def save(page):
+  if title.strip() != '':
+    if content.strip() !== '':
+      if publishOn >= date.today():
+        if expireOn >= publishOn:
+          storeInDatabase(page)
+        else:
+          print("The expiration date should be greater than the publish date.")
+      else:
+        print("The publish date should be at least today.")
+    else:
+      print("The content of the page can't be empty.")
+  else:
+    print("The title of the page can't be empty.")
+{% endhighlight %}
+  </div>
+  <div data-language="scala">
+{% highlight scala %}
+{% endhighlight %}
+  </div>
+  <div data-language="clojure">
+{% highlight clojure %}
+{% endhighlight %}
+  </div>
+  <div data-language="haskell">
+{% highlight haskell %}
+{% endhighlight %}
+  </div>
+</div>
 
 There are a couple of problems with this approach. The first one is that
 it's incredibly difficult to *read* this code. You need to keep matching
@@ -226,3 +293,33 @@ safe.
 
 
 [SICP]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-9.html#%_chap_1
+
+<script>
+void function() {
+  var toArray = Function.call.bind([].slice)
+
+  $('.tabs a').forEach(function(a) {
+    a.onclick = function(ev) {
+      ev.preventDefault()
+      var lang = a.getAttribute('href').slice(1)
+      deactivate($('.tabs a').concat($('.tab-contents > div[data-language]')))
+      activate([a])
+      activate($('.tab-contents > div[data-language]').filter(match(lang)))
+    }
+  })
+
+  function $(s, c) {
+    return toArray((c || document).querySelectorAll(s)) }
+
+  function match(l) { return function(e) {
+    return e.getAttribute('data-language') === l }}
+
+  function deactivate(xs) {
+    xs.forEach(function(x) {
+      x.className = x.className.replace(/\bactive\b/, '').trim() })}
+
+  function activate(xs) {
+    xs.forEach(function(x) {
+      x.className += ' active' })}
+}()
+</script>

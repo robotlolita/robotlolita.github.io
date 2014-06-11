@@ -1627,6 +1627,54 @@ a:hover {
   color: #836953;
   font-family: Lora;
 }
+#post .tabs {
+  padding: 0;
+  margin: 1em 0 0 0;
+  list-style: none;
+  zoom: 1;
+}
+#post .tabs:before,
+#post .tabs:after {
+  content: "";
+  display: table;
+}
+#post .tabs:after {
+  clear: both;
+}
+#post .tabs li {
+  float: left;
+  margin: 0;
+}
+#post .tabs a {
+  display: inline-block;
+  padding: 0.5em 1.5em;
+  border: 1px solid #ddd;
+  color: #999;
+  border-left-width: 0;
+  border-bottom: 0;
+  text-decoration: none;
+  background: #fafafa;
+}
+#post .tabs a:first-child {
+  border-left-width: 1px;
+}
+#post .tabs a:hover {
+  border-top-color: #70b1ef;
+  color: #555;
+  background: #fff;
+}
+#post .tabs a.active {
+  border-top: 5px solid #70b1ef;
+  margin-top: -5px;
+  color: #424242;
+  background: #fff;
+}
+#post .tab-contents > div {
+  display: none;
+}
+#post .tab-contents > div.active {
+  display: block;
+}
 @media screen and (max-width: 1200px) {
   #header #logo,
   #header #top-navigation {

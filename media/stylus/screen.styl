@@ -253,6 +253,44 @@ a:hover
     color: #836953
     font-family: Lora
 
+  .tabs
+    padding: 0
+    margin: 1em 0 0 0
+    list-style: none
+    clearfix: yes
+
+    li
+      float: left
+      margin: 0
+    a
+      display: inline-block
+      padding: 0.5em 1.5em
+      border: 1px solid #ddd
+      color: #999
+      border-left-width: 0
+      border-bottom: 0
+      text-decoration: none
+      background: #fafafa
+      &:first-child
+        border-left-width: 1px
+      &:hover
+        border-top-color: link-colour
+        color: #555
+        background: #fff
+    a.active
+      border-top: 5px solid link-colour
+      margin-top: -5px
+      color: jsk-base-colour
+      background: #fff
+
+  .tab-contents > div
+    display: none
+  .tab-contents > div.active
+    display: block
+    
+      
+      
+
 
 @media screen and (max-width: 1200px)
   #header
