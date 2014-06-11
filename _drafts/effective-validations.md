@@ -227,7 +227,9 @@ to add a new condition, or output all the validation errors, it would
 require large changes to the code.
 
 
-### 2.2. Exceptions
+### 2.2. Early and Non-local returns
+
+
 
 ### 2.3. A constraint engine
 
