@@ -178,7 +178,7 @@ from datetime import date
 
 def save(page):
   if title.strip() != '':
-    if content.strip() !== '':
+    if content.strip() != '':
       if publishOn >= date.today():
         if expireOn >= publishOn:
           storeInDatabase(page)
@@ -227,10 +227,9 @@ to add a new condition, or output all the validation errors, it would
 require large changes to the code.
 
 
-### 2.2. A constraint engine
+### 2.2. Exceptions
 
-
-
+### 2.3. A constraint engine
 
 ### 2.X. A principled solution
 
