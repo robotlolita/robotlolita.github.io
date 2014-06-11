@@ -165,9 +165,9 @@ require large changes to the code.
 
 
 
-## 3. A principled solution
+### 2.X. A principled solution
 
-#### 2. Normalising some input
+## 3. Normalising some input
 
 > The program receives as input a record containing the following
 > information:
