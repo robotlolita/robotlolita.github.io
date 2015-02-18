@@ -34,10 +34,8 @@ projects is to write
 
 ## Getting in touch
 
-Even though I'm busy most of the time, I love hearing from other people! So, if
-you want me to speak at your event, work with you in an awesome project, write
-for your magazine, or just stop by to say "'lo, buddy", you can always
-[drop me a line](mailto:quildreen@gmail.com). 
+Even though I'm busy most of the time, I love hearing from other people! So, just
+[drop me a line](mailto:queen@robotlolita.me). 
 
 
 <blockquote>
