@@ -947,7 +947,7 @@ articles in this series, eh! ♥
 ## 7. References and additional reading
 
 <dl>
-  <dt><a href="http://www.cwru.edu/artsci/math/wells/pub/ttt.html">Toposes,
+  <dt><a href="http://www.amazon.com/Toposes-Theories-Grundlehren-mathematischen-Wissenschaften/dp/1489900233">Toposes,
   Triples and Theories, by M. Barr and C. Wells</a></dt>
   <dd>You don't need to have a PhD in Category Theory to understand Monads,
   Functors and friends, but having an understanding of the basics in Category
