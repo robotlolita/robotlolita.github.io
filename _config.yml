@@ -1,11 +1,11 @@
-name: Sorella's Basement
+name: w'A
 pygments: true
 markdown: kramdown
 
 navigation:
-- text: Blog
+- text: Home
   url: /index.html
 - text: About
   url: /about/index.html
-- text: Hacks
+- text: Projects
   url: /projects/index.html
