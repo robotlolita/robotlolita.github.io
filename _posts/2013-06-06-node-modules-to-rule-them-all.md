@@ -427,7 +427,8 @@ For now, I just hope you can go back to your projects and use these techniques t
   <dd>Gilad Bracha's thesis describe a framework for modularity in programming languages with basis in inheritance for module manipulation. A fairly interesting read.</dd>
   
   <dt><a href="http://scg.unibe.ch/archive/phd/schaerli-phd.pdf">Traits - Composing Classes from Behavioural Building Blocks</a></dt>
-  <dd>Traits came up as an alternative for multiple inheritance and the diamond problem, being a saner choice than plain mixins. Schärli's dissertation describes them in a rather nice way, and the operators and semantics for traits just happen to make a perfect fit for enforcing compositionality contracts for dynamic module.</dd>
+  <dd>Traits came up as an alternative for multiple inheritance and the diamond
+  problem, being a simpler and more robust choice than plain mixins. Schärli's dissertation describes them in a rather nice way, and the operators and semantics for traits just happen to make a perfect fit for enforcing compositionality contracts for dynamic module.</dd>
   
   <dt><a href="https://github.com/killdream/pandora">Pandora</a></dt>
   <dd>Pandora is a rather old module I've written that uses Trait operators to define a series of constraints for first-class modules. It's influenced by Scheme, Clojure, Piccola and Traits, and here mostly for the conceptual relevance.</dd>

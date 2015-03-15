@@ -85,7 +85,7 @@ always a good thing.
 
 Alongside with the configuration profiles, this lets you test modules away
 without having to worry about breaking the Window Manager — since you can
-always go back to your previous sane profile.
+always go back to your previous working profile.
 
 
 ### 1.4. Shelves and Gadgets
@@ -163,7 +163,7 @@ everything.
 The input dialogues allows for shortcuts for usual system commands, as you
 would expect, but also to manipulate virtual desktops and windows. And when
 I say *manipulate windows* I mean you can resize, position and switch
-between these windows using your keyboard in a sane way.
+between these windows using your keyboard.
 
 I have almost all possible cute mnemonic combinations with the useless Super
 key (Super+key, Ctrl+Super+key, Shift+Super+key, Alt+Super+key, ...) to do
@@ -292,7 +292,7 @@ features may not compile, or may be unmaintained and conflict with your stuff.
 To peek on the things you can configure in the install script, just use
 `--help`.
 
-If you'd rather have control over all of the build process, or want a sane way
+If you'd rather have control over all of the build process, or want an easy way
 of getting the newest features of the repository, you can use the sample script
 on the [SVN repository](http://svn.enlightenment.org) as basis and modify it as
 you need.

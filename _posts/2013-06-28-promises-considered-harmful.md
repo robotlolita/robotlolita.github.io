@@ -363,7 +363,7 @@ performance penalties.
 
 It's also interesting to note that, while you lose some performance from
 the mandatory asynchronous resolution of Promises/A+, you get something
-that's saner overall in the JavaScript environment, when working with
+that's less prone to breaking in the JavaScript environment, when working with
 larger dependency chains. Since JavaScript doesn't have
 [Tail Call Optimisation](https://en.wikipedia.org/wiki/Tail_call), you
 can easily run into a `Stack Overflow` error when applying

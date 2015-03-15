@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "A Monad in Practicality: First-Class Failures"
-snip:  How monads help you to deal with failures in a sane way
+snip:  How monads help you to deal with failures in a simple way
 published: true
 redirect_from:
   - /2013/12/08/a-monad-in-practicality-first-class-failiures.html

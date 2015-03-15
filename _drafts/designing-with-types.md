@@ -27,7 +27,12 @@ In this article I'm going to show some of the reasoning about optimising program
 
 ## 1. Introduction
 
-Most JavaScript programmers who have to work with the DOM end up, sooner or later, falling in love with jQuery. Not exactly because it is a great library, but it does get the job done, has lots of extensions, and keeps out of your way... until it doesn't. While the library can easily fill in the simple cases, it quickly becomes unwieldy for more complex situations, where you would hope to abstract some of the problems away in order to keep the maintainability of your code base at a sane level. There are also performance problems once you start demanding more from the library, and you end up having to perform some fairly dirty tricks to keep things fast enough.
+Most JavaScript programmers who have to work with the DOM end up, sooner or
+later, falling in love with jQuery. Not exactly because it is a great library,
+but it does get the job done, has lots of extensions, and keeps out of your
+way... until it doesn't. While the library can easily fill in the simple cases,
+it quickly becomes unwieldy for more complex situations, where you would hope
+to abstract some of the problems away in order to keep your code base maintainable. There are also performance problems once you start demanding more from the library, and you end up having to perform some fairly dirty tricks to keep things fast enough.
 
 But it doesn't have to be this way. Would we be able to redesign jQuery so that it's fast, easy to use, scales to cover the complex cases in a maintainable way, and still manages to be performant? By providing insights on the design of libraries for JIT'ing VMs, and people, this article tries to provide an answer to that question.
 

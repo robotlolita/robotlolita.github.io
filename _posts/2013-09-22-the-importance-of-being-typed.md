@@ -21,7 +21,7 @@ See anything wrong with the following template?
 <div>{⁣{ yourHTML }⁣}</div> :)
 {% endhighlight %}
 
-No? Well, what if I told you that this snippet is nothing more than naive String concatenation? Sounds insane?! Smells like bullshit?! Well, stick with me!
+No? Well, what if I told you that this snippet is nothing more than naive String concatenation? Sounds silly?! Smells like bullshit?! Well, stick with me!
 
 TL;DR:
 
@@ -275,7 +275,7 @@ While parsing an incorrect HTML like: `<b><i>Some text</x>` would give you a par
 
 ## 7. Conclusion
 
-We need to start using smart templating engines, which take into account the language they're working with, since this is the only sane and safe way to work with this data. However, the programmer mindset is a major issue, in all of the problems outlined in this post. We've been taught how to work with Strings, we've been given tools to work with Strings, but we're working with data that just don't fit what the String type is supposed to hold.
+We need to start using smart templating engines, which take into account the language they're working with, since this is the only safe way to work with this data. However, the programmer mindset is a major issue, in all of the problems outlined in this post. We've been taught how to work with Strings, we've been given tools to work with Strings, but we're working with data that just don't fit what the String type is supposed to hold.
 
 Lisps are far better in this aspect because the internal structures, values and composition operators are all defined on top of S-expressions, so composition between things is easier. There's no reason we shouldn't learn from the Lisp crowd and start working with structured data in a structured format, however.
 
