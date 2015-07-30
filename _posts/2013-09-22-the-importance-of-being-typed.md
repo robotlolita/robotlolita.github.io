@@ -194,7 +194,7 @@ Html(
         Meta({ charset: "utf-8" })
     ), Body(
         Section({ classes: ["main"] }, page.content),
-        parseHtml(page.arbitraryHTML),
+        parseHtml(page.arbitraryHTML)
     )
 )
 {% endhighlight %}
