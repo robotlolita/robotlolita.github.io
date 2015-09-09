@@ -5,6 +5,14 @@ title: Promises/A+ Considered Harmful
 snip: The drawbacks of using a Promises/A+ implementation
 ---
 
+> <strong class="heading">Warning</strong>
+> This article was written a long time ago. Since then, Bluebird has
+> solved most of the performance problem with Promises/A+ (at the cost
+> of a lot of added complexity). Keep this in mind when reading the
+> section on performance.
+{: .warning .note}
+
+
 Before I even start talking about the drawbacks of Promises/A+, let me
 start by saying that the concept of Promises is one of the best things
 for handling asynchronous computations in JavaScript right now. It's
@@ -103,7 +111,7 @@ promises.
 Imagine you're calling a particular API which sums all the values in
 a list, asynchronously. You write the following piece of code:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var sum = list.sum(xs)
 // (...)
 sum.then(display)
@@ -140,7 +148,7 @@ synchronous code. My take is that the Promises/A+ shouldn't have this on
 the standard, just let code that throws error crash, and allow people to
 selective wrap their code if they're interested in handling something:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 function identity(a){ return a }
 
 function catchErrors(f) {
@@ -161,7 +169,7 @@ Now people are forced to explicitly specify all the errors they're
 interested in handling, thus it's much less likely that errors will go
 by unnoticed:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 function isQuotaError(a){ return a instanceof QuotaError }
 
 var record = catchErrors(makeDbCall())
@@ -413,3 +421,7 @@ void function() {
 }()
 </script>
 {% endraw %}
+
+
+Quil has murdered many Promises for Christmas. Unfortunately the universe just swallowed their deaths and no one ever noticed. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+{: .contact-footer}

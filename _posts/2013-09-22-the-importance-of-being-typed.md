@@ -17,7 +17,7 @@ snip: "Or “Handlebars and Mustache are just naive String concatenation!”"
 
 See anything wrong with the following template?
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <div>{⁣{ yourHTML }⁣}</div> :)
 {% endhighlight %}
 
@@ -68,13 +68,13 @@ Okay, but what does this all have to do with templating engines?
 
 Well, me dears, while we most certainly realised we needed to use robust parsers to extract data from structured formats, most people still haven't realised that they *must* also use serialisers that can write data in a structured format. This led to things like these:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 db.query("SELECT * FROM users WHERE name=\"" + user.name + "\".");
 {% endhighlight %}
     
 Or its close cousin:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 shell_execute("sudo adduser '" + user.name + "' 'webuser'")
 {% endhighlight %}
     
@@ -91,19 +91,19 @@ But Handlebars and Mustache will escape things automatically, so that solves all
 
 So, let's suppose you have a piece of HTML that was generated from another process, that you know to be safe (it plays correctly by the rules of HTML), and you want to embed in another template:
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <div>{⁣{ yourHTML }⁣}</div> :)
 {% endhighlight %}
     
 The previous template is no good, because now all of the `<` characters will be replaced by `&lt;` and the final thing will mean something else entirely. But Handlebars allows one to include any HTML verbatim in another template by using the "triple-stashes":
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <div>{⁣{⁣{ yourHTML }⁣}⁣}</div> :)
 {% endhighlight %}
     
 Oh, now your HTML works beautifully, and the meaning is preserved... or is it? Imagine you have the following templates:
 
-{% highlight html %}
+{% highlight html linenos=table %}
 yourHTML:
 <noscript>This website requires JavaScript
         
@@ -115,19 +115,19 @@ You might question the validity of the first snippet, but it's a perfectly valid
 
 The problem here is that, while both snippets are valid on their own right, the result of composing both is not the straight-forward thing that you would expect:
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <div><noscript>This website requires JavaScript</noscript></div> :)
 {% endhighlight %}
     
 But rather something monstruous:
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <div><noscript>This website requires JavaScript</div> :)
 {% endhighlight %}
     
 Which is interpreted by the HTML parser as the following, effectively changing the meaning that we intended!
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <div><noscript>This website requires JavaScript&lt;/div&gt; :)</noscript></div>
 {% endhighlight %}
 
@@ -161,7 +161,7 @@ For instance, let's suppose one wants to generate an SQL query. Instead of the n
 
 [Korma]: http://sqlkorma.com/
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //+ SELECT :: ([Name], Name) → [SQL]
 function SELECT(fields, table) {
     return [ SQLCommand("SELECT")
@@ -181,13 +181,13 @@ runSql(SELECT(fields, table)).forEach(displayUser)
 
 Contrasting with the usage for the naive approach, the usage of a safe approach that acknowledges the structure of SQL, and enforces *context-sensitive* proper composition (therefore eliminating any errors resulting from the need of escaping data) is just as easy as:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 runSql("SELECT {fields} FROM {table}").forEach(displayUser)
 {% endhighlight %}
 
 With the added advantages of never needing to sanitise inputs, or being able to write an improper SQL query. A similar claim could be made for an HTML templating engine that supports structured templates:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 Html(
     Head(
         Title(page.title),
@@ -206,7 +206,7 @@ Where, `page.title`, `page.content` and `page.arbitraryHTML` will be properly ha
 
 ECMAScript 6 defines a proposal for "quasi-literals," which is more akin to Lisp quasi-quotation than naive String interpolation in languages like Ruby, CoffeeScript or PHP. And this is a *real good thing*, because in the future we'll be able to embed all sorts of amazing DSLs in JavaScript, maintaining all of the composition referred to above. This means that your HTML templating would look like this:
 
-{% highlight html %}
+{% highlight html linenos=table %}
 html`<html>
        <head><title>${page.title}</title>
              <meta charset="utf-8"></head>
@@ -223,7 +223,7 @@ The sad news: **ECMAScript 6's quasi-literals make no guarantee of such.** This 
 
 The above snippet could be thought of as (and this is a simplified view deviating a little from the spec):
 
-{% highlight js %}
+{% highlight js linenos=table %}
 html([ "<html><head><title>", 0
      , "</title><meta charset=\"utf-8\"><body><section class=\"main\">", 1,
      , "</section>", 2,
@@ -246,7 +246,7 @@ Having no standard and simple way of writing parsers in the language also contri
 
 For example, this would be a simplified HTML parser in [OMeta/JS][], a super-set of JavaScript:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 ometa HTML <: Parser {
     tagChar = char:c ?(/a-zA-Z/.test(c)) -> c,
     tagName = tagChar*:cs -> [ 'id', cs.join('') ],
@@ -261,7 +261,7 @@ ometa HTML <: Parser {
     
 Parsing some text like: `<b><i>Some text</i></b>` would yield the following AST (abstract syntax tree):
 
-{% highlight js %}
+{% highlight js linenos=table %}
 [['tag', ['id', 'b'],
   ['tag', ['id', 'i'],
    ['text', 'Some text']]]]
@@ -348,3 +348,7 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 <a name="fn2">&nbsp;</a>
 <p>²: <a href="http://wiki.ecmascript.org/doku.php?id=harmony:quasis">Quasi-literals</a> in Harmony are supposed to fix this, but it remains to be seen if they'll be used correctly due to the current mindset with regards to working with structured data.</p>
 </blockquote>
+
+
+Quil eats types for breakfast. So far none of them were dependent. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+{: .contact-footer}

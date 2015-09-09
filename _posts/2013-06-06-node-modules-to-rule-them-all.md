@@ -74,7 +74,7 @@ But look at JavaScript, it has evolved over the time and accumulated a handful o
 
 The worst thing you could ever do: not using modules, nor namespaces. Since JS only gives you a single namespace everywhere, name collisions are just waiting to bite you in the ass. Let's not mention that now you're going to have a hard time explaining to people how to play well with your code and get everything working. So, don't do this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 function random(n) {
   return Math.random() * n
 }
@@ -92,7 +92,7 @@ Then, there came the Java crowd. These are particularly annoying, because they'r
 
 This is, however, not what this crowd wants you to believe, instead they come barging down your house, screaming "THOU MUST NAMESPACE ALL YOUR SCRIPTS", and then some people go and write shit like this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var com = {}
 com.myCompany = {}
 com.myCompany.myPackage = {}
@@ -108,7 +108,7 @@ In JavaScript, first-class namespacing can be emulated through objects, but they
 
 Moving on, the module pattern gives you... you guessed it: modules! Albeit a rather crude form of that. In the module pattern you use a function to get a new scope where you can hide implementation details, and then you return an object that provides the interface your module exposes.
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // we use `new` here just to abuse how badly designed it is,
 // (we can return a different object not related to the function's prototype)
 // You could call the function as an IIFE, as everyone else does.
@@ -128,7 +128,7 @@ AMD is a step in the right direction when it comes down to modules in JS, they g
 
 However, AMD comes with the cost of way-too-much-boilerplate. Remember that I said boilerplate is harmful and means your tools are not solving your problem, well this happens to AMD:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Dependency names are separated from bindings, which creates confusion
 define('queue', ['foo'], function(foo) {
   return TheModule // this is pretty cool, though
@@ -188,7 +188,7 @@ As mentioned before, Node modules are first-class. This means they're just a pla
 
 To write a Node module, you just create a new JavaScript file, and assign any value you want to `module.exports`:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // hello.js
 function hello(thing) {
   console.log('Hello, ' + thing + '.')
@@ -202,7 +202,7 @@ module.exports = hello
 
 Then, Node modules give you a way of resolving a module identifier to an actual module object. This is done by the first-class function `require`. This function takes in a String containing a module identifier, resolve the identifier to a JavaScript file, executes the file, then returns the object that it exports:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var hello = require('./hello.js')
 
 hello('dear reader') // => "Hello, dear reader."
@@ -212,7 +212,7 @@ A module identifier can be either a relative or absolute path, in which case the
 
 Module identifiers can also be the name of a module, for example `jquery` or `foo/bar` — in the latter case `bar` is resolved relative to the root of `foo`. In these cases, the algorithm will try to find the closest module that matches that name living in a `node_modules` folder above the requirer's location.
 
-{% highlight text %}
+{% highlight text linenos=table %}
 + /
 |--+ /node_modules
 |  `--+ /foo          // we'll load this
@@ -231,7 +231,7 @@ Last, but not least, Node modules allow straight-forward parametric modules, by 
 
 So, in practice, it works like this: You define an interface for writing your code against.
 
-{% highlight hs %}
+{% highlight hs linenos=table %}
 type Stack a {
   push: a -> ()
   pop: () -> Maybe a
@@ -240,7 +240,7 @@ type Stack a {
 
 Then you export a function that takes the concrete implementation of that interface:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 module.exports = function(stack) {
   function swap() {
     var e1 = stack.pop()
@@ -255,7 +255,7 @@ module.exports = function(stack) {
 
 And finally, when someone wants to use your module, they just instantiate the code with the right implementation of the Stack interface:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var listSwap = require('swap')([1, 2]) // note the additional call for instantiating
 listSwap() // => [2, 1]
 {% endhighlight %}
@@ -266,7 +266,7 @@ So, the above example was simple just to convey the basics of the applicability 
 
 Basically, we had this interface:
 
-{% highlight hs %}
+{% highlight hs linenos=table %}
 type Storage a b {
   get: a -> Promise (Maybe b)
   set: a, b -> Promise b
@@ -275,7 +275,7 @@ type Storage a b {
 
 And derived a concrete implementation for browsers supporting local storage, and one for browsers that do not by talking to a webservice over HTTP (which is slower, and we didn't want to push the cost on every user):
 
-{% highlight hs %}
+{% highlight hs linenos=table %}
 implement SessionStorage String String {
   get: String -> Promise (Maybe String)
   set: String, String -> Promise String
@@ -289,7 +289,7 @@ implement HTTPStorage String String {
 
 With this, we had a single `storage` module, which we could instantiate with the implementation of `SessionStorage` or `HTTPStorage` depending on the browser (this was for in-app performance, not for optimising bandwidth, so both modules were bundled), all of the other modules that depended on a storage then were made parametric modules, accepting a concrete implementation of `storage`. The following is a simplified version:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Get the proper storage for the browser
 var HTTPStorage    = require('http-storage')('/api/session')
 var SessionStorage = require('session-storage')
@@ -322,7 +322,7 @@ NPM stores packages in a registry. Packages are a possible collection of modules
 
 This meta-data is specified in a `package.json` file at the root of your module directory. The most basic file that could possible work would be something like this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 { "name": "my-thingie"
 , "description": "It does ~~awesome~~ stuff"
 , "version": "1.0.0"
@@ -354,23 +354,23 @@ It also means that **most modules will just work**, as long as you don't use `re
 
 The first thing you need to do to get browserify kicking up and running is:
 
-{% highlight sh %}
+{% highlight sh linenos=table %}
 $ npm install -g browserify
 {% endhighlight %}
 
 Now you can write all your modules as if you were writing for Node, use NPM to manage all your dependencies and then just generate a bundle of your module that you can use in a web browser:
 
-{% highlight sh %}
+{% highlight sh linenos=table %}
 # Step 1: bundle your module
 $ browserify entry-module.js > bundle.js
 {% endhighlight %}
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <!-- step 2: reference the bundle -->
 <script src="bundle.js"></script>
 {% endhighlight %}
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // THERE AM NO STEP 3
 {% endhighlight %}
 
@@ -378,17 +378,17 @@ $ browserify entry-module.js > bundle.js
 
 Sometimes you need to share your modules with people who don't know the awesome world of Node modules yet, shame on them. Browserify allows you to generate stand-alone modules, which will include all dependencies, and can be used with AMD or the No-module approach:
 
-{% highlight sh %}
+{% highlight sh linenos=table %}
 # Step 1: generate a standalone module
 browserify --standalone thing thing-module.js > thing.umd.js
 {% endhighlight %}
 
-{% highlight html %}
+{% highlight html linenos=table %}
 <!-- step 2: have people reference your module -->
 <script src="thing.umd.js"></script>
 {% endhighlight %}
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Step 3: people can use your module with whatever
 thing.doSomething()
 // or
@@ -443,3 +443,7 @@ For now, I just hope you can go back to your projects and use these techniques t
   <dd>The specification for Asynchronous Module Definition in the CommonJS standard</dd>
   
 </dl>
+
+
+Quil has many modules published on npm, so whatever she writes must be true. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+{: .contact-footer}

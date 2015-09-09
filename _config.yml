@@ -1,11 +1,11 @@
-name: Sorella's Basement
+name: "Quils in Space"
 pygments: true
 markdown: kramdown
+exclude:
+- node_modules
 
 navigation:
 - text: Blog
   url: /index.html
 - text: About
   url: /about/index.html
-- text: Hacks
-  url: /projects/index.html

@@ -1,13 +1,9 @@
-@css {
-  @import url("http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic|Montserrat|Lora:400italic");
-}
-
-jsk-body-font = 'Droid Serif', serif
-jsk-heading-font = 'Montserrat', sans
+jsk-body-font = 'Lora', serif
+jsk-heading-font = 'PT Sans Caption', sans
 jsk-mono-font = monospace
 jsk-base-line-height = 1.2em
 jsk-base-font-size = 16px
-jsk-base-colour = #424242
+jsk-base-colour = #5f5f5f
 link-colour = #70b1ef
 
 @import "nib"
@@ -31,62 +27,49 @@ a:hover
   text-decoration: underline
 
 #header
-  clearfix: yes
+  text-align: right
   background: #fff
-  #logo
-    jsk-grid-make-column: 6
-  #top-navigation
-    jsk-grid-make-column: 6
-
-#logo
-  h1
-    margin-left: 50px
-    font-size: 3em
-  em
-    font-size: jsk-base-font-size
-    font-style: normal
-    color: #999
-    margin-top: -0.5em
-    margin-left: 12em
-    display: block
-  a
-    color: jsk-base-colour
-    text-decoration: none
-    font-weight: 500
-    color: #777
 
 #top-navigation
   ul
-    margin-right: 50px
-    line-height: 150px
     text-align: right
     list-style: none
+    margin: 0
+    padding: 0 50px
+    border-bottom: 1px solid #f3f3f3
   li
     display: inline-block
+    margin: 0
   a
     text-decoration: none
     color: #888
-    padding: 0.3em 1em 0.5em 1em
-    font-size: 1.8em
+    padding: 0.8em 0.5em
+    font-size: 22px
     font-family: jsk-heading-font
     font-weight: lighter
     transition: all .3s ease-out
+    display: block
+    border-bottom: 4px solid transparent
+    text-transform: lowercase
   a:hover
     color: link-colour
   a.active
-    background: link-colour
-    color: #fff
+    border-bottom-color: link-colour
+    color: link-colour
+    font-weight: bold
 
 #content
   background: #fff
-  padding: 2em 0
+  padding: 2em 0    
     
 #footer
   padding: 3em 0 2em 0
   border-top: 1px solid #ddd
   box-shadow: inset 1px 0px 0px rgba(255,255,255,0.8)
   background: #f3f3f3
-  text-align: center  
+  text-align: center
+  font-family: "Source Sans Pro", sans
+  letter-spacing: 0.1em
   
   #social
     list-style: none
@@ -104,120 +87,194 @@ a:hover
       font-style: normal
 
   #meta-info
-    font-family: jsk-heading-font
-    font-weight: 300
     color: #999
-    sub
-      font-size: 0.7em
-      top: 0.2em
+
+    .heart
+      color: #e74c3c
+      font-size: 1.3em
+      padding: 0 0.02em
       position: relative
+      top: 0.1em
 
 // -- Le blog
 #content-wrapper
-  max-width: 960px
+  max-width: 750px
   margin: 0 auto
-  font-size: 18px
+  font-size: 20px
   color: jsk-base-colour
-  line-height: 1.4em
+  line-height: 1.5em
+
+  h2
+    letter-spacing: -0.02em
+    color: #2f2f2f
+    font-size: 36px
+    font-weight: bold !important
+                
 
 #post-listing
   list-style: none
 
   li
-    border-bottom: 1px solid #ddd
+    border-bottom: 1px solid #f3f3f3
     margin-bottom: 1em
+    padding-bottom: 1em
 
   li:last-child
     border: none
 
-  .post-title:before
-    content: "λ"
-    font-family: jsk-body-font
-    color: #999
-
   .post-title
+    margin: 0 0 0.2em 0
+
+  .post-title a
     margin-bottom: 0
+    line-height: 1.2em
+    color: #34495e
     
   .post-subtitle
     font-family: jsk-body-font
-    margin: 0.5em 0px 0.5em 0px
-    font-size: 1.5em
-    color: #aaa
-
-  .post-subtitle:before
-    content: "—"
+    margin: 0
+    font-size: 18px
+    line-height: 22px
+    color: #95a5a6
 
   .date
-    color: #ccc
-    font-size: 0.5em
-    margin-left: 0.5em
-    white-space: nowrap
-    
-.headline
-  text-align: center
-  padding: 4em 100px 6em 100px
+    color: #bbb
+    font-size: 12px
+    text-transform: uppercase
+    margin: 0.5em 0 -0.5em 0
+    font-family: "Source Sans Pro", sans
 
-  p:first-child
-    font-size: 1.5em
-    line-height: 1.5em
-    color: #555
-
-  p
-    font-size: 1.2em
-    line-height: 1.3em
-    color: #777
 
 .page-heading
   margin-bottom: 2em
-  .page-snip
-    font-family: jsk-body-font
-    font-size: 1.5em
-    color: #999
-    margin: 0 0 2em 0
-    text-align: right
-  .page-snip:before
-    content: "—"
+
   .meta
     font-size: 0.9em
-    color: #999
+    color: #bbb
     font-family: jsk-heading-font
   .published-date
     margin-top: -0.5em
 
-#disqus_thread
-  margin-top: 3em
-  padding-top: 3em
-  border-top: 1px solid #eee
-  
-#post
-  img
-    margin: 0 auto
-    padding: 20px
-    border: 1px solid #ddd
+
+                  
+.textual-content
+  h3
+    font-size: 28px
+    letter-spacing: 0.02em
+    border-bottom: 1px solid #f3f3f3
+    padding-bottom: 0.3em
+    margin-bottom: 0.3em
+                      
+  blockquote
+    border-left: 3px solid #ecf0f1
+
+  blockquote.note
+    color: #acb2b6
+
+  blockquote .heading
+    border-bottom: 1px solid #f3f3f3
+    margin-bottom: 0.5em
+    font-family: jsk-heading-font
+    font-weight: bold
+    text-transform: uppercase
     display: block
 
+  blockquote.warning
+    border-color: #e74c3c
+
+  blockquote.warning .heading
+    color: #e74c3c
+                 
   blockquote p:last-child
     margin-bottom: 0
 
-  .highlight, pre.src
-    margin-left: -50px
-    margin-bottom: 2em
-    border-left: 60px solid #555753
-    background: #2a2a2a
-    padding: 10px
-    font-family: jsk-mono-font
-    code
-      background: none
-      color: #ccc
+  #table-of-contents
+    font-size: 28px
+    color: #7f8c8d
+    border-bottom: 1px solid #f3f3f3
+    padding-bottom: 0.3em
 
-  pre.src
-    color: #eee
+  #markdown-toc ul
+    margin: 0 0 0 2em
+
+  #markdown-toc li
+    margin: 0
+    line-height: 1.6em
+
+  .highlight, pre.src
+    margin: 2em 0
+    border: 1px solid #ecf0f1
+    border-left-width: 2px
+    padding: 0.5em
+    font-family: jsk-mono-font
+    font-size: 16px
+    line-height: 22px
+
+  .highlight, .highlight pre, .highlight code
+    background: #fcfcfc
+    color: #7f8c8d
+
+  .highlight pre
+    overflow: auto
+
+  .highlight code, .highlighttable code
+    padding: 0
+
+  .highlighttable
+    border-collapse: collapse
+    border: 1px solid #ecf0f1
+    border-left-width: 2px
+    width: 100%
+    font-size: 16px
+    line-height: 22px
+    font-family: jsk-mono-font
+    margin: 2em 0
+
+    td
+      vertical-align: top
+      padding: 0.5em
+
+    td.linenos
+      background: #fff
+      width: 20px
+      text-align: right
+      border-right: 1px solid #ecf0f1
+
+    td.linenos code, td.linenos pre
+      background-color: #fff
+      color: #bdc3c7
+
+    td.code
+      border-left: 1px solid #ecf0f1
+      background: #fcfcfc
+
+      .highlight
+        padding: 0 0 0 0.5em
+        margin: 0
+        border: none
+
+  img
+    margin: 0 auto
+    padding: 20px
+    border: 1px solid #ecf0f1
+    display: block
 
   code
     font-family: jsk-mono-font
-    color: #777
+    color: #95a5a6
     background: #f3f3f3
+    padding: 0 0.2em
 
+  .highlight-paragraph
+    font-style: italic
+    font-size: 32px
+    line-height: 38px
+    border: none
+    margin: 1.5em -1em
+    padding: 0
+    text-align: center
+    color: #95a5a6
+               
   // Things from the old site
   sup, sub
     font-size: 80%
@@ -227,31 +284,30 @@ a:hover
     vertical-align: bottom
 
   dt
-    font-weight: bold
     font-family: jsk-heading-font
-    font-size: 1.5em
+    text-transform: uppercase
+    font-weight: bold
     line-height: 100%
-    color: #999
+    color: #7f8c8d
+    letter-spacing: 0.02em
   dd
-    border-left: 2px solid #ddd
+    border-left: 2px solid #ecf0f1
     padding-left: 20px
-    color: #999
+    color: #95a5a6
     margin-top: 10px
     margin-bottom: 1.5em
-    line-height: 1.3em
+    line-height: 1.5em
 
+  .contact-footer
+    border-top: 1px solid #ecf0f1
+    margin: 3em 0
+    font-size: 16px
+    line-height: 20px
+    color: #95a5a6
+    padding: 1em
+                  
   .twitter-tweet
     margin: 10px auto !important
-
-  .highlight-paragraph
-    font-style: italic
-    font-size: 1.6em
-    border: none
-    padding: 0
-    margin: 2em
-    text-align: center
-    color: #836953
-    font-family: Lora
 
   .tabs
     padding: 0
@@ -287,53 +343,3 @@ a:hover
     display: none
   .tab-contents > div.active
     display: block
-    
-      
-      
-
-
-@media screen and (max-width: 1200px)
-  #header
-    #logo, #top-navigation
-      display: block
-      float: none
-      width: auto
-      margin: 0
-
-    #top-navigation ul
-      text-align: left
-      line-height: 100%
-      margin: 1em 0 0 0
-
-      a
-        display: inline-block
-        text-align: center
-        width: 180px
-        padding: 0
-        height: 2.5em
-        line-height: 2.5em
-        
-        
-@media screen and (max-width: 600px)
-  #header
-    #logo h1
-      margin-left: 0
-      text-align: center
-
-      em
-        margin-left: 0
-
-    #top-navigation ul
-      li, a
-        display: block
-      a
-        width: 100%
-        
-@media screen and (max-width: 960px)
-  #content #content-wrapper
-    .highlight
-      margin: 0 0 2em 0
-      border: none
-
-      pre
-        white-space: pre-wrap

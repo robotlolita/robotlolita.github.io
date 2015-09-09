@@ -107,7 +107,7 @@ only curried functions and function application. Consider the following
 example, where one is expected to sort a list of things descendingly, according
 to its weight, and display the title of the first 2 items:
 
-{% highlight hs %}
+{% highlight hs linenos=table %}
 import Data.List
 
 data Thing = Thing { title  :: String
@@ -138,7 +138,7 @@ compositional constraints at the call-site, in exchange for the compositional
 power of curried functions (though it's arguable if this is a problem if we
 consider a simple syntax). Consider the following example in untyped Harmonia:
 
-{% highlight hs %}
+{% highlight hs linenos=table %}
 module Main for: Platform where
 
   -- Record syntax currently looks too funny in Harmonia,
@@ -239,3 +239,7 @@ Oh, by the way, have a nice April's Fools :)
   href="http://www.infoq.com/presentations/past-present-future-programming">Onward! -- Does Thought Crime Pay?</a></dt>
   <dd>Gilad Bracha</dd>
 </dl>
+
+
+Quil has written as many languages as there are Lisp dialects. She knows *stuff*! You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+{: .contact-footer}

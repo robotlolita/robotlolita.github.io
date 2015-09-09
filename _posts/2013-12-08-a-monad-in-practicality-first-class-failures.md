@@ -167,7 +167,7 @@ different sequences, and some of these sequences might have no elements. A
 naive approach would be to just extract the first element and use the
 concatenation operator:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Array(a) -> a | undefined
 function first(sequence) {
   return sequence[0]
@@ -190,7 +190,7 @@ items. One needs to check if they've got an answer before concatenating things
 (let's disregard the fact that concatenating a string with something
 non-existent should have been a type error for now):
 
-{% highlight js %}
+{% highlight js linenos=table %}
 if (firstVowel !== undefined && firstConsonant !== undefined) {
   combination1 = firstVowel + firstConsonant // 'ab', yey!
 } else {
@@ -210,7 +210,7 @@ operation in terms of the `Maybe` monad and see if we can get rid of all this
 cruft. A `Maybe` monad has two cases: `Just(a)` is a monad with the value `a`,
 and `Nothing` is a monad with no computational context — the `null` case.
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Array(a) -> Maybe(a)
 function first(sequence) {
   return sequence.length > 0?  Maybe.Just(sequence[0])
@@ -227,7 +227,7 @@ function explicit, but in doing so we've increased the amount of code we had to
 write slightly. Sadly, not only this, but our original code for combining
 things don't work anymore!
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var consonants = 'bcd'
 var vowels     = 'aei'
 var nothing    = []
@@ -258,7 +258,7 @@ suffers) for it. This is basically the intuition for the following piece of
 code:
 
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Monad(a), Monad(a) -> Monad(a)
 function concatenate(monadA, monadB) {
   // We take the value of the `monadA`
@@ -279,7 +279,7 @@ function concatenate(monadA, monadB) {
 And finally, we can use the `concatenate` operation instead of the `+`
 operator:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 combination1 = concatenate(firstVowel, firstNothing)   // stays Nothing
 combination2 = concatenate(firstVowel, firstConsonant) // Just('ab')
 {% endhighlight %}
@@ -318,7 +318,7 @@ just transforming the value by a function that returns a new value and placing
 it back in the monad! Let's get a bit more abstract, then:
 
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Monad(a), (a -> b) -> Monad(b)
 function map(monad, transformation) {
   return monad.chain(function(value) {
@@ -342,7 +342,7 @@ value of two monads,
 [a fairly common operation](https://github.com/fantasyland/fantasy-sorcery/blob/master/index.js#L47-L54)
 that's called `lift2M` — The `M` stands for Monad, of course:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Monad(a), Monad(b), (a, b -> c) -> Monad(c)
 function lift2M(monadA, monadB, transformation) {
   return monadA.chain(function(valueA) {
@@ -385,7 +385,7 @@ To see how the `Either` monad can be useful, let's consider the following
 scenario: I want to divide some integer by another integer, but one of them
 might be 0, and that would have been an error.
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var Fail  = Either.Left
 var Right = Either.Right
 
@@ -398,7 +398,7 @@ function divide(a, b) {
 
 Now we can use that function to safely divide numbers by other numbers:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 divide(4, 2)  // Right(2)
 divide(5, 0)  // Left(Error('Division by 0.'))
 {% endhighlight %}
@@ -407,7 +407,7 @@ And abusing the fact that the `+` operator in JavaScript can be used for either
 concatenating Strings or arithmetic addition, we've already got a function to
 sum 2 numbers in a monad:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var add = concatenate // A little abuse of JavaScript's operator semantics :P
 
 add(divide(4, 2), divide(9, 3)) // Right(5)
@@ -429,7 +429,7 @@ We can start by first defining a `zip` operation that takes two lists, and
 gives a list of pairs, where each index corresponds to the a pair of the
 elements of one list and the other, which is fairly straight-forward to define:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // [a], [b] -> Either(Error, [(a, b)])
 function zip(as, bs) {
   return as.length !== bs.length?
@@ -446,7 +446,7 @@ Now we can define an operation that takes a list of pairs, and returns a list
 of the result of dividing the first item in the pair by the second, which is
 also fairly straight-forward:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // [(Int, Int)] -> [Either(Error, Int)]
 function dividePairs(nss) {
   return nss.map(function(a, b) {
@@ -460,7 +460,7 @@ the addition. Since all of the numbers are wrapped in an `Either` monad, we do
 need to use `chain` to perform operations on these numbers, and put them back
 in the monad, however:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // [Either(Error, Int)] -> Either(Error, Int)
 function sum(ns) {
   // We need to start from a Monad, but we can reuse our
@@ -472,7 +472,7 @@ function sum(ns) {
 
 And putting it all together:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var fives = [5, 10, 15, 20]
 var odds  = [1, 3, 6, 9]
 var alien = [3, 1, 0, 10, 2, 1]
@@ -527,7 +527,7 @@ need new operations that are not standardised for a monad.
 A way to display the errors to the user would then involve using one of the
 library-defined methods to deal with the other failure case:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 map(zip(fives, alien), dividePairs)
   .chain(sum)
   .orElse(function(error) {
@@ -574,7 +574,7 @@ And to make things simpler, each of these rules will be encoded as a separate
 function, that returns a Validation monad depending on whether the input passes
 the rule or not:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var Validation = require('applicatives.validation')
 var Success = Validation.Success
 var Failure = Validation.Failure
@@ -608,7 +608,7 @@ function isPasswordStrongEnough(password) {
 And we can verify that our functions work, and provide us the correct results
 for whatever inputs we throw at them:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 isNameValid("")
 // => Failure([Error: Username can't be empty.])
 isNameValid("robotlolita")
@@ -647,7 +647,7 @@ validation that contains a function that captures each value of the subsequent
 functions and returns a new function at each application: closures to the
 rescue!
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // String -> Validation(Array(Error), String)
 function isPasswordValid(password) {
   return Success(function(a) {
@@ -682,7 +682,7 @@ we say: `curry(2, function(a, b){ return a + b })` we're really saying:
 `function(a){ return function(b){ return a + b }}`. So, let's define curry as
 one of our abstraction overlords:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Int, (a1, a2, ..., aN -> b) -> a1 -> a2 -> ... -> aN -> b
 function curryN(n, f){
   return function _curryN(as) { return function() {
@@ -696,7 +696,7 @@ function curryN(n, f){
 And finally, derive our new `isPasswordValid` and `isAccountValid` functions
 from this `aggregate` combinator:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // String -> Validation(Array(Error), String)
 function isPasswordValid(password) {
   return Success(curryN(2, function(){ return password }))
@@ -754,7 +754,7 @@ asynchronous and synchronous operations without having to do any work at all
 (the same can't be said about Promises/A+ promise combinators, since they're
 specific to Promises/A+):
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // This will give you a Future of an array of results
 // And the actions will be performed sequentially.
 sequence(Future, [doA(), doB(), doC(), doD(), doE()])
@@ -894,3 +894,7 @@ Tony Morris, Bryan McKenna and Mauricio Scheffer clarifications. More informatio
 regarding the problem can be found [in this Github issue](https://github.com/folktale/applicatives.validation/issues/1), and [in this thread on Scalaz's discussion group](https://groups.google.com/d/msg/scalaz/IWuHC0nlVws/3fGjpFN9tdMJ).
 
 - **3rd October, 2014**: Fixed the type of `liftM2`, as pointed out by Erwin in the comments.
+
+
+Once upon a time, Quil swore to not writing any tutorial on monads. It was co-Quil who co-wrote this co-article. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+{: .contact-footer}

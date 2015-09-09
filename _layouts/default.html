@@ -7,16 +7,17 @@
         <meta name="viewport" content="width=device-width">
 
         <meta name="description"
-              content="Rants about programming, open source, caffeine, unfunny
-              jokes and such stuff." >
+              content="Extending Fold and Unfold to Exponential Embarassing-ness" >
         <meta name="keywords"
               content="programming, open source, javascript, python,
-              functional programming, clean code junkie">
+              functional programming, programming languages">
 
         <link href="/atom.xml"
               rel="alternate"
               title="Soreλ\a's Basement"
               type="application/atom+xml" />
+
+        <link href='http://fonts.googleapis.com/css?family=Lora:400,400italic,700,700italic|PT+Sans+Caption:700,400|Source+Sans+Pro:400' rel='stylesheet' type='text/css'>
 
         <!-- syntax highlighting CSS -->
         <link rel="stylesheet" href="/css/syntax.css">
@@ -26,66 +27,59 @@
 
     </head>
     <body>
+      <div id="wrapper">
+        <div id="header">
+          <nav id="top-navigation">
+            <ul>
+              {% for link in site.navigation %}
+                {% assign current = nil %}
+                {% if page.url == link.url or (page.snip and link.url == '/index.html') %}
+                  {% assign current = 'active' %}
+                {% endif %}
 
-      <div id="header">
-        <header id="logo">
-          <h1>
-            <a href="/">Soreλ\a's Basement</a>
-            <em>Madness!? This is [Computer] SCIENCE!</em>
-          </h1>
-        </header>
-        <nav id="top-navigation">
-          <ul>
-            {% for link in site.navigation %}
-              {% assign current = nil %}
-              {% if page.url == link.url or (page.snip and link.url == '/index.html') %}
-                {% assign current = 'active' %}
-              {% endif %}
-
-              <li><a class="{{ current }}" href="{{ link.url }}">{{ link.text }}</a></li>
-            {% endfor %}
-          </ul>
-        </nav>
-      </div>
-
-      <div id="content">
-        <div id="content-wrapper">
-          {{ content }}
+                <li><a class="{{ current }}" href="{{ link.url }}">{{ link.text }}</a></li>
+              {% endfor %}
+            </ul>
+          </nav>
+        </div>
+        <div id="content">
+          <div id="content-wrapper">
+            {{ content }}
+          </div>
         </div>
       </div>
-      
+
       <div id="footer">
         <ul id="social">
           <li>
-            <a href="http://github.com/robotlolita" 
+            <a href="http://github.com/robotlolita"
                title="Mad-science experiments @ Github">
               <i class="entypo-social-github"></i>
             </a>
           </li>
           <li>
-            <a href="http://twitter.com/robotlolita" 
+            <a href="http://twitter.com/robotlolita"
                title="Keep up with the things I do over Twitter">
               <i class="entypo-social-twitter"></i>
             </a>
           </li>
           <li>
-            <a href="http://facebook.com/quildreen" 
+            <a href="http://facebook.com/quildreen"
                title="My personal Facebook profile">
               <i class="entypo-social-facebook"></i>
             </a>
           </li>
           <li>
-            <a href="http://www.last.fm/user/killdream" 
+            <a href="http://www.last.fm/user/killdream"
                title="The stuff I listen to any day erry day">
               <i class="entypo-social-lastfm"></i>
             </a>
           </li>
         </ul>
         <div id="meta-info">
-          Hacked while high
-          on <a href="https://en.wikipedia.org/wiki/Caffeine">C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub></a>
+          Made with <span class="heart">♥</span> by Quil.
           <br>
-          Fonts feat <a href="http://www.google.com/fonts/">Google Fonts</a> &amp;
+          Fonts feat. <a href="http://www.google.com/fonts/">Google Fonts</a> &amp;
           <a href="http://entypo.com/">Entypo</a>
           <br><br>
           <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_GB"><img alt="Creative Commons Licence" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_GB">Creative Commons Attribution 3.0 Unported License</a>.
@@ -102,7 +96,7 @@
           var ga   = document.createElement('script')
           ga.type  = 'text/javascript'
           ga.async = true
-          ga.src   = ('https:' == document.location.protocol? 'https://ssl' 
+          ga.src   = ('https:' == document.location.protocol? 'https://ssl'
                    : 'http://www') + '.google-analytics.com/ga.js'
           var s    = document.getElementsByTagName('script')[0]
           s.parentNode.insertBefore(ga, s)

@@ -4,6 +4,13 @@ title:  "A Monad in Practicality: Controlling Time"
 snip:   How Monads help you compose asynchronous operations.
 ---
 
+> <strong class="heading">Warning</strong>
+> This article no longer reflects the Data.Task implementation.
+> It's also not *quite* describing a Future (but rather an Action
+> monad of sorts). It needs to be updated to make it less confusing
+> and more useful.
+{: .warning .note}
+
 Concurrency is quite a big deal, specially these days where everything
 must be “web scale.” There are several models of concurrency, each with
 their own pros and cons, in this article I present a composable
@@ -21,7 +28,7 @@ and spaghetti of callsite-specific functionality — we lose all of
 the organisational patterns we are used to.
 
 None the less, it is possible for a non-blocking function to return the
-result to its caller **even thought it still doesn't know what the
+result to its caller **even though it still doesn't know what the
 result is**! This really old concept (which appeared around 1976) is
 sometimes called *promise*, *future*, *delay*, or *eventual*, depending
 on your library and programming language.
@@ -31,9 +38,12 @@ monad, what are the benefits of a Future forming a monad, and how they
 may be used for abstracting over the concurrency problem in a composable
 way.
 
-> **Note**: Previous knowledge of monads or category theory are not
+
+> <strong class="heading">Note</strong>
+> Previous knowledge of monads or category theory are not
 > necessary to read this blog post. Some knowledge of JavaScript is
 > necessary, however.
+{: .note}
 
 [cps]: http://matt.might.net/articles/by-example-continuation-passing-style/
 [function composition]: http://en.wikipedia.org/wiki/Function_composition
@@ -93,7 +103,7 @@ programming just fine.
 JavaScript is a strict language, with sequential evaluation
 semantics. That is, if you have a source code in the form of:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 doX()
 doY()
 doZ()
@@ -125,7 +135,7 @@ fact, you can easily invent CPS yourself if you live by the following
 maxim: 
 
 > No function should ever return to its caller.
-{.highlight-paragraph}
+{: .highlight-paragraph}
 
 Now, if a function can't return a value, what are they even good for? Or
 rather, how do we use a function that can't return a value? Well,
@@ -134,7 +144,7 @@ after the function has the value, we explicitly pass the next
 computation (or *current continuation*, or *callback*) to the function
 we're calling. So, this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (a, a) -> a
 function add(a, b) {
   return a + b
@@ -143,7 +153,7 @@ function add(a, b) {
 
 Becomes this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (a, a, (a -> Void)) -> Void
 function add(a, b, continuation) {
   continuation(a + b)
@@ -153,7 +163,7 @@ function add(a, b, continuation) {
 To make the relationship between the two even more obvious, you can
 pretend that `return` isn't a magical keyword:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (a, a, (a -> Void)) -> Void
 function add(a, b, return) {
   return(a + b)
@@ -173,7 +183,7 @@ continuations, these concerns are shifted from the compiler or
 interpreter, to each computation and the programmer must be always aware
 of them.
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Since these are functions in CPS style, there's no guarantees about
 // which of these operations will be executed first.
 add(1, 2, print)
@@ -194,7 +204,7 @@ synchronous execution, CPS does not magically transform a blocking
 computation into a non-blocking one. Instead, one needs to explicitly
 execute the blocking computation on a separate thread:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (String, (String -> Void)) -> Void
 function read(pathname, continuation) {
   // Here we use a primitive that's not present in most JavaScript
@@ -228,7 +238,7 @@ continuations take not just the result of the computation, but also any
 error that might have occurred. In this model, the previous computation
 would be written as:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (String, (Error?, String -> Void)) -> Void
 function read(pathname, continuation) {
   Thread.spawn(function() {
@@ -270,7 +280,7 @@ fill in the details later.
 
 In other words, instead of writing this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (String -> (Error?, String -> Void)) -> Void
 function read(pathname, continuation) {
   ...
@@ -281,7 +291,7 @@ read('/foo/bar', function(error, contents) { ... })
 
 We can write this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: String -> (Error?, String -> Void)
 function read(pathname) {
   ...
@@ -309,7 +319,7 @@ single-threaded environment.
 One of the simplest implementations of Future would be to just return a
 function whose only parameter is a continuation:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: String -> (Error?, String -> Void)
 function read(pathname) {
   return function(continuation) {
@@ -338,11 +348,11 @@ doing this simple thing we get a lot of abstractions for free! (and we
 get nice properties for reasoning about our programs too).
 
 > If you're not familiar with the concepts of Category Theory, or have
-> never heard the term *monad* before, don't worry, **monads are just
-> monoids in a category of endofunctors,** or rather, **a monad is a
-> functor together with two natural transformations**. You could even
-> say that **a FuzzyWuzzy is just a Vogon in the centre of Megabrantis
-> Cluster!**
+> never heard the term *monad* before, don't worry, *monads are just
+> monoids in a category of endofunctors,* or rather, *a monad is a
+> functor together with two natural transformations*. You could even
+> say that *a FuzzyWuzzy is just a Vogon in the centre of Megabrantis
+> Cluster!*
 >
 > In other words, it doesn't matter to you, the programmer, what a
 > *monad* is. In fact, for the rest of this article you can replace any
@@ -384,7 +394,7 @@ and use my [data.future][] implementation for the rest of this article.
 
 With monadic Futures, our now widely-used example becomes:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: String -> Future<Error, String>
 function read(pathname) {
   return new Future(function(reject, resolve) {
@@ -396,12 +406,14 @@ var contentsF = read('/foo/bar')
 contentsF.chain(handleContents).orElse(handleError)
 {% endhighlight %}
 
-> **Note**: the referred Future implementation is pure, as such `chain`
+> <strong class="heading">Note</strong>
+> the referred Future implementation is pure, as such `chain`
 > does not run the computation, but returns a description of the
 > computation that should be performed. To run the computation you must
 > invoke the `fork(errorHandler, successHandler)` method. Check out
 > [Runar's talk on Purely Functional I/O][pure-io] to understand why
 > this matters.
+{: .note}
 
 Again, like Continuation-Passing style computations, the value of
 `contentsF` is not dependent on the order in which our source code is
@@ -409,7 +421,7 @@ arranged. This disentangles computations and time, which are so usually
 coupled in an imperative language. Therefore, it doesn't matter which
 order you arrange your source code, the results must be the same:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var a = read('/foo')
 var b = read('/bar')
 
@@ -425,7 +437,7 @@ way to know when each value will be available. So, the following program
 is automatically excluded, taking down with it a whole class of
 complexities:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var a = read('/foo')
 var b = a + read('/bar')  // can't access `a` yet.
 {% endhighlight %}
@@ -446,7 +458,7 @@ ability to ignore some of the painful explicitness of functional
 programming sometimes.
 
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (Number, Number) -> Future<Error, Number>
 function divide(a, b) {
   return new Future(function(reject, resolve) {
@@ -483,12 +495,14 @@ var eF = dF.orElse(function(error) {
 // => Future(Error('boo'), _)
 {% endhighlight %}
 
-> **Note**: both `chain` and `orElse` are used to sequence asynchronous
+> <strong class="heading">Note</strong>
+> both `chain` and `orElse` are used to sequence asynchronous
 > computations, as such they are not the best fit for running
 > synchronous computations in the value the Future holds. Using `map`
 > and `rejectedMap`, you could make these cases much simpler. E.g.:
 >
 >     dF.rejectedMap(function(e){ return new Error('boo') })
+{: .note}
 
 [pure-io]: http://www.infoq.com/presentations/io-functional-side-effects
 
@@ -506,7 +520,7 @@ from the disk, but the contents of those files are inside a Future. The
 usual way to go about it would be to nest the `chain` calls in different
 closures in order to capture the intermediate values:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var aF = read('/foo')
 var bF = read('/bar')
 var cF = aF.chain(function(a) {
@@ -518,7 +532,7 @@ But since this is a common pattern, we could easily write a combinator
 that abstracts over this. Let's call it `chain2`, since it chains two
 different Futures:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 function chain2(aM, bM, f) {
   return aM.chain(function(a) {
                     return bM.chain(function(b) {
@@ -541,7 +555,7 @@ monads.
 By currying this `liftM` combinator, and using the `flip` combinator, we
 can easily use function composition for working with monads:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Promotes an unary function to a function on monads
 //:: Monad<A> -> (A -> B) -> Monad<B>
 var liftM = curry(function(aM, f) {
@@ -585,7 +599,7 @@ had a function that takes a list of monads, and returns a monad
 containing the list of values inside those monads. With this, we could
 use a single `chain` call to get to all of the values at once!
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: [Future<A, B>] -> Future<A, [B]>
 function all(futures) {
   return futures.reduce(function(resultM, xM) {
@@ -615,7 +629,7 @@ is so interesting. You get a lot of free lunch! Anyway, the combinator
 this time is called `sequence`, it takes in a list of monads, and
 returns a monad of a list of their values.
 
-{% highlight js %}
+{% highlight js linenos=table %}
 // Evaluates each action in sequence (left to right), and
 // collects the results.
 //
@@ -662,7 +676,7 @@ action can be only performed once the previous action has finished
 executing. In other words, we've got a weird way of writing the
 following blocking program:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var a = read('/foo')
 var b = read('/bar')
 var c = read('/baz')
@@ -691,7 +705,7 @@ time, each in its own computational context (e.g.: a thread), and merge
 the results back in the main thread, fulfilling the Future with the
 result.
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: [Future<A, B>] -> Future<A, [B]>
 function parallel(futures) {
   return new Future(function(reject, resolve) {
@@ -746,7 +760,7 @@ this is to write a `timeout` function that takes the amount of time to
 wait before considering the action dead, and the action (Future)
 itself. And it's relatively easy to come up with this:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: (Number, Future<A, B>) -> Future<A, B>
 function timeout(time, future) {
   return new Future(function(reject, resolve) {
@@ -790,7 +804,7 @@ as [communicating sequential processes][], and may be called
 `alternative` or `select`. The implementation is very close to what we
 have in `timeout`... but simpler!
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: [Future<A, B>] -> Future<A, B>
 function nondeterministicChoice(futures) {
   return new Future(function(reject, resolve) {
@@ -815,7 +829,7 @@ this help us with the `timeout` issue? Well, if you think about it,
 a given amount of time. Thus, we can go really high-level with our new
 operation (but there's a catch, and we'll talk about it later):
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: Number -> Future<Error, B>
 function timeout(ms) {
   return new Future(function(reject, resolve) {
@@ -845,7 +859,7 @@ above. We can never memoise it. That is, since `timeout` is an action
 (it represents an effect), everytime we run it, that effect must
 occur. Consider the following:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 //:: String -> Future<Error, Void>
 function print(text) {
   return new Future(function(reject, resolve) {
@@ -899,7 +913,7 @@ syntactical constructs. Ideally, we would like to write the following,
 and let the library implementation take care of all the nasty details of
 concurrency for us:
 
-{% highlight js %}
+{% highlight js linenos=table %}
 var contents = read('/foo/bar')
 if (contents.get().length != 0) { ... }
 {% endhighlight %}
@@ -1010,7 +1024,8 @@ articles in this series, eh! ♥
 
  -  Thanks to [Rúnar Óli](https://twitter.com/runarorama) and
     [Brian McKenna](https://twitter.com/puffnfresh) for correcting some
-    mistakes in Category Theory over at Twitter. If you see any other mistake,
-    please let me know on the comments or
-    [@robotlolita on Twitter](https://twiter.com/robotlolita) and I'll try to fix it
-    ASAP :)
+    mistakes in Category Theory over at Twitter.
+
+
+It might not look like that, but Quil is actually a burrito in the cat(egory) of cat-ladies. Or something like that. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+{: .contact-footer}
