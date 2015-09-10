@@ -1,5 +1,6 @@
 jsk-body-font = 'Lora', serif
 jsk-heading-font = 'PT Sans Caption', sans
+jsk-subheading-font = 'Raleway', sans
 jsk-mono-font = monospace
 jsk-base-line-height = 1.2em
 jsk-base-font-size = 16px
@@ -164,7 +165,15 @@ a:hover
     border-bottom: 1px solid #f3f3f3
     padding-bottom: 0.3em
     margin-bottom: 0.3em
-                      
+
+  h4
+    font-size: 28px
+    font-weight: 300 !important
+    font-family: jsk-subheading-font
+    color: #95a5a6
+    margin-bottom: 0.3em
+    letter-spacing: -0.02em
+                    
   blockquote
     border-left: 3px solid #ecf0f1
 
@@ -259,6 +268,35 @@ a:hover
     border: 1px solid #ecf0f1
     display: block
 
+  .clear::after
+    content: ""
+    display: block
+    clear: both
+                 
+  .pull-left
+    margin: 0.5em 1em 1em -100px
+    float: left
+
+  .pull-right
+    margin: 0.5em -100px 1em 1em
+    float: right
+
+  .pull-left, .pull-right, .centred-image
+    text-align: center
+    padding: 20px
+    border: 1px solid #ecf0f1
+    display: block
+               
+    img
+      padding: 0
+      border: 0
+
+    em
+      font-style: italic
+      font-size: 16px
+      color: #95a5a6
+      
+
   code
     font-family: jsk-mono-font
     color: #95a5a6
@@ -274,6 +312,11 @@ a:hover
     padding: 0
     text-align: center
     color: #95a5a6
+
+  .pull-in
+    margin-left: 1em
+    margin-right: 1em
+               
                
   // Things from the old site
   sup, sub

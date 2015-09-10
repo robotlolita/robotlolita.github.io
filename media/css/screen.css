@@ -1507,6 +1507,14 @@ a:hover {
   padding-bottom: 0.3em;
   margin-bottom: 0.3em;
 }
+.textual-content h4 {
+  font-size: 28px;
+  font-weight: 300 !important;
+  font-family: 'Raleway', sans;
+  color: #95a5a6;
+  margin-bottom: 0.3em;
+  letter-spacing: -0.02em;
+}
 .textual-content blockquote {
   border-left: 3px solid #ecf0f1;
 }
@@ -1606,6 +1614,40 @@ a:hover {
   border: 1px solid #ecf0f1;
   display: block;
 }
+.textual-content .clear::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.textual-content .pull-left {
+  margin: 0.5em 1em 1em -100px;
+  float: left;
+}
+.textual-content .pull-right {
+  margin: 0.5em -100px 1em 1em;
+  float: right;
+}
+.textual-content .pull-left,
+.textual-content .pull-right,
+.textual-content .centred-image {
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ecf0f1;
+  display: block;
+}
+.textual-content .pull-left img,
+.textual-content .pull-right img,
+.textual-content .centred-image img {
+  padding: 0;
+  border: 0;
+}
+.textual-content .pull-left em,
+.textual-content .pull-right em,
+.textual-content .centred-image em {
+  font-style: italic;
+  font-size: 16px;
+  color: #95a5a6;
+}
 .textual-content code {
   font-family: monospace;
   color: #95a5a6;
@@ -1621,6 +1663,10 @@ a:hover {
   padding: 0;
   text-align: center;
   color: #95a5a6;
+}
+.textual-content .pull-in {
+  margin-left: 1em;
+  margin-right: 1em;
 }
 .textual-content sup,
 .textual-content sub {
