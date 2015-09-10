@@ -22,6 +22,15 @@ compose these concurrent processes is one of them. In this blog post
 we'll look at what promises are, how they work, and why you should or
 shouldn't use them.
 
+> <strong class="heading">Note</strong>
+> This article assumes the reader is at least familiar with
+> higher-order functions, and callbacks (continuation-passing style).
+> You might still be able to get something out of this article without
+> that knowledge, but it's better to come back after acquiring a basic
+> understanding of those concepts.
+{: .note}
+
+
 [CPS]: http://matt.might.net/articles/by-example-continuation-passing-style/
 
 
@@ -36,10 +45,10 @@ life.
 ### Interlude: The Girl Who Hated Queues
 
 ![](/files/2015/09/promises-01.png)
-*Girfriends trying to have lunch at a very popular food place.*
+*Girfriends trying to have dinner at a very popular food place.*
 {: .pull-left}
 
-Alissa P. Hacker and her girlfriend decided to have lunch at a very
+Alissa P. Hacker and her girlfriend decided to have dinner at a very
 popular restaurant. Unfortunately, as it was to be expected, when they
 arrived there all of the tables were already taken.
 
@@ -109,10 +118,84 @@ time, come back to get the value we need.
 {: .centred-image}
 
 
-### 2.2. Promises and Concurrency
+### Interlude: Order of Execution
 
 Now that we, hopefully, understand what a promise is, we can look at how
-promises help us write concurrent programs in an easier way.
+promises help us write concurrent programs in an easier way. But before
+we do that, let's take a step back and think about a more fundamental
+problem: the order of execution of our programs.
+
+As a JavaScript programmer, you might have noticed that your program
+executes in a very peculiar order, which happens to be the order in
+which you write the instructions in your program's source code:
+
+{% highlight js linenos=table %}
+var circleArea = 10 * 10 * Math.PI;
+var squareArea = 20 * 20;
+{% endhighlight %}
+
+If we execute this program, first our JavaScript VM will run the
+computation for `circleArea`, and once it's finished, it'll execute the
+computation for `squareArea`. In other words, our programs are telling
+the machines “Do this. Then do that. Then do that. Then…”
+
+
+> <strong class="heading">Question time!</strong>
+> Why must our machine execute `circleArea` before `squareArea`? Would
+> there be any issues if we inverted the order, or executed both at
+> the same time?
+{: .note .info}
+
+
+Turns out, executing everything in order is very expensive. If
+`circleArea` takes too long to finish, then we're blocking `squareArea`
+from executing at all until then. In fact, for this example, it doesn’t
+matter which order we pick, the result is always going to be the
+same. The order expressed in our programs is too arbitrary.
+
+
+> […] order is very expensive.
+{: .highlight-paragraph}
+
+
+We want our computers to be able to do more things, and do more things
+*faster*. To do so, let's, at first, dispense with order of execution
+entirely. That is, we'll assume that in our programs, all expressions
+are executed at the exact same time.
+
+This idea works very well with our previous example. But it breaks as
+soon as we try something slightly different:
+
+{% highlight js linenos=table %}
+var radius = 10;
+var circleArea = radius * radius * Math.PI;
+var squareArea = 20 * 20;
+print(circleArea);
+{% endhighlight %}
+
+If we don't have any order at all, how can we compose values coming from
+other expressions? Well, we can't, since there's no guarantee that the
+value would have been computed by the time we need it.
+
+Let's try something different. The only order in our programs will be
+defined by the dependencies between the components of the
+expressions. Which, in essence, means that expressions are executed as
+soon as all of its components are ready, even if other things are
+already executing.
+
+![](/files/2015/09/promises-05.png)
+*The dependency graph for our simple example.*
+{: .centred-image .full-image}
+
+
+Instead of having to declare which order the program should use when
+executing, we've only defined how each computation depends on each
+other. With that data in hand, a computer can create the dependency
+graph above, and figure out itself the most efficient way of executing
+this program.
+
+
+### 2.3. Promises and Concurrency
 
 
 

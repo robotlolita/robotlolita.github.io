@@ -1535,6 +1535,12 @@ a:hover {
 .textual-content blockquote.warning .heading {
   color: #e74c3c;
 }
+.textual-content blockquote.info {
+  border-color: #2980b9;
+}
+.textual-content blockquote.info .heading {
+  color: #2980b9;
+}
 .textual-content blockquote p:last-child {
   margin-bottom: 0;
 }
@@ -1647,6 +1653,10 @@ a:hover {
   font-style: italic;
   font-size: 16px;
   color: #95a5a6;
+}
+.textual-content .full-image img {
+  width: 100%;
+  height: auto;
 }
 .textual-content code {
   font-family: monospace;
