@@ -194,6 +194,13 @@ other. With that data in hand, a computer can create the dependency
 graph above, and figure out itself the most efficient way of executing
 this program.
 
+> <strong class="heading">Fun fact!</strong>
+> The graph above describes very well how programs are evaluated
+> in the Haskell programming language, but it's also very close
+> to how expressions are evaluated in more well-known systems, such as
+> Excel.
+{: .note .trivia}
+
 
 ### 2.3. Promises and Concurrency
 
@@ -201,7 +208,7 @@ this program.
 
 
 
-## 3. How promises work in JavaScript?
+## 3. How do promises work in JavaScript?
 A practical understanding of Promises/A+.
 
 ## 4. Why use promises?

@@ -1541,6 +1541,12 @@ a:hover {
 .textual-content blockquote.info .heading {
   color: #2980b9;
 }
+.textual-content blockquote.trivia {
+  border-color: #1abc9c;
+}
+.textual-content blockquote.trivia .heading {
+  color: #16a085;
+}
 .textual-content blockquote p:last-child {
   margin-bottom: 0;
 }
