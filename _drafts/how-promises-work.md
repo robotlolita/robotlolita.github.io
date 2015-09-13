@@ -23,10 +23,10 @@ we'll look at what promises are, how they work, and why you should or
 shouldn't use them.
 
 > <strong class="heading">Note</strong>
-> This article assumes the reader is at least familiar with
-> higher-order functions, and callbacks (continuation-passing style).
-> You might still be able to get something out of this article without
-> that knowledge, but it's better to come back after acquiring a basic
+> This article assumes the reader is at least familiar with higher-order
+> functions, closures, and callbacks (continuation-passing style).  You
+> might still be able to get something out of this article without that
+> knowledge, but it's better to come back after acquiring a basic
 > understanding of those concepts.
 {: .note}
 
@@ -202,7 +202,146 @@ this program.
 {: .note .trivia}
 
 
-### 2.3. Promises and Concurrency
+### 2.2. Promises and Concurrency
+
+The execution model described in the previous section, where order is
+defined simply by the dependencies between each expression, is very
+powerful and efficient, but how do we apply it to JavaScript?
+
+We can't apply this model directly to JavaScript because its semantics
+are inherently synchronous and sequential. But we can create a separate
+mechanism to describe dependencies between expressions, and to resolve
+these dependencies for us, executing the program according to those
+rules. One way to do this is by introducing this concept of dependencies
+on top of promises.
+
+This new formulation of promises consists of two major components:
+Something that makes representations of values, and can put values in
+this representation. And something that creates a dependency between one
+expression and a representation of a value, creating a new
+value representation for the result of the expression.
+
+![](/files/2015/09/promises-06.png)
+*Creating representations of future values.*
+![](/files/2015/09/promises-07.png)
+*Creating dependencies between values and expressions.*
+{: .pull-left .width-350}
+
+Our promises represent values that we haven't computed yet. This
+representation is opaque: we can't see the value, nor interact with the
+value directly. Furthermore, in JavaScript promises, we also can't
+extract the value from the representation. Once you put something in a
+JavaScript promise, you can't take it out of the promise [^1].
+
+This by itself isn't much useful, because we need to be able to use
+these values somehow. And if we can't extract the values from the
+representation, we need to figure out a different way of using
+them. Turns out that the simplest way of solving this “extraction
+problem” is by describing how we want our program to execute, by
+explicitly providing the dependencies, and then solving this dependency
+graph to execute it.
+
+For this to work, we need a way of plugging the actual value in the
+expression, and delaying the execution of this expression until strictly
+needed. Fortunately JavaScript has got our back in this: first-class
+functions serve exactly this purpose.
+{: .clear}
+
+### Interlude: Lambda Abstractions
+
+If one has an expression of the form `a + 1`, then it is possible to
+abstract this expression such that `a` becomes a value that can be
+plugged in, once it's ready. This way, the expression:
+
+{% highlight js linenos=table %}
+var a = 2;
+a + 1;
+// => 2 + 1
+// { reduce the expression }
+// => 3
+{% endhighlight %}
+
+Becomes the following lambda abstraction:
+
+{% highlight js linenos=table %}
+var abstraction = function(a) {
+  return a + 1;
+}
+
+// We can then plug `a` in:
+abstraction(2);
+// => (function(a){ return a + 1 })(2)
+// { replace `a` by the provided value }
+// => (function(2){ return 2 + 1 })
+// { reduce the expression }
+// => 2 + 1
+// { reduce the expression }
+// => 3
+{% endhighlight %}
+
+Lambda Abstractions[^2] are a very powerful concept, and because
+JavaScript has them, we can describe these dependencies in a very
+natural way. To do so, we first need to turn our expressions that use
+the values of promises into Lambda Abstractions, so we can plug in the
+value later.
+
+
+### 2.3. Sequencing expressions with Promises
+
+With this, all that's left is describing the operations we'll use to
+create promises, put values in them, and describe the dependencies
+between expressions and values. For the sake of our examples, we'll use
+the following very descriptive operations, which happen to be used by no
+existing Promises implementation:
+
+- `createPromise()` constructs a representation of a value. The value
+  must be provided at later point in time.
+  
+- `fulfill(promise, value)` puts a value in the promise. Allowing
+  the expressions that depend on the value to be computed.
+
+- `depend(promise, expression)` defines a dependency between
+  the lambda abstraction and the value of the promise. It returns a new
+  promise for the result of the expression, so new expressions can
+  depend on that value.
+
+
+Let's go back to the circles and squares example. For now, we'll start
+with the simpler one: turning the synchronous `squareArea` into a
+concurrent description of the program by using promises. `squareArea` is
+simpler because it only depends on the `side` value:
+
+{% highlight js linenos=table %}
+// The expression:
+var side = 10;
+var squareArea = side * side;
+print(squareArea);
+
+// Becomes:
+var squareAreaAbstraction = function(side) {
+  var result = createPromise();
+  fulfill(result, side * side);
+  return result;
+};
+var printAbstraction = function(squareArea) {
+  var result = createPromise();
+  fulfill(result, print(squareArea));
+  return result;
+}
+
+var sidePromise = createPromise();
+var squareAreaPromise = depend(sidePromise, squareAreaAbstraction);
+var printPromise = depend(squareAreaPromise, printAbstraction);
+
+fulfill(sidePromise, 10);
+{% endhighlight %}
+
+This is a lot of noise, if we compare with the synchronous version of
+the code, however this new version isn't tied to JavaScript's order of
+execution. Instead, the only constraints on its execution are the
+dependencies we've described.
+
+
 
 
 
@@ -221,3 +360,27 @@ Where they really don't fit.
 
 
 ## References and Additional Reading
+
+- - -
+
+#### Footnotes
+
+[^1]:
+    You can't extract the values of promises in Promises/A,
+    Promises/A+ and other common formulations of promises in JavaScript.
+
+    In some JavaScript environments, like Rhino and Nashorn, you might
+    have access to implementations of promises that support extracting
+    the value out of it. Java's Futures are an example.
+
+    Extracting a value that hasn't been computed yet out of a promise
+    requires blocking the thread until that value is computed, which
+    doesn't work for most JS environments, since they're
+    single-threaded.
+
+[^2]:
+    “Lambda Abstraction” is the name Lambda Calculus gives to these
+    anonymous functions that abstract over terms in an
+    expression. JavaScript itself just calls them “Functions,” they may
+    be created with arrows, or with a Named Function
+    Expression/Anonymous Function Expression construct.
