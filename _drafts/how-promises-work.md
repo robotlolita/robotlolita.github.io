@@ -256,6 +256,7 @@ plugged in, once it's ready. This way, the expression:
 {% highlight js linenos=table %}
 var a = 2;
 a + 1;
+// { replace `a` by its current value }
 // => 2 + 1
 // { reduce the expression }
 // => 3
