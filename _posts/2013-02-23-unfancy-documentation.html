@@ -154,7 +154,7 @@ So, I did say that we could separate a documentation tool in a fixed number of
 steps. There are four steps in documenting an API, to be more precise:
 </p>
 <ol>
-<li>A developer annotates his code following certain rules. This helps
+<li>A developer annotates their code following certain rules. This helps
        analysis tools get a better sense of the code, and users of the API to
        see faster how to use or what's the intention of a particular part of
        the API.
@@ -530,20 +530,20 @@ although it is a starting point.
 First, helping the user find the right component to use for a certain problem
 involves first knowing how the user searches for information about that
 particular problem. In some cases it's easy to guess, for example, the user
-might be looking for a stable sort, and as such he'll type "stable sort" in the
+might be looking for a stable sort, and as such they'll type "stable sort" in the
 search box and expect to see classes, functions, procedures, methods, whatever
-that will do the thing he wants. But perhaps the user isn't really looking for
-a stable sort, perhaps in his case some other sorting algorithm will do the job
-better or faster because he doesn't have the constraints he gave in the first
+that will do the thing they want. But perhaps the user isn't really looking for
+a stable sort, perhaps in their case some other sorting algorithm will do the job
+better or faster because they don't have the constraints they gave in the first
 place. In this case, the system has to guess the intentions of the user from
 the provided context, and suggest things that fit the context but provide
 different constraints, or different benefits.
 </p>
 <p>
 This also kind of asks for a more expressive search. One where the user can
-define his constraints better. For example, if he knows he's working with a
-list of Elements, he might be looking for a sorting function that is efficient
-for those, so he could provide a basic type, say: <code>sort :: [Element] -&gt; [Element]</code>, and the search engine would attempt to match sorting functions that
+define their constraints better. For example, if they know they're working with a
+list of Elements, they might be looking for a sorting function that is efficient
+for those, so they could provide a basic type, say: <code>sort :: [Element] -&gt; [Element]</code>, and the search engine would attempt to match sorting functions that
 provide an approximate type to that. <a href="http://www.haskell.org/hoogle/">Hoogle</a> does this kind of approximate type
 searches. Other constraints might involve platforms, mutability, etc. Ranking
 the search results by favouring the ones that fit the constraints the user
@@ -565,7 +565,7 @@ probably determine that by some meta-data or language.
 </p>
 <p>
 So, the second goal of Papyr° is helping the user to use a particular entity to
-solve his or her problem. This is partially done by automatically loading
+solve their problem. This is partially done by automatically loading
 Markdown literate examples and displaying them alongside the source code and
 other details for an entity. The literate examples are, however, static. There
 could be some use in defining a format for interactive examples, or even
