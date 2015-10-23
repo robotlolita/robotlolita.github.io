@@ -407,7 +407,7 @@ function createPromise() {
   return {
     // A promise starts containing no value,
     value: null,
-    // with a "pending" state, so it can be fulfilled later,,
+    // with a "pending" state, so it can be fulfilled later,
     state: "pending",
     // and it has no dependencies yet.
     dependencies: []
