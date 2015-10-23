@@ -267,7 +267,7 @@ Becomes the following lambda abstraction:
 {% highlight js linenos=table %}
 var abstraction = function(a) {
   return a + 1;
-}
+};
 
 // We can then plug `a` in:
 abstraction(2);
@@ -287,7 +287,7 @@ the values of promises into Lambda Abstractions, so we can plug in the
 value later.
 
 
-### 2.3. Sequencing expressions with Promises
+### 2.3. Sequencing Expressions with Promises
 
 With this, all that's left is describing the operations we'll use to
 create promises, put values in them, and describe the dependencies
@@ -298,7 +298,7 @@ existing Promises implementation:
 - `createPromise()` constructs a representation of a value. The value
   must be provided at later point in time.
   
-- `fulfill(promise, value)` puts a value in the promise. Allowing
+- `fulfil(promise, value)` puts a value in the promise. Allowing
   the expressions that depend on the value to be computed.
 
 - `depend(promise, expression)` defines a dependency between
@@ -321,12 +321,12 @@ print(squareArea);
 // Becomes:
 var squareAreaAbstraction = function(side) {
   var result = createPromise();
-  fulfill(result, side * side);
+  fulfil(result, side * side);
   return result;
 };
 var printAbstraction = function(squareArea) {
   var result = createPromise();
-  fulfill(result, print(squareArea));
+  fulfil(result, print(squareArea));
   return result;
 }
 
@@ -334,7 +334,7 @@ var sidePromise = createPromise();
 var squareAreaPromise = depend(sidePromise, squareAreaAbstraction);
 var printPromise = depend(squareAreaPromise, printAbstraction);
 
-fulfill(sidePromise, 10);
+fulfil(sidePromise, 10);
 {% endhighlight %}
 
 This is a lot of noise, if we compare with the synchronous version of
@@ -343,18 +343,168 @@ execution. Instead, the only constraints on its execution are the
 dependencies we've described.
 
 
+### Interlude: Implementing Promises
+
+There's one open question left to be answered: how do we actually run
+the code so the order follows from the dependencies we've described?
+If we're not following JavaScript's execution order, something
+else has to provide the execution order we want. 
+
+Luckily, this is easily definable in terms of the functions we've
+used. First we must decide how to represent values and their
+dependencies. The most natural way of doing this is by adding this data
+to the value returned from `createPromise`.
+
+First, Promises of **something** must be able to represent that value,
+however they don't necessarily contain a value at all times. A value is
+only placed into the promise when we invoke `fulfil`. A minimal
+representation for this would be:
+
+{% highlight haskell linenos=table %}
+data Promise of something = {
+  value :: something | null
+}
+{% endhighlight %}
+
+A `Promise of something` springs into existence containing the value
+`null`. At some later point in time someone may invoke the `fulfil`
+function for that promise, at which point the promise will contain the
+given fulfilment value. Since promises can only be fulfilled once, that
+value is what the promise will contain for the rest of the program.
+
+Given that it's not possible to figure out if a promise has already been
+fulfilled by just looking at the `value` (`null` is a valid value), we
+also need to keep track of the state the promise is in, so we don't risk
+fulfilling it more than once. So we change the representation
+accordingly:
+
+{% highlight haskell linenos=table %}
+data Promise of something = {
+  value :: something | null,
+  state :: "pending" | "fulfilled"
+}
+{% endhighlight %}
+
+We also need to handle the dependencies that are created by the `depend`
+function. A dependency is a lambda abstraction that will, eventually, be
+filled with the value in the promise, so it can be evaluated. One
+promise can have many lambda abstractions which depend on its value, so
+a minimal representation for this would be:
+
+{% highlight haskell linenos=table %}
+data Promise of something = {
+  value :: something | null,
+  state :: "Pending" | "fulfilled",
+  dependencies :: [something -> Promise of something_else]
+}
+{% endhighlight %}
+
+Now that we've decided on a representation for our promises, let's start
+by defining the function that creates new promises:
+
+{% highlight js linenos=table %}
+function createPromise() {
+  return {
+    // A promise starts containing no value,
+    value: null,
+    // with a "pending" state, so it can be fulfilled later,,
+    state: "pending",
+    // and it has no dependencies yet.
+    dependencies: []
+  };
+}
+{% endhighlight %}
+
+Since we've decided on our simple representation, constructing a new
+object for that representation is fairly straightforward. Let's move to
+something more complicated: attaching dependencies to a promise.
+
+One of the ways of solving this problem would be to put all of the
+dependencies created in the `dependencies` field of the promise, then
+feed the promise to an interpreter that would run the computations as
+needed. With this implementation, no dependency would ever execute
+before the interpreter is started. We'll not implement promises this way
+because it doesn't fit how people usually write JavaScript programs[^3].
+
+Another way of solving this problem comes from the realisation that we
+only really need to keep track of the dependencies for a promise while
+the promise is in the `pending` state, because once a promise is
+fulfilled we can just execute the lambda abstraction right away!
+
+{% highlight js linenos=table %}
+function depend(promise, expression) {
+  // We need to return a promise that will contain the value of
+  // the expression, when we're able to compute the expression
+  var result = createPromise();
+
+  // If we can't execute the expression yet, put it in the list of
+  // dependencies for the future value
+  if (promise.state === "pending") {
+    promise.dependencies.push(function(value) {
+      // We're interested in the eventual value of the expression
+      // so we can put that value in our result promise.
+      depend(expression(value), function(newValue) {
+        fulfil(result, newValue);
+        // We return an empty promise because `depend` requires one promise
+        return createPromise();
+      })
+    });
+
+  // Otherwise just execute the expression, we've got the value
+  // to plug in ready!
+  } else {
+    depend(expression(promise.value), function(newValue) {
+      fulfil(result, newValue);
+      // We return an empty promise because `depend` requires one promise
+      return createPromise();
+    })
+  }
+
+  return result;
+}
+{% endhighlight %}
+
+The `depend` function takes care of executing our dependent expressions
+when the value they're waiting for is ready, but if we attach the
+dependency too soon that lambda abstraction will just end up in an array
+in the promise object, so our job is not done yet. For the second part
+of the execution, we need to run the dependencies when we've got the
+value. Luckily, the `fulfil` function can be used for this.
+
+We can fulfil promises that are in the `pending` state by calling the
+`fulfil` function with the value we want to put in the promise. This is
+a good time to invoke any dependencies that were created before the
+value of the promise was available, and takes care of the other half of
+the execution.
+
+{% highlight js linenos=table %}
+function fulfil(promise, value) {
+  if (promise.state !== "pending") {
+    throw new Error("Trying to fulfil an already fulfilled promise!");
+  } else {
+    promise.state = "fulfilled";
+    promise.value = value;
+    promise.dependencies.forEach(function(expression) {
+      expression(value);
+    });
+  }
+}
+{% endhighlight %}
+
+
+### 2.4. Concurrent Expressions With Promises
+
+### 2.5. Handling Errors With Promises
 
 
 
-
-
-## 3. How do promises work in JavaScript?
+## 3. How do Promises Work in JavaScript?
 A practical understanding of Promises/A+.
 
-## 4. Why use promises?
+## 4. Why Use Promises?
 The benefits.
 
-## 5. Why not use promises?
+## 5. Why Not Use Promises?
 Where they really don't fit.
 
 ## 6. Conclusion
@@ -385,3 +535,26 @@ Where they really don't fit.
     expression. JavaScript itself just calls them “Functions,” they may
     be created with arrows, or with a Named Function
     Expression/Anonymous Function Expression construct.
+
+
+[^3]:
+    This separation of "computation definition" and "execution of
+    computations" is how the Haskell programming language works. A
+    Haskell program is nothing more than a huge expression that
+    evaluates to a `IO` data structure. This structure is somewhat
+    similar to the `Promise` structure we've defined here, in that it
+    only defines dependencies between different computations in the
+    program.
+
+    In Haskell, however, your program must return a value of
+    type `IO`, which is then passed to a separate interpreter, which
+    only knows how to run `IO` computations and respect the dependencies
+    it defines. It would be possible to define something similar for
+    JS. If we did that, then all of our JS program would be just one
+    expression resulting in a Promise, and that Promise would be passed
+    to a separate component that knows how to execute Promises and their
+    dependencies.
+
+    See the
+    [Pure Promises](https://github.com/robotlolita/robotlolita.github.io/tree/master/examples/promises/pure/)
+    example directory for an implementation of this form of promises.
