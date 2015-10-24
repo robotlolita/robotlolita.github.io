@@ -4,7 +4,8 @@ title:  How do Promises Work?
 snip:   Promises are an old concept that have become a fairly big thing in JavaScript recently, but most people still don't know how to use them properly. This blog post should give you a working understanding of promises, and how to best take advantage of them.
 ---
 
-## Table of Contents
+<h2>Table of Contents</h2>
+
   * TOC
 {:toc}
 
@@ -287,13 +288,16 @@ the values of promises into Lambda Abstractions, so we can plug in the
 value later.
 
 
-### 2.3. Sequencing Expressions with Promises
+## 3. Understanding the Promises Machinery
 
-With this, all that's left is describing the operations we'll use to
-create promises, put values in them, and describe the dependencies
-between expressions and values. For the sake of our examples, we'll use
-the following very descriptive operations, which happen to be used by no
-existing Promises implementation:
+### 3.1. Sequencing Expressions with Promises
+
+Now that we went through the conceptual nature of promises, we can start
+understanding how they work in a machine. To do so, we'll describe the
+operations we'll use to create promises, put values in them, and
+describe the dependencies between expressions and values. For the sake
+of our examples, we'll use the following very descriptive operations,
+which happen to be used by no existing Promises implementation:
 
 - `createPromise()` constructs a representation of a value. The value
   must be provided at later point in time.
@@ -343,7 +347,7 @@ execution. Instead, the only constraints on its execution are the
 dependencies we've described.
 
 
-### Interlude: Implementing Promises
+### 3.2. A Minimal Promise Implementation
 
 There's one open question left to be answered: how do we actually run
 the code so the order follows from the dependencies we've described?
@@ -492,29 +496,176 @@ function fulfil(promise, value) {
 {% endhighlight %}
 
 
-### 2.4. Concurrent Expressions With Promises
+### 3.3. The Machinery of Concurrency With Promises
 
-### 2.5. Handling Errors With Promises
+While sequencing operations with promises requires one to create a chain
+of dependencies, combining promises concurrently just requires that the
+promises don't have a dependency on each other.
+
+For our Circle example we have a computation that is naturally
+concurrent. The `radius` expression and the `Math.PI` expression don't
+depend on each other, so they can be computed separately, but
+`circleArea` depends on both. In terms of code, we have the following:
+
+{% highlight js linenos=table %}
+var radius = 10;
+var circleArea = 10 * 10 * Math.PI;
+print(circleArea);
+{% endhighlight %}
+
+If one wanted to express this with promises, they'd have:
+
+{% highlight js linenos=table %}
+var circleAreaAbstraction = function(radius, pi) {
+  var result = createPromise();
+  fulfil(result, radius * radius * pi);
+  return result;
+};
+
+var printAbstraction = function(circleArea) {
+  var result = createPromise();
+  fulfil(result, print(circleArea));
+  return result;
+};
+
+var radiusPromise = createPromise();
+var piPromise = createPromise();
+
+var circleAreaPromise = ???;
+var printPromise = depend(circleAreaPromise, printAbstraction);
+
+fulfil(radiusPromise, 10);
+fulfil(piPromise, Math.PI);
+{% endhighlight %}
+
+We have a small problem here: `circleAreaAbstraction` is an expression
+that depends on **two** values, but `depend` is only able to define
+dependencies for expressions that depend on a single value!
+
+There are a few ways of working around this limitation, we'll start with
+the simple one. If `depend` can provide a single value for one
+expression, then it must be possible to capture the value in a closure,
+and extract the values from the promises one at a time. This does create
+some implicit ordering, but it shouldn't impact concurrency too much.
+
+{% highlight js linenos=table %}
+function wait2(promiseA, promiseB, expression) {
+  // We extract the value from promiseA first.
+  return depend(promiseA, function(a) {
+    // Then we extract the value of promiseB
+    return depend(promiseB, function(b) {
+      // Now that we've got access to both values,
+      // we can execute the expression that depends
+      // on more than one value:
+      var result = createPromise();
+      fulfil(result, expression(a, b));
+      return result;
+    })
+  })
+}
+{% endhighlight %}
+
+With this, we can define `circleAreaPromise` as the following:
+
+{% highlight js linenos=table %}
+var circleAreaPromise = wait2( radiusPromise
+                             , piPromise
+                             , circleAreaAbstraction);
+{% endhighlight %}
+
+We could define `wait3` for expressions that depend on three values,
+`wait4` for expressions that depend on four values, and so on, and so
+forth. But `wait*` creates an implicit ordering (promises are executed
+in a particular order), and it requires that we know the amount of
+values that we're going to plug in advance. So it doesn't work if we
+want to wait for an entire array of promises, for example (although one
+could combine `wait2` and `Array.prototype.reduce` for that).
+
+Another way of solving this problem is to accept an array of promises,
+and execute each one as soon as possible, then give back a promise for
+an array of the values the original promises contained. This approach is
+a little more complicated, since we need to implement a simple Finite
+State Machine, but it scales.
+
+{% highlight js linenos=table %}
+function waitAll(promises, expression) {
+  // An array of the values of the promise, which we'll fill in
+  // incrementally.
+  var values = new Array(promises.length);
+  // How many promises we're still waiting for
+  var pending = values.length;
+  // The resulting promise
+  var result = createPromise();
+
+  // We start by executing each promise. We keep track of the
+  // original index so we know where to put the value in the 
+  // resulting array.
+  promises.forEach(function(promise, index) {
+    // For each promise, we'll wait for the promise to resolve,
+    // and then store the value in the `values` array.
+    depend(promise, function(value) {
+      values[index] = value;
+      pending = pending - 1;
+
+      // If we finished waiting for all of the promises, we
+      // can put the array of values in the resulting promise
+      if (pending === 0) {
+        fulfil(result, values);
+      }
+
+      // We don't care about doing anything else with this promise.
+      // We return an empty promise because `depends` requires it.
+      return createPromise();
+    })
+  });
+
+  // Finally, we return a promise for the eventual array of values
+  return result;
+}
+{% endhighlight %}
+
+If we were to use `waitAll` for the `circleAreaAbstraction`, it would
+look like the following:
+
+{% highlight js linenos=table %}
+var circleAreaPromise = waitAll([radiusPromise, piPromise]
+                               ,function(xs) {
+                                  return circleAreaAbstraction(xs[0], xs[1]);
+                               })
+{% endhighlight %}
+
+
+### 3.4. Handling Errors With Promises
+
+Sometimes programs have errors. JavaScript programmers are used to
+handling these errors through the special `try/catch` construct, but it
+doesn't work for asynchronous errors, which means we can't use the same
+construct for handling errors in Promises. Ideally, we would want
+something that allows us to handle errors in Promises in a similar
+manner to how `try/catch` does: propagating the error up the call chain
+until something is able to handle it.
 
 
 
-## 3. How do Promises Work in JavaScript?
+
+
+## 4. A Practical Understanding of Promises
 A practical understanding of Promises/A+.
 
-## 4. Why Use Promises?
+## 5. Why Use Promises?
 The benefits.
 
-## 5. Why Not Use Promises?
+## 6. Why Not Use Promises?
 Where they really don't fit.
 
-## 6. Conclusion
+## 7. Conclusion
 
 
 ## References and Additional Reading
 
 - - -
 
-#### Footnotes
+<h4>Footnotes</h4>
 
 [^1]:
     You can't extract the values of promises in Promises/A,
