@@ -1062,3 +1062,9 @@ Where they really don't fit.
     JavaScript's "semicolon operator" (i.e.: `print(1); print(2)`) as
     the use of the monadic `chain` operator: `print(1).chain(_ =>
     print(2))`.
+
+
+<div class="contact-footer">
+    Quil swore she was never going to touch promises ever again. And
+    she's wearing gloves now. You can contact her on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
+</div>
