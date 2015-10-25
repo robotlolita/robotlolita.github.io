@@ -151,12 +151,13 @@ the machines “Do this. Then do that. Then do that. Then…”
 Turns out, executing everything in order is very expensive. If
 `circleArea` takes too long to finish, then we're blocking `squareArea`
 from executing at all until then. In fact, for this example, it doesn’t
-matter which order we pick, the result is always going to be the
+matter which order we
+ pick, the result is always going to be the
 same. The order expressed in our programs is too arbitrary.
 
 
 > […] order is very expensive.
-{: .highlight-paragraph}
+{: .highlight-paragraph}gde33: 
 
 
 We want our computers to be able to do more things, and do more things
@@ -398,7 +399,7 @@ a minimal representation for this would be:
 {% highlight haskell linenos=table %}
 data Promise of something = {
   value :: something | null,
-  state :: "Pending" | "fulfilled",
+  state :: "pending" | "fulfilled",
   dependencies :: [something -> Promise of something_else]
 }
 {% endhighlight %}
@@ -635,31 +636,275 @@ var circleAreaPromise = waitAll([radiusPromise, piPromise]
 {% endhighlight %}
 
 
-### 3.4. Handling Errors With Promises
+## 4. Promises and Error Handling
 
-Sometimes programs have errors. JavaScript programmers are used to
-handling these errors through the special `try/catch` construct, but it
-doesn't work for asynchronous errors, which means we can't use the same
-construct for handling errors in Promises. Ideally, we would want
-something that allows us to handle errors in Promises in a similar
-manner to how `try/catch` does: propagating the error up the call chain
-until something is able to handle it.
+### Interlude: When Computations Fail
+
+Not all computations can always produce a valid value. Some functions,
+like `a / b`, or `a[0]` are partial, and thus only defined for a subset
+of possible values for `a` or `b`. If we write programs that contain
+partial functions, and we hit one of the cases that the function can't
+handle, we won't be able to continue executing the program. In other
+words, our entire program would crash.
+
+A better way of incorporating partial functions in a program is by
+making it total. That is, defining the parts of the function that
+weren't defined before. In general, this means that we consider the
+cases the function can handle a form of "Success", and the cases it
+can't handle a form of "Failure". This alone already allows us to write
+entire programs that may continue executing even when faced with a
+computation that can't produce a valid value:
+
+![](/files/2015/09/promises-08.png)
+*Branching on partial functions*
+{: .centred-image .full-image}
+
+Branching on each possible failure is a reasonable way of handling them,
+but not necessarily a practical one. For example, if we compose three
+computations that could fail, that means we'd have to define at least 6
+different branches, for the simplest composition!
+
+![](/files/2015/09/promises-09.png)
+*Branching on every partial function*
+{: .centred-image .full-image}
+
+> <strong class="heading">Fun fact!</strong>
+> Some programming languages, like OCaml, prefer this style of error
+> handling because it's very explicit on what's happening. In general
+> functional programming favours explicitness, but some functional
+> languages, like Haskell, use an interface called Monad[^4] to make
+> error handling (among other things) more practical.
+{: .note .trivia}
+
+Ideally, we'd like to write just `y / (x / (a / b))`, and handle
+possible errors just once, for the entire composition, rather than
+handling errors in each sub-expression. Programming languages have
+different ways of letting you do this. Some let you ignore errors
+entirely, or at least put off touching it as much as possible, like C
+and Go. Some will let the program crash, but give you tools to recover
+from the crashing, like Erlang. But the most common approach is to
+assign a "failure handler" to a block of code where failures may
+happen. JavaScript allows the latter approach through the `try/catch`
+statement, for example.
+
+![](/files/2015/09/promises-10.png)
+*One of the approaches for handling failures in a practical way*
+{: .centred-image .full-image}
 
 
 
+### 4.1. Handling Errors With Promises
+
+Our formulation of Promises so far does not admit failures. So, all of
+the computations that happen in promises must always produce a valid
+result. This is a problem if we were to run a computation like `a / b`
+inside a promise, because if `b` is 0, like in `2 / 0`, that computation
+can't produce a valid result.
 
 
-## 4. A Practical Understanding of Promises
+![](/files/2015/09/promises-11.png)
+*Possible states of our new promise*
+{: .pull-left}
+
+We can modify our promise to contemplate the representation of failures
+quite easily. Currently our promises start at the `pending` state, and
+then it can only be fulfilled. If we add a new state, `rejected`, then
+we can model partial functions in our promises. A computation that
+succeeds would start at pending, and eventually move to `fulfilled`. A
+computation that fails would start at pending, and eventually move to
+`rejected`.
+
+Since we now have the possibility of failure, the computations that
+depend on the value of the promise also must be aware of that. For now
+we'll have our `depend` failure just take an expression to be run when
+the promise is fulfilled, and one expression to run when the promise is
+rejected.
+
+With this, our new representation of promises becomes:
+{: .clear}
+
+{% highlight haskell linenos=table %}
+data Promise of (value, error) = {
+  value :: value | error | null,
+  state :: "pending" | "fulfilled" | "rejected",
+  dependencies :: [{
+    fulfilled :: value -> Promise of new_value,
+    rejected  :: error -> Promise of new_error
+  }]
+}
+{% endhighlight %}
+
+The promise may contain either a proper value, or an error, and contains
+`null` until it settles (is either fulfilled or rejected). To handle
+this, our dependencies also need to know what to do for proper values
+and error values, so the array of dependencies has to be changed
+slightly.
+
+Besides the change in representation, we need to change our `depend`
+function, which now reads like this:
+
+{% highlight js linenos=table %}
+// Note that we now take two expressions, rather than one.
+function depend(promise, onSuccess, onFailure) {
+  var result = createPromise();
+
+  if (promise.state === "pending") {
+    // Dependencies now gets an object containing
+    // what to do in case the promise succeeds, and
+    // what to do in case the promise fails. The functions
+    // are roughly the same as the previous ones.
+    promise.dependencies.push({
+      fulfilled: function(value) {
+        depend(onSuccess(value),
+               function(newValue) {
+                 fulfil(result, newValue);
+                 return createPromise()
+               },
+               // We have to care about errors that
+               // happen when applying the expression too
+               function(newError) {
+                 reject(result, newError);
+                 return createPromise();
+               });
+      },
+
+      // The rejected branch does the same as the
+      // fulfilled branch, but uses the onFailure
+      // expression.
+      rejected: function(error) {
+        depend(onFailure(error),
+               function(newValue) {
+                 fulfil(result, newValue);
+                 return createPromise();
+               },
+               function(newError) {
+                 reject(result, newError);
+                 return createPromise();
+               });
+        }
+      });
+    }
+  } else {
+    // if the promise has been fulfilled, we run onSuccess
+    if (promise.state === "fulfilled") {
+      depend(onSuccess(promise.value),
+             function(newValue) {
+               fulfil(result, newValue);
+               return createPromise();
+             },
+             function(newError) {
+               reject(result, newError);
+               return createPromise();
+             });
+    } else if (promise.state === "rejected") {
+      depend(onFailure(promise.value),
+             function(newValue) {
+               fulfil(result, newValue);
+               return createPromise();
+             },
+             function(newError) {
+               reject(result, newError);
+               return createPromise();
+             });
+    }
+  }
+
+  return result;
+}
+{% endhighlight %}
+
+And finally, we need a way of putting errors in promises. For this we
+need a `reject` function.:
+
+{% highlight js linenos=table %}
+function reject(promise, error) {
+  if (promise.state !== "pending") {
+    throw new Error("Trying to reject a non-pending promise!");
+  } else {
+    promise.state = "rejected";
+    promise.value = error;
+    promise.dependencies.forEach(function(pattern) {
+      pattern.rejected(error);
+    })
+  }
+}
+{% endhighlight %}
+
+We also need to review the `fulfil` function slightly due to our change
+to the `dependencies` field:
+
+{% highlight js linenos=table %}
+function fulfil(promise, value) {
+  if (promise.state !== "pending") {
+    throw new Error("Trying to fulfil a non-pending promise!");
+  } else {
+    promise.state = "fulfilled";
+    promise.value = value;
+    promise.dependencies.forEach(function(pattern) {
+      pattern.fulfilled(value);
+    });
+  }
+}
+{% endhighlight %}
+
+And with these new additions, we're ready to start putting computations
+that may fail in our promises:
+
+{% highlight js linenos=table %}
+// A computation that may fail
+var div = function(a, b) {
+  var result = createPromise();
+
+  if (b === 0) {
+    reject(result, new Error("Division By 0"));
+  } else {
+    fulfil(result, a / b);
+  }
+
+  return result;
+}
+
+var printFailure = function(error) {
+  console.error(error);
+};
+
+var a = 1, b = 2, c = 0, d = 3;
+var xPromise = div(a, b);
+var yPromise = depend(xPromise,
+                      function(x) {
+                        return div(x, c)
+                      },
+                      printFailure);
+var zPromise = depend(yPromise,
+                      function(y) {
+                        return div(y, d)
+                      },
+                      printFailure);
+{% endhighlight %}
+
+The above code will never execute `zPromise`, because `c` is 0, and it
+causes the computation `div(x, c)` to fail. This is exactly what we
+expect, but right now we need to pass the failure branch every time we
+define a computation in our promise. Ideally, we'd like to only define
+the failure branches where necessary, like we do with `try/catch` for
+synchronous computations.
+
+Turns out that our promises *already* support this
+functionality. Because 
+
+
+
+## 5. A Practical Understanding of Promises
 A practical understanding of Promises/A+.
 
-## 5. Why Use Promises?
+## 6. Why Use Promises?
 The benefits.
 
-## 6. Why Not Use Promises?
+## 7. Why Not Use Promises?
 Where they really don't fit.
 
-## 7. Conclusion
-
+## 8. Conclusion
+gde33: 
 
 ## References and Additional Reading
 
@@ -709,3 +954,22 @@ Where they really don't fit.
     See the
     [Pure Promises](https://github.com/robotlolita/robotlolita.github.io/tree/master/examples/promises/pure/)
     example directory for an implementation of this form of promises.
+
+[^4]:
+    A Monad is an interface that can be (and often is) used for
+    sequencing semantics, when described as a structure with the
+    following operations:
+
+    {% highlight haskell linenos=table %}
+    ∀a. class Monad a where
+          -- Puts a value in the monad
+          of    :: ∀b. b -> Monad b
+          -- Transforms the value in the monad
+          -- (The transformation must maintain the same type)
+          chain :: ∀a, b. (Monad m) => m a -> (a -> m b) -> m b
+    {% endhighlight %}
+
+    In this formulation, it would be possible to see something like
+    JavaScript's "semicolon operator" (i.e.: `print(1); print(2)`) as
+    the use of the monadic `chain` operator: `print(1).chain(_ =>
+    print(2))`.
