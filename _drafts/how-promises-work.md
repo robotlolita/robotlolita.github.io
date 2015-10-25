@@ -882,15 +882,51 @@ var zPromise = depend(yPromise,
                       printFailure);
 {% endhighlight %}
 
-The above code will never execute `zPromise`, because `c` is 0, and it
-causes the computation `div(x, c)` to fail. This is exactly what we
-expect, but right now we need to pass the failure branch every time we
-define a computation in our promise. Ideally, we'd like to only define
-the failure branches where necessary, like we do with `try/catch` for
-synchronous computations.
 
-Turns out that our promises *already* support this
-functionality. Because 
+### 4.2. Failure Propagation With Promises
+
+The last code example will never execute `zPromise`, because `c` is 0,
+and it causes the computation `div(x, c)` to fail. This is exactly what
+we expect, but right now we need to pass the failure branch every time
+we define a computation in our promise. Ideally, we'd like to only
+define the failure branches where necessary, like we do with `try/catch`
+for synchronous computations.
+
+Turns out it's trivial for our promise to support this
+functionality. It's only necessary to define our branches for success
+and failure all the time if we can't abstract over it, and it's often
+the case with control flow. For example, in JavaScript, it's not
+possible to abstract over an `if` statement, or a `for` statement,
+because they're control flow mechanisms, and you can't modify those,
+pass them around, or store them in variables. Our promises are
+first-class objects, they have a concrete representation of failures and
+successes, which we can inspect and react to whenever we want, not just
+at the point they are created.
+
+![](/files/2015/09/promises-12.png)
+*Possible lifecycle of a promise chain*
+{: .pull-right}
+
+In order to be able to achieve something similar to `try/catch` we first
+must be able to do two things with our representation of successes and
+failures:
+
+- **recover from a failure**: If a computation failed, I must be able to
+  turn that value into some sort of success that makes sense. This
+  allows, for example, the use of a default value when retrieving some
+  data from a `Map` or `Array` structure. `map.get("foo").recover(1) +
+  2` would give you `3` if there's no `"foo"` key in the map.
+
+- **fail anytime**: If I have a successful computation, I must be able
+  to turn that value into a failure, and if I have a failure, I must be
+  able to keep the failure. The former allows short-circuiting a
+  computation, and the latter allows failure propagation. With both,
+  you're able to capture the semantics of `(a / b) / (c / d)` failing
+  entirely if any subexpression fails.
+
+Luckily for us, the `depend` function already does most of this
+work. Because `depend` chains *whole* promises, rather than just their
+values, it's able to 
 
 
 
@@ -904,7 +940,7 @@ The benefits.
 Where they really don't fit.
 
 ## 8. Conclusion
-gde33: 
+
 
 ## References and Additional Reading
 
@@ -969,6 +1005,7 @@ gde33:
       -- (The transformation must maintain the same type)
       chain :: ∀a, b. m a -> (a -> m b) -> m b
     ~~~
+    {: .simple-code}
 
     In this formulation, it would be possible to see something like
     JavaScript's "semicolon operator" (i.e.: `print(1); print(2)`) as

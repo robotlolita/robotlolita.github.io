@@ -1565,7 +1565,7 @@ a:hover {
 }
 .textual-content .highlight,
 .textual-content pre.src,
-.textual-content pre code[class^="language-"] {
+.textual-content .simple-code {
   margin: 2em 0;
   border: 1px solid #ecf0f1;
   border-left-width: 2px;
@@ -1578,16 +1578,18 @@ a:hover {
 .textual-content .highlight,
 .textual-content .highlight pre,
 .textual-content .highlight code,
-.textual-content pre code[class^="language-"] {
+.textual-content .simple-code,
+.textual-content .simple-code code {
   background: #fcfcfc;
   color: #7f8c8d;
 }
 .textual-content .highlight pre,
-.textual-content pre code[class^="language-"] {
+.textual-content .simple-code {
   overflow: auto;
 }
 .textual-content .highlight code,
-.textual-content .highlighttable code {
+.textual-content .highlighttable code,
+.textual-content .simple-code code {
   padding: 0;
 }
 .textual-content .highlighttable {
