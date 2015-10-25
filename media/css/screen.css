@@ -1564,7 +1564,8 @@ a:hover {
   line-height: 1.6em;
 }
 .textual-content .highlight,
-.textual-content pre.src {
+.textual-content pre.src,
+.textual-content pre code[class^="language-"] {
   margin: 2em 0;
   border: 1px solid #ecf0f1;
   border-left-width: 2px;
@@ -1572,14 +1573,17 @@ a:hover {
   font-family: monospace;
   font-size: 16px;
   line-height: 22px;
+  display: block;
 }
 .textual-content .highlight,
 .textual-content .highlight pre,
-.textual-content .highlight code {
+.textual-content .highlight code,
+.textual-content pre code[class^="language-"] {
   background: #fcfcfc;
   color: #7f8c8d;
 }
-.textual-content .highlight pre {
+.textual-content .highlight pre,
+.textual-content pre code[class^="language-"] {
   overflow: auto;
 }
 .textual-content .highlight code,

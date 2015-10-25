@@ -222,7 +222,7 @@ a:hover
     margin: 0
     line-height: 1.6em
 
-  .highlight, pre.src
+  .highlight, pre.src, pre code[class^="language-"]
     margin: 2em 0
     border: 1px solid #ecf0f1
     border-left-width: 2px
@@ -230,12 +230,13 @@ a:hover
     font-family: jsk-mono-font
     font-size: 16px
     line-height: 22px
+    display: block
 
-  .highlight, .highlight pre, .highlight code
+  .highlight, .highlight pre, .highlight code, pre code[class^="language-"]
     background: #fcfcfc
     color: #7f8c8d
 
-  .highlight pre
+  .highlight pre, pre code[class^="language-"]
     overflow: auto
 
   .highlight code, .highlighttable code

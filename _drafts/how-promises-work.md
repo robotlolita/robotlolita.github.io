@@ -960,14 +960,15 @@ gde33:
     sequencing semantics, when described as a structure with the
     following operations:
 
-    {% highlight haskell linenos=table %}
-    ∀a. class Monad a where
-          -- Puts a value in the monad
-          of    :: ∀b. b -> Monad b
-          -- Transforms the value in the monad
-          -- (The transformation must maintain the same type)
-          chain :: ∀a, b. (Monad m) => m a -> (a -> m b) -> m b
-    {% endhighlight %}
+    ~~~ haskell
+    class Monad m where
+      -- Puts a value in the monad
+      of    :: ∀a. a -> Monad a
+    
+      -- Transforms the value in the monad
+      -- (The transformation must maintain the same type)
+      chain :: ∀a, b. m a -> (a -> m b) -> m b
+    ~~~
 
     In this formulation, it would be possible to see something like
     JavaScript's "semicolon operator" (i.e.: `print(1); print(2)`) as
