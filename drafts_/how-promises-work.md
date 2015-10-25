@@ -926,9 +926,59 @@ failures:
   entirely if any subexpression fails.
 
 Luckily for us, the `depend` function already does most of this
-work. Because `depend` chains *whole* promises, rather than just their
-values, it's able to 
+work. Because `depend` chains *whole* promises it's able to propagate
+not only the values, but the state the promise is in. This is important
+since if we define just a `successful` branch, and the promise fails, we
+want to propagate not only the value, but also its failure state.
 
+With these mechanisms already in place, supporting simple failure
+propagation, error handling, and short-circuiting on failures requires
+adding two operations: `chain`, which creates a dependency on the
+successful value of a promise, but short-circuits on failures; and
+`recover`, which creates a dependency on the failure value of a promise,
+and allows recovering from that error.
+
+{% highlight js linenos=table %}
+function chain(promise, expression) {
+  return depend(promise, expression,
+                function(error) {
+                  // We propagate the state and
+                  // value of the error by just
+                  // creating an equivalent promise
+                  var result = createPromise();
+                  reject(result, error);
+                  return result;
+                })
+}
+
+function recover(promise, expression) {
+  return depend(promise,
+                function(value) {
+                  // We propagate successful values
+                  // by just creating an equivalent
+                  // promise.
+                  var result = createPromise();
+                  fulfil(result, value);
+                  return result;
+                },
+                expression)
+}
+{% endhighlight %}
+
+We can then use these two functions to simplify our previous division
+example:
+
+{% highlight js linenos=table %}
+var a = 1, b = 2, c = 0, d = 3;
+var xPromise = div(a, b);
+var yPromise = chain(xPromise, function(x) {
+                                 return div(x, c)
+                               });
+var zPromise = chain(yPromise, function(y) {
+                                 return div(y, d);
+                               });
+var resultPromise = recover(zPromise, printFailure);
+{% endhighlight %}
 
 
 ## 5. A Practical Understanding of Promises
