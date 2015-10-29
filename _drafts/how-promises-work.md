@@ -982,7 +982,42 @@ var resultPromise = recover(zPromise, printFailure);
 
 
 ## 5. A Practical Understanding of Promises
-A practical understanding of Promises/A+.
+
+[ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/)
+defines the concept of Promises for JavaScript, but up until now we've
+been using a very simple, but unconventional implementation of
+promises. The reason for this is that ECMAScript's standard promise is
+too complex, and it would make it harder to explain the concepts from
+the ground up. However, now that you know what promises are, and how
+each aspect of them can be implemented, it's very trivial to make the
+move to the standard promises.
+
+
+### 5.1. Introducing ECMAScript Promises
+
+The new version of the ECMAScript language defines a
+[standard for promises](http://www.ecma-international.org/ecma-262/6.0/#sec-promise-constructor)
+in JavaScript. This standard differs from the minimal promise
+implementation we've introduced in a few ways, which makes it more
+complex, but also more practical and easier to use. The table below
+lists the differences between each implementation:
+
+| Our Promises                  | ES2015 Promises                                  |
+| ----------------------------- + ------------------------------------------------ |
+| `p = createPromise()`         | `p = new Promise(...)`                           |
+| `fulfil(p, x)`                | `p = new Promise((fulfil, reject) => fulfil(x))` |
+| <span class="up"></span>      | `p = Promise.resolve(x)`                         |
+| `reject(p, x)`                | `p = new Promise((fulfil, reject) => reject(x))` |
+| <span class="up"></span>      | `p = Promise.reject(x)`                          |
+| `depend(p, f, g)`             | `p.then(f, g)`                                   |
+| `chain(p, f)`                 | `p.then(f)`                                      |
+| `recover(p, g)`               | `p.catch(g)`                                     |
+| `waitAll(ps)`                 | `Promise.all(ps)`                                |
+{: .common-table .simple-inline-code}
+
+
+
+
 
 ## 6. Why Use Promises?
 The benefits.
@@ -995,7 +1030,12 @@ Where they really don't fit.
 
 ## References and Additional Reading
 
-- - -
+<div class="contact-footer">
+    Quil swore she was never going to touch promises ever again. She's wearing gloves now. You can contact her on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
+</div>
+
+- - - 
+
 
 <h4>Footnotes</h4>
 
@@ -1062,9 +1102,3 @@ Where they really don't fit.
     JavaScript's "semicolon operator" (i.e.: `print(1); print(2)`) as
     the use of the monadic `chain` operator: `print(1).chain(_ =>
     print(2))`.
-
-
-<div class="contact-footer">
-    Quil swore she was never going to touch promises ever again. And
-    she's wearing gloves now. You can contact her on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
-</div>
