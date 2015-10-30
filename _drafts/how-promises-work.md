@@ -497,7 +497,7 @@ function fulfil(promise, value) {
 {% endhighlight %}
 
 
-### 3.3. The Machinery of Concurrency With Promises
+### 3.3. Combining Promises Concurrently
 
 While sequencing operations with promises requires one to create a chain
 of dependencies, combining promises concurrently just requires that the
@@ -634,6 +634,181 @@ var circleAreaPromise = waitAll([radiusPromise, piPromise]
                                   return circleAreaAbstraction(xs[0], xs[1]);
                                })
 {% endhighlight %}
+
+
+### 3.4. Combining Promises Non-Deterministically
+
+We've seen how to combine promises, but so far we can only combine them
+deterministically. This doesn't help us if we need to, for example,
+select the fastest of two operations. Maybe we're searching for
+something on two servers, and we don't care which one answers, we'll
+just go with the fastest one.
+
+In order to support this we'll introduce some non-determinism. In
+particular, we need an operation that, given two promises, takes the
+value and state of the one which resolves the fastest. The idea behind
+the operation is simple: run two promises concurrently, and wait for the
+first resolution, then propagate that to the resulting promise. The
+implementation is somewhat less simple, since we need to keep state
+around:
+
+{% highlight js linenos=table %}
+function race(left, right) {
+  // Create the resulting promise.
+  var result = createPromise();
+
+  // Waits for both promises concurrently. doFulfil
+  // and doReject will propagate the result/state of
+  // the first promise to resolve. This is done by
+  // checking the current state of `result` to make
+  // sure it's already pending.
+  depend(left, doFulfil, doReject);
+  depend(right, doFulfil, doReject);
+
+  // Return the resulting promise
+  return result;
+
+  
+  function doFulfil(value) {
+    if (result.state === "pending") {
+      fulfil(result, value);
+    }
+  }
+
+  function doReject(value) {
+    if (result.state === "pending") {
+      reject(result, value);
+    }
+  }
+}
+{% endhighlight %}
+
+With this we can start combining operations by choosing between them
+non-deterministically. If we take the previous example:
+
+{% highlight js linenos=table %}
+function searchA() {
+  var result = createPromise();
+  setTimeout(function() {
+    fulfil(result, 10);
+  }, 300);
+  return result;
+}
+
+function searchA() {
+  var result = createPromise();
+  setTimeout(function() {
+    fulfil(result, 30);
+  }, 200);
+  return result;
+}
+
+var valuePromise = race(searchA(), searchB());
+// => valuePromise will eventually be 30
+{% endhighlight %}
+
+Choosing between more than two promises is possible, because `race(a,
+b)` basically *becomes* `a` or `b` depending on which one resolves the
+fastest. So if we have `race(c, race(a, b))`, and `b` resolves first,
+then that's the same as `race(c, b)`. Of course, typing `race(a, race(b,
+race(c, ...)))` isn't the best thing, so we can write a simple
+combinator to do that for us:
+
+{% highlight js linenos=table %}
+function raceAll(promises) {
+  return promises.reduce(race, createPromise());
+}
+{% endhighlight %}
+
+And then we can use it:
+
+{% highlight js linenos=table %}
+raceAll([searchA(), searchB(), waitAll([searchA(), searchB()])]);
+{% endhighlight %}
+
+
+Another way of choosing between two promises non-deterministically is to
+wait for the first one to be *successfully fulfilled*. For example, if
+you're trying to find a valid download link in a list of mirrors, you
+don't want to fail if the first one fails, you want to download from the
+first mirror you can download, and fail if all of them fail. We can
+write an `attempt` operation to capture this:
+
+{% highlight js linenos=table %}
+function attempt(left, right) {
+  // Creates the resulting promise.
+  var result = createPromise();
+
+  // doFulfil will propagate the result/state of the first
+  // promise that resolves successfully, whereas doReject
+  // will aggregate the errors until all of the promises
+  // fail.
+  //
+  // We need to keep track of the errors that happened
+  var errors = {}
+
+  // Now we can wait for both promises, just like in `race`.
+  // The difference here is that `doReject` needs to know
+  // which promise it is rejecting, to keep track of the
+  // errors.
+  depend(left, doFulfil, doReject('left'));
+  depend(right, doFulfil, doReject('right'));
+
+  // Finally, return the resulting promise.
+  return result;
+
+  function doFulfil(value) {
+    if (result.state === "pending") {
+      fulfil(result, state);
+    }
+  }
+
+  function doReject(field) {
+    return function(value) {
+      if (result.state === "pending") {
+        // If we're still pending, we can safely keep aggregating
+        // the errors. We make sure the error we got goes into the
+        // right field of the object aggregating these errors
+        errors[field] = value;
+
+        // If we've managed to catch all of the errors, we can
+        // reject the resulting promise. We reject it with all
+        // of the errors that happened, in the right order.
+        if ('left' in errors && 'right' in errors) {
+          reject(result, [errors.left, errors.right]);
+        }
+      }
+    }
+  }  
+}
+{% endhighlight %}
+
+Usage is the same as `race`, so `attempt(searchA(), searchB())` would
+return the first promise that resolves successfully, rather than just
+the first promise to resolve. However, unlike `race`, `attempt` doesn't
+compose naturally because it aggregates the errors. So, if we want to
+attempt several promises, we need to account for that:
+
+{% highlight js linenos=table %}
+function attemptAll(promises) {
+  // Since we aggregate all promises, we need to start from a
+  // rejected one, otherwise attempt would never finish if we
+  // have errors.
+  var initial = createPromise();
+  reject(initial, []);
+
+  // Finally, we use `attempt` to combine the promises, taking
+  // care of flattening the arrays of errors at each step:
+  return promises.reduce(function(result, promise) {
+    return recover(attempt(result, promise), function(errors) {
+      return errors[0].concat([errors[1]]);
+    });
+  }, createPromise());
+}
+
+attemptAll([searchA(), searchB(), searchC(), searchD()]);
+{% endhighlight %}
+
 
 
 ## 4. Promises and Error Handling
@@ -1013,6 +1188,9 @@ lists the differences between each implementation:
 | `chain(p, f)`                 | `p.then(f)`                                      |
 | `recover(p, g)`               | `p.catch(g)`                                     |
 | `waitAll(ps)`                 | `Promise.all(ps)`                                |
+| `raceAll(ps)`                 | `Promise.race(ps)`                               |
+| `attemptAll(ps)`              | (None)                                           |
+
 {: .common-table .simple-inline-code}
 
 The main methods in the standard promise are `new Promise(...)`, which
@@ -1031,6 +1209,7 @@ fulfil(p, 10);
 
 // Becomes:
 var p = new Promise((fulfil, reject) => fulfil(10));
+
 
 // ---
 // And:
@@ -1059,6 +1238,8 @@ depend(promise, function(value) {
   return q;
 })
 
+
+// ---
 // Becomes:
 promise.then(value => value + 1);
 {% endhighlight %}
@@ -1085,6 +1266,7 @@ var printPromise = depend(squareAreaPromise, printAbstraction);
 fulfil(sidePromise, 10);
 
 
+// ---
 // Becomes
 var sideP = Promise.resolve(10);
 var squareAreaP = sideP.then(side => side * side);
@@ -1105,6 +1287,8 @@ var pi = Math.PI;
 var circleArea = radius * radius * pi;
 print(circleArea);
 
+
+// ---
 // Becomes:
 var radiusP = Promise.resolve(10);
 var piP = Promise.resolve(Math.PI);
@@ -1140,6 +1324,8 @@ var zPromise = chain(yPromise, function(y) {
                                });
 var resultPromise = recover(zPromise, printFailure);
 
+
+// ---
 // Becomes:
 var div = function(a, b) {
   return new Promise((fulfil, reject) => {
@@ -1154,6 +1340,19 @@ var yP = xP.then(x => div(x, c));
 var zP = yP.then(y => div(y, d));
 var resultP = zP.catch(printFailure);
 {% endhighlight %}
+
+
+
+### 5.2. Concurrency in Promises, Revisited
+
+ECMAScript standard promises come with two primitive operations for
+combining promises concurrently: `Promise.all` and `Promise.race`. We've
+seen 
+
+
+### 5.3. A Closer Look Into `.then`
+
+
 
 
 ## 6. Why Use Promises?
