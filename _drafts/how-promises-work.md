@@ -1364,7 +1364,66 @@ Where they really don't fit.
 ## 8. Conclusion
 
 
-## References and Additional Reading
+## References
+
+[ECMAScript® 2015 Language Specification](http://www.ecma-international.org/ecma-262/6.0/)
+: *Allen Wirfs-Brock* —
+  Defines the standard for Promises in JavaScript.
+
+[Alice Through The Looking Glass](http://www.ps.uni-saarland.de/Papers/abstracts/alice-looking-glass.html)
+: *Andreas Rossberg, Didier Le Botlan, Guido Tack, Thorsten Brunklaus,
+  and Gert Smolka* —
+  Presents the Alice language, which supports concurrency through
+  futures and promises.
+
+[Haskell 98 Language and Libraries](https://www.haskell.org/definition/haskell98-report.pdf)
+: *Simon Peyton Jones* —
+  Describes, informally, the semantics of the Haskell programming language.
+
+[Communicating Sequential Processes](http://www.usingcsp.com/cspbook.pdf)
+: *C. A. R. Hoare* —
+  Describes concurrent combinations of processes, such as deterministic
+  and non-deterministic choices.
+
+[Monads For Functional Programming](http://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf)
+: *Philip Wadler* —
+  Describes, amongst other things, how monads can be used for error
+  handling in functional languages. Promise's sequencing and error
+  handling is very similar to the monadic formulation, although Promises
+  don't implement the monad interface in the ECMAScript 2015 standard.
+
+## Additional Reading
+
+[Source Code For This Blog Post](https://github.com/robotlolita/robotlolita.github.io/tree/master/examples/promises)
+: Contains all of the (commented) source code for this blog post (including a
+  minimal implementation of promises conforming to the ECMAScript 2015
+  specification), with additional examples.
+
+[Promises/A+ Considered Harmful](http://robotlolita.me/2013/06/28/promises-considered-harmful.html)
+: *Quildreen Motta* —
+  Discusses some of the problems that the Promises/A+ and the ECMAScript
+  2015 Promises standard have, in terms of complexity, error handling,
+  and performance.
+
+[Professor Frisby's Mostly Adequate Guide to Functional Programming](https://www.gitbook.com/book/drboolean/mostly-adequate-guide/details)
+: *Brian Lonsdorf* —
+  An introductory book to functional programming in JavaScript.
+
+[Callbacks Are Imperative, Promises Are Functional: Node's Biggest Missed Opportunity](https://blog.jcoglan.com/2013/03/30/callbacks-are-imperative-promises-are-functional-nodes-biggest-missed-opportunity/)
+: *James Coglan* —
+  Contrasts Continuation-Passing Style and Promise for describing a
+  program's order of execution.
+
+## Resources and Libraries
+
+[es6-promise](https://www.npmjs.com/package/es6-promise)
+: A polyfill for ECMAScript 2015 standard promises, for platforms that don't implement ES2015.
+
+[Bluebird](https://www.npmjs.com/package/bluebird)
+: An efficient Promises/A+ implementation.
+
+
+
 
 <div class="contact-footer">
     Quil swore she was never going to touch promises ever again. She's wearing gloves now. You can contact her on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
