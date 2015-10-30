@@ -498,7 +498,7 @@ function fulfil(promise, value) {
 {% endhighlight %}
 
 
-### 3.3. The Machinery of Concurrency With Promises
+### 3.3. Combining Promises Concurrently
 
 While sequencing operations with promises requires one to create a chain
 of dependencies, combining promises concurrently just requires that the
@@ -511,7 +511,7 @@ depend on each other, so they can be computed separately, but
 
 {% highlight js linenos=table %}
 var radius = 10;
-var circleArea = 10 * 10 * Math.PI;
+var circleArea = radius * radius * Math.PI;
 print(circleArea);
 {% endhighlight %}
 
@@ -635,6 +635,181 @@ var circleAreaPromise = waitAll([radiusPromise, piPromise]
                                   return circleAreaAbstraction(xs[0], xs[1]);
                                })
 {% endhighlight %}
+
+
+### 3.4. Combining Promises Non-Deterministically
+
+We've seen how to combine promises, but so far we can only combine them
+deterministically. This doesn't help us if we need to, for example,
+select the fastest of two operations. Maybe we're searching for
+something on two servers, and we don't care which one answers, we'll
+just go with the fastest one.
+
+In order to support this we'll introduce some non-determinism. In
+particular, we need an operation that, given two promises, takes the
+value and state of the one which resolves the fastest. The idea behind
+the operation is simple: run two promises concurrently, and wait for the
+first resolution, then propagate that to the resulting promise. The
+implementation is somewhat less simple, since we need to keep state
+around:
+
+{% highlight js linenos=table %}
+function race(left, right) {
+  // Create the resulting promise.
+  var result = createPromise();
+
+  // Waits for both promises concurrently. doFulfil
+  // and doReject will propagate the result/state of
+  // the first promise to resolve. This is done by
+  // checking the current state of `result` to make
+  // sure it's already pending.
+  depend(left, doFulfil, doReject);
+  depend(right, doFulfil, doReject);
+
+  // Return the resulting promise
+  return result;
+
+  
+  function doFulfil(value) {
+    if (result.state === "pending") {
+      fulfil(result, value);
+    }
+  }
+
+  function doReject(value) {
+    if (result.state === "pending") {
+      reject(result, value);
+    }
+  }
+}
+{% endhighlight %}
+
+With this we can start combining operations by choosing between them
+non-deterministically. If we take the previous example:
+
+{% highlight js linenos=table %}
+function searchA() {
+  var result = createPromise();
+  setTimeout(function() {
+    fulfil(result, 10);
+  }, 300);
+  return result;
+}
+
+function searchA() {
+  var result = createPromise();
+  setTimeout(function() {
+    fulfil(result, 30);
+  }, 200);
+  return result;
+}
+
+var valuePromise = race(searchA(), searchB());
+// => valuePromise will eventually be 30
+{% endhighlight %}
+
+Choosing between more than two promises is possible, because `race(a,
+b)` basically *becomes* `a` or `b` depending on which one resolves the
+fastest. So if we have `race(c, race(a, b))`, and `b` resolves first,
+then that's the same as `race(c, b)`. Of course, typing `race(a, race(b,
+race(c, ...)))` isn't the best thing, so we can write a simple
+combinator to do that for us:
+
+{% highlight js linenos=table %}
+function raceAll(promises) {
+  return promises.reduce(race, createPromise());
+}
+{% endhighlight %}
+
+And then we can use it:
+
+{% highlight js linenos=table %}
+raceAll([searchA(), searchB(), waitAll([searchA(), searchB()])]);
+{% endhighlight %}
+
+
+Another way of choosing between two promises non-deterministically is to
+wait for the first one to be *successfully fulfilled*. For example, if
+you're trying to find a valid download link in a list of mirrors, you
+don't want to fail if the first one fails, you want to download from the
+first mirror you can download, and fail if all of them fail. We can
+write an `attempt` operation to capture this:
+
+{% highlight js linenos=table %}
+function attempt(left, right) {
+  // Creates the resulting promise.
+  var result = createPromise();
+
+  // doFulfil will propagate the result/state of the first
+  // promise that resolves successfully, whereas doReject
+  // will aggregate the errors until all of the promises
+  // fail.
+  //
+  // We need to keep track of the errors that happened
+  var errors = {}
+
+  // Now we can wait for both promises, just like in `race`.
+  // The difference here is that `doReject` needs to know
+  // which promise it is rejecting, to keep track of the
+  // errors.
+  depend(left, doFulfil, doReject('left'));
+  depend(right, doFulfil, doReject('right'));
+
+  // Finally, return the resulting promise.
+  return result;
+
+  function doFulfil(value) {
+    if (result.state === "pending") {
+      fulfil(result, state);
+    }
+  }
+
+  function doReject(field) {
+    return function(value) {
+      if (result.state === "pending") {
+        // If we're still pending, we can safely keep aggregating
+        // the errors. We make sure the error we got goes into the
+        // right field of the object aggregating these errors
+        errors[field] = value;
+
+        // If we've managed to catch all of the errors, we can
+        // reject the resulting promise. We reject it with all
+        // of the errors that happened, in the right order.
+        if ('left' in errors && 'right' in errors) {
+          reject(result, [errors.left, errors.right]);
+        }
+      }
+    }
+  }  
+}
+{% endhighlight %}
+
+Usage is the same as `race`, so `attempt(searchA(), searchB())` would
+return the first promise that resolves successfully, rather than just
+the first promise to resolve. However, unlike `race`, `attempt` doesn't
+compose naturally because it aggregates the errors. So, if we want to
+attempt several promises, we need to account for that:
+
+{% highlight js linenos=table %}
+function attemptAll(promises) {
+  // Since we aggregate all promises, we need to start from a
+  // rejected one, otherwise attempt would never finish if we
+  // have errors.
+  var initial = createPromise();
+  reject(initial, []);
+
+  // Finally, we use `attempt` to combine the promises, taking
+  // care of flattening the arrays of errors at each step:
+  return promises.reduce(function(result, promise) {
+    return recover(attempt(result, promise), function(errors) {
+      return errors[0].concat([errors[1]]);
+    });
+  }, createPromise());
+}
+
+attemptAll([searchA(), searchB(), searchC(), searchD()]);
+{% endhighlight %}
+
 
 
 ## 4. Promises and Error Handling
@@ -1014,8 +1189,169 @@ lists the differences between each implementation:
 | `chain(p, f)`                 | `p.then(f)`                                      |
 | `recover(p, g)`               | `p.catch(g)`                                     |
 | `waitAll(ps)`                 | `Promise.all(ps)`                                |
+| `raceAll(ps)`                 | `Promise.race(ps)`                               |
+| `attemptAll(ps)`              | (None)                                           |
+
 {: .common-table .simple-inline-code}
 
+The main methods in the standard promise are `new Promise(...)`, which
+introduce a promise object, and `.then(...)` which transforms it. There
+are a few differences in the way they work, when compared to the
+operations described so far.
+
+`new Promise(f)` introduces a new promise object, it does so by taking a
+computation which eventually either succeeds or fails with a particular
+value. The act of succeeding and failing is captured by the two function
+arguments passed to the function `f`, which it expects. Thus:
+
+{% highlight js linenos=table %}
+var p = createPromise();
+fulfil(p, 10);
+
+// Becomes:
+var p = new Promise((fulfil, reject) => fulfil(10));
+
+
+// ---
+// And:
+var q = createPromise();
+reject(q, 20);
+
+// Becomes:
+var p = new Promise((fulfil, reject) => reject(20));
+{% endhighlight %}
+
+`promise.then(f, g)` is an operation that creates a dependency between
+an expression with a hole for a value, and the value in the promise,
+similar to the `depend` operation. Both `f` and `g` are optional
+arguments, if they aren't provided the promise will propagate the value
+in that state.
+
+Unlike our `depend`, `.then` is a complex operation, which tries to make
+using promises easier. The function arguments passed to `.then` can
+return either a promise, or a regular value, in which case the operation
+takes care of automatically putting them into a promise for you. Thus:
+
+{% highlight js linenos=table %}
+depend(promise, function(value) {
+  var q = createPromise();
+  fulfil(q, value + 1);
+  return q;
+})
+
+
+// ---
+// Becomes:
+promise.then(value => value + 1);
+{% endhighlight %}
+
+These allow the code using promises to be concise and easier to read,
+compared to our previous formulation:
+
+{% highlight js linenos=table %}
+var squareAreaAbstraction = function(side) {
+  var result = createPromise();
+  fulfil(result, side * side);
+  return result;
+};
+var printAbstraction = function(squareArea) {
+  var result = createPromise();
+  fulfil(result, print(squareArea));
+  return result;
+}
+
+var sidePromise = createPromise();
+var squareAreaPromise = depend(sidePromise, squareAreaAbstraction);
+var printPromise = depend(squareAreaPromise, printAbstraction);
+
+fulfil(sidePromise, 10);
+
+
+// ---
+// Becomes
+var sideP = Promise.resolve(10);
+var squareAreaP = sideP.then(side => side * side);
+squareAreaP.then(area => print(area));
+
+// Which is more akin to the synchronous version:
+var side = 10;
+var squareArea = side * side;
+print(squareArea);
+{% endhighlight %}
+
+Depending on multiple values concurrently is handled by the
+`Promise.all` operation, which is similar to our `waitAll` operation:
+
+{% highlight js linenos=table %}
+var radius = 10;
+var pi = Math.PI;
+var circleArea = radius * radius * pi;
+print(circleArea);
+
+
+// ---
+// Becomes:
+var radiusP = Promise.resolve(10);
+var piP = Promise.resolve(Math.PI);
+var circleAreaP = Promise.all([radiusP, piP])
+                         .then(([radius, pi]) => radius * radius * pi);
+circleAreaP.then(circleArea => print(circleArea));
+{% endhighlight %}
+
+Error and success propagation is handled by the `.then` operation
+itself, and the `.catch` operation is provided as a concise way of
+invoking `.then` without defining a success branch:
+
+{% highlight js linenos=table %}
+var div = function(a, b) {
+  var result = createPromise();
+
+  if (b === 0) {
+    reject(result, new Error("Division By 0"));
+  } else {
+    fulfil(result, a / b);
+  }
+
+  return result;
+}
+
+var a = 1, b = 2, c = 0, d = 3;
+var xPromise = div(a, b);
+var yPromise = chain(xPromise, function(x) {
+                                 return div(x, c)
+                               });
+var zPromise = chain(yPromise, function(y) {
+                                 return div(y, d);
+                               });
+var resultPromise = recover(zPromise, printFailure);
+
+
+// ---
+// Becomes:
+var div = function(a, b) {
+  return new Promise((fulfil, reject) => {
+    if (b === 0)  reject(new Error("Division by 0"));
+    else          fulfil(a / b);
+  })
+}
+
+var a = 1, b = 2, c = 0, d = 3;
+var xP = div(a, b);
+var yP = xP.then(x => div(x, c));
+var zP = yP.then(y => div(y, d));
+var resultP = zP.catch(printFailure);
+{% endhighlight %}
+
+
+
+### 5.2. Concurrency in Promises, Revisited
+
+ECMAScript standard promises come with two primitive operations for
+combining promises concurrently: `Promise.all` and `Promise.race`. We've
+seen 
+
+
+### 5.3. A Closer Look Into `.then`
 
 
 
@@ -1029,7 +1365,66 @@ Where they really don't fit.
 ## 8. Conclusion
 
 
-## References and Additional Reading
+## References
+
+[ECMAScript® 2015 Language Specification](http://www.ecma-international.org/ecma-262/6.0/)
+: *Allen Wirfs-Brock* —
+  Defines the standard for Promises in JavaScript.
+
+[Alice Through The Looking Glass](http://www.ps.uni-saarland.de/Papers/abstracts/alice-looking-glass.html)
+: *Andreas Rossberg, Didier Le Botlan, Guido Tack, Thorsten Brunklaus,
+  and Gert Smolka* —
+  Presents the Alice language, which supports concurrency through
+  futures and promises.
+
+[Haskell 98 Language and Libraries](https://www.haskell.org/definition/haskell98-report.pdf)
+: *Simon Peyton Jones* —
+  Describes, informally, the semantics of the Haskell programming language.
+
+[Communicating Sequential Processes](http://www.usingcsp.com/cspbook.pdf)
+: *C. A. R. Hoare* —
+  Describes concurrent combinations of processes, such as deterministic
+  and non-deterministic choices.
+
+[Monads For Functional Programming](http://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf)
+: *Philip Wadler* —
+  Describes, amongst other things, how monads can be used for error
+  handling in functional languages. Promise's sequencing and error
+  handling is very similar to the monadic formulation, although Promises
+  don't implement the monad interface in the ECMAScript 2015 standard.
+
+## Additional Reading
+
+[Source Code For This Blog Post](https://github.com/robotlolita/robotlolita.github.io/tree/master/examples/promises)
+: Contains all of the (commented) source code for this blog post (including a
+  minimal implementation of promises conforming to the ECMAScript 2015
+  specification), with additional examples.
+
+[Promises/A+ Considered Harmful](http://robotlolita.me/2013/06/28/promises-considered-harmful.html)
+: *Quildreen Motta* —
+  Discusses some of the problems that the Promises/A+ and the ECMAScript
+  2015 Promises standard have, in terms of complexity, error handling,
+  and performance.
+
+[Professor Frisby's Mostly Adequate Guide to Functional Programming](https://www.gitbook.com/book/drboolean/mostly-adequate-guide/details)
+: *Brian Lonsdorf* —
+  An introductory book to functional programming in JavaScript.
+
+[Callbacks Are Imperative, Promises Are Functional: Node's Biggest Missed Opportunity](https://blog.jcoglan.com/2013/03/30/callbacks-are-imperative-promises-are-functional-nodes-biggest-missed-opportunity/)
+: *James Coglan* —
+  Contrasts Continuation-Passing Style and Promise for describing a
+  program's order of execution.
+
+## Resources and Libraries
+
+[es6-promise](https://www.npmjs.com/package/es6-promise)
+: A polyfill for ECMAScript 2015 standard promises, for platforms that don't implement ES2015.
+
+[Bluebird](https://www.npmjs.com/package/bluebird)
+: An efficient Promises/A+ implementation.
+
+
+
 
 <div class="contact-footer">
     Quil swore she was never going to touch promises ever again. She's wearing gloves now. You can contact her on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
