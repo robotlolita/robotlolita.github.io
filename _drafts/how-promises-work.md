@@ -510,7 +510,7 @@ depend on each other, so they can be computed separately, but
 
 {% highlight js linenos=table %}
 var radius = 10;
-var circleArea = 10 * 10 * Math.PI;
+var circleArea = radius * radius * Math.PI;
 print(circleArea);
 {% endhighlight %}
 
@@ -1015,8 +1015,145 @@ lists the differences between each implementation:
 | `waitAll(ps)`                 | `Promise.all(ps)`                                |
 {: .common-table .simple-inline-code}
 
+The main methods in the standard promise are `new Promise(...)`, which
+introduce a promise object, and `.then(...)` which transforms it. There
+are a few differences in the way they work, when compared to the
+operations described so far.
+
+`new Promise(f)` introduces a new promise object, it does so by taking a
+computation which eventually either succeeds or fails with a particular
+value. The act of succeeding and failing is captured by the two function
+arguments passed to the function `f`, which it expects. Thus:
+
+{% highlight js linenos=table %}
+var p = createPromise();
+fulfil(p, 10);
+
+// Becomes:
+var p = new Promise((fulfil, reject) => fulfil(10));
+
+// ---
+// And:
+var q = createPromise();
+reject(q, 20);
+
+// Becomes:
+var p = new Promise((fulfil, reject) => reject(20));
+{% endhighlight %}
+
+`promise.then(f, g)` is an operation that creates a dependency between
+an expression with a hole for a value, and the value in the promise,
+similar to the `depend` operation. Both `f` and `g` are optional
+arguments, if they aren't provided the promise will propagate the value
+in that state.
+
+Unlike our `depend`, `.then` is a complex operation, which tries to make
+using promises easier. The function arguments passed to `.then` can
+return either a promise, or a regular value, in which case the operation
+takes care of automatically putting them into a promise for you. Thus:
+
+{% highlight js linenos=table %}
+depend(promise, function(value) {
+  var q = createPromise();
+  fulfil(q, value + 1);
+  return q;
+})
+
+// Becomes:
+promise.then(value => value + 1);
+{% endhighlight %}
+
+These allow the code using promises to be concise and easier to read,
+compared to our previous formulation:
+
+{% highlight js linenos=table %}
+var squareAreaAbstraction = function(side) {
+  var result = createPromise();
+  fulfil(result, side * side);
+  return result;
+};
+var printAbstraction = function(squareArea) {
+  var result = createPromise();
+  fulfil(result, print(squareArea));
+  return result;
+}
+
+var sidePromise = createPromise();
+var squareAreaPromise = depend(sidePromise, squareAreaAbstraction);
+var printPromise = depend(squareAreaPromise, printAbstraction);
+
+fulfil(sidePromise, 10);
 
 
+// Becomes
+var sideP = Promise.resolve(10);
+var squareAreaP = sideP.then(side => side * side);
+squareAreaP.then(area => print(area));
+
+// Which is more akin to the synchronous version:
+var side = 10;
+var squareArea = side * side;
+print(squareArea);
+{% endhighlight %}
+
+Depending on multiple values concurrently is handled by the
+`Promise.all` operation, which is similar to our `waitAll` operation:
+
+{% highlight js linenos=table %}
+var radius = 10;
+var pi = Math.PI;
+var circleArea = radius * radius * pi;
+print(circleArea);
+
+// Becomes:
+var radiusP = Promise.resolve(10);
+var piP = Promise.resolve(Math.PI);
+var circleAreaP = Promise.all([radiusP, piP])
+                         .then(([radius, pi]) => radius * radius * pi);
+circleAreaP.then(circleArea => print(circleArea));
+{% endhighlight %}
+
+Error and success propagation is handled by the `.then` operation
+itself, and the `.catch` operation is provided as a concise way of
+invoking `.then` without defining a success branch:
+
+{% highlight js linenos=table %}
+var div = function(a, b) {
+  var result = createPromise();
+
+  if (b === 0) {
+    reject(result, new Error("Division By 0"));
+  } else {
+    fulfil(result, a / b);
+  }
+
+  return result;
+}
+
+var a = 1, b = 2, c = 0, d = 3;
+var xPromise = div(a, b);
+var yPromise = chain(xPromise, function(x) {
+                                 return div(x, c)
+                               });
+var zPromise = chain(yPromise, function(y) {
+                                 return div(y, d);
+                               });
+var resultPromise = recover(zPromise, printFailure);
+
+// Becomes:
+var div = function(a, b) {
+  return new Promise((fulfil, reject) => {
+    if (b === 0)  reject(new Error("Division by 0"));
+    else          fulfil(a / b);
+  })
+}
+
+var a = 1, b = 2, c = 0, d = 3;
+var xP = div(a, b);
+var yP = xP.then(x => div(x, c));
+var zP = yP.then(y => div(y, d));
+var resultP = zP.catch(printFailure);
+{% endhighlight %}
 
 
 ## 6. Why Use Promises?
