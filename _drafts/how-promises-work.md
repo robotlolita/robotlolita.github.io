@@ -492,6 +492,7 @@ function fulfil(promise, value) {
     promise.dependencies.forEach(function(expression) {
       expression(value);
     });
+    promise.dependencies.length = 0;
   }
 }
 {% endhighlight %}
@@ -1000,7 +1001,8 @@ function reject(promise, error) {
     promise.value = error;
     promise.dependencies.forEach(function(pattern) {
       pattern.rejected(error);
-    })
+    });
+    promise.dependencies.length = 0;
   }
 }
 {% endhighlight %}
@@ -1018,6 +1020,7 @@ function fulfil(promise, value) {
     promise.dependencies.forEach(function(pattern) {
       pattern.fulfilled(value);
     });
+    promise.dependencies.length = 0;
   }
 }
 {% endhighlight %}
@@ -1190,7 +1193,6 @@ lists the differences between each implementation:
 | `waitAll(ps)`                 | `Promise.all(ps)`                                |
 | `raceAll(ps)`                 | `Promise.race(ps)`                               |
 | `attemptAll(ps)`              | (None)                                           |
-
 {: .common-table .simple-inline-code}
 
 The main methods in the standard promise are `new Promise(...)`, which
@@ -1343,15 +1345,125 @@ var resultP = zP.catch(printFailure);
 
 
 
-### 5.2. Concurrency in Promises, Revisited
+### 5.2. A Closer Look Into `.then`
 
-ECMAScript standard promises come with two primitive operations for
-combining promises concurrently: `Promise.all` and `Promise.race`. We've
-seen 
+There are a few things that make the `.then` method different from our
+previous `depend` function. While `.then` is one method to define
+dependency relationships between eventual values and some computation,
+it also tries to make the usage of the method easy for the majority of
+cases. This makes `.then` a complex method[^5], but we can understand it
+by relating our previous machinery to this new method.
 
 
-### 5.3. A Closer Look Into `.then`
+<h4><code>.then</code> automatically lifts regular values</h4>
 
+Our `depend` function worked in the domain of promises. It expected
+its dependent computation to return a promise in order to return a
+promise itself. `.then` doesn't have this requirement. If the
+dependent computation returns a regular value, like `42`, `.then` will
+convert that value to a promise containing the value. In essence,
+`.then` lifts regular values into the domain of promises, as needed.
+
+Compare the simplified types of our `depend` function:
+
+{% highlight ocaml %}
+depend : (Promise of α, (α -> Promise of β)) -> Promise of β
+{% endhighlight %}
+
+With the simplified types of the `.then` method:
+
+{% highlight ocaml %}
+promise.then : (this: Promise of α, (α -> β)) -> Promise of β
+promise.then : (this: Promise of α, (α -> Promise of β)) -> Promise of β
+{% endhighlight %}
+
+While in the `depend` function the only thing we can do is return a
+promise of something (and have that same something be in the resulting
+promise), the `.then` function also accepts returning a regular value,
+without wrapping it in a promise, for convenience.
+
+
+<h4><code>.then</code> disallows nested promises</h4>
+
+Another way in which ECMAScript 2015 promises try to make usage easier
+for the common use cases is by disallowing nested promises. It does so
+by assimilating anything that has a `.then` method, which can be
+problematic in cases where you're not expecting assimilation[^6], but
+otherwise relieves one from thinking about matching the types of the
+return values.
+
+It's not possible to give the `.then` method a sensible type in
+non-dependent type systems because of this feature, but, roughly, this
+means that the following example:
+
+{% highlight js linenos=table %}
+Promise.resolve(1).then(x => Promise.resolve(x + 1))
+{% endhighlight %}
+
+Is equivalent to:
+
+{% highlight js linenos=table %}
+Promise.resolve(1).then(x => Promise.resolve(Promise.resolve(x + 1)))
+{% endhighlight %}
+
+This is also enforced with `Promise.resolve`, but not with
+`Promise.reject`.
+
+
+<h4><code>.then</code> reifies exceptions</h4>
+
+If an exception happens synchronously during the evaluation of a
+dependent computation attached through the `.then` method, that
+exception will be caught and reified as a rejected promise. In essence,
+this means that all of the computations attached to a promise's values
+through the `.then` method should be treated as if implicitly wrapped in
+a `try/catch` block, such that:
+
+{% highlight js linenos=table %}
+Promise.resolve(1).then(x => null());
+{% endhighlight %}
+
+Is equivalent to:
+
+{% highlight js linenos=table %}
+Promise.resolve(1).then(x => {
+  try {
+    return null();
+  } catch (error) {
+    return Promise.reject(error);
+  }
+});
+{% endhighlight %}
+
+Native implementations of promises will track these and report the ones
+that are not handled. There's no specification about what constitutes a
+"caught error" in a promise, so development tools will differ on how
+they report it. Chrome's development tools, for example, will output all
+instances of rejected promises to the console, which might give you
+false positives.
+
+
+<h4><code>.then</code> invokes dependencies asynchronously</h4>
+
+While our previous implementation of promises invokes the dependent
+computations synchronously, standard ECMAScript promises do so
+asynchronously. This makes it very hard for one to depend on the value
+of a promise without using the proper means to do so: the `.then`
+method.
+
+Thus, the following code would not work:
+
+{% highlight js linenos=table %}
+var value;
+Promise.resolve(1).then(x => value = x);
+console.log(value);
+// => null
+// (`value = x` happens here, after all other code has finished)
+{% endhighlight %}
+
+This ensures that dependent computations always execute on an empty
+stack, though such guarantees are less essential in ECMAScript 2015,
+which requires that all implementations support proper tail calls[^7].
 
 
 
@@ -1392,7 +1504,7 @@ Where they really don't fit.
   handling is very similar to the monadic formulation, although Promises
   don't implement the monad interface in the ECMAScript 2015 standard.
 
-## Additional Reading
+## Additional Resources
 
 [Source Code For This Blog Post](https://github.com/robotlolita/robotlolita.github.io/tree/master/examples/promises)
 : Contains all of the (commented) source code for this blog post (including a
@@ -1414,6 +1526,17 @@ Where they really don't fit.
   Contrasts Continuation-Passing Style and Promise for describing a
   program's order of execution.
 
+[Simple Made Easy](http://www.infoq.com/presentations/Simple-Made-Easy)
+: *Rich Hickey* —
+  While not directly related to promises, Rich's talk discusses
+  "simple" and "easy" in the context of design, which is always relevant
+  to programming.
+
+[Proper Tail Calls in Harmony](https://blog.mozilla.org/dherman/2011/01/30/proper-tail-calls-in-harmony/)
+: *Dave Herman* —
+  Discusses the benefits of having Proper Tail Calls in ECMAScript.
+
+
 ## Resources and Libraries
 
 [es6-promise](https://www.npmjs.com/package/es6-promise)
@@ -1432,7 +1555,7 @@ Where they really don't fit.
 - - - 
 
 
-<h4>Footnotes</h4>
+<h4 class="normalcase borderless">Footnotes</h4>
 
 [^1]:
     You can't extract the values of promises in Promises/A,
@@ -1497,3 +1620,36 @@ Where they really don't fit.
     JavaScript's "semicolon operator" (i.e.: `print(1); print(2)`) as
     the use of the monadic `chain` operator: `print(1).chain(_ =>
     print(2))`.
+
+[^5]:
+    This is using Rich Hickey's notion of "complex" and "easy". `.then`
+    is definitely an easy method. It caters to the common use cases, at
+    the expense of conceptual simplicity. That is, `.then` does too many
+    things, and those things have a fair amount of overlapping.
+
+    A simple API, on the other hand, would move these separate concepts
+    to different functions which you'd be able to use together with the
+    `.then` method.
+
+[^6]:
+    The `.then` method assimilates the state and value of everything
+    that looks like a Promise. Historically, this was done through an
+    interface check, and this meant just checking if the object provided
+    a `.then` method, which would include all objects whose `.then`
+    method doesn't conform to the Promise's `.then` method.
+
+    If standard Promises weren't limited by backwards compatibility with
+    existing promises implementation it would be possible to have a more
+    reliable test, by using Symbols for interfaces, or some similar form
+    of branding.
+
+
+[^7]:
+    Proper Tail Calls are a guarantee that all calls in tail position
+    will happen with constant stack. In essence, this guarantees that as
+    long as your program or computation is made up entirely of tail
+    calls, the stack will not grow, and thus stack overflow errors are
+    impossible in such code. Incidentally, it also allows an
+    implementation of the language to make such code much faster, as it
+    doesn't need to deal with some of the usual overhead of function
+    calls.
