@@ -1514,6 +1514,14 @@ a:hover {
   color: #95a5a6;
   margin-bottom: 0.3em;
   letter-spacing: -0.02em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #f3f3f3;
+}
+.textual-content .normalcase {
+  text-transform: none;
+}
+.textual-content .borderless {
+  border: none;
 }
 .textual-content blockquote {
   border-left: 3px solid #ecf0f1;
