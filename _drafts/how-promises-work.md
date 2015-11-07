@@ -157,7 +157,7 @@ same. The order expressed in our programs is too arbitrary.
 
 
 > […] order is very expensive.
-{: .highlight-paragraph}gde33: 
+{: .highlight-paragraph}
 
 
 We want our computers to be able to do more things, and do more things
@@ -1467,13 +1467,26 @@ which requires that all implementations support proper tail calls[^7].
 
 
 
-## 6. Why Use Promises?
-The benefits.
+## 6. When Are Promises A Bad Fit?
 
-## 7. Why Not Use Promises?
-Where they really don't fit.
+While promises work nicely as a concurrency primitive, they are neither
+as general as Continuation-Passing Style, nor are they the best
+primitive for all use cases. Trying to use a promise in a context where
+they don't make sense will complicate your codebase and make your life
+more painful than it should be.
 
-## 8. Conclusion
+Promises are placeholders for values that will eventually be computed,
+so they can only make sense in contexts where you would use those values
+themselves.
+
+![](/files/2015/09/promises-13.png)
+*Promises only make sense in the __value__ context*
+{: .centred-image .full-image}
+
+
+
+
+## 7. Conclusion
 
 
 ## References
