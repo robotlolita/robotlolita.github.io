@@ -1471,22 +1471,46 @@ which requires that all implementations support proper tail calls[^7].
 
 While promises work nicely as a concurrency primitive, they are neither
 as general as Continuation-Passing Style, nor are they the best
-primitive for all use cases. Trying to use a promise in a context where
-they don't make sense will complicate your codebase and make your life
-more painful than it should be.
-
-Promises are placeholders for values that will eventually be computed,
-so they can only make sense in contexts where you would use those values
-themselves.
+primitive for all use cases. Promises are placeholders for values that
+will eventually be computed, so they can only make sense in contexts
+where you would use those values themselves.
 
 ![](/files/2015/09/promises-13.png)
 *Promises only make sense in the __value__ context*
 {: .centred-image .full-image}
 
+Trying to use promises for anything besides that is going to result in
+very complicated codebases that are hard to maintain, understand, and
+extend. The following are some examples where promises should be
+entirely avoided:
 
+- Notifying the progress of computing a particular value. Promises are
+  used in the same context as the value itself, so just like we can't
+  know the progress of computing a particular string, given the string
+  itself, we can't do that for promises. Because of this, if you're
+  interested in knowing how much of a file has been downloaded, you'll
+  want a separate thing, like Events.
+
+- Producing multiple values over time. Promises can only represent a
+  single eventual value. For the cases where several values might be
+  produced over time (the equivalent of asynchronous iterators), one
+  would need something like Streams, Observables, or CSP Channels.
+
+- Representing actions. This also means that it's not possible to
+  execute promises in order, since once one has got a promise, the
+  computation that provides the value for it has already started.
 
 
 ## 7. Conclusion
+
+Promises are a great way of dealing with eventual values, allowing one
+to compose and synchronise processes that depend on values that are
+computed asynchronously. And while the ECMAScript 2015 standard for
+promises has its own set of issues, like automatically reifying errors
+that should crash the process, it's a decent enough tool to deal with
+the aforementioned problem. Whether you use them or not, an
+understanding of what they are and how they work is essential, now that
+they're going to be even more pervasive in the all ECMAScript projects.
 
 
 ## References
@@ -1548,6 +1572,15 @@ themselves.
 [Proper Tail Calls in Harmony](https://blog.mozilla.org/dherman/2011/01/30/proper-tail-calls-in-harmony/)
 : *Dave Herman* —
   Discusses the benefits of having Proper Tail Calls in ECMAScript.
+
+[Your Mouse is a Database](http://queue.acm.org/detail.cfm?id=2169076)
+: *Erik Meijer* —
+  Discusses the coordination and orchestration of event-based and
+  asynchronous computations in Rx using the concept of Observables.
+
+[Stream Handbook](https://github.com/substack/stream-handbook)
+: *James Halliday (substack)* —
+  Covers the basics of writing Node.js programs with Streams.
 
 
 ## Resources and Libraries
