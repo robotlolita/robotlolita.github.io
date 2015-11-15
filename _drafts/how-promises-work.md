@@ -12,14 +12,14 @@ snip:   Promises are an old concept that have become a fairly big thing in JavaS
 
 ## 1. Introduction
 
-Most implementations of JavaScript happen to be single-threaded, and
-given the language's semantics, people tend to use *callbacks* to direct
-concurrent processes. While there isn't anything particularly wrong with
-[Continuation-Passing Style][CPS], in practice it's very easy for them
-to make the code harder to read, and more procedural than it should be.
+Most implementations of JavaScript happen to be single-threaded, and given the
+language's semantics, people tend to use *callbacks* to direct concurrent
+processes. While there isn't anything particularly wrong with using
+[Continuation-Passing Style][CPS] in JavaScript, in practice it's very easy for
+them to make the code harder to read, and more procedural than it should be.
 
 Many solutions for this have been proposed, and the usage of promises to
-compose these concurrent processes is one of them. In this blog post
+synchronise these concurrent processes is one of them. In this blog post
 we'll look at what promises are, how they work, and why you should or
 shouldn't use them.
 
@@ -51,7 +51,7 @@ life.
 
 Alissa P. Hacker and her girlfriend decided to have dinner at a very
 popular restaurant. Unfortunately, as it was to be expected, when they
-arrived there all of the tables were already taken.
+arrived there all of the tables were already occupied.
 
 In some places, this would mean that they would either have to give up
 and choose somewhere else to eat, or wait in a long queue until they
@@ -70,12 +70,12 @@ perfect solution for her.
 taken care of for you,” the lady at the restaurant said, as she held a
 small box.
 
-“What is this…?” Alissa’s girlfriend, C. Belle, asked.
+“What is this…?” Alissa’s girlfriend, Rue Bae, asked.
 
 “This is a magical device that represents your future table at this
-restaurant,” the lady spoke, then beckoned to Belle. “There’s no magic,
+restaurant,” the lady spoke, then beckoned to Bae. “There’s no magic,
 actually, but it’ll tell you when your table is ready so you can come
-and sit,” she whispered.
+and eat,” she whispered.
 {: .clear}
 
 
@@ -126,7 +126,7 @@ promises help us write concurrent programs in an easier way. But before
 we do that, let's take a step back and think about a more fundamental
 problem: the order of execution of our programs.
 
-As a JavaScript programmer, you might have noticed that your program
+As a JavaScript programmer you might have noticed that your program
 executes in a very peculiar order, which happens to be the order in
 which you write the instructions in your program's source code:
 
@@ -162,7 +162,7 @@ same. The order expressed in our programs is too arbitrary.
 
 We want our computers to be able to do more things, and do more things
 *faster*. To do so, let's, at first, dispense with order of execution
-entirely. That is, we'll assume that in our programs, all expressions
+entirely. That is, we'll assume that in our programs all expressions
 are executed at the exact same time.
 
 This idea works very well with our previous example. But it breaks as
@@ -210,18 +210,18 @@ The execution model described in the previous section, where order is
 defined simply by the dependencies between each expression, is very
 powerful and efficient, but how do we apply it to JavaScript?
 
-We can't apply this model directly to JavaScript because its semantics
-are inherently synchronous and sequential. But we can create a separate
-mechanism to describe dependencies between expressions, and to resolve
-these dependencies for us, executing the program according to those
-rules. One way to do this is by introducing this concept of dependencies
-on top of promises.
+We can't apply this model directly to JavaScript because the language
+semantics are inherently synchronous and sequential. But we can create a
+separate mechanism to describe dependencies between expressions, and to
+resolve these dependencies for us, executing the program according to
+those rules. One way to do this is by introducing this concept of
+dependencies on top of promises.
 
 This new formulation of promises consists of two major components:
 Something that makes representations of values, and can put values in
 this representation. And something that creates a dependency between one
-expression and a representation of a value, creating a new
-value representation for the result of the expression.
+expression and a value, creating a new promise for the result of the
+expression.
 
 ![](/files/2015/09/promises-06.png)
 *Creating representations of future values.*
@@ -233,7 +233,7 @@ Our promises represent values that we haven't computed yet. This
 representation is opaque: we can't see the value, nor interact with the
 value directly. Furthermore, in JavaScript promises, we also can't
 extract the value from the representation. Once you put something in a
-JavaScript promise, you can't take it out of the promise [^1].
+JavaScript promise, you **cannot** take it out of the promise [^1].
 
 This by itself isn't much useful, because we need to be able to use
 these values somehow. And if we can't extract the values from the
@@ -249,10 +249,10 @@ needed. Fortunately JavaScript has got our back in this: first-class
 functions serve exactly this purpose.
 {: .clear}
 
-### Interlude: Lambda Abstractions
+### Interlude: Abstracting Over Expressions
 
 If one has an expression of the form `a + 1`, then it is possible to
-abstract this expression such that `a` becomes a value that can be
+abstract over this expression such that `a` becomes a value that can be
 plugged in, once it's ready. This way, the expression:
 
 {% highlight js linenos=table %}
@@ -264,7 +264,7 @@ a + 1;
 // => 3
 {% endhighlight %}
 
-Becomes the following lambda abstraction:
+Becomes the following lambda abstraction[^2]:
 
 {% highlight js linenos=table %}
 var abstraction = function(a) {
@@ -282,11 +282,11 @@ abstraction(2);
 // => 3
 {% endhighlight %}
 
-Lambda Abstractions[^2] are a very powerful concept, and because
-JavaScript has them, we can describe these dependencies in a very
-natural way. To do so, we first need to turn our expressions that use
-the values of promises into Lambda Abstractions, so we can plug in the
-value later.
+First-class functions are a very powerful concept (whether they are
+anonymous — a lambda abstraction — or not). Since JavaScript has
+them we can describe these dependencies in a very natural way, by
+transforming the expressions that use the values of promises into
+first-class functions so we can plug in the value later.
 
 
 ## 3. Understanding the Promises Machinery
@@ -294,10 +294,10 @@ value later.
 ### 3.1. Sequencing Expressions with Promises
 
 Now that we went through the conceptual nature of promises, we can start
-understanding how they work in a machine. To do so, we'll describe the
-operations we'll use to create promises, put values in them, and
+understanding how they work in a machine. We'll describe the
+operations used to create promises, put values in them, and
 describe the dependencies between expressions and values. For the sake
-of our examples, we'll use the following very descriptive operations,
+of our examples we'll use the following very descriptive operations,
 which happen to be used by no existing Promises implementation:
 
 - `createPromise()` constructs a representation of a value. The value
@@ -307,7 +307,7 @@ which happen to be used by no existing Promises implementation:
   the expressions that depend on the value to be computed.
 
 - `depend(promise, expression)` defines a dependency between
-  the lambda abstraction and the value of the promise. It returns a new
+  the expression and the value of the promise. It returns a new
   promise for the result of the expression, so new expressions can
   depend on that value.
 
@@ -360,7 +360,7 @@ used. First we must decide how to represent values and their
 dependencies. The most natural way of doing this is by adding this data
 to the value returned from `createPromise`.
 
-First, Promises of **something** must be able to represent that value,
+First, Promises of *something* must be able to represent that value,
 however they don't necessarily contain a value at all times. A value is
 only placed into the promise when we invoke `fulfil`. A minimal
 representation for this would be:
@@ -373,15 +373,15 @@ data Promise of something = {
 
 A `Promise of something` springs into existence containing the value
 `null`. At some later point in time someone may invoke the `fulfil`
-function for that promise, at which point the promise will contain the
+function for that promise, and from there on the promise will contain the
 given fulfilment value. Since promises can only be fulfilled once, that
 value is what the promise will contain for the rest of the program.
 
 Given that it's not possible to figure out if a promise has already been
 fulfilled by just looking at the `value` (`null` is a valid value), we
 also need to keep track of the state the promise is in, so we don't risk
-fulfilling it more than once. So we change the representation
-accordingly:
+fulfilling it more than once. This requires a small change to the our
+previous representation:
 
 {% highlight haskell linenos=table %}
 data Promise of something = {
@@ -391,9 +391,9 @@ data Promise of something = {
 {% endhighlight %}
 
 We also need to handle the dependencies that are created by the `depend`
-function. A dependency is a lambda abstraction that will, eventually, be
+function. A dependency is a function that will, eventually, be
 filled with the value in the promise, so it can be evaluated. One
-promise can have many lambda abstractions which depend on its value, so
+promise can have many functions which depend on its value, so
 a minimal representation for this would be:
 
 {% highlight haskell linenos=table %}
@@ -434,7 +434,7 @@ because it doesn't fit how people usually write JavaScript programs[^3].
 Another way of solving this problem comes from the realisation that we
 only really need to keep track of the dependencies for a promise while
 the promise is in the `pending` state, because once a promise is
-fulfilled we can just execute the lambda abstraction right away!
+fulfilled we can just execute the function right away!
 
 {% highlight js linenos=table %}
 function depend(promise, expression) {
@@ -471,7 +471,7 @@ function depend(promise, expression) {
 
 The `depend` function takes care of executing our dependent expressions
 when the value they're waiting for is ready, but if we attach the
-dependency too soon that lambda abstraction will just end up in an array
+dependency too soon that function will just end up in an array
 in the promise object, so our job is not done yet. For the second part
 of the execution, we need to run the dependencies when we've got the
 value. Luckily, the `fulfil` function can be used for this.
@@ -489,10 +489,14 @@ function fulfil(promise, value) {
   } else {
     promise.state = "fulfilled";
     promise.value = value;
-    promise.dependencies.forEach(function(expression) {
+    // Dependencies may add other dependencies to this promise, so we
+    // need to clean up the dependency list and copy it so our
+    // iteration isn't affected by that.
+    var dependencies = promise.dependencies;
+    promise.dependencies = [];
+    dependencies.forEach(function(expression) {
       expression(value);
     });
-    promise.dependencies.length = 0;
   }
 }
 {% endhighlight %}
@@ -587,7 +591,8 @@ Another way of solving this problem is to accept an array of promises,
 and execute each one as soon as possible, then give back a promise for
 an array of the values the original promises contained. This approach is
 a little more complicated, since we need to implement a simple Finite
-State Machine, but it scales.
+State Machine, but there is no implicit ordering (besides JavaScript's
+own execution semantics).
 
 {% highlight js linenos=table %}
 function waitAll(promises, expression) {
@@ -641,7 +646,7 @@ var circleAreaPromise = waitAll([radiusPromise, piPromise]
 
 We've seen how to combine promises, but so far we can only combine them
 deterministically. This doesn't help us if we need to, for example,
-select the fastest of two operations. Maybe we're searching for
+select the fastest of two computations. Maybe we're searching for
 something on two servers, and we don't care which one answers, we'll
 just go with the fastest one.
 
@@ -732,7 +737,7 @@ Another way of choosing between two promises non-deterministically is to
 wait for the first one to be *successfully fulfilled*. For example, if
 you're trying to find a valid download link in a list of mirrors, you
 don't want to fail if the first one fails, you want to download from the
-first mirror you can download, and fail if all of them fail. We can
+first mirror you can, and fail if all of them fail. We can
 write an `attempt` operation to capture this:
 
 {% highlight js linenos=table %}
@@ -892,7 +897,7 @@ computation that fails would start at pending, and eventually move to
 
 Since we now have the possibility of failure, the computations that
 depend on the value of the promise also must be aware of that. For now
-we'll have our `depend` failure just take an expression to be run when
+we'll have our `depend` failure just take an expression to run when
 the promise is fulfilled, and one expression to run when the promise is
 rejected.
 
@@ -999,10 +1004,11 @@ function reject(promise, error) {
   } else {
     promise.state = "rejected";
     promise.value = error;
-    promise.dependencies.forEach(function(pattern) {
+    var dependencies = promise.dependencies;
+    promise.dependencies = [];
+    dependencies.forEach(function(pattern) {
       pattern.rejected(error);
     });
-    promise.dependencies.length = 0;
   }
 }
 {% endhighlight %}
@@ -1017,10 +1023,11 @@ function fulfil(promise, value) {
   } else {
     promise.state = "fulfilled";
     promise.value = value;
-    promise.dependencies.forEach(function(pattern) {
+    var dependencies = promise.dependencies;
+    promise.dependencies = [];
+    dependencies.forEach(function(pattern) {
       pattern.fulfilled(value);
     });
-    promise.dependencies.length = 0;
   }
 }
 {% endhighlight %}
@@ -1075,7 +1082,7 @@ functionality. It's only necessary to define our branches for success
 and failure all the time if we can't abstract over it, and it's often
 the case with control flow. For example, in JavaScript, it's not
 possible to abstract over an `if` statement, or a `for` statement,
-because they're control flow mechanisms, and you can't modify those,
+because they're second-class control flow mechanisms, and you can't modify those,
 pass them around, or store them in variables. Our promises are
 first-class objects, they have a concrete representation of failures and
 successes, which we can inspect and react to whenever we want, not just
@@ -1103,10 +1110,11 @@ failures:
   entirely if any subexpression fails.
 
 Luckily for us, the `depend` function already does most of this
-work. Because `depend` chains *whole* promises it's able to propagate
-not only the values, but the state the promise is in. This is important
-since if we define just a `successful` branch, and the promise fails, we
-want to propagate not only the value, but also its failure state.
+work. Because `depend` requires its expressions to return *whole*
+promises it's able to propagate not only the values, but the state the
+promise is in. This is important since if we define just a `successful`
+branch, and the promise fails, we want to propagate not only the value,
+but also its failure state.
 
 With these mechanisms already in place, supporting simple failure
 propagation, error handling, and short-circuiting on failures requires
@@ -1397,13 +1405,13 @@ non-dependent type systems because of this feature, but, roughly, this
 means that the following example:
 
 {% highlight js linenos=table %}
-Promise.resolve(1).then(x => Promise.resolve(x + 1))
+Promise.resolve(1).then(x => Promise.resolve(Promise.resolve(x + 1)))
 {% endhighlight %}
 
 Is equivalent to:
 
 {% highlight js linenos=table %}
-Promise.resolve(1).then(x => Promise.resolve(Promise.resolve(x + 1)))
+Promise.resolve(1).then(x => Promise.resolve(x + 1))
 {% endhighlight %}
 
 This is also enforced with `Promise.resolve`, but not with
@@ -1457,7 +1465,7 @@ Thus, the following code would not work:
 var value;
 Promise.resolve(1).then(x => value = x);
 console.log(value);
-// => null
+// => undefined
 // (`value = x` happens here, after all other code has finished)
 {% endhighlight %}
 
@@ -1484,22 +1492,29 @@ very complicated codebases that are hard to maintain, understand, and
 extend. The following are some examples where promises should be
 entirely avoided:
 
-- Notifying the progress of computing a particular value. Promises are
+- **Notifying the progress of computing a particular value**. Promises are
   used in the same context as the value itself, so just like we can't
   know the progress of computing a particular string, given the string
   itself, we can't do that for promises. Because of this, if you're
   interested in knowing how much of a file has been downloaded, you'll
   want a separate thing, like Events.
 
-- Producing multiple values over time. Promises can only represent a
+- **Producing multiple values over time**. Promises can only represent a
   single eventual value. For the cases where several values might be
   produced over time (the equivalent of asynchronous iterators), one
-  would need something like Streams, Observables, or CSP Channels.
+  would need something like Streams, [Observables][], or [CSP][] Channels.
 
-- Representing actions. This also means that it's not possible to
+- **Representing actions**. This also means that it's not possible to
   execute promises in order, since once one has got a promise, the
-  computation that provides the value for it has already started.
+  computation that provides the value for it has already started. For
+  actions you can use [CPS][], a [Continuation monad][], or a
+  [Task (co)monad][Task comonad],
+  like C♯ does.
 
+[Continuation monad]: http://www.haskellforall.com/2012/12/the-continuation-monad.html
+[Task comonad]: https://www.cl.cam.ac.uk/teaching/1213/R204/asynclecture.pdf
+[CSP]: http://www.usingcsp.com/cspbook.pdf
+[Observables]: http://reactivex.io/documentation/observable.html
 
 ## 7. Conclusion
 
@@ -1582,6 +1597,21 @@ they're going to be even more pervasive in the all ECMAScript projects.
 : *James Halliday (substack)* —
   Covers the basics of writing Node.js programs with Streams.
 
+[By Example: Continuation-Passing Style in JavaScript](http://matt.might.net/articles/by-example-continuation-passing-style/)
+: *Matt Might* —
+  Describes how continuation-passing style can be used for handling
+  non-blocking computations in JavaScript.
+
+[The Continuation Monad](http://www.haskellforall.com/2012/12/the-continuation-monad.html)
+: *Gabriel Gonzalez* —
+  Discusses the concept of continuations as monads, in the context of
+  the Haskell programming language.
+
+[Pause 'n' Play: Asynchronous C♯ Explained](https://www.cl.cam.ac.uk/teaching/1213/R204/asynclecture.pdf)
+: *Claudio Russo* —
+  Explains how asynchronous computations work in C♯ using the Task
+  comonad, and how that solution relates to other models.
+
 
 ## Resources and Libraries
 
@@ -1619,10 +1649,9 @@ they're going to be even more pervasive in the all ECMAScript projects.
 [^2]:
     “Lambda Abstraction” is the name Lambda Calculus gives to these
     anonymous functions that abstract over terms in an
-    expression. JavaScript itself just calls them “Functions,” they may
-    be created with arrows, or with a Named Function
-    Expression/Anonymous Function Expression construct.
-
+    expression. JavaScript's anonymous functions are equivalent to LC's
+    Lambda Abstractions, however JavaScript also allows one to name
+    their functions.
 
 [^3]:
     This separation of "computation definition" and "execution of
@@ -1699,3 +1728,10 @@ they're going to be even more pervasive in the all ECMAScript projects.
     implementation of the language to make such code much faster, as it
     doesn't need to deal with some of the usual overhead of function
     calls.
+
+
+<!--
+Local Variables:
+ispell-local-dictionary: "british"
+End:
+-->
