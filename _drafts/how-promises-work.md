@@ -1657,16 +1657,16 @@ they're going to be even more pervasive in the all ECMAScript projects.
     This separation of "computation definition" and "execution of
     computations" is how the Haskell programming language works. A
     Haskell program is nothing more than a huge expression that
-    evaluates to a `IO` data structure. This structure is somewhat
+    evaluates to an `IO` data structure. This structure is somewhat
     similar to the `Promise` structure we've defined here, in that it
     only defines dependencies between different computations in the
     program.
 
-    In Haskell, however, your program must return a value of
-    type `IO`, which is then passed to a separate interpreter, which
+    In Haskell your program must return a value of
+    type `IO`, which is then passed to a separate interpreter. The interpreter
     only knows how to run `IO` computations and respect the dependencies
     it defines. It would be possible to define something similar for
-    JS. If we did that, then all of our JS program would be just one
+    JS. If we did that all of our JS program would be just one
     expression resulting in a Promise, and that Promise would be passed
     to a separate component that knows how to execute Promises and their
     dependencies.
