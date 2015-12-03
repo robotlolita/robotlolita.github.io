@@ -1061,7 +1061,7 @@ function searchA() {
   return result;
 }
 
-function searchA() {
+function searchB() {
   var result = createPromise();
   setTimeout(function() {
     fulfil(result, 30);
