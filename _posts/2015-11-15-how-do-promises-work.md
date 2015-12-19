@@ -303,7 +303,7 @@ which happen to be used by no existing Promises implementation:
 - `createPromise()` constructs a representation of a value. The value
   must be provided at later point in time.
   
-- `fulfil(promise, value)` puts a value in the promise. Allowing
+- `fulfil(promise, value)` puts a value in the promise, allowing
   the expressions that depend on the value to be computed.
 
 - `depend(promise, expression)` defines a dependency between
@@ -1061,7 +1061,7 @@ function searchA() {
   return result;
 }
 
-function searchA() {
+function searchB() {
   var result = createPromise();
   setTimeout(function() {
     fulfil(result, 30);
