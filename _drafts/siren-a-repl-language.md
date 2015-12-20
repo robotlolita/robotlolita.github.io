@@ -67,7 +67,7 @@ One day, this person had an epiphany[^1]:
 
 What if we could not only interact with a computer in a compositional
 way, but **also** have a way for the system to tell us how to achieve
-the things you want to do?
+the things we want to do?
 
 
 ## 3. Programming, Revisited
