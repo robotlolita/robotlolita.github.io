@@ -159,9 +159,9 @@ ACTUALLY install the compiler:
 So, after reading the two links provided in that note (one of which
 tells you absolutely nothing about how to solve the problem you just
 saw, and only serves to make you more confused and frustrated), you
-install 200MB worth of data just to compile arrow functions and array
-spreads so they actually work in your environment. You also need to
-create some kind of text file that you have no idea where to, which
+install 200MB worth of data[^2] just to compile arrow functions and
+array spreads so they actually work in your environment. You also need
+to create some kind of text file that you have no idea where to, which
 format, or how it gets used, because nothing anywhere in the linked
 pages (or any page in the documentation) says a thing about it.
 
@@ -202,7 +202,7 @@ the choice they had already made by installing Babel in the first place.
 
 [^1]: Yes. Computers are awful.
 
-
+[^2]: I'm not even kidding: ![](/files/2016/01/not-even-kidding.png)
 
 <!--
 Local Variables:
