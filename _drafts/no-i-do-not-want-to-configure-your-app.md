@@ -184,14 +184,6 @@ the choice they had already made by installing Babel in the first place.
 
 
 
-
-
-- - -
-
-<h4 class="normalcase borderless">Footnotes</h4>
-
-[^1]: Yes. Computers are awful.
-
 <div class="contact-footer">
     Quil has spent countless hours configuring things.
     She's sick of it. She just wants to drink some Irish coffee.
@@ -202,6 +194,14 @@ the choice they had already made by installing Babel in the first place.
     href="mailto:queen@robotlolita.me">Email</a>. Bonus points if you
     bring her sweets.
 </div>
+
+
+- - -
+
+<h4 class="normalcase borderless">Footnotes</h4>
+
+[^1]: Yes. Computers are awful.
+
 
 
 <!--
