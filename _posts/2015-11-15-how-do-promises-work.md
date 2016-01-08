@@ -1125,7 +1125,7 @@ function attempt(left, right) {
 
   function doFulfil(value) {
     if (result.state === "pending") {
-      fulfil(result, state);
+      fulfil(result, value);
     }
   }
 
