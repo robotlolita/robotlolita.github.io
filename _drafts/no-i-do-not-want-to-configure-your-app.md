@@ -20,8 +20,8 @@ There seems to be a very *interesting* trend re-emerging in software
 development lately, influenced by Node's philosophy, perhaps, where to
 use anything at all you first need to install a dozen of "dependencies,"
 spend the next 10 hours configuring it, pray to whatever gods (or
-beings) you believe in—even if you don't, and then, if you're very lucky
-and the stars are properly aligned in the sky, you'll be able to finally
+beings) you believe in—even if you don't. And then, if you're very lucky
+and the stars are properly aligned in the sky, you'll be able to
 see "Hello, world" output on the screen.
 
 Apparently, more configuration always means more good, as evidenced by
@@ -38,7 +38,7 @@ explains why Java was such a popular platform back in the days.
 ## What's in an Application?
 
 Before we proceed with our very scientific analysis of why programming
-tools (or well, most applications, really[^1]) suck completely, let us
+tools suck completely (or well, most applications, really[^1]), let us
 revisit some of the terminology:
 
 - **Library**, a usually not-so-opinionated solution for a particular
@@ -66,15 +66,15 @@ revisit some of the terminology:
   magically appears in your cup.
 
 Given these definitions, we can only conclude that neither WebPack nor
-Babel fit the definition of an *Application*. They hardly fit the
-definition of *Framework* either. Thus, that only leaves us with
+Babel fit the definition of an *Application*, they hardly fit the
+definition of *Framework* either, so that only leaves us with
 *Library*.
 
 This is hardly surprising considering that these tools come from the
 same community that defines “transpiler” in the same way “compiler” is
 defined in literature, then says the words are not synonymous.
 
-> <strong class="heading">Theorem</strong>
+> <strong class="heading">Hypothesis</strong>
 > Programmers don't know the meaning of words.
 {: .note .trivia }
 
@@ -91,8 +91,8 @@ Or maybe I can be a little more helpful. Let's see...
 
 Let's go back to the coffee machine analogy for a second.
 
-These are very neat machines. They have one button that says "Go". You
-press it, things happen, you get your coffee.
+These are very neat machines. They have one button that says "Get
+Coffee". You press it, things happen, you get your coffee.
 
 ![](/files/2016/01/gay1.png)
 {: .pull-left .bring-to-top }
@@ -111,7 +111,7 @@ instead of coffee! Maybe...
 
 At this point people have to do so many things to even get something to
 drink that it feels just as overwhelming as brewing coffee yourself. Not
-only that, they now need a *manual* just to operate your machine.
+only that, you now need a *manual* just to operate the machine.
 
 ![](/files/2016/01/sad1.png)
 {: .pull-left .bring-to-top }
@@ -162,13 +162,13 @@ the documentation of a thing that just says in its `--help` command
 Once you get around to reading the documentation, you'll discover that,
 even though you should have installed an ES6→ES5 compiler by running
 `npm install babel-cli`, to get the compiler to work, you have to
-ACTUALLY install the compiler:
+**actually** install the compiler:
 
 ![](/files/2016/01/babel-w-h-y.png)
 *I have no words*
 {: .centred-image .full-image }
 
-> <strong class="heading">Theorem</strong>
+> <strong class="heading">Hypothesis</strong>
 > Programmers are just terrible with logic.
 {: .note .trivia }
 
@@ -205,59 +205,70 @@ are a very great place to start. If you copy everything there, even if
 you don't design an ElementaryOS application, your application will
 likely be **actually usable by human beings**.
 
-I can't stress the **human** part of “human interfaces” enough. Please,
-think about humans when you're designing something that you want them to
-use.
+I can't stress the **human** part of “human-computer interfaces”
+enough. Please, think about humans when you're designing something that
+you want them to use.
 
 > <strong class="heading">Hypothesis</strong>
-> Programmers probably think about the aliens that were used to test
-> Emacs' keyboard shortcuts when designing applications.
+> Programmers employ robots in their HCI tests.  
+> <small>(T-They do tests to at least figure out if their things are
+> usable, right...?)</small> 
 {: .note .trivia }
 
 
-### 0. Convention over configuration
+### 1. Convention over configuration
 
-An application might need to use some pieces of data 
+The ideal application is one that works out of the box. No configuration
+needed. No way of wasting time. Sometimes certain pieces of data are
+necessary to get the application get up and running. What do you do?
 
-
-### 1. Stop thinking about documentation!
-
-Documentation is good for libraries and frameworks. Documentation is
-**terrible** for applications. If you think that your application really
-requires documentation, it's too complicated, and it's going to make
-your users frustrated.
-
-Instead of documentation, just have your application do its job by
-simply running it. No configuration. No nothing. Just let the user get
-the stuff done.
-
-> Rule #1: Don't require users to read manuals before using your thing.
+> Rule #1: If I need to configure your application, you're doing it
+> wrong.
 {: .highlight-paragraph .pull-in }
 
-“But the user might want to import CoffeeScript files too!” No, they
-don't. “But—” they **really** don't want to do that. An user might want
-to import some module. They also might want to write their modules in
-CoffeeScript. They definitely do not want to “import CoffeeScript
-files,” that's a problem *you* invented, as a combination of those two
-entirely different problems. If you can make your tool support this
-transparently and in a sensible manner (i.e.: no configuration, it just
-works), then great, if not, then don't even think about it. Let other
-tools solve the problems that are not your application's problems.
+“Uh, ask the user to provide that information?”
 
-Apple gets it, you can just copy them:
+That's the one thing you **do not** do. Most likely this information is
+already available for you:
 
-<p><iframe class="centred-image" width="708" height="520" src="https://www.youtube.com/embed/G2YNqr-V-xM" frameborder="0" allowfullscreen></iframe></p>
+- “I need the user's github repository so I can present a list of issues
+  whenever they—” parse it from Git or whatever other thing you
+  can (`package.json` already has that information!);
 
-But how do you avoid having manuals for non-trivial applications? Well…
+- “I need the user's name so I can associate it with—” ask the OS for
+  that information.
+
+- “I need the directory where people put their dependencies so—” come up
+  with a convention for it, `node_modules` in Node is a great one. Use
+  it.
+
+- “I need people to provide a tool to open .xyz f—” associate the
+  extension with external tools, suggest to download and install said
+  tool whenever you see a `.xyz` file.
+
+- “But I—” GET THAT INFORMATION FROM **SOMEWHERE ELSE**.
+
+Okay, sometimes there are pieces of information that aren't already
+available somewhere in the computer. “For those cases I just ask the
+user to provide it... right?” That depends, is it absolutely required
+that the user provide such information in order to **run the application
+at all**? If so, you're probably doing something wrong. Try packaging
+all of the things that are required to run your application together,
+instead.
+
+“But at some point in time people will need a different configuration
+*profile*, and—” sure. Give them a tool to configure that **if and
+when** they absolutely need to, and guide them through choosing
+the best settings for their use case. Just don't use configuration
+files. Don't require your users to edit configuration files by hand.
 
 
 ### 2. Hold your user's hand through using your app
 
 Ideally, an application should work by just running it. Sometimes,
 however, that's not really possible. Consider the `nvm` application, for
-example. It's a tool to manage Node versions, and you're supposed to
-read the documentation to know how to use it (so it violates the rule #1
-of good application design).
+example. It's a tool to manage Node versions, so how would it know what
+version you want to use if you don't provide it?
 
 > Rule #2: If you really need to, hold your user's hands through using
 > your app.
@@ -271,18 +282,20 @@ overwhelming amount of information:
 *This is seriously too much. It doesn't even fit in one screen*
 {: .centred-image .full-image }
 
-But worse than that, this text tells you nothing about how you can
-**start** using the application. But there's a `nvm use <version>` in
-that list, and that's exactly what we want, right? We just want to use a
-particular version of Node. So, let's try it:
+Worse than that, this text tells you nothing about how you can
+**start using** the application. But there's a `nvm use <version>` in
+that list, and that's exactly what you want, right? You just want to use a
+particular version of Node. So you try it:
 
 ![](/files/2016/01/nvm2.png)
 *Uh... how do I use it, then?*
 {: .centred-image .full-image }
 
 It says “version 5.0 is not yet installed”, which is not a very helpful
-thing to do. It just says "hello, there's a problem," but doesn't tell
-you how to fix it. So what do you do? You read *more things*.
+thing to do. You're there reading this as "Hey, there's a problem," and
+waiting for it to tell you something besides the obvious. You shout back
+“Okay, I know that, but how do I fix it?” Nothing happens. So what do
+you do? You read *more things*.
 
 Back to the first wall of text, there does seem to be something like
 `nvm install <version>` in the list. It at least seems to fit the
@@ -291,7 +304,7 @@ don't know, the text doesn't tell you in which order you have to run
 things (why separate things in steps at all if you need to run all of
 them anyway?!).
 
-So we'll try this again:
+“Okay, lemme try this one.”
 
 ![](/files/2016/01/nvm3.png)
 *Wow, am I supposed to just run `install`?*
@@ -299,7 +312,7 @@ So we'll try this again:
 
 You ponder a bit about why the application decided that it was a good
 idea to include two commands that do the same thing, but only one which
-works. But nevertheless, you settle for the fact that things (at least
+works. Nevertheless, you settle for the fact that things (at least
 apparently) work now.
 
 And then you open a new shell to run a different application, so of
@@ -311,10 +324,10 @@ course that application also depends on Node, and:
 
 You stare blankly at your screen trying to understand what just
 happened. Node was working just fine, and then it wasn't. Maybe nvm is
-just bogus and breaks randomly? You decide to try `node --version` in
-the other shell, which to your surprise gives you what you expect,
-`v5.0.0`. Are you just supposed to run `nvm install <version>` in every
-shell you open?
+just terrible and breaks randomly? You decide to try `node --version` in
+the other shell, which to your surprise gives you what you expect:
+`v5.0.0`. “Am I just supposed to run `nvm install <version>` in *every*
+shell I open!?”
 
 You decide to run `nvm install <version>` again just to test your
 theory:
@@ -350,54 +363,57 @@ Could this have been different? Sure, let's look at another quite
 possible interaction between the aforementioned human and nvm. Let's
 assume that nvm decided that their goal is to help people manage their
 Node versions. With this goal in mind, nvm has traced a very common use
-case for new users of the application:
+case for new (and long-term) users of the application:
 
 - You download the `nvm` application because you want `nvm` to install
   and configure different Node versions for you.
-- You care about having a default node version, after all, nvm is going
-  to be managing that.
+- You care about having a default node version, after all, since nvm is
+  going to be managing that.
 - You care about running node with the least amount of commands
   possible. Ideally you'd just write `node` and things would work.
 
-Let us start with running `nvm`. The application notices it can't
-actually get any work done for you, so it suggests some common actions:
+You start with running `nvm`. The application notices it can't actually
+get any work done for you, so it suggests some common actions:
 
 ![](/files/2016/01/nvm7.png)
 *A more helpful way of telling your users they need to do something*
 {: .centred-image .full-image }
 
-Note that we still have to configure `nvm` for it to work. An
+You note that it's still necessary to configure `nvm` for it to work. An
 interactive screen where the application suggests installing the
-`stable` version for you (which is a good default) would allow your
-users to get the job done faster. None the less, this is already a huge
-improvement over the previous screen. It *tells you* what you have to do
-to get it working.
+`stable` version for you (which is a good default) would allow you to be
+done with this configuration biz faster. Nonetheless, this is already
+a huge improvement over the previous screen. It at least *tells you*
+what you have to do to get it working.
 
 ![](/files/2016/01/nvm8.png)
 *One command to rule them all*
 {: .centred-image .full-image }
 
-Two things should be noted here. First, we hadn't installed any version
-before running `use`. The command acknowledged so and installed the
-version for us. **It's the only sensible thing to do**, there's nothing
-else that *could* be done there. When your application sees an error,
-and there's only one way to fix it, *fix it*.
+Oops, you didn't have any version of Node installed before running
+`use`. But the command acknowledged so and installed the version for
+you. **It was the only sensible thing to do**, there was nothing else that
+*could* be done there.
 
-The second is that after installing we're asked if we'd like to make the
-version we just installed our default Node version (noting that we can
-change it at any point in time if we want). Running `npm use <version>`
-is a common thing to do— in fact, it's the only point of the
-application. Given this, it's only sensible to give the user an option
-of reducing that work. Offering a default configuration is always a good
-thing to do. It removes a lot of the burden from the user, which can
-just go actually work on the things they want to.
+> <strong class="heading">A quick reminder</strong>
+> When your application sees an error, and there's only one way to fix
+> it, **fix it**.
+{: .note .trivia }
 
-“B-But this doesn't apply to every program, right. How do you do this
-for a programming language's implementation?” Well, here's an example
-from [Amber Smalltalk](http://amber-lang.net/learn.html)
+After installing it, you're asked if you'd like to make the version we
+just installed your default Node version. It dutifully notes that you
+can change it at any point in time, if you want to. Running `npm use <version>`
+ is a common thing to do—it's the whole point of the
+application. Given this, it's only reasonable to give you an option
+of reducing that work.
+
+“B-But this doesn't apply to every program, right? How do you do this
+for a programming language's implementation?” An application developer
+cries. Well, here's an example from
+[Amber Smalltalk](http://amber-lang.net/learn.html)
 
 ![](/files/2016/01/amber.png)
-*Interactive tutorials for learning PLs is a really good idea*
+*Interactive tutorials for learning PLs are a really good idea*
 {: .centred-image .full-image }
 
 
@@ -424,7 +440,7 @@ I fix this?
 
 As you can see, v8's error messages, even though they have improved a
 little bit, remain largely useless. This, in particular, is one of those
-errors that a little bit more of work on your JSON parser could ACTUALLY
+errors that a little bit more of work on your JSON parser could actually
 give the user a very useful error message:
 
 ![](/files/2016/01/v82.png)
@@ -438,13 +454,40 @@ some effort to tell the user what's wrong, in a way they can understand,
 instead just screaming “I'm sorry Dave, I can't do that.”
 
 Speaking of usable error messages,
-[Elm](http://elm-lang.org/blog/compilers-as-assistants) has a very good
-blog post on the subject, and also one of the most helpful error
-messages, as far as static compilers go:
+[Elm](http://elm-lang.org/blog/compilers-as-assistants) has a
+[very good blog post on the subject](http://elm-lang.org/blog/compilers-as-assistants),
+and also one of the most helpful error messages, as far as static
+compilers go:
 
 ![](/files/2016/01/elm.png)
 *The above image is shamelessly stolen from Elm's blog post*
 {: .centred-image .full-image }
+
+
+
+### 4. Stop thinking about documentation!
+
+Documentation is good for libraries and frameworks. Documentation is
+**terrible** for applications. If you think that your application really
+requires documentation, it's too complicated, and it's going to make
+your users frustrated.
+
+This is true because it's on [XKCD](https://xkcd.com/1343/):
+
+![](http://imgs.xkcd.com/comics/manuals.png)
+*I rest my case*
+{: .centred-image .full-image }
+
+Instead of documentation, just have your application do its job by
+simply running it. No configuration. No nothing. Just let the user get
+the stuff done.
+
+> Rule #4: Don't require users to read manuals before using your thing.
+{: .highlight-paragraph .pull-in }
+
+Apple gets it, you can just copy them:
+
+<p><iframe class="centred-image" width="708" height="520" src="https://www.youtube.com/embed/G2YNqr-V-xM" frameborder="0" allowfullscreen></iframe></p>
 
 
 ## Conclusion
@@ -457,6 +500,25 @@ We can make them better.
 
 But y'all aren't even trying for fuck's sake.
 
+<small>(I'm guilty of this too)</small>
+
+
+## Related articles/stuff
+
+[Software You Can Use](https://glyph.twistedmatrix.com/2015/09/software-you-can-use.html)
+: *Glyph*
+
+[JavaScript Fatigue](https://medium.com/@ericclemmons/javascript-fatigue-48d4011b6fc4#.dy1w11on6)
+: *Eric Clemmons*
+
+[The Future of Programming](https://vimeo.com/71278954)
+: *Bret Victor*
+
+[A Whole New World](https://www.destroyallsoftware.com/talks/a-whole-new-world)
+: *Gary Bernhardt*
+
+[Self and Self: Whys and Wherefores](https://www.youtube.com/watch?v=3ka4KY7TMTU)
+: *David Ungar*
 
 
 <div class="contact-footer">

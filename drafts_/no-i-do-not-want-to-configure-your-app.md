@@ -21,7 +21,7 @@ development lately, influenced by Node's philosophy, perhaps, where to
 use anything at all you first need to install a dozen of "dependencies,"
 spend the next 10 hours configuring it, pray to whatever gods (or
 beings) you believe in—even if you don't, and then, if you're very lucky
-and the stars are properly aligned in the sky, you'll be able to finally
+and the stars are properly aligned in the sky, you'll be able to, finally,
 see "Hello, world" output on the screen.
 
 Apparently, more configuration always means more good, as evidenced by
@@ -38,7 +38,7 @@ explains why Java was such a popular platform back in the days.
 ## What's in an Application?
 
 Before we proceed with our very scientific analysis of why programming
-tools (or well, most applications, really[^1]) suck completely, let us
+tools suck completely (or well, most applications, really[^1]), let us
 revisit some of the terminology:
 
 - **Library**, a usually not-so-opinionated solution for a particular
@@ -50,7 +50,7 @@ revisit some of the terminology:
 
 - **Framework**, an opinionated solution for a particular
   problem. Frameworks do things **in a very specific way**, which the
-  author considered to be good enough for the particular problem they
+  authors considered to be good enough for the particular problem they
   solve. Frameworks can't be combined. They can't be configured. The
   only thing you can do is program on top of them. A framework helps you
   very little with programming on top of them, unless you stick close to
@@ -74,7 +74,7 @@ This is hardly surprising considering that these tools come from the
 same community that defines “transpiler” in the same way “compiler” is
 defined in literature, then says the words are not synonymous.
 
-> <strong class="heading">Theorem</strong>
+> <strong class="heading">Hypothesis</strong>
 > Programmers don't know the meaning of words.
 {: .note .trivia }
 
@@ -168,7 +168,7 @@ ACTUALLY install the compiler:
 *I have no words*
 {: .centred-image .full-image }
 
-> <strong class="heading">Theorem</strong>
+> <strong class="heading">Hypothesis</strong>
 > Programmers are just terrible with logic.
 {: .note .trivia }
 
