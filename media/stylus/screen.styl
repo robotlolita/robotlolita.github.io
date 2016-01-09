@@ -346,6 +346,10 @@ a:hover
     width: 100%
     height: auto
 
+  .bring-to-top
+    position: relative
+    z-index: 3
+
   .width-350
     width: 350px
     
@@ -450,3 +454,22 @@ a:hover
     display: none
   .tab-contents > div.active
     display: block
+
+
+// Some images are special
+.special-image-1 {
+  height: 520px;
+  img {
+    position: relative;
+    top: -206px;
+    z-index: 0;
+  }
+}
+
+.special-image-2 {
+  height: 490px;
+  img {
+    position: relative;
+    top: -150px;
+  }
+}

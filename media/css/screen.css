@@ -1703,6 +1703,10 @@ a:hover {
   width: 100%;
   height: auto;
 }
+.textual-content .bring-to-top {
+  position: relative;
+  z-index: 3;
+}
 .textual-content .width-350 {
   width: 350px;
 }
@@ -1822,4 +1826,19 @@ a:hover {
 }
 .textual-content .tab-contents > div.active {
   display: block;
+}
+.special-image-1 {
+  height: 520px;
+}
+.special-image-1 img {
+  position: relative;
+  top: -206px;
+  z-index: 0;
+}
+.special-image-2 {
+  height: 490px;
+}
+.special-image-2 img {
+  position: relative;
+  top: -150px;
 }
