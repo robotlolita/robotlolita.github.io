@@ -104,6 +104,7 @@ a:hover
   font-size: 20px
   color: jsk-base-colour
   line-height: 1.5em
+  padding: 20px
 
   h2
     letter-spacing: -0.02em
@@ -114,6 +115,7 @@ a:hover
 
 #post-listing
   list-style: none
+  margin: 0
 
   li
     border-bottom: 1px solid #f3f3f3
@@ -409,6 +411,9 @@ a:hover
     margin-bottom: 1.5em
     line-height: 1.5em
 
+  .CodeRay .code .line-numbers
+    display: none;
+                  
   .contact-footer
     border-top: 1px solid #ecf0f1
     margin: 3em 0
@@ -472,4 +477,77 @@ a:hover
     position: relative;
     top: -150px;
   }
+}
+
+
+@media (max-width: 970px) {
+    #wrapper #content {
+        .pull-left {
+            margin-left: 0;
+        }
+        .pull-right {
+            margin-right: 0;
+        }
+        .highlighttable {
+            border-width: 1px 0;
+        }
+        .highlighttable td {
+            padding: 2px 0;
+        }
+        .highlighttable .linenos {
+            display: none;
+        }
+        .highlighttable .code {
+            border: 0;
+        }
+        .highlighttable .highlight {
+            font-size: 13px;
+            line-height: 16px;
+        }
+        pre, pre span {
+            white-space: pre-wrap;
+        }
+
+    }
+}
+
+@media (max-width: 750px) {
+    #wrapper #content {
+        blockquote {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        
+        img {
+            padding: 0;
+            position: static;
+            width: 100%;
+            height: auto;
+        }
+
+        iframe {
+            border-width: 1px 0px;
+            padding: 2px 0px;
+            width: 100%;
+            height: auto;
+        }
+
+        .pull-left, .pull-right, .centred-image {
+            border-width: 1px 0;
+            padding: 2px 0;
+        }
+        
+        .pull-left, .pull-right {
+            margin: 0.5em 0 1em 0;
+            float: none;
+        }
+
+        .special-image-1, .special-image-2 {
+            height: auto;
+        }
+
+        ul, ol {
+            margin-left: 1.2em;
+        }
+    }
 }
