@@ -925,8 +925,7 @@ function wait2(promiseA, promiseB, expression) {
 With this, we can define `circleAreaPromise` as the following:
 
 {% highlight js linenos=table %}
-var circleAreaPromise = chain(wait2(radiusPromise, piPromise),
-                              circleAreaAbstraction);
+var circleAreaPromise = wait2(radiusPromise, piPromise, circleAreaAbstraction);
 {% endhighlight %}
 
 We could define `wait3` for expressions that depend on three values,
@@ -945,7 +944,7 @@ State Machine, but there is no implicit ordering (besides JavaScript's
 own execution semantics).
 
 {% highlight js linenos=table %}
-function waitAll(promises, expression) {
+function waitAll(promises) {
   // An array of the values of the promise, which we'll fill in
   // incrementally.
   var values = new Array(promises.length);
