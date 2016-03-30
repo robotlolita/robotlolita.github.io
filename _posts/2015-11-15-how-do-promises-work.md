@@ -1630,6 +1630,9 @@ they're going to be even more pervasive in the all ECMAScript projects.
 : An efficient Promises/A+ implementation.
 
 
+## Changelog
+
+- [**30th March, 2016**](https://github.com/robotlolita/robotlolita.github.io/commit/4051d4ce2e138efb966c51ab1c4274274c36e899): Fixes the usage example of `wait2`, which takes a combining function, and the signature of `waitAll`, which does not take a function argument, as pointed out by Martin Colwell.
 
 
 <div class="contact-footer">
