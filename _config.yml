@@ -1,8 +1,9 @@
 name: "Quils in Space"
-pygments: true
+highlighter: pygments
 markdown: kramdown
 exclude:
 - node_modules
+- vendor
 
 navigation:
 - text: Blog

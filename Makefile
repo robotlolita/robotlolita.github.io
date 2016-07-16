@@ -13,6 +13,6 @@ watch-css:
 	$(stylus) $(stylus-paths) -w -o media/css media/stylus
 
 serve:
-	jekyll serve --drafts -w --host "0.0.0.0"
+	bundle exec jekyll serve --drafts -w --host "0.0.0.0"
 
 .PHONY: css watch-css
