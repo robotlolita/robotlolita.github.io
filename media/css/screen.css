@@ -1602,7 +1602,7 @@ a:hover {
 .textual-content .simple-code code {
   padding: 0;
 }
-.textual-content .highlighttable {
+.textual-content .highlight {
   border-collapse: collapse;
   border: 1px solid #ecf0f1;
   border-left-width: 2px;
@@ -1612,26 +1612,26 @@ a:hover {
   font-family: monospace;
   margin: 2em 0;
 }
-.textual-content .highlighttable td {
+.textual-content .highlight td {
   vertical-align: top;
   padding: 0.5em;
 }
-.textual-content .highlighttable td.linenos {
+.textual-content .highlight td.gutter {
   background: #fff;
   width: 20px;
   text-align: right;
   border-right: 1px solid #ecf0f1;
 }
-.textual-content .highlighttable td.linenos code,
-.textual-content .highlighttable td.linenos pre {
+.textual-content .highlight td.gutter code,
+.textual-content .highlight td.gutter pre {
   background-color: #fff;
   color: #bdc3c7;
 }
-.textual-content .highlighttable td.code {
+.textual-content .highlight td.code {
   border-left: 1px solid #ecf0f1;
   background: #fcfcfc;
 }
-.textual-content .highlighttable td.code .highlight {
+.textual-content .highlight td.code .highlight {
   padding: 0 0 0 0.5em;
   margin: 0;
   border: none;
@@ -1730,6 +1730,12 @@ a:hover {
   padding: 0;
   text-align: center;
   color: #95a5a6;
+}
+.textual-content .highlight-paragraph cite {
+  font-size: 16px;
+  line-height: 100%;
+  text-align: right;
+  display: block;
 }
 .textual-content .pull-in {
   margin-left: 1em;
