@@ -8,5 +8,7 @@ exclude:
 navigation:
 - text: Blog
   url: /index.html
+- text: Art
+  url: http://frills.robotlolita.me/tagged/my-art
 - text: About
   url: /about/index.html
