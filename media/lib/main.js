@@ -14,6 +14,7 @@ void function() {
   each(tabs, function (item) {
     item.addEventListener('click', function(event) {
       event.preventDefault();
+
       var language = item.href.replace(/^[^#]*#/, '');
       each(tabs, function(tab) {
         if (endsWith(tab.href, '#' + language)) {
@@ -30,6 +31,8 @@ void function() {
           tab.className = '';
         }
       });
+
+      item.scrollIntoView();
     });
   });
 

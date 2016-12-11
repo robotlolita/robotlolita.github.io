@@ -181,7 +181,7 @@ languages supporting this form:
 </ul>
 <div class="tab-contents">
   <div data-language="javascript" class="active">
-{% highlight js %}
+{% highlight js linenos=table %}
 // Tells the language how 1 objects look like
 function One() {
   /* Called when this class is instantiated */
@@ -224,7 +224,7 @@ const one = new One();
   </div>
   
   <div data-language="java">
-{% highlight java %}
+{% highlight java linenos=table %}
 public class Main {
   // Tells the language how 1 objects look like
   class One {
@@ -254,7 +254,7 @@ public class Main {
   </div>
   
   <div data-language="python">
-{% highlight python %}
+{% highlight python linenos=table %}
 # Tells the language how 1 objects look like
 class One(object):
   def __init__(self):
@@ -281,7 +281,7 @@ syntax shown above is the convention for Pharo Smalltalk, but is not the <em>tex
 you type in your program — you instead click buttons in the interface to do
 things.
   
-{% highlight smalltalk %}
+{% highlight smalltalk linenos=table %}
 "Tells the language how 1 objects look like"
 Object subclass: #One
   instanceVariableNames: ''
@@ -316,7 +316,7 @@ definitions above:
   </div>
   
   <div data-language="ruby">
-{% highlight ruby %}
+{% highlight ruby linenos=table %}
 # Tells the language how 1 objects look like
 class One
   def initialize
@@ -327,11 +327,11 @@ class One
     '1'
   end
   
-  def isGreaterThanZero
+  def isGreaterThanZero?
     true
   end
   
-  def isGreaterThanTwo
+  def isGreaterThanTwo?
     false
   end
 end
@@ -342,7 +342,7 @@ one = One.new
   </div>
   
   <div data-language="cpp">
-{% highlight cpp %}
+{% highlight cpp linenos=table %}
 class One {
   public:
     One();
@@ -401,6 +401,180 @@ because I love potatoes, and I want to draw food. I have some ideas for possibly
 interesting tastes in my head, but obviously I don't know the exact steps to get
 to that taste yet, so I'm just going to “learn by doing” — try everything and
 see what tastes good!
+
+![A drawing of steps for preparing Hasselback potatoes](/files/2016/12/oo-05.png)
+{: .centred-image .full-image }
+
+Okay, so how exactly is this different from the class-based model? Well, in this
+example we have someone cooking potatoes, but all of the things they are
+manipulating are *concrete* — those are actual potatoes, not descriptions of a
+potato, you can bite them at any time and taste them. So, while working with
+prototypes is more like cooking directly, working with classes is more like
+writing a recipe, then following the steps in that recipe precisely. None the
+less, the end result is pretty much the same from the point of view of how you
+use it.
+
+Below are examples of how one would create the previous 1 object in major
+prototype-based languages:
+
+<ul class="tabs">
+  <li><a href="#javascript" class="active">JavaScript</a></li>
+  <li><a href="#lua">Lua</a></li>
+  <li><a href="#self">Self</a></li>
+  <li><a href="#io">Io</a></li>
+  <li><a href="#siren">Siren</a></li>
+</ul>
+<div class="tab-contents">
+  <div data-language="javascript" class="active">
+{% highlight js linenos=table %}
+// Construct a 1 object (for now empty)
+const one = {};
+
+// Extend the 1 object to support describing itself
+one.describe = function() {
+  return '1';
+};
+
+// Extend the 1 object to support comparing to 0
+one.isGreaterThanZero = function() {
+  return true;
+};
+
+// Extend the 1 object to support comparing to 2
+one.isGreaterThanTwo = function() {
+  return false;
+};
+
+// Alternatively one may construct an object 
+// and its methods as such:
+const one = {
+  describe() {
+    return '1';
+  },
+  
+  isGreaterThanZero() {
+    return true;
+  },
+  
+  isGreaterThanTwo() {
+    return false;
+  }
+};
+{% endhighlight %}
+  </div>
+  
+  <div data-language="lua">
+{% highlight lua linenos=table %}
+-- Construct a 1 object (for now empty)
+one = {}
+
+-- Extend the 1 object to support describing itself
+function one:describe()
+  return '1'
+end
+
+-- Extend the 1 object to support comparing to 0
+function one:isGreaterThanZero()
+  return true
+end
+
+-- Extend the 1 object to support comparing to 2
+function one:isGreaterThanTwo()
+  return false
+end
+{% endhighlight %}
+  </div>
+  
+  <div data-language="self">
+Self, as Smalltalk, uses a live environment where users are supposed to
+manipulate objects directly. However, Self does have textual syntax for
+introducing objects:
+
+{% highlight smalltalk linenos=table %}
+"Constructs an 1 object"
+(|
+  "How to describe this object"
+  describe = (^ '1').
+  
+  "Compares to 0"
+  isGreaterThanZero = (^ true).
+  
+  "Compares to 2"
+  isGreaterThanTwo = (^ false).
+|)
+{% endhighlight %}
+
+In order to add this object to the system, the programmer would find the object
+where it should live (for example, the lobby — the global namespace in Self),
+and add a new slot to that object. All of this is done by manipulating concrete
+entities on the screen:
+
+<p class="centred-image">
+  <img src="/files/2016/12/oo-06.png">
+</p>
+
+<p class="centred-image">
+  <img src="/files/2016/12/oo-07.png">
+</p>
+
+<p class="centred-image">
+  <img src="/files/2016/12/oo-08.png">
+</p>
+  </div>
+  
+  <div data-language="io">
+{% highlight io linenos=table %}
+// Constructs an 1 object
+one := Object clone
+
+// Extend the 1 object to support describing itself
+one describe := method("1")
+
+// Extend the 1 object to support comparing to 0
+one isGreaterThanZero := method(true)
+
+// Extend the 1 object to support comparing to 2
+one isGreaterThanTwo := method(false)
+
+// Alternatively one may construct an object
+// and define its methods as such:
+one := Object clone do(
+  describe := method("1")
+  isGreaterThanZero := method(true)
+  isGreaterThanTwo := method(false)
+)
+{% endhighlight %}
+  </div>
+ 
+  <div data-language="siren">
+{% highlight ruby linenos=table %}
+$siren/1
+
+# Constructs an 1 object and define its methods
+let one = {
+  def self describe = "1".
+  def self is-greater-than-zero? = true.
+  def self is-greater-than-two? = false.
+}.
+{% endhighlight %}
+  </div>
+</div>
+
+Once again the syntax varies quite a bit between all of these languages, but the
+concept is the same: you construct objects directly, by telling the system how
+they behave. Most prototype-based languages support some kind of iterative
+development, where you construct an object then slowly shape it into the thing
+it should represent — very similar to cooking, drawing, or skulpting in this
+sense. Languages with live environments (like Self and Siren) may only support
+iterative development in its IDE, not in the source code.
+
+
+
+
+
+
+
+
 
 
 
