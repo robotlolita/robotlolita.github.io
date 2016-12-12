@@ -414,8 +414,8 @@ writing a recipe, then following the steps in that recipe precisely. None the
 less, the end result is pretty much the same from the point of view of how you
 use it.
 
-Below are examples of how one would create the previous 1 object in major
-prototype-based languages:
+Below are some examples of constructing objects in different languages
+supporting the prototype-based model.
 
 <ul class="tabs">
   <li><a href="#javascript" class="active">JavaScript</a></li>
@@ -423,6 +423,7 @@ prototype-based languages:
   <li><a href="#self">Self</a></li>
   <li><a href="#io">Io</a></li>
   <li><a href="#siren">Siren</a></li>
+  <li><a href="#elm">Elm</a></li>
 </ul>
 <div class="tab-contents">
   <div data-language="javascript" class="active">
@@ -558,6 +559,52 @@ let one = {
 }.
 {% endhighlight %}
   </div>
+  
+  <div data-language="elm">
+{% highlight haskell linenos=table %}
+-- Elm's extensible records are very similar to
+-- objects in prototype-based languages
+--
+-- Here's the 1 object
+one = {
+  describe          = "1",
+  isGreaterThanZero = True,
+  isGreaterThanTwo  = False
+}
+
+-- Things get a bit more complicated when self
+-- references (`this`) are needed. Elm uses a
+-- structural type system, and recursive
+-- structural types are not possible.
+-- You can, however, pack the record type on
+-- a nominal type.
+type One = 
+  One {
+    describe          : One -> String,
+    isGreaterThanZero : One -> Bool,
+    isGreaterThanTwo  : One -> Bool
+  }
+
+-- Objects can still be constructed directly,
+-- as long as they're given the appropriate
+-- type.
+one = 
+  One {
+    describe          = \self -> "1",
+    isGreaterThanZero = \self -> True,
+    isGreaterThanTwo  = \self -> False
+  }
+  
+describe (One one) = 
+  one.describe (One one)
+
+isGreaterThanZero (One one) = 
+  one.isGreaterThanZero (One one)
+
+isGreaterThanTwo (One one) = 
+  one.isGreaterThanTwo (One one)
+{% endhighlight %}
+  </div>
 </div>
 
 Once again the syntax varies quite a bit between all of these languages, but the
@@ -568,10 +615,59 @@ it should represent — very similar to cooking, drawing, or skulpting in this
 sense. Languages with live environments (like Self and Siren) may only support
 iterative development in its IDE, not in the source code.
 
+> <strong class="heading">A note on Elm</strong>
+> Elm describes itself as a functional language, rather than as an
+> object-oriented one. However the concept of [Extensible Records][], which Elm
+> uses, fulfills all requirements for a prototype-based OO model. Because Elm
+> has a [Hindley-Milner][hm]-based type system, using extensible records as
+> objects isn't as practical (you have to wrap your records to have
+> self references because records are structural types), but it's possible none
+> the less.
+>
+> [Type Systems][] and prototype-based languages don't tend to go very well together…
+{: .note .info }
 
 
+### 3.3. Classes versus Prototypes
+
+We have seen that, even though class-based models and prototype-based models can
+be used to achieve the same result (constructing an object), the process by
+which that happens is very different. Furthermore, even if languages share the
+same model, that doesn't mean that its semantics and syntax will be similar —
+the way classes work in JavaScript, Java, C++, Smalltalk, and Python, to cite a
+few, are entirely different. None the less, the basic process is still the same.
+
+But what makes one or other model more appealing? As with many things in
+programming, there's not just one answer to “what's better: classes or
+prototypes?”, but rather there are many advantages and disadvantages to each
+concept that might make one choose one or the other.
+
+Prototypes are a very simple and expressive model, and they work great when you
+want users of your language to iterate over a solution by constructing examples
+and refining them (for example, in a live or visual development environment),
+but efficient implementation of prototypes is difficult, you often wind up
+making the choice of whether to care more about CPU time or about memory
+consumption (since memory layout is not fixed). Most practical type systems are
+also at odds with advanced uses of features prototype-based languages tend to
+enable. Things like static analysis and intelligent autocompletion are also
+tricky in most implementations of the model.
+
+Classes are a widely used model, and while they aren't simple or powerful, they
+are much easier to implement efficiently. A class indirectly defines what
+programmers can expect from a set of objects (which plays well with most type
+systems), an optimal layout for objects in memory, and can be used by static
+analysis (such as intelligent autocompletion) to help the user navigate the
+system when writing code. They tend to be a good fit when you want users of your
+language to do the work of modelling upfront, as it happens in
+specification-driven systems.
+
+We'll see more about classes and prototypes in the next sections, including how
+each of these are implemented, and subtle differences in languages like Python.
+But before we do that we need to cover a few other concepts in object-oriented
+programming, which brings us to…
 
 
+## 4. Operations in Objects
 
 
 
@@ -629,3 +725,6 @@ iterative development in its IDE, not in the source code.
 [Dylan]: http://opendylan.org/
 [Factor]: http://factorcode.org/
 [Eiffel]: https://en.wikipedia.org/wiki/Eiffel_(programming_language)
+[Extensible Records]: http://elm-lang.org/docs/records
+[hm]: https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system
+[Type Systems]: https://gist.github.com/garybernhardt/122909856b570c5c457a6cd674795a9c
