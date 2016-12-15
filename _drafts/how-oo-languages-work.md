@@ -669,9 +669,244 @@ programming, which brings us to…
 
 ## 4. Operations in Objects
 
+We've established that objects are values that define which operations they
+support, and we've even seen how objects may be constructed. We're missing
+something though: what in the world are these “operations” anyway?
+
+![](/files/2016/12/oo-09.png)
+{: .pull-right }
+
+Let's go with another useless real-world analogy (have you noticed how much I
+like analogies yet?). If I increase the amount of light incinding on a pupil,
+then that pupil will constrict. Conversely, if I decrease the amount of light,
+that pupil will dilate. On the other hand, if I increase or decrease the amount
+of light inciding on a piece of paper, the piece of paper does not react in any
+observable way.
+
+There are a few different concepts to unpack here, so let's see each one in
+turn. First, increasing or decrasing the amount of light is a stimulus, each one
+being a different stimuli. An entity (or receiver) may or may not acknowledge a
+particular stimulus. Pupils acknowledge increasing or decreasing the amount of
+light, whereas papers do not. When an entity acknowledges a stimulus, it
+performs a reaction to it. In this case, the pupil constricting or dilating are
+reactions.
+
+In programming, these reactions are operations that an object may perform, and
+different languages give them different names (methods, functions, procedures,
+and actions are some of those names). In order for these operations to be
+performed, one must first tell the object which operation they'd like to happen.
+In a programming language, a programmer may "call a method on" or "send a
+message to" and object to do so, and this is the equivalent of the stimuli.
+
+Like in our example, a programmer may use any stimuli it wants, and how to react
+to that depends solely on the object that's receiving it. 
+
+{% highlight ruby %}
+   pupil .  increase_light()
+# `--+-´   `------+------´
+#    |            |
+#  object      message
+
+
+   paper .  increase_light()
+# `--+-´   `------+------´
+#    |            |
+#  object      message
+{% endhighlight %}
+
+Here the stimulus (which we'll call “message” from now on) is the same:
+`increase_light`, but the object receiving (or the “receiver”) it is different.
+In the first case, the receiver is the `pupil`, and in the second case the
+receiver is the `paper`. When we send the message `increase_light` to the pupil,
+it responds by constricting itself. On the other hand, when we send the message
+`increase_light` to the paper, nothing happens — the paper does not understand
+that message.
+
+Here are some examples of how sending a message to an object happeen in
+different languages:
+
+<ul class="tabs">
+  <li><a href="#javascript" class="active">JavaScript</a></li>
+  <li><a href="#java">Java</a></li>
+  <li><a href="#self">Self</a></li>
+  <li><a href="#clos">CLOS</a></li>
+  <li><a href="#php">PHP</a></li>
+</ul>
+<div class="tab-contents">
+  <div data-language="javascript" class="active">
+{% highlight javascript linenos=table %}
+    pupil     .    increase_light ( )
+// `--+-´     |   `------+------´ `+´
+//    |       |          |         |
+//  object  syntax    message   arguments
+
+
+// Note that while JS has a syntax that's similar to
+// Java, it does some very different things
+
+    increase_light()
+// `-------+-----´
+//         |
+//    function call (this is not a message send)
+{% endhighlight %}
+  </div>
+  
+  <div data-language="java">
+{% highlight java linenos=table %}
+    pupil     .    increase_light ( )
+// `--+-´     |   `------+------´ `+´
+//    |       |          |         |
+//  object  syntax    message   arguments
+
+
+// Note that while Java has a syntax that's similar to
+// JavaScript, it does some very different things
+
+                increase_light   ( )
+// `--+--`     `-------+------´  `+´
+//    |                |          |
+// (implicitly)      message   arguments
+
+// Java allows the receiver to be omitted. In those cases
+// the receiver is taken to be the same as the current
+// receiver for the operation being executed.
+{% endhighlight %}
+  </div>
+  
+  <div data-language="self">
+{% highlight smalltalk linenos=table %}
+    pupil   increase_light
+"  `--+-´   `------+------´  "
+"     |            |         "
+"   object      message      "
+
+
+   pupil       *         1
+"  `-+-´      `.´       `.´     "
+"    |         |         |      "
+"  object    message   argument "
+
+
+   pupil   some: 1 message: 2 name: 3
+"  `-+-´   `-+-´ | `--+---´ | `-+-´ |              "
+"    |       |   |    |     |   |   |              "
+"  object   msg arg  msg   arg msg arg             "
+"                                                  "
+"  --------------------------------------------    "
+"  The message name is `some:message:name:`        "
+"  The arguments are `1, 2, 3`                     "
+"  Equivalent to `pupil.someMessageName(1, 2, 3)`  "
+
+
+"Self allows the receiver to be implicit, so something
+ like `foo` or `foo: 1 bar: 2` assume that the receiver
+ of those messages is the receiver for the current
+ operation being executed."
+{% endhighlight %}
+  </div>
+  
+  <div data-language="clos">
+{% highlight cl linenos=table %}
+  (increase_light  pupil)
+;  `-----+------´  `-+-´
+;        |           |
+;     message      object
+
+; In CLOS, message sends are just regular function calls.
+; As a Lisp, it uses the `(func-name arg1 arg2 arg3 …)`
+; syntax (S-expressions). `func-name` (in this case 
+; `increase_light`) has to be a function in the local
+; scope. Functions select which implementation to run
+; based on which arguments were provided to them.
+; We'll see more about this in Multimethods.
+{% endhighlight %}
+  </div>
+  
+  <div data-language="php">
+{% highlight php linenos=table %}
+<?php
+
+   $pupil    ->   increase_light  ( )
+// `-+--´    |    `------+-----´  `.´
+//   |       |           |         |
+// object  syntax     message    arguments
+
+
+// Note that PHP has namespaces. While the
+// syntax for calling a function in a namespace
+// is similar to the one above (replacing `->` by `\`),
+// namespaces are not first-class, and thus
+// it's not a message send.
+
+   Thing\increase_light()
+// `---------+----------´
+//           |
+// regular function call
+
+?>
+{% endhighlight %}
+  </div>
+</div>
+
+
+Let's break this process into smaller, independent concepts. In order to send a
+message to an object we need to:
+
+  1. Determine which object is receiving the message (the “receiver”). For
+     `pupil.increase_light()`, the receiver would be `pupil`;
+  2. Figure out which message we're sending. In this case, `increase_light` with
+     no arguments;
+  3. Figure out which operation the object understands by the message;
+  4. Perform the operation with the provided arguments.
+  
+  
+The combination of these steps is called **dispatch**. When these steps are
+performed at compile time, the entire thing is called **static dispatch**. When
+these steps are performed at runtime, the entire thing is called **dynamic
+dispatch**. We'll see more about this later.
 
 
 
+
+
+
+---
+- Operations
+  - Lookup
+  - Invocation
+  - Receiver arguments
+  - Multimethods
+  - Overloading polymorphism vs multidispatch
+  
+- Reuse
+  - Composition
+  - Classical inheritance
+  - Delegation
+  - Linearization in multiple inheritance
+  - Concatenation
+  - Mixins and Traits
+  
+- OO models under the hood
+  - Classes
+  - Metaclasses
+  - Prototypes
+  
+- Ideal implementations of OO models
+  - Classes
+    - Second class
+    - First class
+    - Metaclasses
+    - Single inheritance
+    - Multiple inheritannce
+    - Mixins
+    - Traits
+  - Prototypes
+    - Delegation
+    - Concatenation
+  - Multimethods
+
+
+---
 
 
 <ul class="tabs">
