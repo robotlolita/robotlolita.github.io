@@ -3,3 +3,6 @@ _site/
 *.tern-port
 examples/promises/aplus/lib/
 /vendor/
+.#*
+.jekyll-metadata
+/.bundle/

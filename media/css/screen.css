@@ -1606,8 +1606,8 @@ a:hover {
   border-collapse: collapse;
   border: 1px solid #ecf0f1;
   border-left-width: 2px;
-  width: 100%;
   font-size: 16px;
+  width: auto;
   line-height: 22px;
   font-family: monospace;
   margin: 2em 0;
@@ -1831,6 +1831,12 @@ a:hover {
   margin-top: -5px;
   color: #5f5f5f;
   background: #fff;
+}
+.textual-content .tab-contents {
+  padding: 10px 20px 0px 20px;
+  font-size: 90%;
+  border: 1px solid #ddd;
+  margin-bottom: 1.5em;
 }
 .textual-content .tab-contents > div {
   display: none;
