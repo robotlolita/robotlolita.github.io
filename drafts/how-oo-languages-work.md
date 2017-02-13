@@ -3,6 +3,7 @@ layout: post
 title:  "How do Object-Oriented Languages Work?"
 snip: >
   Object-Oriented programming is a widely used paradigm, but its concepts appear in different ways in different languages. Understanding how each of these work should help you understanding subtle (but important!) differences between languages like Java and JavaScript.
+date: 2017-02-13
 ---
 
 <h2>Table of Contents</h2>
