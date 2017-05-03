@@ -252,7 +252,7 @@ if we can't extract their values? Well, every monad provides the `chain`
 operation, which allows a function to transform the value from one monad, and
 put the transformed value into another monad. If this sounds confusing, imagine
 that in this case we've got a cat into a box. We have no way of extracting the
-cat from the box, but we have a machine that will allow we to add a small top
+cat from the box, but we have a machine that will allow us to add a small top
 hat to the cat, and provide a new box of the same shape (lest the poor soul
 suffers) for it. This is basically the intuition for the following piece of
 code:
@@ -746,7 +746,7 @@ Control.Applicative, and some monad transformers. Ideally, you would just
 require the abstractions you need and get done with your work with the least
 amount of code and complexity possible.
 
-For example, if you have a list of monads and wants to sequence all of them,
+For example, if you have a list of monads and you want to sequence all of them,
 but you don't want to lose yourself in a `chain` callback hell, just use the
 `sequence` operation on monads, which gives you a list with all the results of
 a sequence, regardless of which monad they come from — so you can even mix
