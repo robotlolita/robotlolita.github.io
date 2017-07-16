@@ -13,6 +13,8 @@ snip:   Where we are, and where we'd like to go in the future.
 
 The new version has been in the works for more than one year. Its main focus was providing better documentation and a more consistent package for functional programming in JavaScript. This blog post discusses these future plans, and a new release plan.
 
+This release was made possible thanks to the contributions of @rpearce, @boris-marinov, @justin-calleja, @sotojuan, @degroote22, @RossJHagan, @syaiful6, @diasbruno, @baranovxyz, @floriansimon1, @jreut, and @framp. Really, y'all're great, and your contributions are greatly appreciated :)
+
 
 * TOC
 {:toc}
