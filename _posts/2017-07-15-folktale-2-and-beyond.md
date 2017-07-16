@@ -7,7 +7,7 @@ snip:   Where we are, and where we'd like to go in the future.
 > $ npm install folktale@2.0.0
 {: .highlight-paragraph .pull-in }
 
-![A skinny and short 26 year old woman is sitting on a sofa, with a laptop on her lap. Her hands hover the keyboard, pressing some keys. She has short red hair, which falls just below her chin, and green eyes. She wears a T-shirt with a minimalist panda design, a purple jacket, and blue jeans pants. Her 8 year old daughter stands to her right side, leaning towards her. The slightly plump kid wears a frilly strawberry dress, and a big red ribbon on her head. Her wavy, light brown hair falls just a bit below her shoulders, and her bangs cover her eyebrows partially. A message that reads "Folktale 2 is released!" stands by the side of the two figures.](/files/2017/folktale2-release.png)
+![Alissa, a skinny and short 26 year old woman is sitting on a sofa, with a laptop on her lap. Her hands hover the keyboard, pressing some keys. She has short red hair, which falls just below her chin, and green eyes. She wears a T-shirt with a minimalist panda design, a purple jacket, and blue jeans pants. Her 8 year old daughter stands to her right side, leaning towards her. The slightly plump kid wears a frilly strawberry dress, and a big red ribbon on her head. Her wavy, light brown hair falls just a bit below her shoulders, and her bangs cover her eyebrows partially. A message that reads "Folktale 2 is released!" stands by the side of the two figures.](/files/2017/folktale2-release.png)
 *Sara demands some attention from her mom. Alissa continues fighting her computer…*
 {: .centred-image .full-image }
 
@@ -70,3 +70,18 @@ You might have noticed the drawing at the top of this blog post. Why, that's Ann
 
 I have been doing research for a [little big project](http://codeland.robotlolita.me/) for the past year. The focus is on making resources and tools for CS education more accessible. There's still a lot that needs to be done, and a lot of challenges to tackle (for example, supporting live programming for a large amount of different programming languages that have not been designed with that in mind).
 
+Besides the technical aspects of Codeland (the `Caneles` framework for writing multi-language systems, and the `Pastries` image-based IDE), there's also a social side to it. The materials will feature illustrations and stories from a diverse set of people, including but not limited to race, gender, sexuality, and abilities. That said, my presently limited knowledge of accessible learning materials means there's a lot of research to be done still.
+
+Anyway! While other characters will be revealed soon (and some of these appear in Folktale's documentation), here's the first one.
+
+![A portrait of Alissa, a skinny, caucasian trans woman with short red hair and green eyes](/files/2017/alissa.png)
+{: .pull-left }
+
+**Alissa Grant**  
+After graduating from her fashion course things didn't go very well, and at times she and her wife, Natalie, would struggle to make the ends meet. A situation that wasn't much improved when their daughter, Sara, was born. A few years later Alissa would end up in one of of those introductory workshops on programming aimed at women, and now that she's landed a junior developer position on a web development company things are starting to get more stable. Well, at least on the time-and-money side of things.
+{: .clear .side-description }
+
+  
+<div class="contact-footer">
+    Quil is starting to realise that the only difference between Idol Hell and Drawing-Cute-Girls Hell is the impact on your bank account. Oh no! You can descend to the depths with them on <a href="https://twitter.com/robotlolita">Twitter</a> (or <a href="mailto:queen@robotlolita.me">Email</a>).
+</div>

@@ -1672,6 +1672,10 @@ a:hover {
   display: block;
   clear: both;
 }
+.textual-content .side-description {
+  color: #777;
+  padding: 20px 0;
+}
 .textual-content .pull-left {
   margin: 0.5em 1em 1em -100px;
   float: left;
