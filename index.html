@@ -1,16 +1,108 @@
 ---
-layout: default
-title: Blog
+layout: base
+title: "Home"
+is_home: true
 ---
 
-<ul id="post-listing">
-  {% for post in site.posts %}
-  <li>
-    <div class="date">{{ post.date | date_to_long_string }}</div>
-    <h2 class="post-title">
-      <a href="{{ post.url }}">{{ post.title }}</a>
-    </h2>
-    <h3 class="post-subtitle">{{ post.snip }}</h3>
-  </li>
-  {% endfor %}
-</ul>
+<section class="hero rl-front-page is-fullheight">
+  <div class="hero-head">
+    <nav class="navbar">
+      <div class="container">
+        <div class="navbar-brand">
+          <span class="navbar-burger burger" data-target="navbarMenuHeroA">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </div>
+        <div id="navbarMenuHeroA" class="navbar-menu">
+          <div class="navbar-end">
+            {% for link in site.navigation %}
+              {% assign current = nil %}
+              {% if page.url == link.url or (page.is_home and link.url == '/index.html') %}
+                {% assign current = 'is-active' %}
+              {% endif %}
+
+              <a class="navbar-item {{ current }}" href="{{ link.url }}">{{
+                link.text
+              }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="hero-body">
+    <div class="container rl-greeting-container">
+      <h1
+        class="title rl-greeting"
+        data-greetings='["Hi, I’m Quil", "Hej, jag är Quil.", "ハロー、Quilです。", "Olás, eu sou Quil."]'
+        data-delay="30"
+      >
+        Hi, I’m Quil.
+      </h1>
+      <h2 class="subtitle">
+        <p>
+          I'm a programmer, artist, writer, and programming language designer. I
+          love cats, magical girls, pastels, and cute things.
+        </p>
+
+        <p>
+          <a href="https://github.com/origamitower/purr">My current project</a>
+          tries to look at ways in which programming tools could be better,
+          considering views from humanities (sociology, psychology, social
+          justice, etc), collaboration, security, and mathematics.
+        </p>
+
+        <p>
+          Quil is pronounced as <em>/kjuː/</em>. Or キュー. Or English's "Q".
+        </p>
+      </h2>
+
+      <div class="rl-sns">
+        <a
+          href="https://github.com/robotlolita"
+          title="@robotlolita on Github, for open-source projects"
+        >
+          <span class="icon is-large">
+            <i class="fab fa-2x fa-github"></i>
+          </span>
+        </a>
+        <a
+          href="https://www.quora.com/profile/Quildreen-Motta"
+          title="Quildreen Motta on Quora, for short-ish technical writing"
+        >
+          <span class="icon is-large">
+            <i class="fab fa-2x fa-quora"></i>
+          </span>
+        </a>
+        <a
+          href="https://medium.com/@robotlolita"
+          title="@robotlolita on Medium, for articles on humanities"
+        >
+          <span class="icon is-large">
+            <i class="fab fa-2x fa-medium"></i>
+          </span>
+        </a>
+        <a
+          href="https://twitter.com/qteatime"
+          title="@qteatime on Twitter, for art"
+        >
+          <span class="icon is-large">
+            <i class="fab fa-2x fa-twitter"></i>
+          </span>
+        </a>
+        <a
+          href="https://www.instagram.com/q.teatime/"
+          title="@q.teatime on Instagram, for art"
+        >
+          <span class="icon is-large">
+            <i class="fab fa-2x fa-instagram"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/media/lib/front-page.js"></script>

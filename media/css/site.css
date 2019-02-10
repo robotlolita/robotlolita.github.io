@@ -1,0 +1,52 @@
+.rl-front-page {
+  background: #f7f7f7 url(../image/bg-small.png) no-repeat top right;
+  color: #333;
+}
+
+.rl-front-page .navbar {
+  padding-top: 15px;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.rl-front-page .hero-head .navbar-item {
+  font-size: 1.3em;
+  font-family: "PT Sans Caption", sans;
+  font-weight: 400;
+  background: transparent;
+  color: #888;
+  border-bottom: 4px solid transparent;
+}
+
+.rl-front-page .hero-head .is-active {
+  font-weight: 700;
+}
+
+.rl-front-page .hero-head .navbar-item:hover {
+  color: #318fe8;
+  border-bottom: 4px solid #318fe8;
+}
+
+.rl-greeting-container {
+  max-width: 600px;
+  margin: 0 60px;
+}
+
+.rl-greeting-container p {
+  margin-top: 1.5em;
+}
+
+.rl-greeting-container .title {
+  font-size: 3rem;
+}
+
+.rl-sns {
+  display: flex;
+}
+
+.rl-sns a {
+  color: #333;
+}
+
+.rl-sns a:hover {
+  color: #318fe8;
+}

@@ -2,13 +2,13 @@ name: "Quils in Space"
 highlighter: rouge
 markdown: kramdown
 exclude:
-- node_modules
-- vendor
+  - node_modules
+  - vendor
 
 navigation:
-- text: Blog
-  url: /index.html
-- text: Art
-  url: http://art.robotlolita.me/
-- text: About
-  url: /about/index.html
+  - text: Home
+    url: /index.html
+  - text: Articles
+    url: /blog
+  - text: Art
+    url: https://art.robotlolita.me/

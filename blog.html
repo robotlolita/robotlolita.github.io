@@ -1,0 +1,16 @@
+---
+layout: default
+title: Blog
+---
+
+<ul id="post-listing">
+  {% for post in site.posts %}
+  <li>
+    <div class="date">{{ post.date | date_to_long_string }}</div>
+    <h2 class="post-title">
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </h2>
+    <h3 class="post-subtitle">{{ post.snip }}</h3>
+  </li>
+  {% endfor %}
+</ul>
