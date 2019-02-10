@@ -8,6 +8,18 @@
   border-bottom: 1px solid #f3f3f3;
 }
 
+.rl-navigation #main-navigation {
+  background: transparent;
+  box-shadow: none;
+}
+
+@media screen and (max-width: 1087px) {
+  .rl-navigation #main-navigation {
+    background: rgba(248, 248, 248, 0.9);
+    text-align: center;
+  }
+}
+
 .rl-navigation .navbar-item {
   font-size: 1.3em;
   font-family: "PT Sans Caption", sans;
@@ -27,8 +39,10 @@
 }
 
 .rl-greeting-container {
-  max-width: 600px;
-  margin: 0 60px;
+  max-width: 660px;
+  margin: 0;
+  padding: 10px 60px;
+  background: rgba(248, 248, 248, 0.9);
 }
 
 .rl-greeting-container p {

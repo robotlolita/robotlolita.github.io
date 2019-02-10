@@ -1,4 +1,8 @@
 void (function() {
+  function $$(selector, element = document) {
+    return element.querySelectorAll(selector);
+  }
+
   function* cycle(list) {
     while (true) {
       for (const item of list) yield item;
@@ -32,5 +36,16 @@ void (function() {
     }
   }
 
-  doEach(document.querySelectorAll(".rl-greeting"), rotating_greeting);
+  async function hamburger_menu(container) {
+    container.addEventListener("click", () => {
+      const target = document.querySelector(
+        container.getAttribute("data-target")
+      );
+      container.classList.toggle("is-active");
+      target.classList.toggle("is-active");
+    });
+  }
+
+  doEach($$(".rl-greeting"), rotating_greeting);
+  doEach($$(".navbar-burger"), hamburger_menu);
 })();
