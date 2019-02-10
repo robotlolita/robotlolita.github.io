@@ -8,7 +8,10 @@ exclude:
 navigation:
   - text: Home
     url: /index.html
+    group: home
   - text: Articles
     url: /blog
+    group: blog
   - text: Art
     url: https://art.robotlolita.me/
+    group: art

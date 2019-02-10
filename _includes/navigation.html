@@ -1,0 +1,26 @@
+<nav class="navbar rl-navigation">
+  <div class="container">
+    <div class="navbar-brand">
+      <span class="navbar-burger burger" data-target="navbarMenuHeroA">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </div>
+    <div id="navbarMenuHeroA" class="navbar-menu">
+      <!-- prettier-ignore -->
+      <div class="navbar-end">
+        {% for link in site.navigation %} 
+          {% assign current = nil %} 
+          {% if page.group == link.group %}
+            {% assign current = 'is-active' %} 
+          {% endif %}
+
+          <a class="navbar-item {{ current }}" href="{{ link.url }}">{{
+            link.text
+          }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</nav>
