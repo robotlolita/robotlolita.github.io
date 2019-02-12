@@ -1,5 +1,5 @@
 .rl-front-page {
-  background: #f7f7f7 url(../image/bg-small.png) no-repeat top right;
+  background: #f7f7f7;
   color: #333;
 }
 
@@ -11,13 +11,6 @@
 .rl-navigation #main-navigation {
   background: transparent;
   box-shadow: none;
-}
-
-@media screen and (max-width: 1087px) {
-  .rl-navigation #main-navigation {
-    background: rgba(248, 248, 248, 0.9);
-    text-align: center;
-  }
 }
 
 .rl-navigation .navbar-item {
@@ -39,10 +32,18 @@
 }
 
 .rl-greeting-container {
-  max-width: 660px;
-  margin: 0;
-  padding: 10px 60px;
-  background: rgba(248, 248, 248, 0.9);
+  background: url(../image/bg-small.png) no-repeat top right;
+  max-width: 1124px;
+  margin: 0 auto;
+  padding-top: 1em;
+  min-height: 570px;
+}
+
+.rl-greeting-container .rl-description {
+  max-width: 420px;
+  margin-top: -1.25rem;
+  font-size: 1.2rem;
+  line-height: 1.5rem;
 }
 
 .rl-greeting-container p {
@@ -709,5 +710,22 @@
   #wrapper #content ul,
   #wrapper #content ol {
     margin-left: 1.2em;
+  }
+}
+
+@media screen and (max-width: 1087px) {
+  .rl-navigation #main-navigation {
+    text-align: center;
+  }
+
+  .rl-greeting-container {
+    background-position: top center;
+    padding: 0 1.5rem;
+    margin: -1.5rem;
+  }
+
+  .rl-greeting-container .rl-description {
+    max-width: inherit;
+    margin-top: 520px;
   }
 }
