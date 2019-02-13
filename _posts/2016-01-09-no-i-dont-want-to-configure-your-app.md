@@ -2,7 +2,7 @@
 layout: post
 title:  "No, I Don't Want To Configure Your App!"
 snip:   For the love of whatever you believe in, stop making applications that require the user to spend hours configuring stuff before they can do anything useful with it!
-
+categories: [opinion]
 ---
 
 > <strong class="heading">Warning</strong>  

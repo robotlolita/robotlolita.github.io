@@ -10,8 +10,31 @@ navigation:
     url: /index.html
     group: home
   - text: Articles
-    url: /blog
+    url: /topics
     group: blog
   - text: Art
     url: https://www.instagram.com/q.teatime/
     group: art
+
+topics:
+  concurrency:
+    name: Concurrency
+    description: >
+      Dealing with many things happening at once in computers. Includes parallelism and distributed computing.
+
+  fp:
+    name: Functional Programming
+    description: >
+      The style of programming that encourages pure functions and rich types.
+
+  opinion:
+    name: Opnion Pieces
+    description: >
+      Rants about different aspects of technology.
+
+defaults:
+  - scope:
+      path: _posts
+      type: posts
+    values:
+      group: blog

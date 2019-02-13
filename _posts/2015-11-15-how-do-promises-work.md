@@ -1,7 +1,8 @@
 ---
 layout: post
 title:  How do Promises Work?
-snip:   Promises are an old concept that have become a fairly big thing in JavaScript recently, but most people still don't know how to use them properly. This blog post should give you a working understanding of promises, and how to best take advantage of them.
+snip:   What promises are, what problem they solve, and how they're implemented (in JavaScript and in theory).
+categories: concurrency
 ---
 
 <h2>Table of Contents</h2>

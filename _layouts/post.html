@@ -1,15 +1,16 @@
 ---
 layout: default
-group: blog
 ---
 
-<header class="page-heading">
-  <h2 class="page-title">{{ page.title }}</h2>
-  <p class="meta published-date">
-    Published {{ page.date | date_to_long_string }}
-  </p>
-</header>
+<div id="content-wrapper">
+  <header class="page-heading">
+    <h2 class="page-title">{{ page.title }}</h2>
+    <p class="meta published-date">
+      Published {{ page.date | date_to_long_string }}
+    </p>
+  </header>
 
-<div id="post" class="textual-content">
-  {{ content }}
+  <div id="post" class="textual-content">
+    {{ content }}
+  </div>
 </div>
