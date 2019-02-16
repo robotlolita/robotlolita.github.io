@@ -2,7 +2,8 @@
 layout: post
 title:  "A Monad in Practicality: Controlling Time"
 snip:   Monads let you treat asynchronous operations as values, and compose them, giving you a simpler basis for concurrency than callbacks.
-categories: [concurrency, fp]
+redirect_from:
+  - /2014/03/20/a-monad-in-practicality-controlling-time.html
 ---
 
 > <strong class="heading">Warning</strong>

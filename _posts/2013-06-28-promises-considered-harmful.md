@@ -3,6 +3,8 @@ published: true
 layout: post
 title: Promises/A+ Considered Harmful
 snip: The drawbacks of using a Promises/A+ implementation
+redirect_from:
+  - /2013/06/28/promises-considered-harmful.html
 ---
 
 > <strong class="heading">Warning</strong>

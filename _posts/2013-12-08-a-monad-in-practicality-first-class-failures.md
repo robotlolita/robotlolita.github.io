@@ -5,7 +5,7 @@ snip:  Monads can help you deal with failures in ways that are more predictable,
 published: true
 redirect_from:
   - /2013/12/08/a-monad-in-practicality-first-class-failiures.html
-categories: [fp]
+  - /2013/12/08/a-monad-in-practicality-first-class-failures.html
 ---
 
 There are [plenty of tutorials][] [on what][] [monads are][] out there, some

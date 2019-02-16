@@ -2,6 +2,8 @@
 published: true
 layout: post
 snip: "Or “Handlebars and Mustache are just naive String concatenation!”"
+redirect_from:
+  - /2013/09/22/the-importance-of-being-typed.html
 ---
 
 > My girlfriend told me to get a life,  

@@ -17,6 +17,11 @@ navigation:
     group: art
 
 topics:
+  pl:
+    name: Programming Languages
+    description: >
+      Exploring the theoretical aspects of programming languages and their implementations. The articles are not about any specific language.
+
   concurrency:
     name: Concurrency
     description: >
@@ -38,3 +43,4 @@ defaults:
       type: posts
     values:
       group: blog
+      permalink: /articles/:year/:title/

@@ -2,6 +2,8 @@
 layout: post
 title:  Folktale 2 and beyond~!
 snip:   Where we are, and where we'd like to go in the future.
+redirect_from:
+  - /2017/07/15/folktale-2-and-beyond.html
 ---
 
 > $ npm install folktale@2.0.0

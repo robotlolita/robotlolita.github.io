@@ -1,8 +1,10 @@
 ---
-layout: post
+layout: article
 title:  How do Promises Work?
 snip:   What promises are, what problem they solve, and how they're implemented (in JavaScript and in theory).
-categories: concurrency
+categories: [concurrency]
+redirect_from:
+  - /2015/11/15/how-do-promises-work.html
 ---
 
 <h2>Table of Contents</h2>
@@ -131,10 +133,10 @@ As a JavaScript programmer you might have noticed that your program
 executes in a very peculiar order, which happens to be the order in
 which you write the instructions in your program's source code:
 
-{% highlight js linenos=table %}
+```js
 var circleArea = 10 * 10 * Math.PI;
 var squareArea = 20 * 20;
-{% endhighlight %}
+```
 
 If we execute this program, first our JavaScript VM will run the
 computation for `circleArea`, and once it's finished, it'll execute the
@@ -169,12 +171,12 @@ are executed at the exact same time.
 This idea works very well with our previous example. But it breaks as
 soon as we try something slightly different:
 
-{% highlight js linenos=table %}
+```js
 var radius = 10;
 var circleArea = radius * radius * Math.PI;
 var squareArea = 20 * 20;
 print(circleArea);
-{% endhighlight %}
+```
 
 If we don't have any order at all, how can we compose values coming from
 other expressions? Well, we can't, since there's no guarantee that the
@@ -256,18 +258,18 @@ If one has an expression of the form `a + 1`, then it is possible to
 abstract over this expression such that `a` becomes a value that can be
 plugged in, once it's ready. This way, the expression:
 
-{% highlight js linenos=table %}
+```js
 var a = 2;
 a + 1;
 // { replace `a` by its current value }
 // => 2 + 1
 // { reduce the expression }
 // => 3
-{% endhighlight %}
+```
 
 Becomes the following lambda abstraction[^2]:
 
-{% highlight js linenos=table %}
+```js
 var abstraction = function(a) {
   return a + 1;
 };
@@ -281,7 +283,7 @@ abstraction(2);
 // => 2 + 1
 // { reduce the expression }
 // => 3
-{% endhighlight %}
+```
 
 First-class functions are a very powerful concept (whether they are
 anonymous — a lambda abstraction — or not). Since JavaScript has
@@ -318,7 +320,7 @@ with the simpler one: turning the synchronous `squareArea` into a
 concurrent description of the program by using promises. `squareArea` is
 simpler because it only depends on the `side` value:
 
-{% highlight js linenos=table %}
+```js
 // The expression:
 var side = 10;
 var squareArea = side * side;
@@ -341,7 +343,7 @@ var squareAreaPromise = depend(sidePromise, squareAreaAbstraction);
 var printPromise = depend(squareAreaPromise, printAbstraction);
 
 fulfil(sidePromise, 10);
-{% endhighlight %}
+```
 
 This is a lot of noise, if we compare with the synchronous version of
 the code, however this new version isn't tied to JavaScript's order of
@@ -366,11 +368,11 @@ however they don't necessarily contain a value at all times. A value is
 only placed into the promise when we invoke `fulfil`. A minimal
 representation for this would be:
 
-{% highlight haskell linenos=table %}
+```haskell
 data Promise of something = {
   value :: something | null
 }
-{% endhighlight %}
+```
 
 A `Promise of something` springs into existence containing the value
 `null`. At some later point in time someone may invoke the `fulfil`
@@ -384,12 +386,12 @@ also need to keep track of the state the promise is in, so we don't risk
 fulfilling it more than once. This requires a small change to the our
 previous representation:
 
-{% highlight haskell linenos=table %}
+```haskell
 data Promise of something = {
   value :: something | null,
   state :: "pending" | "fulfilled"
 }
-{% endhighlight %}
+```
 
 We also need to handle the dependencies that are created by the `depend`
 function. A dependency is a function that will, eventually, be
@@ -397,18 +399,18 @@ filled with the value in the promise, so it can be evaluated. One
 promise can have many functions which depend on its value, so
 a minimal representation for this would be:
 
-{% highlight haskell linenos=table %}
+```haskell
 data Promise of something = {
   value :: something | null,
   state :: "pending" | "fulfilled",
   dependencies :: [something -> Promise of something_else]
 }
-{% endhighlight %}
+```
 
 Now that we've decided on a representation for our promises, let's start
 by defining the function that creates new promises:
 
-{% highlight js linenos=table %}
+```js
 function createPromise() {
   return {
     // A promise starts containing no value,
@@ -419,7 +421,7 @@ function createPromise() {
     dependencies: []
   };
 }
-{% endhighlight %}
+```
 
 Since we've decided on our simple representation, constructing a new
 object for that representation is fairly straightforward. Let's move to
@@ -437,7 +439,7 @@ only really need to keep track of the dependencies for a promise while
 the promise is in the `pending` state, because once a promise is
 fulfilled we can just execute the function right away!
 
-{% highlight js linenos=table %}
+```js
 function depend(promise, expression) {
   // We need to return a promise that will contain the value of
   // the expression, when we're able to compute the expression
@@ -468,7 +470,7 @@ function depend(promise, expression) {
 
   return result;
 }
-{% endhighlight %}
+```
 
 The `depend` function takes care of executing our dependent expressions
 when the value they're waiting for is ready, but if we attach the
@@ -483,7 +485,7 @@ a good time to invoke any dependencies that were created before the
 value of the promise was available, and takes care of the other half of
 the execution.
 
-{% highlight js linenos=table %}
+```js
 function fulfil(promise, value) {
   if (promise.state !== "pending") {
     throw new Error("Trying to fulfil an already fulfilled promise!");
@@ -500,8 +502,7 @@ function fulfil(promise, value) {
     });
   }
 }
-{% endhighlight %}
-
+```
 
 ## 4. Promises and Error Handling
 
@@ -590,7 +591,7 @@ rejected.
 With this, our new representation of promises becomes:
 {: .clear}
 
-{% highlight haskell linenos=table %}
+```js
 data Promise of (value, error) = {
   value :: value | error | null,
   state :: "pending" | "fulfilled" | "rejected",
@@ -599,7 +600,7 @@ data Promise of (value, error) = {
     rejected  :: error -> Promise of new_error
   }]
 }
-{% endhighlight %}
+```
 
 The promise may contain either a proper value, or an error, and contains
 `null` until it settles (is either fulfilled or rejected). To handle
@@ -610,7 +611,7 @@ slightly.
 Besides the change in representation, we need to change our `depend`
 function, which now reads like this:
 
-{% highlight js linenos=table %}
+```js
 // Note that we now take two expressions, rather than one.
 function depend(promise, onSuccess, onFailure) {
   var result = createPromise();
@@ -678,12 +679,12 @@ function depend(promise, onSuccess, onFailure) {
 
   return result;
 }
-{% endhighlight %}
+```
 
 And finally, we need a way of putting errors in promises. For this we
 need a `reject` function.:
 
-{% highlight js linenos=table %}
+```js
 function reject(promise, error) {
   if (promise.state !== "pending") {
     throw new Error("Trying to reject a non-pending promise!");
@@ -697,12 +698,12 @@ function reject(promise, error) {
     });
   }
 }
-{% endhighlight %}
+```
 
 We also need to review the `fulfil` function slightly due to our change
 to the `dependencies` field:
 
-{% highlight js linenos=table %}
+```js
 function fulfil(promise, value) {
   if (promise.state !== "pending") {
     throw new Error("Trying to fulfil a non-pending promise!");
@@ -716,12 +717,12 @@ function fulfil(promise, value) {
     });
   }
 }
-{% endhighlight %}
+```
 
 And with these new additions, we're ready to start putting computations
 that may fail in our promises:
 
-{% highlight js linenos=table %}
+```js
 // A computation that may fail
 var div = function(a, b) {
   var result = createPromise();
@@ -751,7 +752,7 @@ var zPromise = depend(yPromise,
                         return div(y, d)
                       },
                       printFailure);
-{% endhighlight %}
+```
 
 
 ### 4.2. Failure Propagation With Promises
@@ -809,7 +810,7 @@ successful value of a promise, but short-circuits on failures; and
 `recover`, which creates a dependency on the failure value of a promise,
 and allows recovering from that error.
 
-{% highlight js linenos=table %}
+```js
 function chain(promise, expression) {
   return depend(promise, expression,
                 function(error) {
@@ -834,12 +835,12 @@ function recover(promise, expression) {
                 },
                 expression)
 }
-{% endhighlight %}
+```
 
 We can then use these two functions to simplify our previous division
 example:
 
-{% highlight js linenos=table %}
+```js
 var a = 1, b = 2, c = 0, d = 3;
 var xPromise = div(a, b);
 var yPromise = chain(xPromise, function(x) {
@@ -849,7 +850,7 @@ var zPromise = chain(yPromise, function(y) {
                                  return div(y, d);
                                });
 var resultPromise = recover(zPromise, printFailure);
-{% endhighlight %}
+```
 
 
 ## 5. Combining Promises
@@ -865,15 +866,15 @@ concurrent. The `radius` expression and the `Math.PI` expression don't
 depend on each other, so they can be computed separately, but
 `circleArea` depends on both. In terms of code, we have the following:
 
-{% highlight js linenos=table %}
+```js
 var radius = 10;
 var circleArea = radius * radius * Math.PI;
 print(circleArea);
-{% endhighlight %}
+```
 
 If one wanted to express this with promises, they'd have:
 
-{% highlight js linenos=table %}
+```js
 var circleAreaAbstraction = function(radius, pi) {
   var result = createPromise();
   fulfil(result, radius * radius * pi);
@@ -894,7 +895,7 @@ var printPromise = chain(circleAreaPromise, printAbstraction);
 
 fulfil(radiusPromise, 10);
 fulfil(piPromise, Math.PI);
-{% endhighlight %}
+```
 
 We have a small problem here: `circleAreaAbstraction` is an expression
 that depends on **two** values, but `depend` is only able to define
@@ -906,7 +907,7 @@ expression, then it must be possible to capture the value in a closure,
 and extract the values from the promises one at a time. This does create
 some implicit ordering, but it shouldn't impact concurrency too much.
 
-{% highlight js linenos=table %}
+```js
 function wait2(promiseA, promiseB, expression) {
   // We extract the value from promiseA first.
   return chain(promiseA, function(a) {
@@ -921,13 +922,13 @@ function wait2(promiseA, promiseB, expression) {
     })
   })
 }
-{% endhighlight %}
+```
 
 With this, we can define `circleAreaPromise` as the following:
 
-{% highlight js linenos=table %}
+```js
 var circleAreaPromise = wait2(radiusPromise, piPromise, circleAreaAbstraction);
-{% endhighlight %}
+```
 
 We could define `wait3` for expressions that depend on three values,
 `wait4` for expressions that depend on four values, and so on, and so
@@ -944,7 +945,7 @@ a little more complicated, since we need to implement a simple Finite
 State Machine, but there is no implicit ordering (besides JavaScript's
 own execution semantics).
 
-{% highlight js linenos=table %}
+```js
 function waitAll(promises) {
   // An array of the values of the promise, which we'll fill in
   // incrementally.
@@ -989,17 +990,17 @@ function waitAll(promises) {
   // Finally, we return a promise for the eventual array of values
   return result;
 }
-{% endhighlight %}
+```
 
 If we were to use `waitAll` for the `circleAreaAbstraction`, it would
 look like the following:
 
-{% highlight js linenos=table %}
+```js
 var circleAreaPromise = chain(waitAll([radiusPromise, piPromise]),
                               function(xs) {
                                 return circleAreaAbstraction(xs[0], xs[1]);
                               })
-{% endhighlight %}
+```
 
 
 ### 5.2. Combining Promises Non-Deterministically
@@ -1018,7 +1019,7 @@ first resolution, then propagate that to the resulting promise. The
 implementation is somewhat less simple, since we need to keep state
 around:
 
-{% highlight js linenos=table %}
+```js
 function race(left, right) {
   // Create the resulting promise.
   var result = createPromise();
@@ -1047,12 +1048,12 @@ function race(left, right) {
     }
   }
 }
-{% endhighlight %}
+```
 
 With this we can start combining operations by choosing between them
 non-deterministically. If we take the previous example:
 
-{% highlight js linenos=table %}
+```js
 function searchA() {
   var result = createPromise();
   setTimeout(function() {
@@ -1071,7 +1072,7 @@ function searchB() {
 
 var valuePromise = race(searchA(), searchB());
 // => valuePromise will eventually be 30
-{% endhighlight %}
+```
 
 Choosing between more than two promises is possible, because `race(a,
 b)` basically *becomes* `a` or `b` depending on which one resolves the
@@ -1080,17 +1081,17 @@ then that's the same as `race(c, b)`. Of course, typing `race(a, race(b,
 race(c, ...)))` isn't the best thing, so we can write a simple
 combinator to do that for us:
 
-{% highlight js linenos=table %}
+```js
 function raceAll(promises) {
   return promises.reduce(race, createPromise());
 }
-{% endhighlight %}
+```
 
 And then we can use it:
 
-{% highlight js linenos=table %}
+```js
 raceAll([searchA(), searchB(), waitAll([searchA(), searchB()])]);
-{% endhighlight %}
+```
 
 
 Another way of choosing between two promises non-deterministically is to
@@ -1100,7 +1101,7 @@ don't want to fail if the first one fails, you want to download from the
 first mirror you can, and fail if all of them fail. We can
 write an `attempt` operation to capture this:
 
-{% highlight js linenos=table %}
+```js
 function attempt(left, right) {
   // Creates the resulting promise.
   var result = createPromise();
@@ -1147,7 +1148,7 @@ function attempt(left, right) {
     }
   }  
 }
-{% endhighlight %}
+```
 
 Usage is the same as `race`, so `attempt(searchA(), searchB())` would
 return the first promise that resolves successfully, rather than just
@@ -1155,7 +1156,7 @@ the first promise to resolve. However, unlike `race`, `attempt` doesn't
 compose naturally because it aggregates the errors. So, if we want to
 attempt several promises, we need to account for that:
 
-{% highlight js linenos=table %}
+```js
 function attemptAll(promises) {
   // Since we aggregate all promises, we need to start from a
   // rejected one, otherwise attempt would never finish if we
@@ -1173,7 +1174,7 @@ function attemptAll(promises) {
 }
 
 attemptAll([searchA(), searchB(), searchC(), searchD()]);
-{% endhighlight %}
+```
 
 
 ## 6. A Practical Understanding of Promises
@@ -1222,7 +1223,7 @@ computation which eventually either succeeds or fails with a particular
 value. The act of succeeding and failing is captured by the two function
 arguments passed to the function `f`, which it expects. Thus:
 
-{% highlight js linenos=table %}
+```js
 var p = createPromise();
 fulfil(p, 10);
 
@@ -1237,7 +1238,7 @@ reject(q, 20);
 
 // Becomes:
 var p = new Promise((fulfil, reject) => reject(20));
-{% endhighlight %}
+```
 
 `promise.then(f, g)` is an operation that creates a dependency between
 an expression with a hole for a value, and the value in the promise,
@@ -1250,7 +1251,7 @@ using promises easier. The function arguments passed to `.then` can
 return either a promise, or a regular value, in which case the operation
 takes care of automatically putting them into a promise for you. Thus:
 
-{% highlight js linenos=table %}
+```js
 depend(promise, function(value) {
   var q = createPromise();
   fulfil(q, value + 1);
@@ -1261,12 +1262,12 @@ depend(promise, function(value) {
 // ---
 // Becomes:
 promise.then(value => value + 1);
-{% endhighlight %}
+```
 
 These allow the code using promises to be concise and easier to read,
 compared to our previous formulation:
 
-{% highlight js linenos=table %}
+```js
 var squareAreaAbstraction = function(side) {
   var result = createPromise();
   fulfil(result, side * side);
@@ -1295,12 +1296,12 @@ squareAreaP.then(area => print(area));
 var side = 10;
 var squareArea = side * side;
 print(squareArea);
-{% endhighlight %}
+```
 
 Depending on multiple values concurrently is handled by the
 `Promise.all` operation, which is similar to our `waitAll` operation:
 
-{% highlight js linenos=table %}
+```js
 var radius = 10;
 var pi = Math.PI;
 var circleArea = radius * radius * pi;
@@ -1314,13 +1315,13 @@ var piP = Promise.resolve(Math.PI);
 var circleAreaP = Promise.all([radiusP, piP])
                          .then(([radius, pi]) => radius * radius * pi);
 circleAreaP.then(circleArea => print(circleArea));
-{% endhighlight %}
+```
 
 Error and success propagation is handled by the `.then` operation
 itself, and the `.catch` operation is provided as a concise way of
 invoking `.then` without defining a success branch:
 
-{% highlight js linenos=table %}
+```js
 var div = function(a, b) {
   var result = createPromise();
 
@@ -1358,7 +1359,7 @@ var xP = div(a, b);
 var yP = xP.then(x => div(x, c));
 var zP = yP.then(y => div(y, d));
 var resultP = zP.catch(printFailure);
-{% endhighlight %}
+```
 
 
 
@@ -1383,16 +1384,16 @@ convert that value to a promise containing the value. In essence,
 
 Compare the simplified types of our `depend` function:
 
-{% highlight ocaml %}
+```ocaml
 depend : (Promise of α, (α -> Promise of β)) -> Promise of β
-{% endhighlight %}
+```
 
 With the simplified types of the `.then` method:
 
-{% highlight ocaml %}
+```ocaml
 promise.then : (this: Promise of α, (α -> β)) -> Promise of β
 promise.then : (this: Promise of α, (α -> Promise of β)) -> Promise of β
-{% endhighlight %}
+```
 
 While in the `depend` function the only thing we can do is return a
 promise of something (and have that same something be in the resulting
@@ -1413,15 +1414,15 @@ It's not possible to give the `.then` method a sensible type in
 non-dependent type systems because of this feature, but, roughly, this
 means that the following example:
 
-{% highlight js linenos=table %}
+```js
 Promise.resolve(1).then(x => Promise.resolve(Promise.resolve(x + 1)))
-{% endhighlight %}
+```
 
 Is equivalent to:
 
-{% highlight js linenos=table %}
+```js
 Promise.resolve(1).then(x => Promise.resolve(x + 1))
-{% endhighlight %}
+```
 
 This is also enforced with `Promise.resolve`, but not with
 `Promise.reject`.
@@ -1436,13 +1437,13 @@ this means that all of the computations attached to a promise's values
 through the `.then` method should be treated as if implicitly wrapped in
 a `try/catch` block, such that:
 
-{% highlight js linenos=table %}
+```js
 Promise.resolve(1).then(x => null());
-{% endhighlight %}
+```
 
 Is equivalent to:
 
-{% highlight js linenos=table %}
+```js
 Promise.resolve(1).then(x => {
   try {
     return null();
@@ -1450,7 +1451,7 @@ Promise.resolve(1).then(x => {
     return Promise.reject(error);
   }
 });
-{% endhighlight %}
+```
 
 Native implementations of promises will track these and report the ones
 that are not handled. There's no specification about what constitutes a
@@ -1470,13 +1471,13 @@ method.
 
 Thus, the following code would not work:
 
-{% highlight js linenos=table %}
+```js
 var value;
 Promise.resolve(1).then(x => value = x);
 console.log(value);
 // => undefined
 // (`value = x` happens here, after all other code has finished)
-{% endhighlight %}
+```
 
 This ensures that dependent computations always execute on an empty
 stack, though such guarantees are less essential in ECMAScript 2015,
@@ -1622,7 +1623,7 @@ they're going to be even more pervasive in the all ECMAScript projects.
   comonad, and how that solution relates to other models.
 
 
-## Resources and Libraries
+## Promise Libraries
 
 [es6-promise](https://www.npmjs.com/package/es6-promise)
 : A polyfill for ECMAScript 2015 standard promises, for platforms that don't implement ES2015.
@@ -1637,7 +1638,7 @@ they're going to be even more pervasive in the all ECMAScript projects.
 
 
 <div class="contact-footer">
-    Quil swore she was never going to touch promises ever again. She's wearing gloves now. You can contact her on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
+    Quil swore to never touch promises ever again. They're wearing gloves now. You can contact Quil through <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
 </div>
 
 - - - 
@@ -1692,7 +1693,7 @@ they're going to be even more pervasive in the all ECMAScript projects.
     sequencing semantics, when described as a structure with the
     following operations:
 
-    ~~~ haskell
+    ```haskell
     class Monad m where
       -- Puts a value in the monad
       of    :: ∀a. a -> Monad a
@@ -1700,7 +1701,7 @@ they're going to be even more pervasive in the all ECMAScript projects.
       -- Transforms the value in the monad
       -- (The transformation must maintain the same type)
       chain :: ∀a, b. m a -> (a -> m b) -> m b
-    ~~~
+    ```
     {: .simple-code}
 
     In this formulation, it would be possible to see something like
@@ -1740,10 +1741,3 @@ they're going to be even more pervasive in the all ECMAScript projects.
     implementation of the language to make such code much faster, as it
     doesn't need to deal with some of the usual overhead of function
     calls.
-
-
-<!--
-Local Variables:
-ispell-local-dictionary: "british"
-End:
--->
