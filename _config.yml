@@ -4,6 +4,9 @@ markdown: kramdown
 exclude:
   - node_modules
   - vendor
+  
+plugins:
+  - jekyll-redirect-from
 
 navigation:
   - text: Home
