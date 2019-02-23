@@ -35,6 +35,11 @@ topics:
     description: >
       The style of programming that encourages pure functions and rich types.
 
+  oop:
+    name: Object Oriented Programming
+    description: >
+      The style of programming that encourages entities messaging each other to perform computations. But things about class-based programming go here too, sadly.
+
   opinion:
     name: Opnion Pieces
     description: >
