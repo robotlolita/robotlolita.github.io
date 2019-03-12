@@ -1134,3 +1134,7 @@
   width: 20%;
   background: transparent;
 }
+
+.rl-skip-small {
+  margin-bottom: 1rem;
+}
