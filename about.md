@@ -1,6 +1,8 @@
 ---
 layout: page
 title: About Me
+group: about
+permalink: /about/
 ---
 
 <h1 class="rl-article-title rl-skip-small">Hi, I’m Quil.</h1>
