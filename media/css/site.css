@@ -353,7 +353,8 @@
 }
 .textual-content .pull-left,
 .textual-content .pull-right,
-.textual-content .centred-image {
+.textual-content .centred-image,
+.rl-figure {
   text-align: center;
   padding: 20px;
   border: 1px solid #ecf0f1;
@@ -361,13 +362,15 @@
 }
 .textual-content .pull-left img,
 .textual-content .pull-right img,
-.textual-content .centred-image img {
+.textual-content .centred-image img,
+.rl-figure img {
   padding: 0;
   border: 0;
 }
 .textual-content .pull-left em,
 .textual-content .pull-right em,
-.textual-content .centred-image em {
+.textual-content .centred-image em,
+.rl-figure em {
   font-style: italic;
   font-size: 16px;
   color: #95a5a6;
@@ -877,10 +880,28 @@
 }
 
 /** Content **/
-.rl-article-content {
+.rl-article-content, 
+.rl-article-main {
   max-width: 820px;
   font-family: 'Lora', serif;
   font-size: 20px;
+}
+
+.rl-article-aside-content {
+  max-width: 1320px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.rl-article-aside-content .rl-article-aside {
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: 400px;
+  order: 1;
+}
+
+.rl-article-aside-content .rl-article-main {
+  flex-grow: 1;
 }
 
 .rl-content .clear::after {
@@ -1133,4 +1154,66 @@
   margin: 3rem auto;
   width: 20%;
   background: transparent;
+}
+
+.rl-skip-small {
+  margin-bottom: 1rem;
+}
+
+.rl-content .borderless {
+  border: 0;
+}
+
+.rl-shape-ellipse {
+  shape-outside: ellipse()
+}
+
+.rl-justify {
+  text-align: justify;
+}
+
+.rl-about-figure-right,
+.rl-about-figure-left {
+  margin: 1rem 2rem 2rem 2rem;
+}
+
+
+@media screen and (min-width: 1250px) {
+  .rl-about-figure-right,
+  .rl-about-figure-left {
+    max-width: 440px;;
+  }
+
+  .rl-about-figure-right {
+    margin: 0 0 2rem 2rem;
+    margin-right: -280px;
+    float: right;
+  }
+
+  .rl-about-figure-raised {
+    margin-top: -80px
+  }
+
+  .rl-about-figure-left {
+    margin: 0 2rem 2rem 0;
+    float: left;
+  }
+
+  .rl-smaller-figure {
+    max-width: 340px;
+  }
+
+
+  .rl-indented-section {
+    position: relative;
+    left: 6rem;
+  }
+}
+
+.rl-large-divide {
+  padding: 6rem 0px;
+}
+
+.rl-medium-divide {
+  padding: 4rem 0px;
 }

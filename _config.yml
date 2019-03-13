@@ -18,6 +18,9 @@ navigation:
   - text: Art
     url: https://www.instagram.com/q.teatime/
     group: art
+  - text: About
+    url: /about
+    group: about
 
 topics:
   pl:
