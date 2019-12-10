@@ -22,6 +22,10 @@ navigation:
     url: /about
     group: about
 
+collections:
+  series:
+    output: false
+
 topics:
   pl:
     name: Programming Languages

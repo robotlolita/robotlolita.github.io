@@ -5,6 +5,8 @@ snip:   Monads let you treat asynchronous operations as values, and compose them
 redirect_from:
   - /2014/03/20/a-monad-in-practicality-controlling-time.html
 categories: [fp, concurrency]
+serie: a-monad-in-practicality
+serie_index: 2
 ---
 
 > <strong class="heading">Warning</strong>
