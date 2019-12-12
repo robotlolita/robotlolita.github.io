@@ -1,0 +1,38 @@
+---
+layout: default
+title: Series
+permalink: /series/
+group: blog
+---
+
+<!-- prettier-ignore -->
+<section class="rl-topic-list">
+  <h1 class="rl-page-title">
+    <span class="rl-page-title--section">
+      <a href="/topics/">Topics</a>
+    </span>
+    <span class="rl-page-title--section rl-page-title--current">
+      Series
+    </span>
+  </h1>
+
+  {% for serie in site.series %}
+    <div class="rl-topic">
+      <div class="rl-topic-row">
+        <div class="rl-topic-card">
+          <h2 class="rl-topic-name">{{ serie.title }}</h2>
+          <p>{{ serie.snip }}</p>
+        </div>
+        <div class="rl-topic-series-posts">
+          {% assign posts = site.posts | where:"serie", serie.serie_id | sort: "serie_index" %}
+          {% for post in posts %}
+            <div class="rl-topic--serie-entry">
+              <div class="rl-topic--serie-title"><a href="{{ post.url }}">{{ post.title }}</a></div>
+              <div class="rl-topic--serie-metadata">{{ post.date | date_to_long_string }} &bullet; {{ post.content | number_of_words }} words</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</section>

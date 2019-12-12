@@ -777,6 +777,27 @@
   margin-bottom: 2rem;
 }
 
+.rl-page-title--section {
+  padding-right: 1em;
+}
+
+.rl-page-title--section:not(:first-child) {
+  padding-left: 1em;
+}
+
+.rl-page-title--section:not(:last-child) {
+  border-right: 1px solid #dcdcda;
+}
+
+.rl-page-title--section a {
+  color: #318fe8;
+  font-weight: normal;
+}
+
+.rl-page-title--section a:hover {
+  border-bottom: 2px solid #318fe8;
+}
+
 .rl-topic {
   display: flex;
   flex-direction: column;
@@ -849,6 +870,40 @@
 
 .rl-topic--post-snip {
   color: #777;
+}
+
+.rl-topic--serie-title {
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+
+.rl-topic--serie-metadata {
+  font-size: 80%;
+  text-transform: uppercase;
+  color: #6c6c6a;
+  margin-bottom: 1em;
+}
+
+.rl-topic-series-posts {
+  counter-reset: series-entry;
+}
+
+.rl-topic--serie-entry {
+  position: relative;
+  padding-left: 2.5em;
+}
+
+.rl-topic--serie-entry:before {
+  counter-increment: series-entry;
+  content: counter(series-entry);
+  color: #ccccca;
+  margin-right: 1em;
+  position: absolute;
+  font-size: 2.8em;
+  font-weight: 700;
+  font-family: "PT Sans Caption", sans-serif;
+  left: 0em;
+  line-height: 100%;
 }
 
 .rl-topic-page-title {

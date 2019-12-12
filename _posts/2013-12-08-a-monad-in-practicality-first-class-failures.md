@@ -7,6 +7,8 @@ redirect_from:
   - /2013/12/08/a-monad-in-practicality-first-class-failiures.html
   - /2013/12/08/a-monad-in-practicality-first-class-failures.html
 categories: [fp]
+serie: a-monad-in-practicality
+serie_index: 1
 ---
 
 There are [plenty of tutorials][] [on what][] [monads are][] out there, some
