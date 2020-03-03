@@ -26,32 +26,6 @@ collections:
   series:
     output: false
 
-topics:
-  pl:
-    name: Programming Languages
-    description: >
-      Exploring the theoretical aspects of programming languages and their implementations. The articles are not about any specific language.
-
-  concurrency:
-    name: Concurrency
-    description: >
-      Dealing with many things happening at once in computers. Includes parallelism and distributed computing.
-
-  fp:
-    name: Functional Programming
-    description: >
-      The style of programming that encourages pure functions and rich types.
-
-  oop:
-    name: Object Oriented Programming
-    description: >
-      The style of programming that encourages entities messaging each other to perform computations. But things about class-based programming go here too, sadly.
-
-  opinion:
-    name: Opnion Pieces
-    description: >
-      Rants about different aspects of technology.
-
 defaults:
   - scope:
       path: _posts

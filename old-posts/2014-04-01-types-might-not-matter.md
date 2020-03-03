@@ -4,6 +4,7 @@ title:  Types Might Not Matter!
 snip:   Or how I discovered a better way for correctness-by-design by not worrying.
 redirect_from:
   - /2014/04/01/types-might-not-matter.html
+date: 2014-04-01
 ---
 
 The functional programming community can be, sometimes, daunting. While we are
