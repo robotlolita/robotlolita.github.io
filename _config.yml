@@ -13,7 +13,7 @@ navigation:
     url: /index.html
     group: home
   - text: Articles
-    url: /topics
+    url: /chronological
     group: blog
   - text: Art
     url: https://www.instagram.com/q.teatime/
