@@ -7,6 +7,7 @@ redirect_from:
 categories: [fp, concurrency]
 serie: a-monad-in-practicality
 serie_index: 2
+date: 2014-03-20
 ---
 
 > <strong class="heading">Warning</strong>

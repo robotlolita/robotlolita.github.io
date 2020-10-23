@@ -380,6 +380,7 @@
 .textual-content .pull-left,
 .textual-content .pull-right,
 .textual-content .centred-image,
+.rl-content .rl-figure-frame img,
 .rl-figure {
   text-align: center;
   padding: 20px;
@@ -1352,4 +1353,44 @@
   left: 50%;
   margin-left: -1px;
   z-index: 0;
+}
+
+.rl-diary-post-summary {
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 5px solid #f3f3f3;
+}
+
+.rl-button {
+  display: block;
+  padding: 1.3em 3em;
+  font-weight: bold;
+  font-family: sans-serif;
+  border: 3px solid #318fe8;
+  border-radius: 3px;
+}
+
+.rl-button:hover {
+  color: #fafafa;
+  background: #318fe8;
+  border-color: #318fe8;
+}
+
+.rl-read-more {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rl-pagination {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rl-article-title a {
+  color: #4a4a4a;
+}
+
+.rl-diary-list .rl-diary-list-posts {
+  max-width: 820px;
+  margin: 0 auto;
 }

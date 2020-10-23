@@ -5,6 +5,7 @@ snip:   For the love of whatever you believe in, stop making applications that r
 redirect_from:
   - /2016/01/09/no-i-dont-want-to-configure-your-app.html
 categories: [opinion]
+date: 2016-01-09
 ---
 
 > <strong class="heading">Warning</strong>  
