@@ -13,6 +13,16 @@
     functional programming, programming languages"
     />
 
+    {% if page.is_article %}
+      <meta property="og:title" content="{{ page.title }}">
+      {% if page.snip %}
+        <meta property="og:description" content="{{ page.snip }}">
+      {% endif %}
+      {% if page.card_image %}
+        <meta property="og:image" content="{{ site.base_url }}{{ page.card_image }}">
+      {% endif %}
+    {% endif %}
+
     <link
       href="/atom.xml"
       rel="alternate"

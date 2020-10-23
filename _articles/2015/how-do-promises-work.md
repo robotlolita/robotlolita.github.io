@@ -5,6 +5,7 @@ snip:   What promises are, what problem they solve, and how they're implemented 
 categories: [concurrency]
 redirect_from:
   - /2015/11/15/how-do-promises-work.html
+date: 2015-11-15
 ---
 
 <h2>Table of Contents</h2>

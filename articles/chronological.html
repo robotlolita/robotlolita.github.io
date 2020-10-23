@@ -19,7 +19,7 @@ group: blog
 
     <div class="rl-timeline-container">
       <ul class="rl-timeline">
-        {% for post in site.posts %}
+        {% for post in site.articles reversed %}
           <li class="rl-timeline-point">
             <div class="rl-timeline-date">{{ post.date | date_to_long_string }} &bullet; {{ post.content | number_of_words }} words</div>
             <a href="{{ post.url }}">

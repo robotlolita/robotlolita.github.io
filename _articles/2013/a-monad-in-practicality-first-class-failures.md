@@ -9,6 +9,7 @@ redirect_from:
 categories: [fp]
 serie: a-monad-in-practicality
 serie_index: 1
+date: 2013-12-08
 ---
 
 There are [plenty of tutorials][] [on what][] [monads are][] out there, some

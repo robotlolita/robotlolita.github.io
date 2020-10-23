@@ -1,0 +1,45 @@
+---
+layout: default
+title: Diary
+group: diary
+---
+
+<!-- prettier-ignore -->
+<div class="rl-diary-list rl-article">
+  <div class="rl-diary-list-posts">
+    {% for post in paginator.posts %}
+    <div class="rl-diary-post-summary">
+      <header class="page-heading">
+        <h2 class="rl-article-title">
+          <a href="{{ post.url }}">{{ post.title }}</a>
+        </h2>
+        <p class="rl-article-meta">
+          Published {{ post.date | date_to_long_string }} &bullet; {{ post.content | number_of_words }} words
+        </p>
+      </header>
+      <div class="rl-article-content rl-content">
+        {{ post.excerpt }}
+      </div>
+      <div class="rl-read-more">
+        <a class="rl-button rl-read-more-button" href="{{ post.url }}">Read more</a>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if paginator.total_pages > 1 %}
+    <div class="rl-pagination">
+      {% if paginator.previous_page %}
+        <a class="rl-button rl-page-left-button" href="{{ paginator.previous_page_path | relative_url }}">&laquo; More recent</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+
+      {% if paginator.next_page %}
+        <a class="rl-button rl-page-right-button" href="{{ paginator.next_page_path | relative_url }}">Older &raquo;</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
