@@ -2,8 +2,6 @@
 layout: article
 title: Bloom Into You
 card_image: /files/2020/09/bloom-into-you1.jpg
-snip: >
-  Having recently finished reading the Bloom Into You manga, it seemed like a good idea to collect my thoughts on the series...
 ---
 
 Having recently finished reading the Bloom Into You manga (and the second volume of the Regarding Saeki Sayaka light novel), it seemed like a good idea to collect my thoughts on the series. And in doing so I realised, “Oh! I’ve been blogging on Twitter all this time! The pain I’ve inflicted upon those who were naïve enough to follow me…”
