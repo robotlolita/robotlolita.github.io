@@ -6,3 +6,4 @@ examples/promises/aplus/lib/
 .#*
 .jekyll-metadata
 /.bundle/
+.ionide
