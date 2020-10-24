@@ -78,7 +78,7 @@ The reason I ask to avoid "they/them" pronouns is just that I find them confusin
 
 Pronouns are complicated. You'll see many non-binary people put "they/them pronouns" in their bio and leave it at that. It's *great* if you only ever talk about them in English, but how do you refer to them in a Romance language, like Portuguese, Spanish, or French? How do you refer to them in a Slavic language, like Croatian or Russian? How do you refer to them in German? What about in Japanese, which doesn't even have (these kind of) pronouns, but sometimes you might end up using some "gendered" terms like 彼女 ("kanojo", which roughly translates to "she" or "her" when it has the role of a grammatical pronoun).
 
-Pronouns are complicated because languages are complicated. And we live in a multicultural world--chances are, increasingly, that the people around you speak more than one language. How do your friends (and colleagues) should refer to you in their native language? Or in a second language they speak when hanging out with some of their own friends? Or when writing about you in a social network group where people don't speak English? (did you know that there are more languages than English in the world? Now you know!)
+Pronouns are complicated because languages are complicated. And we live in a multicultural world--chances are, increasingly, that the people around you speak more than one language. How should your friends (and colleagues) refer to you in their native language? Or in a second language they speak when hanging out with some of their own friends? Or when writing about you in a social network group where people don't speak English? (did you know that there are more languages than English in the world? Now you know!)
 
 Anyway.
 
