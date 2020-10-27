@@ -1,6 +1,7 @@
 ---
 layout: article
 title: Bloom Into You
+card_type: summary_large_image
 card_image: /files/2020/09/bloom-into-you1.jpg
 ---
 

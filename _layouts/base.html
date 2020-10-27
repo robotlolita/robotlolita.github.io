@@ -14,9 +14,15 @@
     />
 
     {% if page.is_article %}
+      {% if page.card_type %}
+      <meta property="og:type" content="{{ page.card_type }}">
+      {% endif %}
       <meta property="og:title" content="{{ page.title }}">
       {% if page.snip %}
         <meta property="og:description" content="{{ page.snip }}">
+      {% endif %}
+      {% if page.card_description %}
+        <meta property="og:description" content="{{ page.card_description }}">
       {% endif %}
       {% if page.card_image %}
         <meta property="og:image" content="{{ site.base_url }}{{ page.card_image }}">
