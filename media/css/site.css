@@ -1394,3 +1394,12 @@
   max-width: 820px;
   margin: 0 auto;
 }
+
+.rl-video {
+  width: 720px;
+  height: 520px;
+  margin: 0 auto 1.5em auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  display: block;
+}

@@ -25,6 +25,8 @@ There are a few things I’m really concerned about when maintaining large proje
 
 So, if I were to capture these concerns in a few words, I could go with the following: “confidence”, “exploration”, “communication”, and “evolution”. I’ll expand on each of these in the following sections, and my experiences with dynamic and static languages.
 
+<!--more-->
+
 ## THE CONFIDENCE PROBLEM
 
 Large code-bases tend to be the product of several different engineers working over many years—often decades—on it. As things move forward, engineers come and go. Assumptions change. Patterns and styles change.
@@ -71,7 +73,7 @@ I accept that I’ll never fully understand a large code-base. So, instead, I wo
 Static languages, in theory, provide us with very neat tools to analyse relationships between code-entities. Interestingly, languages with **richer type systems give us less useful relationships**. In the sense that the set of possibilities is too big, unless you can constrain it somehow.
 Consider:
 
-```hs
+```haskell
 (f . g) :: forall a, b, c. (b -> c) -> (a -> b) -> (a -> c) 
 (f . g) x = f (g x) 
 ```
@@ -92,13 +94,13 @@ But I also expect things like:
 
 Most of these are, actually, mostly available in dynamic languages (and some static FP languages). For example, Smalltalk has always been very strong in the area of tooling for analysing programs dynamically:
 
-<iframe width="708" height="520" src="https://www.youtube-nocookie.com/embed/baxtyeFVn3w" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+<iframe width="708" height="520" src="https://www.youtube-nocookie.com/embed/baxtyeFVn3w" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen class="rl-video"></iframe>
 
 Erlang also has a very interesting set of tools for dynamic (and static) program analysis. Sadly, it doesn’t have a good user interface for them.
 
 We’re still at very early stages of “auto-completion” (I’m going to use the term loosely here). Sure we have type-aware suggestions of functions to use, but these are very limited. What I want is to be able to “sketch” programs—provide a rough description of what I want, and, with the help of my IDE, iterate over it, filling the parts I’m not so sure about, and refining the parts I made the wrong assumptions. Some form of typing is essential for this, but there are no typed languages I know of offering this sort of program synthesis today:
 
-<iframe width="708" height="520" src="https://www.youtube-nocookie.com/embed/HnOix9TFy1A" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+<iframe width="708" height="520" src="https://www.youtube-nocookie.com/embed/HnOix9TFy1A" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen class="rl-video"></iframe>
 
 But you know who’s offering program synthesis for users. Today. In an usable state? Excel.
 
@@ -118,7 +120,7 @@ Lastly, it’s important to note that the large, complex software of yesterday i
 
 For the “easy” case of complex software written in different languages (e.g.: the browser you’re using to read this right now), see Ahmed’s research on this problem and why it’s not solved by any typed language yet. Her research is very exciting, but the current state of affairs is—at best—kinda depressing here.
 
-<iframe width="708" height="520" src="https://www.youtube-nocookie.com/embed/3yVc5t-g-VU" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+<iframe width="708" height="520" src="https://www.youtube-nocookie.com/embed/3yVc5t-g-VU" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen class="rl-video"></iframe>
 
 For the more common case for the kind of software I work with, distributed systems, you have a somewhat similar problem as what Ahmed explains. You have all of these services, written in different languages, working under different assumptions, having different policies for data, having different change/release cycles, etc. Yet, somehow, these have to work together, “flawlessly”—or, rather, be tolerant to the failures that **will** occur—, to provide the user with something like Quora (or Twitter. Or basically every other system you use today).
 
