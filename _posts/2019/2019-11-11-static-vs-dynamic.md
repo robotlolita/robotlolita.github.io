@@ -11,6 +11,8 @@ Yes. Kinda. But it’s a tad bit more complicated than “static vs dynamic lang
 
 > <strong class="heading">Note</strong>
 > I’ll answer this question from my own experiences with maintaining large projects—mostly language implementations and web services—, as I haven’t really read much literature on this topic. I have no idea how much this generalises to other people/kinds of projects.
+>
+> This was originally written as a [Quora answer](https://www.quora.com/Are-dynamic-languages-just-as-good-as-compile-time-static-type-languages-for-large-complex-projects/answer/Quildreen-Motta)
 {: .warning .note }
 
 ---
