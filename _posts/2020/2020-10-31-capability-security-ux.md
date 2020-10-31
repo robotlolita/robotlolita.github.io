@@ -17,7 +17,7 @@ Of course I tried the more restricted sharing option at once. First it asked me 
 
 With my tweeting done, I moved to happily performing other things, living in the blissful future where we actually get to control our privacy, trust, and security (a person can dream) in computer systems.
 
-After much time has passed, I was back on Twitter to share a different image. So I clicked the button to attach a photo, and... it showed me a grid containing only the photo I had previously selected. "Weird. Maybe it remembers your previous selections? Who would **want** that?" Recovering from my brief state of confusion I looked around for any button that would allow me to go to my photo library and select one (1) new photo to share. No luck.
+After much time had passed, I was back on Twitter to share a different image. So I clicked the button to attach a photo, and... it showed me a grid containing only the photo I had previously selected. "Weird. Maybe it remembers your previous selections? Who would **want** that?" Recovering from my brief state of confusion I looked around for any button that would allow me to go to my photo library and select one (1) new photo to share. No luck.
 
 "Wait? That's it? How do I grant more capabilities??? Did... did they think this through?????"
 
@@ -28,8 +28,6 @@ Now. This seemed like a good example of the issues one can have with capability-
 <!--more-->
 
 ## What is capability-based security?
-
-If you're not familiar with the idea of capability-based security, this section will be a refresher. Otherwise just jump to the next section.
 
 **What can an application do?**
 
