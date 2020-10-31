@@ -16,6 +16,7 @@
     {% if page.is_article %}
       {% if page.card_type %}
       <meta property="og:type" content="{{ page.card_type }}">
+      <meta property="twitter:card" content="{{ page.card_type }}">
       {% endif %}
       <meta property="og:title" content="{{ page.title }}">
       {% if page.snip %}
