@@ -5,7 +5,7 @@ title: "Why PLs Should Have Effect Handlers"
 
 Most programming languages should have a concept similar to **effect handlers**, even if the language doesn’t include an effect system as well. One reason for this is simply that they’re a cool feature, but the important part is that effect handlers solve a very real tension between programmer intent and execution context, which shows in testing, cross-platform development, distributed computing, and several other common cases.
 
-This piece will briefly discuss further what they are, what problems they solve, and how they solve it. For a more detailed treatise of the subject, see [Pretnar’s effect handlers tutorial](https://www.eff-lang.org/handlers-tutorial.pdf).
+This piece will briefly discuss what they are, what problems they solve, and how they solve it. For a more detailed treatise of the subject, see [Pretnar’s effect handlers tutorial](https://www.eff-lang.org/handlers-tutorial.pdf).
 
 <!--more-->
 
