@@ -15,8 +15,11 @@
 
     {% if page.is_article %}
       {% if page.card_type %}
-      <meta property="og:type" content="{{ page.card_type }}">
-      <meta property="twitter:card" content="{{ page.card_type }}">
+        <meta property="og:type" content="{{ page.card_type }}">
+        <meta property="twitter:card" content="{{ page.card_type }}">
+      {% else %}
+        <meta property="og:type" content="summary_large_image">
+        <meta property="twitter:card" content="summary_large_image">
       {% endif %}
       <meta property="og:title" content="{{ page.title }}">
       {% if page.snip %}
@@ -27,6 +30,8 @@
       {% endif %}
       {% if page.card_image %}
         <meta property="og:image" content="{{ site.base_url }}{{ page.card_image }}">
+      {% else %}
+        <meta property="og:image" content="{{ site.base_url }}media/image/bg-small.png">
       {% endif %}
     {% endif %}
 
