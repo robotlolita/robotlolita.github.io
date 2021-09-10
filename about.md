@@ -23,14 +23,14 @@ Outside of my daily job I've also worked on computer games and [open-source soft
 
 <div class="rl-indented-section" markdown="1">
 
-My current personal project is an experimental research called [Purr](https://github.com/origamitower/purr). It draws inspirations from fields such as sociology, psychology, mathematics, and computer science. And aims to realise a very specific view of programming:
+My current personal project is an experimental research called [Crochet](https://github.com/qteatime/crochet). It draws inspirations from fields such as sociology, psychology, mathematics, and computer science. And aims to realise a very specific view of programming:
 
 “We should be able to collaborate with computers in the same way we collaborate with humans.”
 {: .highlight-paragraph .pull-in }
 
-When people talk about collaboration, they generally mean helping humans get work done together. That's a very good start. Purr aims to extend that view of collaboration to include computing systems as well, through the use of two principles: rich interaction and feedback, and trust.
+When people talk about collaboration, they generally mean helping humans get work done together. That's a very good start. Crochet aims to extend that view of collaboration to include computing systems as well, through the use of two principles: rich interaction and feedback, and trust.
 
-Equally important, however, is the fact that [Purr has a cute mascot](https://en.wikipedia.org/wiki/OS-tan).
+The IDE planned for Crochet is called Purr, and what's equally important here is that [Purr has a cute mascot](https://en.wikipedia.org/wiki/OS-tan).
 
 ![](/media/image/purr.png)
 *Purr-tan and her adorable kittens, Caramel and Creampuff.*
