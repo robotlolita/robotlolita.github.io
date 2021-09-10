@@ -1,0 +1,25 @@
+---
+layout: default
+title: Talks
+group: talks
+---
+
+<!-- prettier-ignore -->
+<div class="middle-container">
+  <div class="rl-talk-list">
+    {% for talk in site.talks reversed %}
+      <div class="rl-talk-list-item">
+        <div class="rl-talk-list-item-thumb">
+          <a href="{{ talk.url }}">
+            <img src="{{ talk.thumbnail }}">
+          </a>
+        </div>
+        <div class="rl-talk-list-item-card">
+          <div class="rl-talk-list-item-meta">{{ talk.venue }} &bullet; {{ talk.language }}</div>
+          <h3 class="rl-talk-list-item-title"><a href="{{ talk.url }}">{{ talk.title }}</a></h3>
+          <div class="rl-talk-list-item-snip"><a href="{{ talk.url }}">{{ talk.snip }}</a></div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

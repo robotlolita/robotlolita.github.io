@@ -24,6 +24,9 @@ navigation:
   - text: Articles
     url: /chronological
     group: blog
+  - text: Talks
+    url: /talks
+    group: talks
   - text: Art
     url: https://www.instagram.com/q.teatime/
     group: art
@@ -35,6 +38,8 @@ collections:
   series:
     output: false
   articles:
+    output: true
+  talks:
     output: true
 
 defaults:
@@ -52,3 +57,10 @@ defaults:
       group: diary
       is_article: true
       permalink: /diary/:year/:month/:title/
+  - scope:
+      path: _talks
+      type: talks
+    values:
+      group: talks
+      is_article: true
+      permalink: /talks/:title/
