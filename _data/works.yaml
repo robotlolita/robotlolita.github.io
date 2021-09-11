@@ -76,7 +76,8 @@
       kind: Interactive Fiction
       title: Boon-scrolling
       snip: |
-        A small simulation about doom-scrolling—except all content is cute and positive.
+        A small simulation about doom-scrolling—except all content is cute and positive.<br>
+        (2021 April Fool's project)
       links:
         - icon: fab fa-2x fa-github
           url: https://github.com/qteatime/boon-scrolling
