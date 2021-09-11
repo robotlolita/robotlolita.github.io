@@ -27,9 +27,9 @@ navigation:
   - text: Talks
     url: /talks
     group: talks
-  - text: Art
-    url: https://www.instagram.com/q.teatime/
-    group: art
+  - text: Works
+    url: /works
+    group: works
   - text: About
     url: /about
     group: about

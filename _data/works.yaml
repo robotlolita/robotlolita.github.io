@@ -1,0 +1,101 @@
+- title: "Stuff I'm working on,"
+  works:
+    - thumbnail: /media/image/project-crochet.png
+      kind: Programming Language
+      title: Crochet
+      snip: |
+        A programming *system* to make creating digital, interactive content
+        **accessible to non-programmers** (through a particular view of live
+        feedback), **safe** (through capability security), and **collaborative**
+        (through a new semantics for modular extension). It aims to foster a
+        remixing culture.
+      links:
+        - icon: fab fa-2x fa-github
+          url: https://github.com/qteatime/crochet
+          title: Crochet's source code on GitHub
+        - icon: fas fa-2x fa-globe
+          url: https://crochet.qteati.me/
+          title: Crochet's website
+
+
+- title: "Stuff I've worked on before."
+  works:
+    - thumbnail: /media/image/project-folktale.png
+      kind: JavaScript library
+      title: Folktale
+      snip: |
+        A functional programming library for JavaScript that adds support
+        for things like algebraic data type definitions, common data types,
+        and a more principled set of features for concurrency. It's currently
+        not actively maintained.
+      links:
+        - icon: fab fa-2x fa-github
+          url: https://github.com/origamitower/folktale
+          title: Folktale's source code on GitHub
+        - icon: fas fa-2x fa-globe
+          url: https://folktale.origamitower.com/
+          title: Folktale's website
+
+    - thumbnail: /media/image/project-raven.png
+      kind: Desktop application
+      title: Raven
+      snip: |
+        A minimalist, distraction-free editor for novelists, with a more
+        streamlined idea of editing experience and some care about typography.
+      links:
+        - icon: fab fa-2x fa-github
+          url: https://github.com/robotlolita/raven
+          title: Raven's source code on GitHub
+        - icon: fas fa-2x fa-globe
+          url: https://robotlolita.me/raven/
+          title: Raven's website
+
+
+- title: "Fun stuff!"
+  works:
+    - thumbnail: /media/image/project-belle.png
+      kind: Programming language
+      title: Belle
+      snip: |
+        Can programming be seen as literary art?
+
+        Belle is a small experiment where programs are arbitrary pieces of text
+        only given meaning through rewrite rules (functions that take the
+        program and yield a new program), allowing function to follow form
+        in a more literal sense.<br>
+        (Lang Jam project)
+      links:
+        - icon: fab fa-2x fa-github
+          url: https://github.com/qteatime/belle
+          title: Belle's source code on GitHub
+        - icon: fas fa-2x fa-globe
+          url: https://qteati.me/belle/
+          title: Live IDE for Belle
+
+    - thumbnail: /media/image/project-boonscrolling.png
+      kind: Interactive Fiction
+      title: Boon-scrolling
+      snip: |
+        A small simulation about doom-scrolling—except all content is cute and positive.
+      links:
+        - icon: fab fa-2x fa-github
+          url: https://github.com/qteatime/boon-scrolling
+          title: Boon-scrolling's source code on GitHub
+        - icon: fas fa-2x fa-globe
+          url: https://boon-scrolling.qteati.me/
+          title: Play the game in your browser
+  
+    - thumbnail: /media/image/project-emoj.png
+      kind: Programming language
+      title: Emoj
+      snip: |
+        A concatenative programming language made entirely of emojis, with an
+        IDE inspired by your usual phone instant messaging application.<br>
+        (2017 April Fool's project)
+      links:
+        - icon: fab fa-2x fa-github
+          url: https://github.com/robotlolita/emoj
+          title: Emoj's source code on GitHub
+        - icon: fas fa-2x fa-globe
+          url: https://robotlolita.me/emoj/
+          title: Live IDE for Emoj

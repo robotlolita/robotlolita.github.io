@@ -1464,14 +1464,15 @@
   max-width: 962px;
 }
 
-.rl-talk-list {
+.rl-talk-list,
+.rl-card-list {
   display: flex;
-  justify-content: space-between;
-  align-content: flex-start;
   flex-wrap: wrap;
+  gap: 5%;
 }
 
-.rl-talk-list-item {
+.rl-talk-list-item,
+.rl-card-item {
   flex-grow: 0;
   flex-shrink: 0;
   width: 30%;
@@ -1480,25 +1481,30 @@
   margin-bottom: 3em;
 }
 
-.rl-talk-list-item-thumb img {
+.rl-talk-list-item-thumb img,
+.rl-card-item-thumb img {
   width: 100%;
   height: auto;
   border: 1px solid #ccc;
+  display: block;
 }
 
-.rl-talk-list-item-card {
+.rl-talk-list-item-card,
+.rl-card-item-info {
   margin-top: 0.5em;
   display: flex;
   flex-direction: column;
 }
 
-.rl-talk-list-item-meta {
+.rl-talk-list-item-meta,
+.rl-card-item-meta {
   font-size: 0.8em;
   color: #777;
   text-transform: uppercase;
 }
 
-.rl-talk-list-item-title {
+.rl-talk-list-item-title,
+.rl-card-item-title {
   font-family: "PT Sans Caption", sans-serif;
   font-weight: bold;
   font-size: 1.6em;
@@ -1507,6 +1513,35 @@
 }
 
 .rl-talk-list-item-title a,
-.rl-talk-list-item-snip a {
+.rl-talk-list-item-snip a,
+.rl-card-item-title a,
+.rl-card-item-snip a {
   color: #424242;
+}
+
+.rl-card-item-snip p {
+  margin-bottom: 1.5em;
+}
+
+.rl-card-item-links {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5em;
+  justify-content: center;
+}
+
+.rl-card-item-links > a {
+  margin-right: 1em;
+}
+
+.rl-smol-container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.rl-card-list-title {
+  font-weight: normal;
+  margin: 0 0 1em -0.5em;
+  padding-top: 1.5em;
+  font-size: 3rem;
 }

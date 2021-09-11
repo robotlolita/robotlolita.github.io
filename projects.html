@@ -1,0 +1,39 @@
+---
+layout: default
+title: Works
+group: works
+permalink: /works/
+---
+
+<!-- prettier-ignore -->
+<div class="middle-container">
+  <div class="rl-smol-container">
+    {% for section in site.data.works %}
+      <h2 class="rl-card-list-title">{{ section.title }}</h2>
+
+      <div class="rl-card-list">
+        {% for work in section.works %}
+          <div class="rl-card-item">
+            <div class="rl-card-item-thumb">
+              <img src="{{ work.thumbnail }}" alt="">
+            </div>
+            <div class="rl-card-item-info">
+              <div class="rl-card-item-meta">{{ work.kind }}</div>
+              <h2 class="rl-card-item-title">{{ work.title }}</h3>
+              <div class="rl-card-item-snip">{{ work.snip | markdownify }}</div>
+            </div>
+            <div class="rl-card-item-links">
+              {% for link in work.links %}
+                <a href="{{ link.url }}" title="{{ link.title }}">
+                  <span class="icon is-large">
+                    <i class="{{ link.icon }}"></i>
+                  </span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
