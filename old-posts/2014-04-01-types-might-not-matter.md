@@ -244,5 +244,5 @@ Oh, by the way, have a nice April's Fools :)
 </dl>
 
 
-Quil has written as many languages as there are Lisp dialects. She knows *stuff*! You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+Quil has written as many languages as there are Lisp dialects. She knows *stuff*! You can contact her on [Twitter](https:/twitter.com/robotlolita).
 {: .contact-footer}

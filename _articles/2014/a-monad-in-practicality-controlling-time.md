@@ -1033,5 +1033,5 @@ articles in this series, eh! ♥
     mistakes in Category Theory over at Twitter.
 
 
-It might not look like that, but Quil is actually a burrito in the cat(egory) of cat-ladies. Or something like that. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+It might not look like that, but Quil is actually a burrito in the cat(egory) of cat-ladies. Or something like that. You can contact her on [Twitter](https:/twitter.com/robotlolita).
 {: .contact-footer}

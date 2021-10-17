@@ -530,8 +530,7 @@ But y'all aren't even trying for fuck's sake.
     Why must you torture this poor soul like this, people?!
     You can contact said
     person through <a
-    href="https://twitter.com/robotlolita">Twitter</a> or <a
-    href="mailto:queen@robotlolita.me">Email</a>. Bonus points if you
+    href="https://twitter.com/robotlolita">Twitter</a>. Bonus points if you
     bring her sweets.
 </div>
 

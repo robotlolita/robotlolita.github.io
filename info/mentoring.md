@@ -32,9 +32,9 @@ Eu provavelmente não posso te ajudar muito em programação orientada a objetos
 
 ## Forma de comunicação:
 
-Mensagem privada no [Twitter](https://twitter.com/robotlolita) ou [e-mail](mailto:queen@robotlolita.me).
+Mensagem privada no [Twitter](https://twitter.com/robotlolita).
 
-Note que minhas mensagens privadas no Twitter são restritas às pessoas que eu sigo. Daí se eu não te sigo ainda tu precisas me notificar por e-mail, ou mencionando em um tweet.
+Note que minhas mensagens privadas no Twitter são restritas às pessoas que eu sigo. Daí se eu não te sigo ainda tu precisas me mencionar em um tweet.
 
 
 ## Como vai funcionar?

@@ -353,5 +353,5 @@ But until then, we can keep demanding better of our tools, libraries, frameworks
 </blockquote>
 
 
-Quil eats types for breakfast. So far none of them were dependent. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+Quil eats types for breakfast. So far none of them were dependent. You can contact her on [Twitter](https:/twitter.com/robotlolita).
 {: .contact-footer}

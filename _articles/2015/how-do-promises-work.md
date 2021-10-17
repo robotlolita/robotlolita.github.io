@@ -1639,7 +1639,7 @@ they're going to be even more pervasive in the all ECMAScript projects.
 
 
 <div class="contact-footer">
-    Quil swore to never touch promises ever again. They're wearing gloves now. You can contact Quil through <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
+    Quil swore to never touch promises ever again. They're wearing gloves now. You can contact Quil through <a href="https://twitter.com/robotlolita">Twitter</a>.
 </div>
 
 - - - 

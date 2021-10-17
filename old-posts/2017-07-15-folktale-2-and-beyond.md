@@ -88,5 +88,5 @@ After graduating from her fashion course things didn't go very well, and at time
 
   
 <div class="contact-footer">
-    Quil is starting to realise that the only difference between Idol Hell and Drawing-Cute-Girls Hell is the impact on your bank account. Oh no! You can descend to the depths with them on <a href="https://twitter.com/robotlolita">Twitter</a> (or <a href="mailto:queen@robotlolita.me">Email</a>).
+    Quil is starting to realise that the only difference between Idol Hell and Drawing-Cute-Girls Hell is the impact on your bank account. Oh no! You can descend to the depths with them on <a href="https://twitter.com/robotlolita">Twitter</a>.
 </div>

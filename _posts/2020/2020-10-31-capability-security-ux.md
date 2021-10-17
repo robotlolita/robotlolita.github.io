@@ -11,7 +11,7 @@ For once I was actually enthusiastic about a phone OS update. "Fine-grained capa
 
 ![An illustration of a woman holding several keys, representing the idea of capabilities. There's an iOS menu with three options: "Forfeit all possessions to Twitter", "Let Twitter have one photo", and "Cry and suffer"](/files/2020/10/ios14-card.png)
 *Apple: "We have capability-security at home!"*
-{: .centred-image -full-image }
+{: .centred-image .full-image }
 
 Of course I tried the more restricted sharing option at once. First it asked me to select the photos from my library. I picked the one photo I wanted and clicked done. That opened another photo selection screen with only the photo I had already selected. "Weird UX. Did they even test this feature?" I picked the photo again and this time it got attached to my tweet. Great! Now Twitter shouldn't have any powers of snooping around my things!
 

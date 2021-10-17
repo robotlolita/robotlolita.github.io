@@ -937,7 +937,7 @@ dispatch**. We'll see more about this later.
 <div class="contact-footer">
     Quil is in ur computer, replacing everything with tiny objects that look
     like fluffy cats. Do not mess
-    with this person, they're clearly evil! You can contact them on <a href="https://twitter.com/robotlolita">Twitter</a> or <a href="mailto:queen@robotlolita.me">Email</a>.
+    with this person, they're clearly evil! You can contact them on <a href="https://twitter.com/robotlolita">Twitter</a>.
 </div>
 
 - - - 

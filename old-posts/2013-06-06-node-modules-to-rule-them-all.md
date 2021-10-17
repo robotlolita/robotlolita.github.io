@@ -448,5 +448,5 @@ For now, I just hope you can go back to your projects and use these techniques t
 </dl>
 
 
-Quil has many modules published on npm, so whatever she writes must be true. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+Quil has many modules published on npm, so whatever she writes must be true. You can contact her on [Twitter](https:/twitter.com/robotlolita).
 {: .contact-footer}

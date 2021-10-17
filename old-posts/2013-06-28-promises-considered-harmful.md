@@ -426,5 +426,5 @@ void function() {
 {% endraw %}
 
 
-Quil has murdered many Promises for Christmas. Unfortunately the universe just swallowed their deaths and no one ever noticed. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+Quil has murdered many Promises for Christmas. Unfortunately the universe just swallowed their deaths and no one ever noticed. You can contact her on [Twitter](https:/twitter.com/robotlolita).
 {: .contact-footer}

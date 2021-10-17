@@ -901,5 +901,5 @@ regarding the problem can be found [in this Github issue](https://github.com/fol
 - **3rd October, 2014**: Fixed the type of `liftM2`, as pointed out by Erwin in the comments.
 
 
-Once upon a time, Quil swore to not writing any tutorial on monads. It was co-Quil who co-wrote this co-article. You can contact her on [Twitter](https:/twitter.com/robotlolita) or [Email](mailto:queen@robotlolita.me).
+Once upon a time, Quil swore to not writing any tutorial on monads. It was co-Quil who co-wrote this co-article. You can contact her on [Twitter](https:/twitter.com/robotlolita).
 {: .contact-footer}
