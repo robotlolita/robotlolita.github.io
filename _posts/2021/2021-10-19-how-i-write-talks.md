@@ -2,14 +2,14 @@
 layout: article
 title: "How do I write talks?"
 card_type: summary_large_image
-card_image: /files/2021/09/talks-card.png
+card_image: /files/2021/10/talks-card.png
 ---
 
 I've given a few technical talks in the past, and people seem to enjoy most of them. Sometimes they will tell me stuff like "wow, even though I'm not super technical I could still follow it." So, having finished writing my talk on security type systems, I thought this would be a great opportunity to talk a little bit about how I approach writing technical talks.
 
 Spoiler: it's not through a programmer lens. I'm only incidentally a programmer, after all :)
 
-![An illustration of a witch feeling overloaded with the amount of work. She's holding her face with her hands, elbows on the table. A black cat leans on her arm, concerned. She's surrounded by piles of papers. The text in the image reads "This is too much"](/files/2021/09/talks-card.png)
+![An illustration of a witch feeling overloaded with the amount of work. She's holding her face with her hands, elbows on the table. A black cat leans on her arm, concerned. She's surrounded by piles of papers. The text in the image reads "This is too much"](/files/2021/10/talks-card.png)
 *This is exactly how I feel after having finished my talk*
 {: .centred-image .full-image }
 
@@ -83,7 +83,7 @@ At this stage I want to figure out what kind of visual story I want to tell, and
 
 I used to draw my storyboards with regular pen and paper. But these days I draw them on my Microsoft Surface, using Wacom's Bamboo Paper (RIP). There are two reasons for this new setup. The first one is that Bamboo Paper actually has something similar to *physical pages* in a notebook. This makes my workflow almost the same as before, except using digital paper and digital pens to draw. The second, and equally important one, is that it makes it a lot easier to revisit or incrementally build things, and also easier to remotely practice it with other people to get feedback.
 
-![A screenshot of Bamboo Paper showing the title slide "Securing your systems by befriending ghosts", along with the first 5 pages of the storyboard](/files/2021/09/talks-bamboo.png)
+![A screenshot of Bamboo Paper showing the title slide "Securing your systems by befriending ghosts", along with the first 5 pages of the storyboard](/files/2021/10/talks-bamboo.png)
 *This is what the very first storyboard for my security type systems talk looked like. At this point I was pushing the talk in a completely different direction!*
 {: .centred-image .full-image }
 
@@ -93,12 +93,12 @@ One other thing that possibly contributed to it was that I was trying to figure 
 
 It started like this:
 
-<div class="rl-slide-show" data-start="1" data-end="10" data-keyboard-controls="false" data-format="/files/2021/09/talks-a-%2d.png">
+<div class="rl-slide-show" data-start="1" data-end="10" data-keyboard-controls="false" data-format="/files/2021/10/talks-a-%2d.png">
 </div>
 
 And after many, many rewrites, it started looking like this:
 
-<div class="rl-slide-show" data-start="1" data-end="8" data-keyboard-controls="false" data-format="/files/2021/09/talks-b-%2d.png">
+<div class="rl-slide-show" data-start="1" data-end="8" data-keyboard-controls="false" data-format="/files/2021/10/talks-b-%2d.png">
 </div>
 
 Of course, the final talk ended up very different still. Not just in the illustrations, but also in how the story flows, the kind of emotions involved in the panels, and how the story and technical bits are intertwined.
