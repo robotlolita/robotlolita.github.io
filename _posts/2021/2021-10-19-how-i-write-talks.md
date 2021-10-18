@@ -93,12 +93,12 @@ One other thing that possibly contributed to it was that I was trying to figure 
 
 It started like this:
 
-<div class="rl-slide-show" data-start="1" data-end="10" data-keyboard-controls="false" data-format="/files/2021/10/talks-a-%2d.png">
+<div class="rl-slide-show" data-start="1" data-end="10" data-keyboard-controls="false" data-format="/files/2021/10/talks-a-%2d.jpg">
 </div>
 
 And after many, many rewrites, it started looking like this:
 
-<div class="rl-slide-show" data-start="1" data-end="8" data-keyboard-controls="false" data-format="/files/2021/10/talks-b-%2d.png">
+<div class="rl-slide-show" data-start="1" data-end="8" data-keyboard-controls="false" data-format="/files/2021/10/talks-b-%2d.jpg">
 </div>
 
 Of course, the final talk ended up very different still. Not just in the illustrations, but also in how the story flows, the kind of emotions involved in the panels, and how the story and technical bits are intertwined.
