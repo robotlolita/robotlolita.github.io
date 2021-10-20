@@ -1545,3 +1545,16 @@
   padding-top: 1.5em;
   font-size: 3rem;
 }
+
+
+.rl-reading-list li {
+  list-style: none;
+  margin-bottom: 0.8em;
+}
+
+.rl-reading-list a {
+  font-family: "PT Sans Caption", sans;
+  font-weight: bold;
+  display: block;
+  margin-left: -1em;
+}
