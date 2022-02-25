@@ -1120,6 +1120,13 @@
   color: #1abc9c;
 }
 
+.rl-content blockquote.warning {
+  border-color: #e74c3c;
+}
+.rl-content blockquote.warning .heading {
+  color: #e74c3c;
+}
+
 .rl-content .highlight-paragraph {
   font-family: 'Lora', serif;
   font-style: italic;
