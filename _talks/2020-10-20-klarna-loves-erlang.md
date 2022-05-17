@@ -6,6 +6,7 @@ venue: Klarna Loves Erlang 2020
 snip: >
   How and why we prototyped Glass---a semantic code search and static analysis tool---during an open source hackathon.
 thumbnail: /media/talks/2020-klarna-loves-erlang/thumbnail.png
+category: simple
 ---
 
 <div class="rl-slide-show" data-start="1" data-end="58" data-format="/media/talks/2020-klarna-loves-erlang/slide%3d.png">

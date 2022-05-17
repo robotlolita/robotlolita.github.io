@@ -6,6 +6,7 @@ venue: Elixir Brasil 2018
 snip: >
   Um breve sumário sobre actors e promises como ferramentas de concorrência, e como esses conceitos aparecem dentro de Elixir.
 thumbnail: /media/talks/2018-elixir-brasil/thumbnail.png
+category: simple
 ---
 
 <div class="rl-slide-show" data-start="1" data-end="67" data-format="/media/talks/2018-elixir-brasil/slide%3d.jpg">

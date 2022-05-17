@@ -6,6 +6,7 @@ venue: Konferense 2021
 snip: >
   Do we really need new security tools in programming languages? Yes, we do! In this talk we motivate and see how some practical techniques can help make systems more secure.
 thumbnail: /media/talks/2021-konferense/thumbnail.jpg
+category: storybook
 ---
 
 <div class="rl-slide-show" data-start="1" data-end="133" data-format="/media/talks/2021-konferense/slide%3d.jpg">
