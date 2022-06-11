@@ -56,37 +56,8 @@ I quite enjoy thinking about programming and mathematical languages, too.
 
 ## What pronouns to use?
 
-**TL;DR:** Use my name whenever possible. If the language doesn't allow you to, use feminine (preferred) or masculine pronouns as you see fit. Avoid "they/them" pronouns.
-
-Here are some examples:
-
-  - (English) Quil is a programmer, artist, and writer from Brazil.
-  - (Portuguese) Quil é uma pessoa desenvolvedora, artista, e escritora do Brasil.
-  - (Japanese) QUILはブラジル人のデべロッパーやイラストレーターや作家。
-
-Less flattering examples, please avoid them if you can:
-
-  - (English, gendered) She is a programmer, artist, and writer from Brazil.
-  - (English, non-gendered) They are a programmer, artist, and writer from Brazil.
-  - (Portuguese, gendered) Ela é uma desenvolvedora, artista, e escritora do Brasil.
-
-Sometimes (particularly in Portuguese), it's too much trouble to avoid pronouns. But again, use them if you need to. Just don't go for pronouns as your first option, particularly in writing. Repetitions are *fine* in writing. Your goal should be to make your writing as clear as possible. Even if you're writing a novel. You don't have to sacrifice clarity for rhythm and beauty--have your cake, and eat it too.
-
-The reason I ask to avoid "they/them" pronouns is just that I find them confusing. English is already devoid enough of grammar that makes it very hard to get a clear understanding of sentences. Particularly in writing, where the subjects you're referring to may be distant. Something like `(some of these people are fine with their significant others referring to them as "girlfriend", but they still don't want you to use "she/her" pronouns to refer to them)` is very hard to understand for me. Again, repetitions are **fine** in writing. Just make things clear, goddammit.
-
-- - - 
-
-Pronouns are complicated. You'll see many non-binary people put "they/them pronouns" in their bio and leave it at that. It's *great* if you only ever talk about them in English, but how do you refer to them in a Romance language, like Portuguese, Spanish, or French? How do you refer to them in a Slavic language, like Croatian or Russian? How do you refer to them in German? What about in Japanese, which doesn't even have (these kind of) pronouns, but sometimes you might end up using some "gendered" terms like 彼女 ("kanojo", which roughly translates to "she" or "her" when it has the role of a grammatical pronoun).
-
-Pronouns are complicated because languages are complicated. And we live in a multicultural world--chances are, increasingly, that the people around you speak more than one language. How should your friends (and colleagues) refer to you in their native language? Or in a second language they speak when hanging out with some of their own friends? Or when writing about you in a social network group where people don't speak English? (did you know that there are more languages than English in the world? Now you know!)
-
-Anyway.
-
-Pronouns are complicated, and that's why I've avoided putting them in my Twitter bio. But it also feels kind of shitty to just leave "whatever, be respectful" there--what *is* respectful, anyway? There is no way for someone to know how I'm feeling a certain day in order to know whether some form of referring to me will be perceived as respectful or not. Which doesn't really create a good basis for communication.
-
-And that's is why I decided to include this section here, with some guidelines on how to refer to me in writing or speech.
-
-That's all :)
+I personally use neutral language, but you can use any pronouns to refer to me (especially given that this can be
+a big pain in very gendered languages, such as Latin-based ones). Just be respectful and consistent.
 
 
 ## More trivia about me:
