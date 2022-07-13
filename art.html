@@ -1,0 +1,32 @@
+---
+layout: default
+title: Art
+group: works
+permalink: /works/art/
+---
+
+<!-- prettier-ignore -->
+<div class="middle-container">
+  <div class="rl-smol-container">
+    <h1 class="rl-page-title  rl-section-tabs">
+      <span class="rl-page-title--section">
+        <a href="/works/">Software</a>
+      </span>
+      <span class="rl-page-title--section  rl-page-title--current">
+        Art
+      </span>
+    </h1>
+
+    {% for section in site.data.art %}
+      <h2 class="rl-gallery-title">{{ section.title }}</h2>
+      <div class="rl-gallery-description">{{ section.description | markdownify }}</div>
+      <div class="rl-gallery">
+        {% for work in section.works %}
+          {% for art in work.list %}
+            <img class="rl-gallery-item rl-gallery-kind-{{work.kind}}" src="/media/gallery/{{ art }}" loading="lazy">
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>

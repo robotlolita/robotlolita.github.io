@@ -1,0 +1,65 @@
+- title: "Know your past to predict your future"
+  description: |
+    Character design and illustrations done for a short presentation on
+    time-travelling debuggers, with deep-ocean as a running theme. Characters
+    were based on creatures like the vampire squid and the phantom jellyfish,
+    along with XIX-century fashion.
+  works:
+    - kind: wide
+      list:
+        - 2022-ttd/ttt-princess.png
+    - kind: tall-3
+      list:
+        - 2022-ttd/ttd1s.png
+        - 2022-ttd/ttd2s.png
+        - 2022-ttd/ttd3s.png
+
+- title: "Securing your systems by befriending ghosts"
+  description: |
+    Character design and illustrations done for a short presentation on
+    security type systems, with a children's book witch aesthetics as a
+    running theme.
+  works:
+    - kind: wide
+      list:
+        - 2021-ghosts/sg1s.png
+    - kind: tall-1i
+      list:
+        - 2021-ghosts/sg2s.png
+    - kind: tall-2i
+      list:
+        - 2021-ghosts/sg3s.png
+
+- title: "Q."
+  description: |
+    Character design and illustrations for my vtuber persona.
+  works:
+    - kind: wide
+      list:
+        - q/q-header-s.png
+    - kind: tall-2
+      list:
+        - q/q-zero.png
+        - q/q-no-s.png
+    - kind: tall-3
+      list:
+        - q/q1s.png
+        - q/q2s.png
+        - q/q3s.png
+
+- title: "Fanart"
+  description:
+  works:
+    - kind: wide
+      list:
+        - fanart/rettan.png
+    - kind: tall-2
+      list:
+        - fanart/fauna1.png
+        - fanart/fauna2.png
+    - kind: wide
+      list:
+        - fanart/yohane.png
+    - kind: wide
+      list:
+        - fanart/ena-s.png
