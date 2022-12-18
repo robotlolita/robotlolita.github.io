@@ -377,6 +377,11 @@
   margin: 0.5em -100px 1em 1em;
   float: right;
 }
+.rl-content .rl-small-frame img,
+.rl-content .rl-small-frame {
+  padding: 2px;
+  border: 1px solid #ecf0f1;
+}
 .textual-content .pull-left,
 .textual-content .pull-right,
 .textual-content .centred-image,
