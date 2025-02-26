@@ -1,0 +1,66 @@
+name: "Quil's Fluffy World"
+highlighter: rouge
+markdown: kramdown
+base_url: https://robotlolita.me
+exclude:
+  - node_modules
+  - vendor
+  
+plugins:
+  - jekyll-redirect-from
+  - jekyll-paginate
+
+paginate: 3
+paginate_path: "/diary/page:num/"
+excerpt_separator: <!--more-->
+
+navigation:
+  - text: Home
+    url: /index.html
+    group: home
+  - text: Diary
+    url: /diary
+    group: diary
+  - text: Articles
+    url: /chronological
+    group: blog
+  - text: Talks
+    url: /talks
+    group: talks
+  - text: Works
+    url: /works
+    group: works
+  - text: About
+    url: /about
+    group: about
+
+collections:
+  series:
+    output: false
+  articles:
+    output: true
+  talks:
+    output: true
+
+defaults:
+  - scope:
+      path: _articles
+      type: articles
+    values:
+      group: blog
+      is_article: true
+      permalink: /articles/:year/:title/
+  - scope:
+      path: _posts
+      type: posts
+    values:
+      group: diary
+      is_article: true
+      permalink: /diary/:year/:month/:title/
+  - scope:
+      path: _talks
+      type: talks
+    values:
+      group: talks
+      is_article: true
+      permalink: /talks/:title/
